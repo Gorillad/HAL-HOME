@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const previewLink = document.getElementById('thankYouEmailPreview');
         previewLink.href = data.emailPreviewUrl || `/api/preview-email?session_id=${encodeURIComponent(sessionId)}`;
     } catch {
-        showError('Network error — please refresh or contact support@xologic.com.');
+        showError('Network error — please refresh or contact support@logicxo.com.');
     }
 
     function showError(message) {

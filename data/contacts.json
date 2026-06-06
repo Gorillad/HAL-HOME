@@ -1,0 +1,40 @@
+{
+  "domain": "logicxo.com",
+  "addresses": {
+    "hello": {
+      "email": "hello@logicxo.com",
+      "label": "General Inquiries",
+      "purpose": "Main contact, general inquiries",
+      "public": true,
+      "useOn": ["homepage-contact", "footer-primary", "sales-demo"]
+    },
+    "orders": {
+      "email": "orders@logicxo.com",
+      "label": "Orders",
+      "purpose": "Order confirmations & receipts",
+      "public": false,
+      "useOn": ["transactional-order-confirmation", "stripe-receipts"]
+    },
+    "support": {
+      "email": "support@logicxo.com",
+      "label": "Support",
+      "purpose": "Customer help & after-purchase questions",
+      "public": true,
+      "useOn": ["support-site-footer", "kb-contact", "help-links", "order-confirmation-reply"]
+    },
+    "noreply": {
+      "email": "noreply@logicxo.com",
+      "label": "System",
+      "purpose": "Automated system emails (download links, etc.)",
+      "public": false,
+      "useOn": ["smtp-from", "automated-notifications"]
+    },
+    "legal": {
+      "email": "legal@logicxo.com",
+      "label": "Legal",
+      "purpose": "Disputes, DMCA, formal correspondence",
+      "public": true,
+      "useOn": ["privacy-page", "terms-page", "footer-legal"]
+    }
+  }
+}
