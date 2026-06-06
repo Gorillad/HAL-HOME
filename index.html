@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LogicXO — Elegant Lighting Retail Platform</title>
+    <meta name="description" content="Homepage templates, live vendor catalogs, campaign tools, and creative services built for lighting showrooms and designers.">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,32 +19,274 @@
             <a href="index.html" class="site-nav-logo" aria-label="LogicXO home">
                 <img src="images/logicxo.png" alt="LogicXO">
             </a>
-            <nav aria-label="Primary">
-                <ul class="site-nav-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="https://github.com/Gorillad/HALXO">Support</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-            <a href="#contact" class="site-nav-cta">Request Demo</a>
+            <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+            <div class="site-nav-panel" id="site-nav-panel">
+                <nav aria-label="Primary">
+                    <ul class="site-nav-links">
+                        <li><a href="#templates">Templates</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#campaigns">Campaigns</a></li>
+                        <li><a href="#design-services">Design</a></li>
+                        <li><a href="https://support.logicxo.com/">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="site-nav-actions">
+                    <button type="button" class="site-nav-cart" id="cartToggle" aria-label="Open cart">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M6 6L5 3H2"/></svg>
+                        <span class="site-nav-cart-count" id="cartCount" hidden>0</span>
+                    </button>
+                    <a href="#contact" class="site-nav-cta">Request Demo</a>
+                </div>
+            </div>
         </div>
+        <div class="site-nav-backdrop" hidden aria-hidden="true"></div>
     </header>
 
-    <div class="container">
-        <section class="site-header" aria-labelledby="hero-title">
-            <img src="images/logicxo.png" alt="LogicXO" class="site-logo">
-            <h1 id="hero-title">Sell smarter. Shine brighter.</h1>
-            <p>The all-in-one platform for elegant lighting retailers — catalog, campaigns, pricing, and support in one place.</p>
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true">
+            <img src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=1920&q=80&auto=format&fit=crop" alt="" width="1920" height="1080" fetchpriority="high">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-inner">
+            <p class="hero-eyebrow">Built for people who sell light</p>
+            <h1 id="hero-title">Homepages that speak the language of lighting.</h1>
+            <p class="hero-lead">Pick a showroom template, plug in your live vendor catalog, and run campaigns — with optional design services for pop-ups, banners, and email.</p>
             <div class="hero-actions">
-                <a href="#contact" class="btn btn-primary">Get Started</a>
-                <a href="https://github.com/Gorillad/HALXO" class="btn btn-secondary">Visit Support Hub</a>
+                <a href="#templates" class="btn btn-primary">View Templates</a>
+                <a href="#pricing" class="btn btn-ghost">See Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <section id="templates" class="section" aria-labelledby="templates-title">
+            <h2 id="templates-title">Homepage templates</h2>
+            <p class="section-lead">Three tiers designed for lighting retail — from catalog-first showrooms to high-end designer experiences.</p>
+            <div class="template-grid">
+                <article class="template-card">
+                    <div class="template-preview template-preview--showroom" aria-hidden="true">
+                        <div class="template-browser">
+                            <div class="template-browser-bar"><span></span><span></span><span></span></div>
+                            <div class="template-browser-body">
+                                <div class="mock-hero mock-hero--compact"></div>
+                                <div class="mock-grid"><span></span><span></span><span></span><span></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Showroom</h3>
+                    <p class="template-tagline">Catalog-first. Launch fast.</p>
+                    <ul class="template-features">
+                        <li>Clean product grid homepage</li>
+                        <li>Standard catalog filters</li>
+                        <li>Blank campaign templates</li>
+                        <li>Support knowledge base</li>
+                    </ul>
+                    <p class="template-from">From <strong>$349/mo</strong></p>
+                    <a href="#pricing" class="btn btn-secondary btn-block">Choose Showroom</a>
+                </article>
+
+                <article class="template-card template-card--featured">
+                    <span class="template-badge">Most Popular</span>
+                    <div class="template-preview template-preview--designer" aria-hidden="true">
+                        <div class="template-browser">
+                            <div class="template-browser-bar"><span></span><span></span><span></span></div>
+                            <div class="template-browser-body">
+                                <div class="mock-hero mock-hero--editorial"></div>
+                                <div class="mock-collections"><span></span><span></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Designer</h3>
+                    <p class="template-tagline">Editorial layouts for design-forward retailers.</p>
+                    <ul class="template-features">
+                        <li>Room scenes &amp; collections</li>
+                        <li>Enhanced catalog filters</li>
+                        <li>Campaign Manager included</li>
+                        <li>Trends &amp; promo tools</li>
+                    </ul>
+                    <p class="template-from">From <strong>$649/mo</strong></p>
+                    <a href="#pricing" class="btn btn-primary btn-block">Choose Designer</a>
+                </article>
+
+                <article class="template-card template-card--signature">
+                    <div class="template-preview template-preview--signature" aria-hidden="true">
+                        <div class="template-browser">
+                            <div class="template-browser-bar"><span></span><span></span><span></span></div>
+                            <div class="template-browser-body">
+                                <div class="mock-hero mock-hero--luxury"></div>
+                                <div class="mock-story"><span></span><span></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Signature</h3>
+                    <p class="template-tagline">Bespoke homepage storytelling for premium brands.</p>
+                    <ul class="template-features">
+                        <li>Custom homepage sections</li>
+                        <li>Priority catalog merchandising</li>
+                        <li>White-glove onboarding</li>
+                        <li>Dedicated support</li>
+                    </ul>
+                    <p class="template-from">From <strong>$1,299/mo</strong></p>
+                    <a href="#contact" class="btn btn-secondary btn-block">Talk to Sales</a>
+                </article>
+            </div>
+        </section>
+
+        <section id="pricing" class="section section-pricing" aria-labelledby="pricing-title">
+            <div class="section-header-row">
+                <div>
+                    <h2 id="pricing-title">Pricing</h2>
+                    <p class="section-lead section-lead--flush">Platform plans include your homepage template and catalog integration. Save ~15% with annual billing.</p>
+                </div>
+                <div class="billing-toggle" role="group" aria-label="Billing period">
+                    <button type="button" class="billing-toggle-btn is-active" data-billing="monthly" aria-pressed="true">Monthly</button>
+                    <button type="button" class="billing-toggle-btn" data-billing="annual" aria-pressed="false">Annual</button>
+                </div>
+            </div>
+            <div class="pricing-grid">
+                <article class="pricing-card" data-plan="showroom">
+                    <h3>Showroom</h3>
+                    <p class="pricing-audience">Independent showrooms</p>
+                    <p class="pricing-amount"><span class="pricing-price" data-monthly="349" data-annual="299">$349</span><span class="pricing-period">/mo</span></p>
+                    <p class="pricing-note" data-annual-note="Billed $3,588 annually">No contract — cancel anytime</p>
+                    <ul class="pricing-features">
+                        <li>Showroom homepage template</li>
+                        <li>Live vendor catalog view</li>
+                        <li>Pricing calculator &amp; support hub</li>
+                        <li>Download blank campaign specs</li>
+                    </ul>
+                    <button type="button" class="btn btn-secondary btn-block" data-add-plan="showroom">Add to Cart</button>
+                </article>
+
+                <article class="pricing-card pricing-card--featured" data-plan="designer">
+                    <span class="template-badge">Most Popular</span>
+                    <h3>Designer</h3>
+                    <p class="pricing-audience">Multi-brand &amp; design-focused</p>
+                    <p class="pricing-amount"><span class="pricing-price" data-monthly="649" data-annual="549">$649</span><span class="pricing-period">/mo</span></p>
+                    <p class="pricing-note" data-annual-note="Billed $6,588 annually">Campaign Manager included</p>
+                    <ul class="pricing-features">
+                        <li>Everything in Showroom</li>
+                        <li>Designer homepage template</li>
+                        <li>Campaign Manager — pop-ups &amp; banners</li>
+                        <li>Trends &amp; email promo tools</li>
+                    </ul>
+                    <button type="button" class="btn btn-primary btn-block" data-add-plan="designer">Add to Cart</button>
+                </article>
+
+                <article class="pricing-card" data-plan="signature">
+                    <h3>Signature</h3>
+                    <p class="pricing-audience">Premium &amp; trade-focused</p>
+                    <p class="pricing-amount"><span class="pricing-price" data-monthly="1299" data-annual="1099">$1,299</span><span class="pricing-period">/mo</span></p>
+                    <p class="pricing-note" data-annual-note="Billed $13,188 annually">Custom configuration available</p>
+                    <ul class="pricing-features">
+                        <li>Everything in Designer</li>
+                        <li>Signature bespoke homepage</li>
+                        <li>Priority catalog merchandising</li>
+                        <li>White-glove launch support</li>
+                    </ul>
+                    <button type="button" class="btn btn-secondary btn-block" data-add-plan="signature">Add to Cart</button>
+                </article>
+            </div>
+        </section>
+
+        <section id="campaigns" class="section" aria-labelledby="campaigns-title">
+            <div class="split-section">
+                <div class="split-content">
+                    <h2 id="campaigns-title">Campaign Manager</h2>
+                    <p class="section-lead section-lead--flush">Schedule pop-ups and responsive banners on your site — sized for lighting retail out of the box. Included with Designer and Signature plans.</p>
+                    <ul class="check-list">
+                        <li>Homepage pop-ups — 300 × 600px</li>
+                        <li>Laptop banners — 1800 × 180px</li>
+                        <li>Tablet banners — 1200 × 300px</li>
+                        <li>Mobile banners — 450 × 225px</li>
+                    </ul>
+                    <a href="#design-services" class="btn btn-primary">Need creative? See design services</a>
+                </div>
+                <div class="campaign-demo" aria-hidden="true">
+                    <div class="campaign-demo-site">
+                        <div class="campaign-demo-header"></div>
+                        <div class="campaign-demo-hero"></div>
+                        <div class="campaign-popup">
+                            <span class="campaign-popup-label">Pop-up</span>
+                            <span class="campaign-popup-size">300 × 600</span>
+                        </div>
+                        <div class="campaign-banner">
+                            <span class="campaign-banner-label">Banner</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="design-services" class="section" aria-labelledby="design-title">
+            <h2 id="design-title">Creative design services</h2>
+            <p class="section-lead">Professional pop-ups, banners, and email templates — designed for your showroom brand. One round of revisions included.</p>
+            <div class="design-grid">
+                <article class="design-card">
+                    <h3>Pop-up Design</h3>
+                    <p>Single homepage pop-up, 300 × 600px.</p>
+                    <p class="design-price">$179</p>
+                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-popup">Add to Cart</button>
+                </article>
+                <article class="design-card">
+                    <h3>Banner Set</h3>
+                    <p>Matched laptop, tablet, and mobile banners.</p>
+                    <p class="design-price">$299</p>
+                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-banner-set">Add to Cart</button>
+                </article>
+                <article class="design-card">
+                    <h3>Email Template</h3>
+                    <p>Promo or newsletter layout for your ESP.</p>
+                    <p class="design-price">$249</p>
+                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-email">Add to Cart</button>
+                </article>
+                <article class="design-card design-card--featured">
+                    <span class="template-badge">Most Booked</span>
+                    <h3>Full Campaign Kit</h3>
+                    <p>Pop-up + banner set + email — one cohesive promo.</p>
+                    <p class="design-price">$599</p>
+                    <button type="button" class="btn btn-primary btn-block" data-add-to-cart="design-campaign-kit">Add to Cart</button>
+                </article>
+                <article class="design-card">
+                    <h3>Seasonal Refresh</h3>
+                    <p>Swap creative on an existing campaign kit.</p>
+                    <p class="design-price">$129</p>
+                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-seasonal-refresh">Add to Cart</button>
+                </article>
+            </div>
+            <p class="design-note">After checkout, you'll receive a creative brief to share brand colors, copy, and promo details. Typical turnaround: 5 business days.</p>
+        </section>
+
+        <section id="catalog" class="section section-catalog" aria-labelledby="catalog-title">
+            <h2 id="catalog-title">Your catalog, always current</h2>
+            <p class="section-lead">LogicXO templates connect to your vendor data through our catalog partner — so your site stays in sync without manual product entry.</p>
+            <div class="catalog-grid">
+                <article class="catalog-step">
+                    <span class="step-num">1</span>
+                    <h3>Choose a template</h3>
+                    <p>Showroom, Designer, or Signature — each built to showcase lighting products beautifully.</p>
+                </article>
+                <article class="catalog-step">
+                    <span class="step-num">2</span>
+                    <h3>Connect your catalog</h3>
+                    <p>Your vendor feed powers product grids, filters, and detail views on your homepage.</p>
+                </article>
+                <article class="catalog-step">
+                    <span class="step-num">3</span>
+                    <h3>Launch &amp; promote</h3>
+                    <p>Go live with Campaign Manager tools and optional design services for every season.</p>
+                </article>
             </div>
         </section>
 
         <section id="features" class="section" aria-labelledby="features-title">
-            <h2 id="features-title">Built for lighting retail</h2>
-            <p class="section-lead">Everything your showroom team needs to merchandise, promote, and support customers — without switching tools.</p>
+            <h2 id="features-title">Platform tools included</h2>
+            <p class="section-lead">Beyond the homepage — everything your showroom team needs day to day.</p>
             <div class="feature-grid">
                 <article class="feature-card">
                     <h3>Vendor catalog &amp; pricing</h3>
@@ -54,46 +297,96 @@
                     <p>Launch seasonal promos with ready-made banner sizes and templates tuned for lighting retail.</p>
                 </article>
                 <article class="feature-card">
-                    <h3>Email &amp; trends tools</h3>
-                    <p>Build promo emails and spot rising keywords so your merchandising stays ahead of demand.</p>
+                    <h3>Support knowledge base</h3>
+                    <p>Searchable how-tos for policies, DNS, calculators, and day-to-day showroom operations.</p>
                 </article>
             </div>
         </section>
 
         <section id="how-it-works" class="section" aria-labelledby="steps-title">
             <h2 id="steps-title">How it works</h2>
-            <p class="section-lead">Get your team from catalog to campaign in three straightforward steps.</p>
+            <p class="section-lead">From template selection to live campaigns in three steps.</p>
             <div class="steps">
                 <article class="step">
                     <span class="step-num">1</span>
-                    <h3>Connect your vendors</h3>
-                    <p>Import catalogs and pricing rules so every quote reflects current COGS and markup tiers.</p>
+                    <h3>Pick your template tier</h3>
+                    <p>Showroom, Designer, or Signature — add a plan to cart or request a demo for Signature.</p>
                 </article>
                 <article class="step">
                     <span class="step-num">2</span>
-                    <h3>Merchandise &amp; promote</h3>
-                    <p>Run campaigns, email promos, and on-site banners aligned to finishes, rooms, and style trends.</p>
+                    <h3>Connect your catalog</h3>
+                    <p>We integrate your vendor feed so products, filters, and pricing stay current automatically.</p>
                 </article>
                 <article class="step">
                     <span class="step-num">3</span>
-                    <h3>Support every sale</h3>
-                    <p>Give staff a searchable knowledge base for policies, DNS, calculators, and day-to-day how-tos.</p>
+                    <h3>Run your first campaign</h3>
+                    <p>Upload your own creative or add design services — then schedule pop-ups and banners from Campaign Manager.</p>
                 </article>
             </div>
         </section>
 
         <section id="contact" class="cta-band" aria-labelledby="cta-title">
             <h2 id="cta-title">Ready to elevate your showroom?</h2>
-            <p>Talk with our team about LogicXO for your lighting business.</p>
-            <a href="mailto:support@xologic.com" class="btn btn-secondary">Contact Us</a>
+            <p>Talk with our team about LogicXO — or checkout when Stripe billing is live.</p>
+            <form id="contactForm" class="contact-form" novalidate>
+                <div class="contact-form-row">
+                    <div class="contact-field">
+                        <label class="visually-hidden" for="contactName">Your name</label>
+                        <input type="text" id="contactName" name="name" placeholder="Your name" autocomplete="name" required>
+                    </div>
+                    <div class="contact-field">
+                        <label class="visually-hidden" for="contactEmail">Work email</label>
+                        <input type="email" id="contactEmail" name="email" placeholder="Work email" autocomplete="email" required>
+                    </div>
+                </div>
+                <div class="contact-field">
+                    <label class="visually-hidden" for="contactCompany">Company</label>
+                    <input type="text" id="contactCompany" name="company" placeholder="Company / showroom name" autocomplete="organization">
+                </div>
+                <div class="contact-field">
+                    <label class="visually-hidden" for="contactInterest">Interested in</label>
+                    <select id="contactInterest" name="interest">
+                        <option value="">Interested in…</option>
+                        <option value="showroom">Showroom plan</option>
+                        <option value="designer">Designer plan</option>
+                        <option value="signature">Signature plan</option>
+                        <option value="design">Design services</option>
+                    </select>
+                </div>
+                <div class="contact-field">
+                    <label class="visually-hidden" for="contactMessage">Message</label>
+                    <textarea id="contactMessage" name="message" rows="3" placeholder="Tell us about your team and goals"></textarea>
+                </div>
+                <button type="submit" class="btn btn-secondary contact-submit">Request Demo</button>
+                <p id="contactFormMsg" class="contact-form-msg" role="status" hidden></p>
+            </form>
+            <p class="contact-alt">Prefer email? <a href="mailto:support@logicxo.com">support@logicxo.com</a></p>
         </section>
     </div>
+
+    <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
+        <div class="cart-drawer-header">
+            <h2>Your Cart</h2>
+            <button type="button" class="cart-close" id="cartClose" aria-label="Close cart">&times;</button>
+        </div>
+        <p class="cart-empty" id="cartEmpty">Your cart is empty.</p>
+        <ul class="cart-items" id="cartItems"></ul>
+        <div class="cart-footer" id="cartFooter" hidden>
+            <div class="cart-subtotal-row">
+                <span>Subtotal</span>
+                <strong id="cartSubtotal">$0</strong>
+            </div>
+            <p class="cart-stripe-note" id="cartStripeNote">Loading checkout…</p>
+            <button type="button" class="btn btn-primary btn-block" id="cartCheckout">Proceed to Checkout</button>
+        </div>
+    </aside>
+    <div class="cart-backdrop" id="cartBackdrop" aria-hidden="true"></div>
 
     <footer class="site-footer" aria-label="Site footer">
         <div class="site-footer-inner">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <span class="footer-logo">XOLogic</span>
+                    <span class="footer-logo">LogicXO</span>
                     <p class="footer-tagline">Sell smarter. Support faster. The knowledge hub for elegant lighting retail.</p>
                     <div class="footer-social" aria-label="Social media">
                         <a href="#" class="footer-social-link" aria-label="X (formerly Twitter)" target="_blank" rel="noopener">
@@ -114,19 +407,20 @@
                     <h3 class="footer-heading">Quick Links</h3>
                     <ul class="footer-links">
                         <li><a href="index.html">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="https://github.com/Gorillad/HALXO">Support Knowledge Base</a></li>
+                        <li><a href="#templates">Templates</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#campaigns">Campaigns</a></li>
+                        <li><a href="#design-services">Design Services</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </nav>
                 <nav class="footer-col" aria-label="Resources">
                     <h3 class="footer-heading">Resources</h3>
                     <ul class="footer-links">
-                        <li><a href="https://github.com/Gorillad/HALXO">Knowledge Base</a></li>
-                        <li><a href="#">Getting Started</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">System Status</a></li>
+                        <li><a href="https://support.logicxo.com/">Knowledge Base</a></li>
+                        <li><a href="#catalog">Catalog Integration</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="https://support.logicxo.com/">System Status</a></li>
                     </ul>
                 </nav>
                 <div class="footer-col footer-contact">
@@ -134,7 +428,7 @@
                     <ul class="footer-contact-list">
                         <li>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                            <a href="mailto:support@xologic.com">support@xologic.com</a>
+                            <a href="mailto:support@logicxo.com">support@logicxo.com</a>
                         </li>
                         <li>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -162,7 +456,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p class="footer-copy">&copy; <span id="footerYear">2026</span> XOLogic. All rights reserved.</p>
+                <p class="footer-copy">&copy; <span id="footerYear">2026</span> LogicXO. All rights reserved.</p>
                 <ul class="footer-legal">
                     <li><a href="#">Privacy Policy</a></li>
                     <li><a href="#">Terms of Service</a></li>
@@ -177,6 +471,7 @@
     </footer>
 
     <script src="shared/footer/footer.js" defer></script>
+    <script src="js/cart.js" defer></script>
     <script src="js/main.js" defer></script>
 </body>
 </html>

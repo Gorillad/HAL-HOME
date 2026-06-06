@@ -1,0 +1,77 @@
+{
+  "plan-showroom-monthly": {
+    "id": "plan-showroom-monthly",
+    "name": "Showroom Plan (Monthly)",
+    "price": 349,
+    "type": "subscription",
+    "interval": "month"
+  },
+  "plan-showroom-annual": {
+    "id": "plan-showroom-annual",
+    "name": "Showroom Plan (Annual)",
+    "price": 3588,
+    "type": "subscription",
+    "interval": "year",
+    "note": "$299/mo billed annually"
+  },
+  "plan-designer-monthly": {
+    "id": "plan-designer-monthly",
+    "name": "Designer Plan (Monthly)",
+    "price": 649,
+    "type": "subscription",
+    "interval": "month"
+  },
+  "plan-designer-annual": {
+    "id": "plan-designer-annual",
+    "name": "Designer Plan (Annual)",
+    "price": 6588,
+    "type": "subscription",
+    "interval": "year",
+    "note": "$549/mo billed annually"
+  },
+  "plan-signature-monthly": {
+    "id": "plan-signature-monthly",
+    "name": "Signature Plan (Monthly)",
+    "price": 1299,
+    "type": "subscription",
+    "interval": "month"
+  },
+  "plan-signature-annual": {
+    "id": "plan-signature-annual",
+    "name": "Signature Plan (Annual)",
+    "price": 13188,
+    "type": "subscription",
+    "interval": "year",
+    "note": "$1,099/mo billed annually"
+  },
+  "design-popup": {
+    "id": "design-popup",
+    "name": "Pop-up Design",
+    "price": 179,
+    "type": "one-time"
+  },
+  "design-banner-set": {
+    "id": "design-banner-set",
+    "name": "Banner Set (3 sizes)",
+    "price": 299,
+    "type": "one-time"
+  },
+  "design-email": {
+    "id": "design-email",
+    "name": "Email Template",
+    "price": 249,
+    "type": "one-time"
+  },
+  "design-campaign-kit": {
+    "id": "design-campaign-kit",
+    "name": "Full Campaign Kit",
+    "price": 599,
+    "type": "one-time"
+  },
+  "design-seasonal-refresh": {
+    "id": "design-seasonal-refresh",
+    "name": "Seasonal Refresh",
+    "price": 129,
+    "type": "one-time"
+  }
+}

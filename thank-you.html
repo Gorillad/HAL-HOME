@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You — LogicXO</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="shared/footer/footer.css" rel="stylesheet">
+</head>
+<body>
+    <header class="site-nav" aria-label="Site navigation">
+        <div class="site-nav-inner">
+            <a href="index.html" class="site-nav-logo" aria-label="LogicXO home">
+                <img src="images/logicxo.png" alt="LogicXO">
+            </a>
+        </div>
+    </header>
+
+    <main class="container thank-you-page">
+        <div id="thankYouLoading" class="thank-you-state">
+            <p>Confirming your order…</p>
+        </div>
+
+        <div id="thankYouError" class="thank-you-state" hidden>
+            <div class="section thank-you-card thank-you-card--error">
+                <h1>Something went wrong</h1>
+                <p id="thankYouErrorMsg">We couldn't verify your order. Please contact support if you were charged.</p>
+                <a href="index.html" class="btn btn-primary">Back to Home</a>
+            </div>
+        </div>
+
+        <div id="thankYouSuccess" class="thank-you-state" hidden>
+            <div class="thank-you-hero">
+                <span class="thank-you-icon" aria-hidden="true">✓</span>
+                <h1>Thank you for your purchase!</h1>
+                <p class="thank-you-sub">Order confirmed — a confirmation email is on its way to <strong id="thankYouEmail"></strong>.</p>
+            </div>
+
+            <div class="section thank-you-card">
+                <h2>Order summary</h2>
+                <p class="thank-you-order-id">Order <span id="thankYouOrderId"></span></p>
+                <ul class="thank-you-items" id="thankYouItems"></ul>
+                <p class="thank-you-total">Total: <strong id="thankYouTotal"></strong></p>
+            </div>
+
+            <div class="section thank-you-card" id="thankYouDesignBlock" hidden>
+                <h2>Creative brief</h2>
+                <p>Your order includes design services. Complete the brief so our team can start on your pop-ups, banners, or email templates.</p>
+                <a href="#" id="thankYouBriefLink" class="btn btn-primary">Complete Creative Brief</a>
+            </div>
+
+            <div class="section thank-you-card">
+                <h2>What happens next</h2>
+                <ol class="thank-you-steps">
+                    <li>Check your inbox for your order confirmation (and preview the email below).</li>
+                    <li>Our team will reach out within one business day with platform access details.</li>
+                    <li>We'll help connect your vendor catalog to your new homepage template.</li>
+                    <li>Need help? Visit the <a href="https://support.logicxo.com/">Support Knowledge Base</a>.</li>
+                </ol>
+            </div>
+
+            <div class="thank-you-actions">
+                <a href="#" id="thankYouEmailPreview" class="btn btn-secondary" target="_blank" rel="noopener">Preview Confirmation Email</a>
+                <a href="index.html" class="btn btn-primary">Back to Home</a>
+            </div>
+
+            <p class="thank-you-test-note" id="thankYouTestNote">You're in Stripe test mode — no real charges were made.</p>
+        </div>
+    </main>
+
+    <script src="js/thank-you.js" defer></script>
+</body>
+</html>

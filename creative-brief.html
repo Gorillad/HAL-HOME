@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Brief — LogicXO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="site-nav">
+        <div class="site-nav-inner">
+            <a href="index.html" class="site-nav-logo" aria-label="LogicXO home">
+                <img src="images/logicxo.png" alt="LogicXO">
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="section" style="max-width:640px;margin:28px auto;">
+            <h1 style="font-family:var(--font-display);font-size:2rem;margin-bottom:8px;">Creative Brief</h1>
+            <p class="section-lead">Tell us about your brand and promo so we can design your campaign assets. Order ref: <strong id="briefOrderRef">—</strong></p>
+
+            <form id="creativeBriefForm" class="brief-form" novalidate>
+                <div class="brief-field">
+                    <label for="briefShowroom">Showroom / company name</label>
+                    <input type="text" id="briefShowroom" name="showroom" required>
+                </div>
+                <div class="brief-field">
+                    <label for="briefContact">Your name</label>
+                    <input type="text" id="briefContact" name="contact" required>
+                </div>
+                <div class="brief-field">
+                    <label for="briefEmail">Email</label>
+                    <input type="email" id="briefEmail" name="email" required>
+                </div>
+                <div class="brief-field">
+                    <label for="briefPromo">Promo headline &amp; offer</label>
+                    <input type="text" id="briefPromo" name="promo" placeholder="e.g. 20% off all pendants — Labor Day Event">
+                </div>
+                <div class="brief-field">
+                    <label for="briefColors">Brand colors (hex or description)</label>
+                    <input type="text" id="briefColors" name="colors" placeholder="e.g. #1a7bbd, warm white, brushed brass">
+                </div>
+                <div class="brief-field">
+                    <label for="briefNotes">Additional notes for the design team</label>
+                    <textarea id="briefNotes" name="notes" rows="4" placeholder="Vendors to feature, mood, deadlines…"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Brief</button>
+                <p id="briefFormMsg" class="brief-form-msg" role="status" hidden></p>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const order = params.get('order') || params.get('session_id') || '';
+        document.getElementById('briefOrderRef').textContent = order ? order.slice(0, 12).toUpperCase() : '—';
+
+        document.getElementById('creativeBriefForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('briefFormMsg');
+            msg.hidden = false;
+            msg.textContent = 'Thanks! Our design team has received your brief and will be in touch within 2 business days.';
+            msg.classList.add('is-success');
+            e.target.querySelector('button[type=submit]').disabled = true;
+        });
+    </script>
+</body>
+</html>
