@@ -217,29 +217,69 @@ body.cart-open {
 .hero-media {
     position: absolute;
     inset: 0;
+    overflow: hidden;
 }
 
 .hero-media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 40%;
+    object-position: center top;
+    display: block;
+}
+
+@keyframes heroFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(20, 40, 55, 0.82) 0%, rgba(26, 123, 189, 0.55) 100%);
+    z-index: 1;
+    background:
+        linear-gradient(135deg, rgba(20, 40, 55, 0.62) 0%, rgba(26, 123, 189, 0.52) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.45) 100%);
 }
 
 .hero-inner {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: 720px;
     margin: 0 auto;
     padding: 80px 24px 64px;
     text-align: center;
     color: #fff;
+}
+
+.hero-inner > .hero-eyebrow,
+.hero-inner > h1,
+.hero-inner > .hero-lead,
+.hero-inner > .hero-actions {
+    opacity: 0;
+    animation: heroFadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-inner > .hero-eyebrow { animation-delay: 0.15s; }
+.hero-inner > h1 { animation-delay: 0.35s; }
+.hero-inner > .hero-lead { animation-delay: 0.55s; }
+.hero-inner > .hero-actions { animation-delay: 0.75s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-inner > .hero-eyebrow,
+    .hero-inner > h1,
+    .hero-inner > .hero-lead,
+    .hero-inner > .hero-actions {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
 }
 
 .hero-eyebrow {
@@ -482,11 +522,24 @@ body.cart-open {
     margin-bottom: 4px;
 }
 
+.template-tier {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--xo-grey);
+}
+
 .template-tagline,
 .pricing-audience {
     font-size: 0.9rem;
     color: var(--xo-grey);
     margin-bottom: 14px;
+}
+
+.template-desc {
+    font-size: 0.88rem;
+    color: var(--xo-grey);
+    line-height: 1.55;
+    margin: -6px 0 14px;
 }
 
 .template-features,
