@@ -2,17 +2,17 @@
   "plan-showroom-monthly": {
     "id": "plan-showroom-monthly",
     "name": "Showroom Plan (Monthly)",
-    "price": 349,
+    "price": 469,
     "type": "subscription",
     "interval": "month"
   },
   "plan-showroom-annual": {
     "id": "plan-showroom-annual",
     "name": "Showroom Plan (Annual)",
-    "price": 3588,
+    "price": 4788,
     "type": "subscription",
     "interval": "year",
-    "note": "$299/mo billed annually"
+    "note": "$399/mo billed annually"
   },
   "plan-designer-monthly": {
     "id": "plan-designer-monthly",

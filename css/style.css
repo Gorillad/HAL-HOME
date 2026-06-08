@@ -210,7 +210,7 @@ body.cart-open {
     min-height: clamp(420px, 72vh, 640px);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     overflow: hidden;
 }
 
@@ -252,9 +252,11 @@ body.cart-open {
     position: relative;
     z-index: 2;
     max-width: 720px;
-    margin: 0 auto;
-    padding: 80px 24px 64px;
-    text-align: center;
+    width: 100%;
+    margin: 0;
+    margin-left: max(20px, calc((100vw - 1200px) / 2 + 20px));
+    padding: 80px 24px 64px 0;
+    text-align: left;
     color: #fff;
 }
 
@@ -309,7 +311,7 @@ body.cart-open {
 .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 12px;
 }
 
@@ -467,16 +469,66 @@ body.cart-open {
 }
 
 .template-browser-body {
+    display: block;
     padding: 10px;
     min-height: 120px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.template-browser-body--link {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.template-browser-body--link:hover {
+    background: #f8fbfd;
+}
+
+.template-browser-body--link:focus-visible {
+    outline: 2px solid var(--xo-blue);
+    outline-offset: -2px;
 }
 
 .mock-hero {
     border-radius: 4px;
     margin-bottom: 8px;
+    overflow: hidden;
 }
 
-.mock-hero--compact { height: 28px; background: linear-gradient(90deg, #b8d4e8, #dceef8); }
+.mock-hero--compact {
+    display: grid;
+    grid-template-columns: 563fr 854fr;
+    gap: 3px;
+    height: 72px;
+    align-items: stretch;
+}
+
+.mock-hero-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-height: 0;
+}
+
+.mock-hero-product {
+    flex: 0 0 38px;
+    background: #efeeeb;
+    border-radius: 2px;
+}
+
+.mock-hero-copy {
+    flex: 1 1 auto;
+    min-height: 0;
+    background: #5a3d2b;
+    border-radius: 2px;
+}
+
+.mock-hero-feature {
+    background: #d8e2ea;
+    border-radius: 2px;
+}
+
 .mock-hero--editorial { height: 48px; background: linear-gradient(135deg, #2b3a42 30%, #7a9eb5 100%); }
 .mock-hero--luxury { height: 56px; background: linear-gradient(135deg, #1a252b 20%, #c9a962 80%); }
 
@@ -1376,7 +1428,8 @@ body.cart-open .cart-backdrop {
     }
 
     .hero-inner {
-        padding: 64px 20px 48px;
+        margin-left: 20px;
+        padding: 64px 20px 48px 0;
     }
 }
 

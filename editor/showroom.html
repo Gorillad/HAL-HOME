@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showroom Homepage Editor — LogicXO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="css/editor.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="editor-page">
+    <header class="editor-toolbar">
+        <div class="editor-toolbar-left">
+            <a href="../index.html#templates" class="editor-back">← Templates</a>
+            <div class="editor-toolbar-title">
+                <h1>Showroom editor</h1>
+                <p class="editor-toolbar-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
+            </div>
+        </div>
+        <div class="editor-toolbar-actions">
+            <span class="editor-status" id="editorStatus" aria-live="polite"></span>
+            <button type="button" class="btn btn-primary" id="exportPdfBtn">Export handoff</button>
+            <span class="editor-evolved-toast" id="evolvedToast" hidden>
+                <img src="assets/rubber-duck.svg" alt="" class="editor-evolved-duck" width="16" height="14">
+                evolved
+                <img src="assets/rubber-duck.svg" alt="" class="editor-evolved-duck" width="16" height="14">
+            </span>
+        </div>
+    </header>
+
+    <nav class="editor-section-nav" id="editorSectionNav" aria-label="Jump to editor section">
+        <a href="#editor-section-hero" class="editor-section-nav-link">Hero</a>
+        <a href="#editor-section-featured-categories" class="editor-section-nav-link">Featured Categories</a>
+        <a href="#editor-section-about-us" class="editor-section-nav-link">About Us</a>
+        <a href="#editor-section-feature-cards" class="editor-section-nav-link">Feature Cards</a>
+        <a href="#editor-section-sketch-section" class="editor-section-nav-link">Sketch Section</a>
+        <a href="#editor-section-you-may-like" class="editor-section-nav-link">You May Like</a>
+        <a href="#editor-section-get-inspired" class="editor-section-nav-link">Get Inspired</a>
+        <a href="#editor-section-footer" class="editor-section-nav-link">Footer</a>
+    </nav>
+
+    <div class="editor-layout">
+        <aside class="editor-panel" id="editorPanel" aria-label="Editor controls">
+            <h2>Homepage content</h2>
+            <p class="editor-panel-lead">Configure the Showroom homepage template. Your draft saves automatically in this browser. Export includes all homepage sections and assets in a ZIP with PDF brief and JSON spec.</p>
+
+            <h3 class="editor-panel-subhead editor-panel-section" id="editor-section-hero">Hero</h3>
+            <div class="editor-field">
+                <label for="fieldTitle">Collection title</label>
+                <input type="text" id="fieldTitle" name="title" autocomplete="off">
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldCopyBg">Collection background color</label>
+                <div class="editor-color">
+                    <input type="color" id="fieldCopyBg" name="copyBackgroundColor" value="#5a3d2b">
+                    <span class="editor-color-value" id="fieldCopyBgValue">#5a3d2b</span>
+                </div>
+            </div>
+
+            <div class="editor-field editor-field--after-title">
+                <label for="fieldProductImage">Product image (left, top)<span class="editor-field-hint">563 × 342 px</span></label>
+                <div class="editor-upload">
+                    <div class="editor-upload-preview editor-upload-preview--product is-empty" id="uploadPreviewProduct"></div>
+                    <input type="file" id="fieldProductImage" name="productImage" accept="image/*">
+                </div>
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldDescription">Description</label>
+                <textarea id="fieldDescription" name="description" rows="4"></textarea>
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldCta">Button label</label>
+                <input type="text" id="fieldCta" name="cta" autocomplete="off">
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldLifestyleImage">Lifestyle image (right)<span class="editor-field-hint">854 × 670 px</span></label>
+                <div class="editor-upload">
+                    <div class="editor-upload-preview editor-upload-preview--lifestyle is-empty" id="uploadPreviewLifestyle"></div>
+                    <input type="file" id="fieldLifestyleImage" name="lifestyleImage" accept="image/*">
+                </div>
+            </div>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-featured-categories">Featured Categories</h3>
+            <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows).</p>
+
+            <div class="editor-field">
+                <label for="fieldShopAllUrl">Shop All link</label>
+                <input type="text" id="fieldShopAllUrl" name="shopAllUrl" placeholder="/catalog" autocomplete="off">
+            </div>
+
+            <fieldset class="editor-category-picker">
+                <legend>Visible categories</legend>
+                <ul class="editor-category-list" id="categoryCheckboxList"></ul>
+            </fieldset>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-about-us">About Us</h3>
+
+            <div class="editor-field">
+                <label for="fieldAboutEmployeeImage">Employee photo<span class="editor-field-hint">417 × 282 px</span></label>
+                <div class="editor-upload">
+                    <div class="editor-upload-preview editor-upload-preview--about is-empty" id="uploadPreviewAbout"></div>
+                    <input type="file" id="fieldAboutEmployeeImage" name="aboutEmployeeImage" accept="image/*">
+                </div>
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldAboutHeader">Section header</label>
+                <input type="text" id="fieldAboutHeader" name="aboutHeader" autocomplete="off">
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldAboutParagraph">Paragraph</label>
+                <textarea id="fieldAboutParagraph" name="aboutParagraph" rows="6"></textarea>
+            </div>
+
+            <fieldset class="editor-button-group">
+                <legend>Primary button</legend>
+                <div class="editor-field">
+                    <label for="fieldAboutPrimaryLabel">Button label</label>
+                    <input type="text" id="fieldAboutPrimaryLabel" name="aboutPrimaryLabel" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldAboutPrimaryUrl">Link URL</label>
+                    <input type="text" id="fieldAboutPrimaryUrl" name="aboutPrimaryUrl" placeholder="/about" autocomplete="off">
+                </div>
+            </fieldset>
+
+            <fieldset class="editor-button-group">
+                <legend>Secondary button</legend>
+                <div class="editor-field">
+                    <label for="fieldAboutSecondaryLabel">Button label</label>
+                    <input type="text" id="fieldAboutSecondaryLabel" name="aboutSecondaryLabel" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldAboutSecondaryUrl">Link URL</label>
+                    <input type="text" id="fieldAboutSecondaryUrl" name="aboutSecondaryUrl" placeholder="/catalog" autocomplete="off">
+                </div>
+            </fieldset>
+
+            <fieldset class="editor-button-group">
+                <legend>Button colors</legend>
+                <div class="editor-field">
+                    <label for="fieldAboutButtonBg">Background color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldAboutButtonBg" name="aboutButtonBackgroundColor" value="#2b2b2b">
+                        <span class="editor-color-value" id="fieldAboutButtonBgValue">#2b2b2b</span>
+                    </div>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldAboutButtonText">Text color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldAboutButtonText" name="aboutButtonTextColor" value="#ffffff">
+                        <span class="editor-color-value" id="fieldAboutButtonTextValue">#ffffff</span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-feature-cards">Feature Cards</h3>
+            <p class="editor-panel-lead editor-panel-lead--compact">Two large photo cards side by side with centered copy and a button on each image.</p>
+
+            <fieldset class="editor-button-group">
+                <legend>Left card</legend>
+                <div class="editor-field">
+                    <label for="fieldFeatureLeftImage">Photo<span class="editor-field-hint">780 × 1014 px</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--feature is-empty" id="uploadPreviewFeatureLeft"></div>
+                        <input type="file" id="fieldFeatureLeftImage" name="featureLeftImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldFeatureLeftHeader">Header</label>
+                    <input type="text" id="fieldFeatureLeftHeader" name="featureLeftHeader" autocomplete="off">
+                </div>
+                <div class="editor-field">
+                    <label for="fieldFeatureLeftParagraph">Paragraph</label>
+                    <textarea id="fieldFeatureLeftParagraph" name="featureLeftParagraph" rows="4"></textarea>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldFeatureLeftButtonLabel">Button label</label>
+                    <input type="text" id="fieldFeatureLeftButtonLabel" name="featureLeftButtonLabel" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldFeatureLeftButtonUrl">Button link</label>
+                    <input type="text" id="fieldFeatureLeftButtonUrl" name="featureLeftButtonUrl" placeholder="/services" autocomplete="off">
+                </div>
+            </fieldset>
+
+            <fieldset class="editor-button-group">
+                <legend>Right card</legend>
+                <div class="editor-field">
+                    <label for="fieldFeatureRightImage">Photo<span class="editor-field-hint">780 × 1014 px</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--feature is-empty" id="uploadPreviewFeatureRight"></div>
+                        <input type="file" id="fieldFeatureRightImage" name="featureRightImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldFeatureRightHeader">Header</label>
+                    <input type="text" id="fieldFeatureRightHeader" name="featureRightHeader" autocomplete="off">
+                </div>
+                <div class="editor-field">
+                    <label for="fieldFeatureRightParagraph">Paragraph</label>
+                    <textarea id="fieldFeatureRightParagraph" name="featureRightParagraph" rows="4"></textarea>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldFeatureRightButtonLabel">Button label</label>
+                    <input type="text" id="fieldFeatureRightButtonLabel" name="featureRightButtonLabel" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldFeatureRightButtonUrl">Button link</label>
+                    <input type="text" id="fieldFeatureRightButtonUrl" name="featureRightButtonUrl" placeholder="/showroom" autocomplete="off">
+                </div>
+            </fieldset>
+
+            <fieldset class="editor-button-group">
+                <legend>Button color</legend>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldFeatureButtonBg">Background color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldFeatureButtonBg" name="featureButtonBackgroundColor" value="#2b2b2b">
+                        <span class="editor-color-value" id="fieldFeatureButtonBgValue">#2b2b2b</span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-sketch-section">Sketch Section</h3>
+
+            <div class="editor-field editor-field--toggle">
+                <label class="editor-toggle" for="fieldSketchSectionVisible">
+                    <input type="checkbox" id="fieldSketchSectionVisible" name="sketchSectionVisible" checked>
+                    Show sketch section on homepage
+                </label>
+            </div>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-you-may-like">You May Like</h3>
+            <p class="editor-panel-lead editor-panel-lead--compact">Upload a lifestyle image (500 × 750 px) for each carousel slot. Enter a catalog item number for each—the section title, product name, and price come from your <strong>You May Like</strong> dashboard attribute on the live site.</p>
+            <div id="youMayLikeEditor"></div>
+            <button type="button" class="btn btn-secondary editor-add-item-btn" id="addYouMayLikeBtn">Add product</button>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-get-inspired">Get Inspired</h3>
+            <p class="editor-panel-lead editor-panel-lead--compact">Upload one lifestyle image (508 × 610 px) for the left column. Enter a catalog item number for each of the eight grid cards—product name, price, and card images pull from your <strong>You May Like</strong> dashboard attribute on the live site.</p>
+
+            <div class="editor-field">
+                <label for="fieldGetInspiredLifestyle">Lifestyle photo (left)<span class="editor-field-hint">508 × 610 px</span></label>
+                <div class="editor-upload">
+                    <div class="editor-upload-preview editor-upload-preview--get-inspired-lifestyle is-empty" id="uploadPreviewGetInspiredLifestyle"></div>
+                    <input type="file" id="fieldGetInspiredLifestyle" name="getInspiredLifestyleImage" accept="image/*">
+                </div>
+            </div>
+
+            <div id="getInspiredEditor"></div>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-footer">Footer</h3>
+            <p class="editor-panel-lead editor-panel-lead--compact">Three-column footer with company logo, navigation links, and contact details. Social icons support Facebook, Instagram, X, YouTube, and LinkedIn.</p>
+
+            <div class="editor-field">
+                <label for="fieldFooterLogo">Company logo<span class="editor-field-hint">PNG or SVG · max 240 × 80 px</span></label>
+                <div class="editor-upload">
+                    <div class="editor-upload-preview editor-upload-preview--footer-logo is-empty" id="uploadPreviewFooterLogo"></div>
+                    <input type="file" id="fieldFooterLogo" name="footerLogoImage" accept="image/*">
+                </div>
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldFooterEmail">Contact email</label>
+                <input type="email" id="fieldFooterEmail" name="footerEmail" autocomplete="off" placeholder="hello@company.com">
+            </div>
+
+            <fieldset class="editor-fieldset">
+                <legend>Social media</legend>
+                <p class="editor-field-hint editor-field-hint--fieldset">Uncheck any network you do not want shown in the footer.</p>
+                <div class="editor-social-item">
+                    <label class="editor-toggle editor-toggle--compact" for="fieldFooterFacebookVisible">
+                        <input type="checkbox" id="fieldFooterFacebookVisible" name="footerFacebookVisible" checked>
+                        Show Facebook
+                    </label>
+                    <input type="url" id="fieldFooterFacebook" name="footerFacebookUrl" autocomplete="off" placeholder="https://facebook.com/...">
+                </div>
+                <div class="editor-social-item">
+                    <label class="editor-toggle editor-toggle--compact" for="fieldFooterInstagramVisible">
+                        <input type="checkbox" id="fieldFooterInstagramVisible" name="footerInstagramVisible" checked>
+                        Show Instagram
+                    </label>
+                    <input type="url" id="fieldFooterInstagram" name="footerInstagramUrl" autocomplete="off" placeholder="https://instagram.com/...">
+                </div>
+                <div class="editor-social-item">
+                    <label class="editor-toggle editor-toggle--compact" for="fieldFooterXVisible">
+                        <input type="checkbox" id="fieldFooterXVisible" name="footerXVisible" checked>
+                        Show X
+                    </label>
+                    <input type="url" id="fieldFooterX" name="footerXUrl" autocomplete="off" placeholder="https://x.com/...">
+                </div>
+                <div class="editor-social-item">
+                    <label class="editor-toggle editor-toggle--compact" for="fieldFooterYoutubeVisible">
+                        <input type="checkbox" id="fieldFooterYoutubeVisible" name="footerYoutubeVisible" checked>
+                        Show YouTube
+                    </label>
+                    <input type="url" id="fieldFooterYoutube" name="footerYoutubeUrl" autocomplete="off" placeholder="https://youtube.com/...">
+                </div>
+                <div class="editor-social-item">
+                    <label class="editor-toggle editor-toggle--compact" for="fieldFooterLinkedinVisible">
+                        <input type="checkbox" id="fieldFooterLinkedinVisible" name="footerLinkedinVisible" checked>
+                        Show LinkedIn
+                    </label>
+                    <input type="url" id="fieldFooterLinkedin" name="footerLinkedinUrl" autocomplete="off" placeholder="https://linkedin.com/...">
+                </div>
+            </fieldset>
+
+            <fieldset class="editor-fieldset">
+                <legend>Quick Links</legend>
+                <p class="editor-field-hint editor-field-hint--fieldset">Edit link names and URLs, or remove any you do not need.</p>
+                <div id="footerQuickLinksEditor"></div>
+                <button type="button" class="btn btn-secondary editor-add-item-btn" id="addFooterQuickLinkBtn">Add quick link</button>
+            </fieldset>
+
+            <fieldset class="editor-fieldset">
+                <legend>Policies</legend>
+                <p class="editor-field-hint editor-field-hint--fieldset">Edit policy names and URLs, or remove any you do not need.</p>
+                <div id="footerPolicyLinksEditor"></div>
+                <button type="button" class="btn btn-secondary editor-add-item-btn" id="addFooterPolicyLinkBtn">Add policy link</button>
+            </fieldset>
+
+            <div class="editor-field">
+                <label for="fieldFooterCompanyName">Company name</label>
+                <input type="text" id="fieldFooterCompanyName" name="footerCompanyName" autocomplete="off">
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldFooterAddress">Address</label>
+                <textarea id="fieldFooterAddress" name="footerAddress" rows="3" autocomplete="off"></textarea>
+            </div>
+
+            <div class="editor-field">
+                <label for="fieldFooterPhone">Phone number</label>
+                <input type="tel" id="fieldFooterPhone" name="footerPhone" autocomplete="off" placeholder="(800) 555-1234">
+            </div>
+
+            <div class="editor-field editor-field--compact">
+                <label for="fieldFooterCopyrightName">Copyright company name</label>
+                <input type="text" id="fieldFooterCopyrightName" name="footerCopyrightName" autocomplete="off">
+                <span class="editor-field-hint">Used in the required footer copyright + ADA compliance line (see PDF handoff for copy-paste markup). Year updates automatically. Leave blank to use company name above.</span>
+            </div>
+        </aside>
+
+        <div class="editor-preview-wrap">
+            <p class="editor-preview-label">Live preview <span class="editor-preview-note">— product 563×342 · lifestyle 854×670 min · copy grows with content</span></p>
+            <div class="editor-preview-scaler" id="previewScaler">
+                <div class="editor-preview-frame" id="showroomPreview">
+                <section class="showroom-hero-section" id="showroomHeroSection" aria-label="Hero section preview">
+                    <div class="showroom-hero" id="showroomHero">
+                        <div class="showroom-hero-left">
+                            <div class="showroom-hero-product" id="previewProductPlaceholder">
+                                <img id="previewProductImage" alt="" hidden>
+                            </div>
+                            <div class="showroom-hero-copy" id="previewCopy">
+                                <h2 id="previewTitle">Collection title</h2>
+                                <p id="previewDescription">Add a short description for this collection.</p>
+                                <span class="showroom-hero-cta" id="previewCta">Explore collection</span>
+                            </div>
+                        </div>
+                        <div class="showroom-hero-feature" id="previewLifestylePlaceholder">
+                            <img id="previewLifestyleImage" alt="" hidden>
+                        </div>
+                    </div>
+                </section>
+                <section class="showroom-categories-section" id="showroomCategoriesSection" aria-label="Featured Categories preview">
+                    <div class="showroom-categories-header">
+                        <h2 class="showroom-categories-title">Featured Categories</h2>
+                        <a href="/catalog" class="showroom-categories-shop-all" id="previewShopAll">Shop All</a>
+                    </div>
+                    <div class="showroom-categories-grid" id="previewCategoriesGrid"></div>
+                </section>
+                <section class="showroom-about-section" id="showroomAboutSection" aria-label="About Us preview">
+                    <div class="showroom-about-photo-wrap">
+                        <div class="showroom-about-photo is-empty" id="previewAboutPhotoPlaceholder">
+                            <img id="previewAboutPhoto" alt="" hidden>
+                        </div>
+                    </div>
+                    <div class="showroom-about-panel">
+                        <h2 class="showroom-about-title" id="previewAboutHeader">A Fixture In The Community Since 1980</h2>
+                        <p class="showroom-about-text" id="previewAboutParagraph">Add your about us copy.</p>
+                        <div class="showroom-about-actions">
+                            <a href="/about" class="showroom-about-btn" id="previewAboutPrimary">More About Us</a>
+                            <a href="/catalog" class="showroom-about-btn" id="previewAboutSecondary">Shop Catalog</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="showroom-feature-tiles-section" id="showroomFeatureTilesSection" aria-label="Feature cards preview">
+                    <div class="showroom-feature-tiles">
+                        <article class="showroom-feature-card">
+                            <div class="showroom-feature-card-media is-empty" id="previewFeatureLeftPlaceholder">
+                                <img id="previewFeatureLeftImage" alt="" hidden>
+                                <div class="showroom-feature-card-overlay">
+                                    <h3 class="showroom-feature-card-title" id="previewFeatureLeftHeader">Design With Confidence</h3>
+                                    <p class="showroom-feature-card-text" id="previewFeatureLeftParagraph">Add card copy.</p>
+                                    <a href="/services" class="showroom-feature-card-btn" id="previewFeatureLeftButton">Explore Services</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="showroom-feature-card">
+                            <div class="showroom-feature-card-media is-empty" id="previewFeatureRightPlaceholder">
+                                <img id="previewFeatureRightImage" alt="" hidden>
+                                <div class="showroom-feature-card-overlay">
+                                    <h3 class="showroom-feature-card-title" id="previewFeatureRightHeader">See It In Person</h3>
+                                    <p class="showroom-feature-card-text" id="previewFeatureRightParagraph">Add card copy.</p>
+                                    <a href="/showroom" class="showroom-feature-card-btn" id="previewFeatureRightButton">Plan Your Visit</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+                <section class="showroom-sketch-section" id="showroomSketchSection" aria-label="Sketch section preview">
+                    <div class="showroom-sketch-grid" id="previewSketchGrid"></div>
+                </section>
+                <section class="showroom-you-may-like-section" id="showroomYouMayLikeSection" aria-label="You May Like preview">
+                    <h2 class="showroom-you-may-like-title">You May Like</h2>
+                    <div class="showroom-you-may-like-carousel">
+                        <button type="button" class="showroom-you-may-like-nav showroom-you-may-like-nav--prev" id="youMayLikePrev" aria-label="Previous products">‹</button>
+                        <div class="showroom-you-may-like-viewport">
+                            <div class="showroom-you-may-like-track" id="previewYouMayLikeTrack"></div>
+                        </div>
+                        <button type="button" class="showroom-you-may-like-nav showroom-you-may-like-nav--next" id="youMayLikeNext" aria-label="Next products">›</button>
+                    </div>
+                </section>
+                <section class="showroom-get-inspired-section" id="showroomGetInspiredSection" aria-label="Get Inspired preview">
+                    <h2 class="showroom-get-inspired-title">Get Inspired</h2>
+                    <div class="showroom-get-inspired-layout">
+                        <div class="showroom-get-inspired-feature is-empty" id="previewGetInspiredLifestylePlaceholder">
+                            <img id="previewGetInspiredLifestyleImage" alt="" hidden>
+                        </div>
+                        <div class="showroom-get-inspired-grid" id="previewGetInspiredGrid"></div>
+                    </div>
+                </section>
+                <footer class="showroom-footer-section" id="showroomFooterSection" aria-label="Footer preview">
+                    <div class="showroom-footer-main">
+                        <div class="showroom-footer-col showroom-footer-col--brand">
+                            <div class="showroom-footer-logo is-empty" id="previewFooterLogoWrap">
+                                <img id="previewFooterLogo" alt="" hidden>
+                            </div>
+                            <a href="#" class="showroom-footer-email" id="previewFooterEmail">hello@company.com</a>
+                            <div class="showroom-footer-social" id="previewFooterSocial" aria-label="Social media"></div>
+                        </div>
+                        <nav class="showroom-footer-col showroom-footer-col--links" aria-label="Footer navigation">
+                            <h3 class="showroom-footer-heading" id="previewFooterQuickLinksHeading">Quick Links</h3>
+                            <ul class="showroom-footer-links" id="previewFooterQuickLinks"></ul>
+                            <h3 class="showroom-footer-heading showroom-footer-heading--spaced" id="previewFooterPoliciesHeading">Policies</h3>
+                            <ul class="showroom-footer-links" id="previewFooterPolicyLinks"></ul>
+                        </nav>
+                        <div class="showroom-footer-col showroom-footer-col--contact">
+                            <h3 class="showroom-footer-heading" id="previewFooterCompanyName">Company Name</h3>
+                            <p class="showroom-footer-address" id="previewFooterAddress"></p>
+                            <a href="#" class="showroom-footer-phone" id="previewFooterPhone"></a>
+                        </div>
+                    </div>
+                    <div class="showroom-footer-bottom">
+                        <div class="showroom-footer-copyright" id="previewFooterCopyright"></div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script src="vendor/html2canvas.min.js"></script>
+    <script src="vendor/jspdf.umd.min.js"></script>
+    <script src="vendor/jszip.min.js"></script>
+    <script src="js/export-pdf.js"></script>
+    <script src="js/showroom-editor.js"></script>
+</body>
+</html>
