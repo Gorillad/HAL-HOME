@@ -1,4 +1,4 @@
-# XOLogic shared footer
+# LogicXO shared footer
 
 Portable footer for every page on the site (homepage, support, etc.). Copy this **entire folder** into a new repo or site.
 
@@ -45,9 +45,9 @@ Portable footer for every page on the site (homepage, support, etc.). Copy this 
 
 ## Source of truth
 
-Canonical copy lives in HALXO:
+Canonical copy lives in the [HALXO support repo](https://github.com/Gorillad/HALXO):
 
 - `shared/footer/` (this folder)
-- Support page also embeds the same footer in `index.html` + `data/css/style.css`
+- Support site also embeds the same footer in its homepage
 
 When you change the footer design, update `shared/footer/` first, then sync to other repos.

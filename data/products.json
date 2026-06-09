@@ -17,32 +17,32 @@
   "plan-designer-monthly": {
     "id": "plan-designer-monthly",
     "name": "Designer Plan (Monthly)",
-    "price": 649,
+    "price": 742,
     "type": "subscription",
     "interval": "month"
   },
   "plan-designer-annual": {
     "id": "plan-designer-annual",
     "name": "Designer Plan (Annual)",
-    "price": 6588,
+    "price": 7536,
     "type": "subscription",
     "interval": "year",
-    "note": "$549/mo billed annually"
+    "note": "$628/mo billed annually"
   },
   "plan-signature-monthly": {
     "id": "plan-signature-monthly",
     "name": "Signature Plan (Monthly)",
-    "price": 1299,
+    "price": 1420,
     "type": "subscription",
     "interval": "month"
   },
   "plan-signature-annual": {
     "id": "plan-signature-annual",
     "name": "Signature Plan (Annual)",
-    "price": 13188,
+    "price": 14412,
     "type": "subscription",
     "interval": "year",
-    "note": "$1,099/mo billed annually"
+    "note": "$1,201/mo billed annually"
   },
   "design-popup": {
     "id": "design-popup",

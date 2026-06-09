@@ -1,4 +1,14 @@
 .DS_Store
+Thumbs.db
+desktop.ini
+
 node_modules/
+
 .env
+.env.local
+.env.*.local
+
 server/outbox/
+
+*.log
+npm-debug.log*

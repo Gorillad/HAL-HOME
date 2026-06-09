@@ -193,6 +193,29 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         });
     }
 
+    /** jsPDF built-in fonts are WinAnsi — use ASCII arrows, not Unicode → */
+    function pdfLinkLine(label, url, suffix = '') {
+        const safeLabel = String(label || '-').trim() || '-';
+        const safeUrl = String(url || '-').trim() || '-';
+        return suffix ? `${safeLabel} -> ${safeUrl} ${suffix}` : `${safeLabel} -> ${safeUrl}`;
+    }
+
+    function writeSubcategoryList(items, formatLine) {
+        items.forEach((item, index) => {
+            const text = String(formatLine(item, index));
+            const size = 8;
+            doc.setFont('courier', 'normal');
+            doc.setFontSize(size);
+            doc.setTextColor(70, 70, 70);
+
+            const lines = doc.splitTextToSize(text, contentW);
+            const blockH = textBlockHeight(lines, size);
+            ensureSpace(blockH + 6);
+            doc.text(lines, margin, y);
+            y += blockH + 6;
+        });
+    }
+
     function prepareCloneForCapture(clonedDoc, clonedEl) {
         if (clonedEl) {
             clonedEl.classList.add('is-pdf-export-capture');
@@ -350,7 +373,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const headerBannerLinks = normalizeFooterLinksForExport(headerBanner.links);
     const headerMainNavItems = Array.isArray(headerMainNav.items) ? headerMainNav.items : [];
     writeSpecRows([
-        ['Top banner height', headerBanner.height || '70 px'],
+        ['Top banner height', headerBanner.height || '50 px'],
         ['Banner background', headerBanner.backgroundColor || '#000000'],
         ['Banner text', headerBanner.textColor || '#ffffff'],
         ['Banner alignment', headerBanner.alignment || 'right'],
@@ -364,26 +387,41 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         );
     }
     writeSpecRows([
+        ['Content column width', header.contentColumnWidth || '1429 px'],
         ['Main toolbar layout', headerToolbar.layout || 'search left · logo center · icons right'],
         ['Search bar', headerToolbar.searchBarHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
+        ['Search placeholder', headerToolbar.searchPlaceholder || 'Enter Keyword or Item#'],
+        ['Search style', headerToolbar.searchStyle || 'Single bottom border underline'],
         ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
-        ['Logo', header.logoSharedWithFooter !== false ? 'Shared with footer (footer-logo.png)' : 'footer-logo.png'],
-        ['Logo size', header.logoDimensions || 'max 180 × 56 px in header · max 240 × 80 px in footer'],
+        ['Header logo', header.logoFilename || 'header-logo.png'],
+        ['Header logo size', header.logoDimensions || 'max 180 × 56 px'],
+        ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
     ]);
     const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
     if (headerToolbarIcons.length) {
         writeLines('Toolbar icons', { bold: true, size: 10, gap: 4 });
         writeItemList(
             headerToolbarIcons,
-            (item) => `${item.label || item.id || '—'} → ${item.url || '—'}`,
+            (item) => pdfLinkLine(item.label || item.id, item.url),
         );
     }
     writeSpecRows([
         ['Main navigation', headerMainNav.editable !== false ? 'Editable in template editor' : '—'],
         ['Dropdown menus', headerMainNav.hasDropdowns !== false ? 'Yes — one per top-level item' : 'No'],
+        ['Nav font size', headerMainNav.fontSize || '15 px'],
+        ['Nav alignment', headerMainNav.alignment || 'Full content width · first category aligns with search · last category aligns with cart'],
+        ['Category count', headerMainNavItems.length ? String(headerMainNavItems.length) : '0'],
         ['Subcategories pending', headerMainNav.subcategoriesPending ? 'Yes — some categories need links' : 'No'],
     ]);
     if (headerMainNavItems.length) {
+        writeLines('Top-level categories', { bold: true, size: 10, gap: 4 });
+        writeLines(
+            headerMainNavItems.map((item) => {
+                const categoryUrl = String(item.url || '').trim();
+                return categoryUrl ? `${item.label || '—'} (${categoryUrl})` : (item.label || '—');
+            }).join(' · '),
+            { size: 9, gap: 8 },
+        );
         headerMainNavItems.forEach((item) => {
             writeLines(item.label || item.id || 'Category', { bold: true, size: 10, gap: 4 });
             if (item.url) {
@@ -394,11 +432,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 writeLines('No subcategories configured yet.', { size: 9, color: [90, 90, 90], gap: 8 });
                 return;
             }
-            writeItemList(
+            writeSubcategoryList(
                 subs,
                 (sub) => {
-                    const status = sub.visible === false ? 'hidden' : 'shown';
-                    return `${sub.label || '—'} → ${sub.url || '—'} (${status})`;
+                    const status = `(${sub.visible === false ? 'hidden' : 'shown'})`;
+                    return pdfLinkLine(sub.label, sub.url, status);
                 },
             );
             y += 4;
@@ -410,6 +448,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Collection title', spec.title],
         ['Description', spec.description],
         ['CTA button', spec.cta],
+        ['CTA button visible', spec.heroCtaVisible !== false ? 'Yes' : 'No'],
+        ['CTA button background', spec.heroCtaBackgroundColor || spec.copyBackgroundColor || '#44301f'],
+        ['CTA button text', spec.heroCtaTextColor || '#ffffff'],
         ['Copy background', spec.copyBackgroundColor],
         ['Product image', spec.productImageSize || '563 × 342 px'],
         ['Lifestyle image', spec.lifestyleImageSize || '854 × 670 px min'],
@@ -439,8 +480,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Header', aboutUs.header],
         ['Paragraph', aboutUs.paragraph],
         ['Employee photo', aboutUs.employeeImageSize || '417 × 282 px'],
-        ['Primary button', `${primaryButton.label || '—'} → ${primaryButton.url || '—'}`],
-        ['Secondary button', `${secondaryButton.label || '—'} → ${secondaryButton.url || '—'}`],
+        ['Primary button', pdfLinkLine(primaryButton.label, primaryButton.url)],
+        ['Secondary button', pdfLinkLine(secondaryButton.label, secondaryButton.url)],
         ['Button background', aboutUs.buttonBackgroundColor || '#2b2b2b'],
         ['Button text', aboutUs.buttonTextColor || '#ffffff'],
     ]);
@@ -455,11 +496,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Photo size', featureTiles.imageSize || '780 × 1014 px'],
         ['Left header', featureLeft.header],
         ['Left copy', featureLeft.paragraph],
-        ['Left button', `${leftButton.label || '—'} → ${leftButton.url || '—'}`],
+        ['Left button visible', leftButton.visible !== false ? 'Yes' : 'No'],
+        ['Left button', pdfLinkLine(leftButton.label, leftButton.url)],
         ['Right header', featureRight.header],
         ['Right copy', featureRight.paragraph],
-        ['Right button', `${rightButton.label || '—'} → ${rightButton.url || '—'}`],
+        ['Right button visible', rightButton.visible !== false ? 'Yes' : 'No'],
+        ['Right button', pdfLinkLine(rightButton.label, rightButton.url)],
         ['Button background', featureTiles.buttonBackgroundColor || '#2b2b2b'],
+        ['Button text', featureTiles.buttonTextColor || '#ffffff'],
     ]);
 
     writeSectionTitle('Sketch Section');
@@ -513,6 +557,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         return `${entry.url || '—'} (${status})`;
     };
     writeSpecRows([
+        ['Footer logo', footer.logoUseHeader !== false ? 'Same as header (header-logo.png)' : (footer.logoFilename || 'footer-logo.png')],
+        ['Footer logo size', footer.logoDimensions || 'max 240 × 80 px'],
         ['Email', footer.email],
         ['Company', footer.companyName],
         ['Address', footer.address],
@@ -611,13 +657,20 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             title: spec.title || '',
             description: spec.description || '',
             cta: spec.cta || '',
+            ctaVisible: spec.heroCtaVisible !== false,
+            ctaBackgroundColor: spec.heroCtaBackgroundColor || '',
+            ctaTextColor: spec.heroCtaTextColor || '#ffffff',
             backgroundColor: spec.copyBackgroundColor || '',
         },
         header: {
             logoSharedWithFooter: header.logoSharedWithFooter !== false,
-            logo: { filename: 'footer-logo.png', dimensions: header.logoDimensions || 'max 180 × 56 px in header · max 240 × 80 px in footer' },
+            logo: {
+                filename: header.logoFilename || 'header-logo.png',
+                dimensions: header.logoDimensions || 'max 180 × 56 px',
+            },
+            contentColumnWidth: header.contentColumnWidth || '1429 px',
             banner: {
-                height: headerBanner.height || '70 px',
+                height: headerBanner.height || '50 px',
                 backgroundColor: headerBanner.backgroundColor || '#000000',
                 textColor: headerBanner.textColor || '#ffffff',
                 alignment: headerBanner.alignment || 'right',
@@ -627,12 +680,16 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             toolbar: {
                 layout: headerToolbar.layout || 'search left · logo center · icons right',
                 searchBarHardcoded: headerToolbar.searchBarHardcoded !== false,
+                searchPlaceholder: headerToolbar.searchPlaceholder || 'Enter Keyword or Item#',
+                searchStyle: headerToolbar.searchStyle || 'Single bottom border underline',
                 iconsHardcoded: headerToolbar.iconsHardcoded !== false,
                 icons: Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [],
             },
             mainNav: {
                 editable: headerMainNav.editable !== false,
                 hasDropdowns: headerMainNav.hasDropdowns !== false,
+                fontSize: headerMainNav.fontSize || '15 px',
+                alignment: headerMainNav.alignment || 'Full content width · first category aligns with search · last category aligns with cart',
                 subcategoriesPending: headerMainNav.subcategoriesPending === true,
                 items: headerMainNavItems.map((item) => ({
                     id: item.id || '',
@@ -676,6 +733,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         featureTiles: {
             imageSize: featureTiles.imageSize || '780 × 1014 px',
             buttonBackgroundColor: featureTiles.buttonBackgroundColor || '#2b2b2b',
+            buttonTextColor: featureTiles.buttonTextColor || '#ffffff',
             left: {
                 header: featureLeft.header || '',
                 paragraph: featureLeft.paragraph || '',
@@ -683,6 +741,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 button: {
                     label: leftButton.label || '',
                     url: leftButton.url || '',
+                    visible: leftButton.visible !== false,
                 },
             },
             right: {
@@ -692,6 +751,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 button: {
                     label: rightButton.label || '',
                     url: rightButton.url || '',
+                    visible: rightButton.visible !== false,
                 },
             },
         },
@@ -736,7 +796,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             })),
         },
         footer: {
-            logo: { filename: 'footer-logo.png', dimensions: 'max 240 × 80 px' },
+            logoUseHeader: footer.logoUseHeader !== false,
+            logo: {
+                filename: footer.logoFilename || 'footer-logo.png',
+                dimensions: footer.logoDimensions || 'max 240 × 80 px',
+            },
             email: footer.email || '',
             companyName: footer.companyName || '',
             address: footer.address || '',
@@ -793,7 +857,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         'REQUIRED — ADA compliance footer (all websites)',
         'Place footer-copyright-snippet.html markup at the very bottom of every site footer.',
         '',
-        `${pdfFilename} — Copy spec, section previews, and uploaded assets`,
+        `${pdfFilename} — Copy spec (header, main nav, all sections), layout previews, and uploaded assets`,
         'homepage-spec.json — Machine-readable spec',
         'footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
         '',

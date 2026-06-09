@@ -1,6 +1,8 @@
 (function () {
     const STORAGE_KEY = 'logicxo-editor-showroom';
     const DEFAULT_COPY_BG = '#5a3d2b';
+    const DEFAULT_HERO_CTA_BG = '#44301f';
+    const DEFAULT_HERO_CTA_TEXT = '#ffffff';
     const DEFAULT_SHOP_ALL_URL = '/catalog';
     const DEFAULT_ABOUT_PRIMARY_URL = '/about';
     const DEFAULT_ABOUT_SECONDARY_URL = '/catalog';
@@ -11,6 +13,7 @@
     const DEFAULT_ABOUT_BTN_BG = '#2b2b2b';
     const DEFAULT_ABOUT_BTN_TEXT = '#ffffff';
     const DEFAULT_FEATURE_BTN_BG = '#2b2b2b';
+    const DEFAULT_FEATURE_BTN_TEXT = '#ffffff';
     const DEFAULT_FEATURE_LEFT_HEADER = 'Design With Confidence';
     const DEFAULT_FEATURE_LEFT_PARAGRAPH = 'Work with our lighting specialists to plan every room, layer, and finish with fixtures chosen for your home.';
     const DEFAULT_FEATURE_LEFT_BUTTON_LABEL = 'Explore Services';
@@ -43,6 +46,8 @@
         { label: 'Shipping', urlKey: 'footerShippingUrl', defaultUrl: '/shipping' },
     ];
     const DEFAULT_HEADER_BANNER_BG = '#000000';
+    const HEADER_SEARCH_PLACEHOLDER = 'Enter Keyword or Item#';
+    const SHOWROOM_CONTENT_COLUMN_WIDTH = '1429 px';
     const DEFAULT_HEADER_BANNER_LINKS = [
         { label: 'Home', defaultUrl: '/' },
         { label: 'About Us', defaultUrl: '/about-us' },
@@ -287,6 +292,11 @@
         copyBackgroundColorValue: document.getElementById('fieldCopyBgValue'),
         description: document.getElementById('fieldDescription'),
         cta: document.getElementById('fieldCta'),
+        heroCtaHide: document.getElementById('fieldHeroCtaHide'),
+        heroCtaBackgroundColor: document.getElementById('fieldHeroCtaBg'),
+        heroCtaBackgroundColorValue: document.getElementById('fieldHeroCtaBgValue'),
+        heroCtaTextColor: document.getElementById('fieldHeroCtaText'),
+        heroCtaTextColorValue: document.getElementById('fieldHeroCtaTextValue'),
         productImage: document.getElementById('fieldProductImage'),
         lifestyleImage: document.getElementById('fieldLifestyleImage'),
         shopAllUrl: document.getElementById('fieldShopAllUrl'),
@@ -306,15 +316,21 @@
         featureLeftParagraph: document.getElementById('fieldFeatureLeftParagraph'),
         featureLeftButtonLabel: document.getElementById('fieldFeatureLeftButtonLabel'),
         featureLeftButtonUrl: document.getElementById('fieldFeatureLeftButtonUrl'),
+        featureLeftButtonHide: document.getElementById('fieldFeatureLeftButtonHide'),
         featureRightImage: document.getElementById('fieldFeatureRightImage'),
         featureRightHeader: document.getElementById('fieldFeatureRightHeader'),
         featureRightParagraph: document.getElementById('fieldFeatureRightParagraph'),
         featureRightButtonLabel: document.getElementById('fieldFeatureRightButtonLabel'),
         featureRightButtonUrl: document.getElementById('fieldFeatureRightButtonUrl'),
+        featureRightButtonHide: document.getElementById('fieldFeatureRightButtonHide'),
         featureButtonBackgroundColor: document.getElementById('fieldFeatureButtonBg'),
         featureButtonBackgroundColorValue: document.getElementById('fieldFeatureButtonBgValue'),
+        featureButtonTextColor: document.getElementById('fieldFeatureButtonText'),
+        featureButtonTextColorValue: document.getElementById('fieldFeatureButtonTextValue'),
         sketchSectionVisible: document.getElementById('fieldSketchSectionVisible'),
+        headerLogo: document.getElementById('fieldHeaderLogo'),
         footerLogo: document.getElementById('fieldFooterLogo'),
+        footerLogoUseHeader: document.getElementById('fieldFooterLogoUseHeader'),
         footerEmail: document.getElementById('fieldFooterEmail'),
         footerFacebookUrl: document.getElementById('fieldFooterFacebook'),
         footerFacebookVisible: document.getElementById('fieldFooterFacebookVisible'),
@@ -389,6 +405,7 @@
     const previewHeaderIcons = document.getElementById('previewHeaderIcons');
     const previewMainNav = document.getElementById('previewMainNav');
     const mainNavEditor = document.getElementById('mainNavEditor');
+    const headerJumpNav = document.getElementById('headerJumpNav');
     const headerBannerLinksEditor = document.getElementById('headerBannerLinksEditor');
     const addHeaderBannerLinkBtn = document.getElementById('addHeaderBannerLinkBtn');
     const categoriesRoot = document.getElementById('showroomCategoriesSection');
@@ -423,6 +440,7 @@
     const previewFooterAddress = document.getElementById('previewFooterAddress');
     const previewFooterPhone = document.getElementById('previewFooterPhone');
     const previewFooterCopyright = document.getElementById('previewFooterCopyright');
+    const uploadPreviewHeaderLogo = document.getElementById('uploadPreviewHeaderLogo');
     const uploadPreviewFooterLogo = document.getElementById('uploadPreviewFooterLogo');
     const previewScaler = document.getElementById('previewScaler');
     const previewWrap = document.querySelector('.editor-preview-wrap');
@@ -435,6 +453,9 @@
         copyBackgroundColor: DEFAULT_COPY_BG,
         description: '',
         cta: '',
+        heroCtaBackgroundColor: DEFAULT_HERO_CTA_BG,
+        heroCtaTextColor: DEFAULT_HERO_CTA_TEXT,
+        heroCtaVisible: true,
         productImage: '',
         lifestyleImage: '',
         shopAllUrl: DEFAULT_SHOP_ALL_URL,
@@ -452,13 +473,16 @@
         featureLeftParagraph: DEFAULT_FEATURE_LEFT_PARAGRAPH,
         featureLeftButtonLabel: DEFAULT_FEATURE_LEFT_BUTTON_LABEL,
         featureLeftButtonUrl: DEFAULT_FEATURE_LEFT_BUTTON_URL,
+        featureLeftButtonVisible: true,
         featureLeftImage: '',
         featureRightHeader: DEFAULT_FEATURE_RIGHT_HEADER,
         featureRightParagraph: DEFAULT_FEATURE_RIGHT_PARAGRAPH,
         featureRightButtonLabel: DEFAULT_FEATURE_RIGHT_BUTTON_LABEL,
         featureRightButtonUrl: DEFAULT_FEATURE_RIGHT_BUTTON_URL,
+        featureRightButtonVisible: true,
         featureRightImage: '',
         featureButtonBackgroundColor: DEFAULT_FEATURE_BTN_BG,
+        featureButtonTextColor: DEFAULT_FEATURE_BTN_TEXT,
         sketchSectionVisible: true,
         youMayLikeItems: defaultYouMayLikeItems(),
         getInspiredLifestyleImage: '',
@@ -466,7 +490,9 @@
         headerBannerBackgroundColor: DEFAULT_HEADER_BANNER_BG,
         headerBannerLinks: defaultHeaderBannerLinks(),
         mainNavItems: defaultMainNavItems(),
+        headerLogoImage: '',
         footerLogoImage: '',
+        footerLogoUseHeader: true,
         footerEmail: DEFAULT_FOOTER_EMAIL,
         footerFacebookUrl: '',
         footerFacebookVisible: true,
@@ -665,6 +691,97 @@
         requestAnimationFrame(clampPreviewScroll);
     }
 
+    function scrollEditorPanelTo(selector) {
+        if (!editorPanel || !selector) return null;
+
+        const target = document.querySelector(selector);
+        if (!target) return null;
+
+        const offset = target.getBoundingClientRect().top
+            - editorPanel.getBoundingClientRect().top
+            + editorPanel.scrollTop
+            - 8;
+        editorPanel.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+        return target;
+    }
+
+    function flashJumpTarget(target) {
+        if (!target) return;
+
+        target.classList.remove('is-jump-highlight');
+        void target.offsetWidth;
+        target.classList.add('is-jump-highlight');
+        window.setTimeout(() => target.classList.remove('is-jump-highlight'), 1400);
+    }
+
+    function structureEditorPanel() {
+        if (!editorPanel) return;
+
+        const firstSection = editorPanel.querySelector('.editor-panel-section');
+        if (!firstSection) return;
+
+        const intro = document.createElement('div');
+        intro.className = 'editor-panel-intro';
+        let node = editorPanel.firstElementChild;
+        while (node && node !== firstSection) {
+            const next = node.nextElementSibling;
+            intro.appendChild(node);
+            node = next;
+        }
+        editorPanel.insertBefore(intro, firstSection);
+
+        const sectionHeadings = [...editorPanel.querySelectorAll('.editor-panel-section')];
+        sectionHeadings.forEach((heading) => {
+            const block = document.createElement('div');
+            block.className = 'editor-panel-block';
+            block.dataset.sectionId = heading.id;
+            editorPanel.insertBefore(block, heading);
+            block.appendChild(heading);
+
+            let next = block.nextElementSibling;
+            while (next && !next.classList.contains('editor-panel-section')) {
+                const toMove = next;
+                next = next.nextElementSibling;
+                block.appendChild(toMove);
+            }
+        });
+    }
+
+    function setActiveEditorSection(sectionId) {
+        if (!editorSectionNav || !editorPanel) return;
+
+        editorPanel.querySelectorAll('.editor-panel-block').forEach((block) => {
+            block.classList.toggle('is-active', block.dataset.sectionId === sectionId);
+        });
+        editorSectionNav.querySelectorAll('.editor-section-nav-link').forEach((link) => {
+            link.classList.toggle('is-active', link.getAttribute('href') === `#${sectionId}`);
+        });
+    }
+
+    function bindSectionScrollSpy() {
+        if (!editorSectionNav || !editorPanel) return;
+
+        const blocks = [...editorPanel.querySelectorAll('.editor-panel-block')];
+        if (!blocks.length) return;
+
+        const updateActiveSection = () => {
+            const scrollTop = editorPanel.scrollTop;
+            const offset = 48;
+            let activeBlock = blocks[0];
+
+            blocks.forEach((block) => {
+                if (block.offsetTop - offset <= scrollTop) {
+                    activeBlock = block;
+                }
+            });
+
+            setActiveEditorSection(activeBlock.dataset.sectionId);
+        };
+
+        editorPanel.addEventListener('scroll', updateActiveSection, { passive: true });
+        updateActiveSection();
+    }
+
     function bindSectionNav() {
         if (!editorSectionNav || !editorPanel) return;
 
@@ -672,19 +789,46 @@
             link.addEventListener('click', (event) => {
                 event.preventDefault();
                 const selector = link.getAttribute('href');
-                const target = selector ? document.querySelector(selector) : null;
-                if (!target) return;
+                const sectionId = selector ? selector.slice(1) : '';
+                if (!scrollEditorPanelTo(selector)) return;
 
-                const offset = target.getBoundingClientRect().top
-                    - editorPanel.getBoundingClientRect().top
-                    + editorPanel.scrollTop
-                    - 8;
-                editorPanel.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
-
-                editorSectionNav.querySelectorAll('.editor-section-nav-link').forEach((item) => {
-                    item.classList.toggle('is-active', item === link);
-                });
+                if (sectionId) {
+                    setActiveEditorSection(sectionId);
+                }
             });
+        });
+    }
+
+    function renderHeaderJumpNav() {
+        if (!headerJumpNav) return;
+
+        const selectedValue = headerJumpNav.value;
+        const navOptions = state.mainNavItems.map((category) => (
+            `<option value="#editor-main-nav-${category.id}">${escapeHtml(category.label || 'Category')}</option>`
+        )).join('');
+
+        headerJumpNav.innerHTML = (
+            `<option value="">Choose a header area…</option>
+            <option value="#editor-header-banner">Top banner</option>
+            <option value="#editor-header-logo">Company logo</option>
+            <optgroup label="Main navigation">${navOptions}</optgroup>`
+        );
+
+        if (selectedValue && headerJumpNav.querySelector(`option[value="${selectedValue}"]`)) {
+            headerJumpNav.value = selectedValue;
+        }
+    }
+
+    function bindHeaderJumpNav() {
+        if (!headerJumpNav) return;
+
+        headerJumpNav.addEventListener('change', () => {
+            const selector = headerJumpNav.value;
+            if (!selector) return;
+
+            const target = scrollEditorPanelTo(selector);
+            flashJumpTarget(target);
+            headerJumpNav.value = '';
         });
     }
 
@@ -731,7 +875,20 @@
 
         const copyBg = normalizeHex(state.copyBackgroundColor);
         preview.copy.style.backgroundColor = copyBg;
-        preview.cta.style.backgroundColor = darkenHex(copyBg);
+        preview.cta.style.backgroundColor = normalizeHexColor(
+            state.heroCtaBackgroundColor,
+            darkenHex(copyBg),
+        );
+        preview.cta.style.color = normalizeHexColor(state.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
+        const showHeroCta = state.heroCtaVisible !== false;
+        preview.cta.classList.toggle('is-hidden', !showHeroCta);
+        preview.cta.hidden = !showHeroCta;
+        preview.cta.style.display = showHeroCta ? '' : 'none';
+
+        const heroCtaColorField = document.getElementById('heroCtaColorField');
+        if (heroCtaColorField) {
+            heroCtaColorField.hidden = !state.heroCtaVisible;
+        }
 
         applyImage(preview.productImage, preview.productPlaceholder, state.productImage);
         applyImage(preview.lifestyleImage, preview.lifestylePlaceholder, state.lifestyleImage);
@@ -823,7 +980,11 @@
     function mainNavSubcategoriesPending() {
         return state.mainNavItems.some((item) => {
             const subs = Array.isArray(item.subcategories) ? item.subcategories : [];
-            return subs.length === 0 || !subs.some((sub) => sub.visible !== false);
+            const hasCategoryLink = Boolean(String(item.url || '').trim());
+            if (subs.length === 0) {
+                return !hasCategoryLink;
+            }
+            return !subs.some((sub) => sub.visible !== false);
         });
     }
 
@@ -945,7 +1106,7 @@
         if (!mainNavEditor) return;
 
         mainNavEditor.innerHTML = state.mainNavItems.map((category, categoryIndex) => (
-            `<fieldset class="editor-fieldset editor-main-nav-category" data-nav-id="${category.id}">
+            `<fieldset class="editor-fieldset editor-main-nav-category editor-header-jump-target" id="editor-main-nav-${category.id}" data-nav-id="${category.id}">
                 <legend>${escapeHtml(category.label || `Category ${categoryIndex + 1}`)}</legend>
                 <div class="editor-field editor-field--compact">
                     <label>Category name</label>
@@ -964,6 +1125,8 @@
                 <button type="button" class="btn btn-secondary editor-add-item-btn editor-main-nav-add-sub" data-nav-id="${category.id}">Add subcategory</button>
             </fieldset>`
         )).join('');
+
+        renderHeaderJumpNav();
     }
 
     function readMainNavFromEditor() {
@@ -1037,8 +1200,16 @@
             if (event.target.matches('[data-nav-field="label"]')) {
                 const fieldset = event.target.closest('.editor-main-nav-category');
                 const legend = fieldset?.querySelector('legend');
+                const label = event.target.value.trim() || 'Category';
                 if (legend) {
-                    legend.textContent = event.target.value.trim() || 'Category';
+                    legend.textContent = label;
+                }
+                const navId = event.target.dataset.navId;
+                if (navId && headerJumpNav) {
+                    const option = headerJumpNav.querySelector(`option[value="#editor-main-nav-${navId}"]`);
+                    if (option) {
+                        option.textContent = label;
+                    }
                 }
             }
             if (event.target.matches('[data-nav-field], [data-sub-field]:not([data-sub-field="visible"])')) {
@@ -1094,8 +1265,39 @@
         }
     }
 
+    function getEffectiveFooterLogo() {
+        return state.footerLogoUseHeader !== false
+            ? state.headerLogoImage
+            : state.footerLogoImage;
+    }
+
+    function syncFooterLogoEditor() {
+        const useHeader = state.footerLogoUseHeader !== false;
+        const footerLogoField = document.getElementById('footerLogoField');
+        const footerLogoHeaderNote = document.getElementById('footerLogoHeaderNote');
+        if (footerLogoField) footerLogoField.hidden = useHeader;
+        if (footerLogoHeaderNote) footerLogoHeaderNote.hidden = !useHeader;
+    }
+
+    function syncLogoUploadPreviews() {
+        if (uploadPreviewHeaderLogo) {
+            uploadPreviewHeaderLogo.innerHTML = state.headerLogoImage
+                ? `<img src="${state.headerLogoImage}" alt="">`
+                : '';
+            uploadPreviewHeaderLogo.classList.toggle('is-empty', !state.headerLogoImage);
+        }
+        if (uploadPreviewFooterLogo) {
+            const footerLogo = getEffectiveFooterLogo();
+            uploadPreviewFooterLogo.innerHTML = footerLogo
+                ? `<img src="${footerLogo}" alt="">`
+                : '';
+            uploadPreviewFooterLogo.classList.toggle('is-empty', !footerLogo);
+        }
+    }
+
     function syncHeaderPreview() {
-        applyImage(previewHeaderLogo, previewHeaderLogoWrap, state.footerLogoImage);
+        applyImage(previewHeaderLogo, previewHeaderLogoWrap, state.headerLogoImage);
+        syncLogoUploadPreviews();
 
         const bannerBg = normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
         if (previewHeaderBanner) {
@@ -1145,7 +1347,6 @@
                         `<li class="showroom-main-nav-item has-dropdown">
                             <div class="showroom-main-nav-trigger" aria-haspopup="true">
                                 ${triggerLabel}
-                                <i class="fa-solid fa-chevron-down showroom-main-nav-caret" aria-hidden="true"></i>
                             </div>
                             ${dropdownMarkup}
                         </li>`
@@ -1371,14 +1572,8 @@
     }
 
     function syncFooterPreview() {
-        applyImage(previewFooterLogo, previewFooterLogoWrap, state.footerLogoImage);
-
-        if (uploadPreviewFooterLogo) {
-            uploadPreviewFooterLogo.innerHTML = state.footerLogoImage
-                ? `<img src="${state.footerLogoImage}" alt="">`
-                : '';
-            uploadPreviewFooterLogo.classList.toggle('is-empty', !state.footerLogoImage);
-        }
+        applyImage(previewFooterLogo, previewFooterLogoWrap, getEffectiveFooterLogo());
+        syncFooterLogoEditor();
 
         const email = state.footerEmail || DEFAULT_FOOTER_EMAIL;
         if (previewFooterEmail) {
@@ -1455,9 +1650,15 @@
         }
 
         const btnBg = normalizeHexColor(state.featureButtonBackgroundColor, DEFAULT_FEATURE_BTN_BG);
+        const btnText = normalizeHexColor(state.featureButtonTextColor, DEFAULT_FEATURE_BTN_TEXT);
         if (buttonEl) {
             buttonEl.style.backgroundColor = btnBg;
             buttonEl.style.borderColor = btnBg;
+            buttonEl.style.color = btnText;
+            const showButton = state[isLeft ? 'featureLeftButtonVisible' : 'featureRightButtonVisible'] !== false;
+            buttonEl.classList.toggle('is-hidden', !showButton);
+            buttonEl.hidden = !showButton;
+            buttonEl.style.display = showButton ? '' : 'none';
         }
 
         applyImage(imageEl, placeholderEl, state[imageKey]);
@@ -1473,6 +1674,12 @@
     function syncFeatureTilesPreview() {
         applyFeatureTile('left');
         applyFeatureTile('right');
+
+        const featureButtonColorFieldset = document.getElementById('featureButtonColorFieldset');
+        if (featureButtonColorFieldset) {
+            const showColor = state.featureLeftButtonVisible !== false || state.featureRightButtonVisible !== false;
+            featureButtonColorFieldset.hidden = !showColor;
+        }
     }
 
     function syncSketchPreview() {
@@ -1973,6 +2180,29 @@
         }
         state.description = fields.description.value.trim();
         state.cta = fields.cta.value.trim();
+        if (fields.heroCtaHide) {
+            state.heroCtaVisible = !fields.heroCtaHide.checked;
+        }
+        if (fields.heroCtaBackgroundColor) {
+            state.heroCtaBackgroundColor = normalizeHexColor(
+                fields.heroCtaBackgroundColor.value,
+                DEFAULT_HERO_CTA_BG,
+            );
+            fields.heroCtaBackgroundColor.value = state.heroCtaBackgroundColor;
+            if (fields.heroCtaBackgroundColorValue) {
+                fields.heroCtaBackgroundColorValue.textContent = state.heroCtaBackgroundColor;
+            }
+        }
+        if (fields.heroCtaTextColor) {
+            state.heroCtaTextColor = normalizeHexColor(
+                fields.heroCtaTextColor.value,
+                DEFAULT_HERO_CTA_TEXT,
+            );
+            fields.heroCtaTextColor.value = state.heroCtaTextColor;
+            if (fields.heroCtaTextColorValue) {
+                fields.heroCtaTextColorValue.textContent = state.heroCtaTextColor;
+            }
+        }
         if (fields.shopAllUrl) {
             state.shopAllUrl = fields.shopAllUrl.value.trim() || DEFAULT_SHOP_ALL_URL;
             fields.shopAllUrl.value = state.shopAllUrl;
@@ -2017,11 +2247,24 @@
             state.featureRightButtonUrl = fields.featureRightButtonUrl.value.trim() || DEFAULT_FEATURE_RIGHT_BUTTON_URL;
             fields.featureRightButtonUrl.value = state.featureRightButtonUrl;
         }
+        if (fields.featureLeftButtonHide) {
+            state.featureLeftButtonVisible = !fields.featureLeftButtonHide.checked;
+        }
+        if (fields.featureRightButtonHide) {
+            state.featureRightButtonVisible = !fields.featureRightButtonHide.checked;
+        }
         if (fields.featureButtonBackgroundColor) {
             state.featureButtonBackgroundColor = normalizeHexColor(fields.featureButtonBackgroundColor.value, DEFAULT_FEATURE_BTN_BG);
             fields.featureButtonBackgroundColor.value = state.featureButtonBackgroundColor;
             if (fields.featureButtonBackgroundColorValue) {
                 fields.featureButtonBackgroundColorValue.textContent = state.featureButtonBackgroundColor;
+            }
+        }
+        if (fields.featureButtonTextColor) {
+            state.featureButtonTextColor = normalizeHexColor(fields.featureButtonTextColor.value, DEFAULT_FEATURE_BTN_TEXT);
+            fields.featureButtonTextColor.value = state.featureButtonTextColor;
+            if (fields.featureButtonTextColorValue) {
+                fields.featureButtonTextColorValue.textContent = state.featureButtonTextColor;
             }
         }
         if (fields.sketchSectionVisible) {
@@ -2038,6 +2281,9 @@
         if (fields.footerYoutubeVisible) state.footerYoutubeVisible = fields.footerYoutubeVisible.checked;
         if (fields.footerLinkedinUrl) state.footerLinkedinUrl = fields.footerLinkedinUrl.value.trim();
         if (fields.footerLinkedinVisible) state.footerLinkedinVisible = fields.footerLinkedinVisible.checked;
+        if (fields.footerLogoUseHeader) {
+            state.footerLogoUseHeader = fields.footerLogoUseHeader.checked;
+        }
         readFooterLinksFromEditor();
         if (fields.footerCompanyName) state.footerCompanyName = fields.footerCompanyName.value.trim() || DEFAULT_FOOTER_COMPANY;
         if (fields.footerAddress) state.footerAddress = fields.footerAddress.value.trim() || DEFAULT_FOOTER_ADDRESS;
@@ -2057,6 +2303,7 @@
     }
 
     function populateHeaderFields(data) {
+        state.headerLogoImage = data.headerLogoImage || data.footerLogoImage || '';
         state.headerBannerBackgroundColor = normalizeHex(data.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
         state.headerBannerLinks = migrateHeaderBannerLinks(data);
         state.mainNavItems = migrateMainNavItems(data);
@@ -2073,6 +2320,10 @@
 
     function populateFooterFields(data) {
         state.footerLogoImage = data.footerLogoImage || '';
+        state.footerLogoUseHeader = data.footerLogoUseHeader !== false;
+        if (fields.footerLogoUseHeader) {
+            fields.footerLogoUseHeader.checked = state.footerLogoUseHeader;
+        }
         state.footerEmail = data.footerEmail || DEFAULT_FOOTER_EMAIL;
         state.footerFacebookUrl = data.footerFacebookUrl || '';
         state.footerFacebookVisible = data.footerFacebookVisible !== false;
@@ -2120,11 +2371,27 @@
         if (fields.featureRightButtonUrl) fields.featureRightButtonUrl.value = data.featureRightButtonUrl || DEFAULT_FEATURE_RIGHT_BUTTON_URL;
 
         state.featureButtonBackgroundColor = normalizeHexColor(data.featureButtonBackgroundColor, DEFAULT_FEATURE_BTN_BG);
+        state.featureButtonTextColor = normalizeHexColor(data.featureButtonTextColor, DEFAULT_FEATURE_BTN_TEXT);
         if (fields.featureButtonBackgroundColor) {
             fields.featureButtonBackgroundColor.value = state.featureButtonBackgroundColor;
             if (fields.featureButtonBackgroundColorValue) {
                 fields.featureButtonBackgroundColorValue.textContent = state.featureButtonBackgroundColor;
             }
+        }
+        if (fields.featureButtonTextColor) {
+            fields.featureButtonTextColor.value = state.featureButtonTextColor;
+            if (fields.featureButtonTextColorValue) {
+                fields.featureButtonTextColorValue.textContent = state.featureButtonTextColor;
+            }
+        }
+
+        state.featureLeftButtonVisible = data.featureLeftButtonVisible !== false;
+        state.featureRightButtonVisible = data.featureRightButtonVisible !== false;
+        if (fields.featureLeftButtonHide) {
+            fields.featureLeftButtonHide.checked = !state.featureLeftButtonVisible;
+        }
+        if (fields.featureRightButtonHide) {
+            fields.featureRightButtonHide.checked = !state.featureRightButtonVisible;
         }
 
         state.featureLeftHeader = fields.featureLeftHeader ? fields.featureLeftHeader.value.trim() : DEFAULT_FEATURE_LEFT_HEADER;
@@ -2179,6 +2446,27 @@
         }
         fields.description.value = data.description || '';
         fields.cta.value = data.cta || '';
+        state.heroCtaBackgroundColor = normalizeHexColor(
+            data.heroCtaBackgroundColor,
+            darkenHex(state.copyBackgroundColor),
+        );
+        state.heroCtaTextColor = normalizeHexColor(data.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
+        state.heroCtaVisible = data.heroCtaVisible !== false;
+        if (fields.heroCtaHide) {
+            fields.heroCtaHide.checked = !state.heroCtaVisible;
+        }
+        if (fields.heroCtaBackgroundColor) {
+            fields.heroCtaBackgroundColor.value = state.heroCtaBackgroundColor;
+            if (fields.heroCtaBackgroundColorValue) {
+                fields.heroCtaBackgroundColorValue.textContent = state.heroCtaBackgroundColor;
+            }
+        }
+        if (fields.heroCtaTextColor) {
+            fields.heroCtaTextColor.value = state.heroCtaTextColor;
+            if (fields.heroCtaTextColorValue) {
+                fields.heroCtaTextColorValue.textContent = state.heroCtaTextColor;
+            }
+        }
         if (fields.shopAllUrl) {
             fields.shopAllUrl.value = data.shopAllUrl || DEFAULT_SHOP_ALL_URL;
         }
@@ -2241,6 +2529,17 @@
 
     fields.copyBackgroundColor.addEventListener('input', readForm);
 
+    if (fields.heroCtaHide) {
+        fields.heroCtaHide.addEventListener('change', readForm);
+        fields.heroCtaHide.addEventListener('input', readForm);
+    }
+    if (fields.heroCtaBackgroundColor) {
+        fields.heroCtaBackgroundColor.addEventListener('input', readForm);
+    }
+    if (fields.heroCtaTextColor) {
+        fields.heroCtaTextColor.addEventListener('input', readForm);
+    }
+
     if (fields.aboutButtonBackgroundColor) {
         fields.aboutButtonBackgroundColor.addEventListener('input', readForm);
     }
@@ -2249,6 +2548,17 @@
     }
     if (fields.featureButtonBackgroundColor) {
         fields.featureButtonBackgroundColor.addEventListener('input', readForm);
+    }
+    if (fields.featureButtonTextColor) {
+        fields.featureButtonTextColor.addEventListener('input', readForm);
+    }
+    if (fields.featureLeftButtonHide) {
+        fields.featureLeftButtonHide.addEventListener('change', readForm);
+        fields.featureLeftButtonHide.addEventListener('input', readForm);
+    }
+    if (fields.featureRightButtonHide) {
+        fields.featureRightButtonHide.addEventListener('change', readForm);
+        fields.featureRightButtonHide.addEventListener('input', readForm);
     }
     if (fields.sketchSectionVisible) {
         fields.sketchSectionVisible.addEventListener('change', readForm);
@@ -2291,10 +2601,21 @@
         if (fields[key]) fields[key].addEventListener('input', readForm);
     });
 
+    if (fields.headerLogo) {
+        fields.headerLogo.addEventListener('change', () => {
+            onImageUpload(fields.headerLogo, 'headerLogoImage');
+        });
+    }
+
     if (fields.footerLogo) {
         fields.footerLogo.addEventListener('change', () => {
             onImageUpload(fields.footerLogo, 'footerLogoImage');
         });
+    }
+
+    if (fields.footerLogoUseHeader) {
+        fields.footerLogoUseHeader.addEventListener('change', readForm);
+        fields.footerLogoUseHeader.addEventListener('input', readForm);
     }
 
     fields.productImage.addEventListener('change', () => {
@@ -2408,6 +2729,9 @@
                     title: state.title,
                     description: state.description,
                     cta: state.cta,
+                    heroCtaBackgroundColor: state.heroCtaBackgroundColor,
+                    heroCtaTextColor: state.heroCtaTextColor,
+                    heroCtaVisible: state.heroCtaVisible,
                     copyBackgroundColor: state.copyBackgroundColor,
                     productImageSize: '563 × 342 px',
                     lifestyleImageSize: '854 × 670 px min',
@@ -2424,10 +2748,12 @@
                             imageFile: category.imageFile,
                         })),
                     header: {
-                        logoSharedWithFooter: true,
-                        logoDimensions: 'max 180 × 56 px in header · max 240 × 80 px in footer',
+                        logoSharedWithFooter: state.footerLogoUseHeader !== false,
+                        logoDimensions: 'max 180 × 56 px in header',
+                        logoFilename: 'header-logo.png',
+                        contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
                         banner: {
-                            height: '70 px',
+                            height: '50 px',
                             backgroundColor: state.headerBannerBackgroundColor,
                             textColor: '#ffffff',
                             alignment: 'right',
@@ -2440,6 +2766,8 @@
                         toolbar: {
                             layout: 'search left · logo center · icons right',
                             searchBarHardcoded: true,
+                            searchPlaceholder: HEADER_SEARCH_PLACEHOLDER,
+                            searchStyle: 'Single bottom border underline',
                             iconsHardcoded: true,
                             icons: HEADER_TOOLBAR_ICONS.map((item) => ({
                                 id: item.id,
@@ -2451,6 +2779,8 @@
                         mainNav: {
                             editable: true,
                             hasDropdowns: true,
+                            fontSize: '15 px',
+                            alignment: 'Full content width · first category aligns with search · last category aligns with cart',
                             subcategoriesPending: mainNavSubcategoriesPending(),
                             items: state.mainNavItems.map((item) => ({
                                 id: item.id,
@@ -2483,12 +2813,14 @@
                     featureTiles: {
                         imageSize: '780 × 1014 px',
                         buttonBackgroundColor: state.featureButtonBackgroundColor,
+                        buttonTextColor: state.featureButtonTextColor,
                         left: {
                             header: state.featureLeftHeader,
                             paragraph: state.featureLeftParagraph,
                             button: {
                                 label: state.featureLeftButtonLabel,
                                 url: state.featureLeftButtonUrl,
+                                visible: state.featureLeftButtonVisible !== false,
                             },
                         },
                         right: {
@@ -2497,6 +2829,7 @@
                             button: {
                                 label: state.featureRightButtonLabel,
                                 url: state.featureRightButtonUrl,
+                                visible: state.featureRightButtonVisible !== false,
                             },
                         },
                     },
@@ -2547,6 +2880,9 @@
                         }),
                     },
                     footer: {
+                        logoUseHeader: state.footerLogoUseHeader !== false,
+                        logoFilename: 'footer-logo.png',
+                        logoDimensions: 'max 240 × 80 px',
                         email: state.footerEmail,
                         companyName: state.footerCompanyName,
                         address: state.footerAddress,
@@ -2617,10 +2953,18 @@
                     },
                     ...getInspiredCardAssets,
                     {
+                        filename: 'header-logo.png',
+                        label: 'Company logo (header)',
+                        dimensions: 'max 180 × 56 px',
+                        dataUrl: state.headerLogoImage || '',
+                    },
+                    {
                         filename: 'footer-logo.png',
-                        label: 'Company logo (header + footer)',
+                        label: state.footerLogoUseHeader !== false
+                            ? 'Company logo (footer — same as header)'
+                            : 'Company logo (footer)',
                         dimensions: 'max 240 × 80 px',
-                        dataUrl: state.footerLogoImage || '',
+                        dataUrl: getEffectiveFooterLogo() || '',
                     },
                 ],
                 pdfFilename: 'showroom-homepage-brief.pdf',
@@ -2647,7 +2991,10 @@
 
     async function init() {
         buildCategoryCheckboxes();
+        structureEditorPanel();
         bindSectionNav();
+        bindSectionScrollSpy();
+        bindHeaderJumpNav();
         bindPreviewScroll();
         bindYouMayLikeEditorEvents();
         bindGetInspiredEditorEvents();

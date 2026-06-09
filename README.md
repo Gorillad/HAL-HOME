@@ -1,64 +1,91 @@
-# HAL-HOME — LogicXO Marketing Homepage
+# LogicXO Marketing Site
 
-Marketing site for LogicXO / XOLogic with homepage templates, design services, and Stripe test checkout.
+Marketing site for [logicxo.com](https://logicxo.com): homepage templates, design services, showroom homepage editor, and Stripe checkout (test mode locally; live when Stripe is activated).
 
-## Run locally (with Stripe test checkout)
+> **Repo note:** GitHub repo may still be named `HAL-HOME`. The local folder name does not affect deployment.
+
+## Run locally
 
 ```bash
-cd HAL-HOME
-cp .env.example .env
-# Add your sk_test_ and pk_test_ keys from https://dashboard.stripe.com/test/apikeys
 npm install
+cp .env.example .env
+# Add sk_test_ / pk_test_ keys from https://dashboard.stripe.com/test/apikeys
 npm start
 ```
 
 Open http://localhost:4242
 
-> Use `npm start` instead of `python -m http.server` — checkout requires the Node API server.
+Use `npm start` (not a static file server) — cart checkout requires the Node API.
 
-## Stripe test mode
+## Project structure
 
-1. Create a free [Stripe account](https://dashboard.stripe.com/register) and stay in **Test mode**.
-2. Copy **Publishable** and **Secret** test keys into `.env`.
+```
+├── index.html                 # Marketing homepage
+├── thank-you.html             # Post-checkout confirmation
+├── creative-brief.html        # Design services intake (post-order)
+├── css/style.css              # Site styles
+├── js/
+│   ├── main.js                # Nav, pricing toggle, contact form
+│   ├── cart.js                # Cart + Stripe Checkout redirect
+│   └── thank-you.js           # Order summary after checkout
+├── images/                    # Logo, favicons, homepage hero
+├── data/
+│   ├── products.json          # Catalog (cart + checkout line items)
+│   ├── contacts.json          # Email addresses (canonical list)
+│   └── template-defaults.json # Default showroom editor content
+├── editor/                    # Showroom homepage template editor
+│   ├── showroom.html
+│   ├── css/editor.css
+│   ├── js/showroom-editor.js
+│   ├── js/export-pdf.js
+│   ├── assets/                # Editor thumbnails & placeholders
+│   └── vendor/                # html2canvas, jsPDF, JSZip (PDF export)
+├── server/
+│   ├── index.js               # Express: static files + Stripe API
+│   └── email.js               # Order confirmation email rendering
+├── emails/
+│   └── order-confirmation.html
+├── shared/footer/             # Portable footer (sync with support site)
+└── docs/
+    └── CONTACTS.md            # Contact email usage guide
+```
+
+## Stripe (test mode)
+
+1. Create a [Stripe account](https://dashboard.stripe.com/register) and stay in **Test mode**.
+2. Copy test keys into `.env`.
 3. Add items to cart → **Proceed to Checkout**.
-4. Pay with test card `4242 4242 4242 4242`, any future expiry, any CVC.
-5. You'll land on `thank-you.html` with order summary and a **Preview Confirmation Email** link.
+4. Test card: `4242 4242 4242 4242`, any future expiry, any CVC. Billing address required.
+5. Land on `thank-you.html` with order summary and email preview link.
 
-### Email template
+**Branding:** [Dashboard → Settings → Branding](https://dashboard.stripe.com/settings/branding) — logo + accent `#1a7bbd`.
 
-Edit the post-purchase email design at:
+**Sales tax:** 12% by default (`STRIPE_TAX_PERCENT=12`). Set `STRIPE_AUTOMATIC_TAX=true` for Stripe Tax later.
 
-```
-emails/order-confirmation.html
-```
-
-After each test checkout, a rendered preview is saved to `server/outbox/{session_id}.html` (gitignored). Open it in a browser or use the thank-you page preview link.
-
-### Webhooks (optional)
-
-For automatic email generation on payment:
+**Webhooks (optional):**
 
 ```bash
 stripe listen --forward-to localhost:4242/api/webhook
 ```
 
-Copy the webhook signing secret into `.env` as `STRIPE_WEBHOOK_SECRET`.
+Copy the signing secret to `.env` as `STRIPE_WEBHOOK_SECRET`.
 
-## Project structure
+## Showroom editor
 
-```
-HAL-HOME/
-├── index.html              # Homepage
-├── thank-you.html          # Post-checkout confirmation
-├── creative-brief.html     # Design services intake form
-├── emails/
-│   └── order-confirmation.html   # Editable email template
-├── data/products.json      # Product catalog (cart + checkout)
-├── server/index.js         # Stripe Checkout API (test mode)
-├── js/cart.js              # Cart + checkout redirect
-└── shared/footer/          # Shared footer from HALXO
-```
+Open http://localhost:4242/editor/showroom.html — customize the showroom homepage template, export PDF/ZIP.
 
-## Support site
+## Email template
 
-- Nav Support link: https://support.logicxo.com/
+Edit post-purchase email at `emails/order-confirmation.html`. Test previews save to `server/outbox/` (gitignored).
+
+## Related sites
+
+| Site | URL |
+|------|-----|
+| Marketing | logicxo.com (this repo) |
+| Support KB | https://support.logicxo.com/ |
+| Support repo | [HALXO](https://github.com/Gorillad/HALXO) |
+
+## Version
+
+Current release: **v1.0.0** — see [CHANGELOG.md](CHANGELOG.md).

@@ -417,6 +417,17 @@ body.cart-open {
     background: #fff;
 }
 
+.template-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.template-card--showroom {
+    text-align: center;
+}
+
 .template-card--featured,
 .pricing-card--featured {
     border-color: var(--xo-blue);
@@ -634,6 +645,14 @@ body.cart-open {
     font-size: 1.05rem;
 }
 
+.template-from strong::after,
+.pricing-amount .pricing-period::after,
+.design-price::after {
+    content: '*';
+    font-weight: 600;
+    margin-left: 1px;
+}
+
 /* ——— Pricing ——— */
 .billing-toggle {
     display: inline-flex;
@@ -676,6 +695,13 @@ body.cart-open {
 .pricing-period {
     font-size: 1rem;
     color: var(--xo-grey);
+}
+
+.pricing-savings {
+    margin: 0 0 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #2e7d4a;
 }
 
 .pricing-note {

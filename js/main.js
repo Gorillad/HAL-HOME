@@ -73,37 +73,71 @@ function initSmoothScroll() {
     });
 }
 
+function formatPlanSavings(monthly, annual) {
+    const yearlyIfMonthly = monthly * 12;
+    const yearlyIfAnnual = annual * 12;
+    const savings = yearlyIfMonthly - yearlyIfAnnual;
+    const percent = Math.round((savings / yearlyIfMonthly) * 100);
+    return `Save $${savings.toLocaleString()}/year (${percent}% vs monthly)`;
+}
+
+function updatePricingSavings(billing) {
+    document.querySelectorAll('.pricing-card').forEach((card) => {
+        const priceEl = card.querySelector('.pricing-price');
+        const savingsEl = card.querySelector('.pricing-savings');
+        if (!priceEl || !savingsEl) return;
+
+        const monthly = Number(priceEl.dataset.monthly);
+        const annual = Number(priceEl.dataset.annual);
+
+        if (billing === 'annual' && monthly > annual) {
+            savingsEl.textContent = formatPlanSavings(monthly, annual);
+            savingsEl.hidden = false;
+        } else {
+            savingsEl.hidden = true;
+            savingsEl.textContent = '';
+        }
+    });
+}
+
 function initPricingToggle() {
     const buttons = document.querySelectorAll('.billing-toggle-btn');
     const prices = document.querySelectorAll('.pricing-price');
     const notes = document.querySelectorAll('.pricing-note[data-annual-note]');
     let billing = 'monthly';
 
+    function applyBilling(period) {
+        billing = period;
+
+        prices.forEach((el) => {
+            const val = el.getAttribute(`data-${billing}`);
+            el.textContent = `$${Number(val).toLocaleString()}`;
+        });
+
+        notes.forEach((el) => {
+            if (billing === 'annual') {
+                el.textContent = el.getAttribute('data-annual-note');
+            } else {
+                el.textContent = el.dataset.monthlyDefault || 'No contract — cancel anytime';
+            }
+        });
+
+        updatePricingSavings(billing);
+
+        document.querySelectorAll('[data-add-plan]').forEach((btn) => {
+            btn.dataset.billing = billing;
+        });
+    }
+
     buttons.forEach((btn) => {
         btn.addEventListener('click', () => {
-            billing = btn.getAttribute('data-billing');
             buttons.forEach((b) => {
                 const active = b === btn;
                 b.classList.toggle('is-active', active);
                 b.setAttribute('aria-pressed', active ? 'true' : 'false');
             });
 
-            prices.forEach((el) => {
-                const val = el.getAttribute(`data-${billing}`);
-                el.textContent = `$${Number(val).toLocaleString()}`;
-            });
-
-            notes.forEach((el) => {
-                if (billing === 'annual') {
-                    el.textContent = el.getAttribute('data-annual-note');
-                } else {
-                    el.textContent = el.dataset.monthlyDefault || 'No contract — cancel anytime';
-                }
-            });
-
-            document.querySelectorAll('[data-add-plan]').forEach((btn) => {
-                btn.dataset.billing = billing;
-            });
+            applyBilling(btn.getAttribute('data-billing'));
         });
     });
 

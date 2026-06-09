@@ -1,5 +1,5 @@
 /**
- * XOLogic shared footer — auto year, newsletter feedback, back-to-top.
+ * LogicXO shared footer — auto year, newsletter feedback, back-to-top.
  */
 const Footer = (() => {
     function initYear() {

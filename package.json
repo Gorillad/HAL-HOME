@@ -1,8 +1,8 @@
 {
-  "name": "hal-home",
+  "name": "logicxo-marketing",
   "version": "1.0.0",
   "private": true,
-  "description": "LogicXO marketing site with Stripe test checkout",
+  "description": "LogicXO marketing site — homepage, showroom editor, and Stripe checkout",
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js"

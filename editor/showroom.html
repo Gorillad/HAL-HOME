@@ -49,11 +49,14 @@
             <p class="editor-panel-lead">Configure the Showroom homepage template. Your draft saves automatically in this browser. Export includes all homepage sections and assets in a ZIP with PDF brief and JSON spec.</p>
 
             <h3 class="editor-panel-subhead editor-panel-section" id="editor-section-header">Header</h3>
-            <p class="editor-panel-lead editor-panel-lead--compact">Top banner plus main toolbar with search, centered logo, and fixed utility icons. Logo is shared with the footer — upload it in the Footer section.</p>
-
-            <fieldset class="editor-fieldset">
+            <div class="editor-header-jump">
+                <label for="headerJumpNav">Jump to</label>
+                <select id="headerJumpNav" class="editor-header-jump-select" aria-label="Jump to header edit section">
+                    <option value="">Choose a header area…</option>
+                </select>
+            </div>
+            <fieldset class="editor-fieldset editor-header-jump-target" id="editor-header-banner">
                 <legend>Top banner</legend>
-                <p class="editor-field-hint editor-field-hint--fieldset">70 px bar above the main header. Links are right-aligned and separated by pipes. Text is white.</p>
                 <div class="editor-field">
                     <label for="fieldHeaderBannerBg">Banner background color</label>
                     <div class="editor-color">
@@ -66,7 +69,19 @@
                 <button type="button" class="btn btn-secondary editor-add-item-btn" id="addHeaderBannerLinkBtn">Add banner link</button>
             </fieldset>
 
-            <p class="editor-panel-lead editor-panel-lead--compact">Below the banner, the main header row is fixed: search bar on the left, company logo centered, and location · wish list · account · cart icons on the right. Search and icon links are not editable in this template.</p>
+            <fieldset class="editor-fieldset editor-header-jump-target" id="editor-header-logo">
+                <legend>Company logo</legend>
+                <p class="editor-field-hint editor-field-hint--fieldset">Centered in the header toolbar. PNG or SVG · max 180 × 56 px.</p>
+                <div class="editor-field">
+                    <label for="fieldHeaderLogo">Upload logo</label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--header-logo is-empty" id="uploadPreviewHeaderLogo"></div>
+                        <input type="file" id="fieldHeaderLogo" name="headerLogoImage" accept="image/*">
+                    </div>
+                </div>
+            </fieldset>
+
+            <p class="editor-panel-lead editor-panel-lead--compact">Below the banner, the main header row is fixed: search bar on the left, centered logo, and location · wish list · account · cart icons on the right. Search and icon links are not editable in this template.</p>
 
             <p class="editor-panel-lead editor-panel-lead--compact">The main navigation bar below that has eight dropdown menus. Edit each category name, subcategory names, and URLs. Uncheck any subcategory to hide it from the dropdown.</p>
 
@@ -104,6 +119,30 @@
                 <input type="text" id="fieldCta" name="cta" autocomplete="off">
             </div>
 
+            <div class="editor-field editor-field--toggle">
+                <label class="editor-toggle" for="fieldHeroCtaHide">
+                    <input type="checkbox" id="fieldHeroCtaHide" name="heroCtaHide">
+                    Hide button
+                </label>
+            </div>
+
+            <div id="heroCtaColorField">
+                <div class="editor-field">
+                    <label for="fieldHeroCtaBg">Button background color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldHeroCtaBg" name="heroCtaBackgroundColor" value="#44301f">
+                        <span class="editor-color-value" id="fieldHeroCtaBgValue">#44301f</span>
+                    </div>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldHeroCtaText">Text color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldHeroCtaText" name="heroCtaTextColor" value="#ffffff">
+                        <span class="editor-color-value" id="fieldHeroCtaTextValue">#ffffff</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="editor-field">
                 <label for="fieldLifestyleImage">Lifestyle image (right)<span class="editor-field-hint">854 × 670 px</span></label>
                 <div class="editor-upload">
@@ -113,7 +152,7 @@
             </div>
 
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-featured-categories">Featured Categories</h3>
-            <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows). Category thumbnails are fixed assets in <code>editor/assets/featured-categories/</code> and are not editable in this template.</p>
+            <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows).</p>
 
             <div class="editor-field">
                 <label for="fieldShopAllUrl">Shop All link</label>
@@ -215,6 +254,12 @@
                     <label for="fieldFeatureLeftButtonUrl">Button link</label>
                     <input type="text" id="fieldFeatureLeftButtonUrl" name="featureLeftButtonUrl" placeholder="/services" autocomplete="off">
                 </div>
+                <div class="editor-field editor-field--toggle">
+                    <label class="editor-toggle" for="fieldFeatureLeftButtonHide">
+                        <input type="checkbox" id="fieldFeatureLeftButtonHide" name="featureLeftButtonHide">
+                        Hide button
+                    </label>
+                </div>
             </fieldset>
 
             <fieldset class="editor-button-group">
@@ -242,15 +287,28 @@
                     <label for="fieldFeatureRightButtonUrl">Button link</label>
                     <input type="text" id="fieldFeatureRightButtonUrl" name="featureRightButtonUrl" placeholder="/showroom" autocomplete="off">
                 </div>
+                <div class="editor-field editor-field--toggle">
+                    <label class="editor-toggle" for="fieldFeatureRightButtonHide">
+                        <input type="checkbox" id="fieldFeatureRightButtonHide" name="featureRightButtonHide">
+                        Hide button
+                    </label>
+                </div>
             </fieldset>
 
-            <fieldset class="editor-button-group">
-                <legend>Button color</legend>
-                <div class="editor-field editor-field--compact">
+            <fieldset class="editor-button-group" id="featureButtonColorFieldset">
+                <legend>Button colors</legend>
+                <div class="editor-field">
                     <label for="fieldFeatureButtonBg">Background color</label>
                     <div class="editor-color">
                         <input type="color" id="fieldFeatureButtonBg" name="featureButtonBackgroundColor" value="#2b2b2b">
                         <span class="editor-color-value" id="fieldFeatureButtonBgValue">#2b2b2b</span>
+                    </div>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldFeatureButtonText">Text color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldFeatureButtonText" name="featureButtonTextColor" value="#ffffff">
+                        <span class="editor-color-value" id="fieldFeatureButtonTextValue">#ffffff</span>
                     </div>
                 </div>
             </fieldset>
@@ -285,8 +343,17 @@
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-footer">Footer</h3>
             <p class="editor-panel-lead editor-panel-lead--compact">Three-column footer with company logo, navigation links, and contact details. Social icons support Facebook, Instagram, X, YouTube, and LinkedIn.</p>
 
-            <div class="editor-field">
-                <label for="fieldFooterLogo">Company logo<span class="editor-field-hint">PNG or SVG · header + footer · max 240 × 80 px</span></label>
+            <div class="editor-field editor-field--toggle">
+                <label class="editor-toggle" for="fieldFooterLogoUseHeader">
+                    <input type="checkbox" id="fieldFooterLogoUseHeader" name="footerLogoUseHeader" checked>
+                    Use header logo in footer
+                </label>
+            </div>
+
+            <p class="editor-field-hint" id="footerLogoHeaderNote">Footer uses the logo uploaded in the Header section.</p>
+
+            <div class="editor-field" id="footerLogoField" hidden>
+                <label for="fieldFooterLogo">Footer logo<span class="editor-field-hint">PNG or SVG · max 240 × 80 px</span></label>
                 <div class="editor-upload">
                     <div class="editor-upload-preview editor-upload-preview--footer-logo is-empty" id="uploadPreviewFooterLogo"></div>
                     <input type="file" id="fieldFooterLogo" name="footerLogoImage" accept="image/*">
@@ -375,32 +442,34 @@
         </aside>
 
         <div class="editor-preview-wrap">
-            <p class="editor-preview-label">Live preview <span class="editor-preview-note">— product 563×342 · lifestyle 854×670 min · copy grows with content</span></p>
+            <p class="editor-preview-label">Live preview</p>
             <div class="editor-preview-scaler" id="previewScaler">
                 <div class="editor-preview-frame" id="showroomPreview">
                 <header class="showroom-header-section" id="showroomHeaderSection" aria-label="Site header preview">
                     <div class="showroom-header-banner" id="previewHeaderBanner">
-                        <nav class="showroom-header-banner-links" id="previewHeaderBannerLinks" aria-label="Top banner"></nav>
+                        <nav class="showroom-header-banner-links showroom-hero-align" id="previewHeaderBannerLinks" aria-label="Top banner"></nav>
                     </div>
-                    <div class="showroom-header-inner">
-                        <div class="showroom-header-search">
-                            <label class="showroom-header-search-field">
-                                <span class="showroom-header-search-label">Search</span>
-                                <i class="fa-solid fa-magnifying-glass showroom-header-search-icon" aria-hidden="true"></i>
-                                <input type="search" class="showroom-header-search-input" placeholder="Search products..." disabled aria-disabled="true">
-                            </label>
+                    <div class="showroom-header-content showroom-hero-align">
+                        <div class="showroom-header-inner">
+                            <div class="showroom-header-search">
+                                <label class="showroom-header-search-field">
+                                    <span class="showroom-header-search-label">Search</span>
+                                    <i class="fa-solid fa-magnifying-glass showroom-header-search-icon" aria-hidden="true"></i>
+                                    <input type="search" class="showroom-header-search-input" placeholder="Enter Keyword or Item#" disabled aria-disabled="true">
+                                </label>
+                            </div>
+                            <div class="showroom-header-logo-wrap">
+                                <a href="/" class="showroom-header-logo is-empty" id="previewHeaderLogoWrap">
+                                    <img id="previewHeaderLogo" alt="" hidden>
+                                </a>
+                            </div>
+                            <div class="showroom-header-icons" id="previewHeaderIcons" aria-label="Header utilities"></div>
                         </div>
-                        <div class="showroom-header-logo-wrap">
-                            <a href="/" class="showroom-header-logo is-empty" id="previewHeaderLogoWrap">
-                                <img id="previewHeaderLogo" alt="" hidden>
-                            </a>
-                        </div>
-                        <div class="showroom-header-icons" id="previewHeaderIcons" aria-label="Header utilities"></div>
+                        <nav class="showroom-main-nav" id="previewMainNav" aria-label="Main navigation"></nav>
                     </div>
-                    <nav class="showroom-main-nav" id="previewMainNav" aria-label="Main navigation"></nav>
                 </header>
                 <section class="showroom-hero-section" id="showroomHeroSection" aria-label="Hero section preview">
-                    <div class="showroom-hero" id="showroomHero">
+                    <div class="showroom-hero showroom-hero-align" id="showroomHero">
                         <div class="showroom-hero-left">
                             <div class="showroom-hero-product" id="previewProductPlaceholder">
                                 <img id="previewProductImage" alt="" hidden>
@@ -417,11 +486,13 @@
                     </div>
                 </section>
                 <section class="showroom-categories-section" id="showroomCategoriesSection" aria-label="Featured Categories preview">
-                    <div class="showroom-categories-header">
-                        <h2 class="showroom-categories-title">Featured Categories</h2>
-                        <a href="/catalog" class="showroom-categories-shop-all" id="previewShopAll">Shop All</a>
+                    <div class="showroom-categories-content showroom-hero-align">
+                        <div class="showroom-categories-header">
+                            <h2 class="showroom-categories-title">Featured Categories</h2>
+                            <a href="/catalog" class="showroom-categories-shop-all" id="previewShopAll">Shop All</a>
+                        </div>
+                        <div class="showroom-categories-grid" id="previewCategoriesGrid"></div>
                     </div>
-                    <div class="showroom-categories-grid" id="previewCategoriesGrid"></div>
                 </section>
                 <section class="showroom-about-section" id="showroomAboutSection" aria-label="About Us preview">
                     <div class="showroom-about-photo-wrap">

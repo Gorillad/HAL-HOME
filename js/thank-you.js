@@ -34,6 +34,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('thankYouOrderId').textContent = data.id.replace('cs_test_', '').slice(0, 8).toUpperCase();
         document.getElementById('thankYouTotal').textContent = data.totalFormatted;
 
+        if (data.tax > 0) {
+            const subtotalEl = document.getElementById('thankYouSubtotal');
+            const taxEl = document.getElementById('thankYouTax');
+            subtotalEl.hidden = false;
+            taxEl.hidden = false;
+            document.getElementById('thankYouSubtotalAmount').textContent = data.subtotalFormatted;
+            document.getElementById('thankYouTaxAmount').textContent = data.taxFormatted;
+        }
+
         const itemsEl = document.getElementById('thankYouItems');
         itemsEl.innerHTML = data.items.map((item) => `
             <li>
@@ -63,6 +72,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function formatMoney(amount) {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
     }
 });

@@ -165,7 +165,13 @@ const Cart = (() => {
             const res = await fetch('/api/config');
             const config = await res.json();
             if (config.stripeConfigured) {
-                noteEl.textContent = 'Test mode — use card 4242 4242 4242 4242, any future date, any CVC.';
+                let taxNote = '';
+                if (config.automaticTax) {
+                    taxNote = ' Tax calculated at checkout.';
+                } else if (config.taxPercent > 0) {
+                    taxNote = ` ${config.taxPercent}% sales tax added at checkout.`;
+                }
+                noteEl.textContent = `Test mode — card 4242 4242 4242 4242, any future date, any CVC. Billing address required.${taxNote}`;
                 noteEl.classList.remove('is-error');
             } else {
                 noteEl.textContent = 'Add Stripe test keys to .env to enable checkout.';

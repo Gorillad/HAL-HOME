@@ -20,6 +20,48 @@ const stripeKey = process.env.STRIPE_SECRET_KEY;
 const stripe = stripeKey && !stripeKey.includes('your_secret_key')
     ? new Stripe(stripeKey)
     : null;
+const automaticTaxEnabled = process.env.STRIPE_AUTOMATIC_TAX === 'true';
+const taxPercent = automaticTaxEnabled
+    ? 0
+    : Math.max(0, Number.parseFloat(process.env.STRIPE_TAX_PERCENT || '12') || 12);
+
+let cachedTaxRateId = null;
+
+function formatCheckoutMoney(amount) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+}
+
+async function getTaxRateId() {
+    if (!stripe || taxPercent <= 0) return null;
+
+    const configuredRateId = process.env.STRIPE_TAX_RATE_ID;
+    if (configuredRateId && !configuredRateId.includes('your_tax_rate')) {
+        return configuredRateId;
+    }
+
+    if (cachedTaxRateId) return cachedTaxRateId;
+
+    const rates = await stripe.taxRates.list({ active: true, limit: 100 });
+    const existing = rates.data.find((rate) => (
+        rate.percentage === taxPercent
+        && rate.inclusive === false
+        && rate.display_name === 'Sales tax'
+    ));
+
+    if (existing) {
+        cachedTaxRateId = existing.id;
+        return cachedTaxRateId;
+    }
+
+    const created = await stripe.taxRates.create({
+        display_name: 'Sales tax',
+        description: `${taxPercent}% sales tax`,
+        percentage: taxPercent,
+        inclusive: false,
+    });
+    cachedTaxRateId = created.id;
+    return cachedTaxRateId;
+}
 
 const app = express();
 
@@ -64,6 +106,9 @@ app.get('/api/config', (_req, res) => {
         stripeConfigured: Boolean(stripe),
         testMode: Boolean(stripe),
         publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+        automaticTax: automaticTaxEnabled,
+        taxPercent: automaticTaxEnabled ? 0 : taxPercent,
+        billingAddressRequired: true,
     });
 });
 
@@ -107,24 +152,41 @@ app.post('/api/create-checkout-session', async (req, res) => {
             priceData.recurring = { interval: product.interval };
         }
 
+        if (automaticTaxEnabled) {
+            priceData.tax_behavior = 'exclusive';
+        }
+
         lineItems.push({ price_data: priceData, quantity });
     }
 
     const mode = hasSubscription ? 'subscription' : 'payment';
 
+    const sessionParams = {
+        mode,
+        line_items: lineItems,
+        success_url: `${BASE_URL}/thank-you.html?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${BASE_URL}/index.html#pricing`,
+        billing_address_collection: 'required',
+        metadata: {
+            cart_items: JSON.stringify(items.map((i) => ({ id: i.id, qty: i.qty }))),
+        },
+        payment_method_types: ['card'],
+    };
+
+    if (automaticTaxEnabled) {
+        sessionParams.automatic_tax = { enabled: true };
+        sessionParams.customer_update = { address: 'auto' };
+    }
+
     try {
-        const session = await stripe.checkout.sessions.create({
-            mode,
-            line_items: lineItems,
-            success_url: `${BASE_URL}/thank-you.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${BASE_URL}/index.html#pricing`,
-            billing_address_collection: 'auto',
-            customer_email: undefined,
-            metadata: {
-                cart_items: JSON.stringify(items.map((i) => ({ id: i.id, qty: i.qty }))),
-            },
-            payment_method_types: ['card'],
-        });
+        if (!automaticTaxEnabled && taxPercent > 0) {
+            const taxRateId = await getTaxRateId();
+            if (taxRateId) {
+                sessionParams.default_tax_rates = [taxRateId];
+            }
+        }
+
+        const session = await stripe.checkout.sessions.create(sessionParams);
 
         res.json({ url: session.url, sessionId: session.id });
     } catch (err) {
@@ -151,6 +213,8 @@ app.get('/api/checkout-session', async (req, res) => {
         const products = loadProducts();
         const items = parseSessionItems(session, products);
         const total = (session.amount_total || 0) / 100;
+        const subtotal = (session.amount_subtotal || 0) / 100;
+        const tax = (session.total_details?.amount_tax || 0) / 100;
 
         if (session.payment_status === 'paid' && !getFromOutbox(sessionId)) {
             await generateConfirmationEmail(sessionId);
@@ -161,8 +225,12 @@ app.get('/api/checkout-session', async (req, res) => {
             status: session.payment_status,
             customerEmail: session.customer_details?.email || session.customer_email,
             customerName: session.customer_details?.name || '',
+            subtotal,
+            subtotalFormatted: formatCheckoutMoney(subtotal),
+            tax,
+            taxFormatted: formatCheckoutMoney(tax),
             total,
-            totalFormatted: formatMoney(total),
+            totalFormatted: formatCheckoutMoney(total),
             items,
             emailPreviewUrl: `/api/preview-email?session_id=${sessionId}`,
         });
@@ -223,5 +291,10 @@ app.listen(PORT, () => {
         console.warn('⚠  Stripe not configured — copy .env.example to .env and add sk_test_ / pk_test_ keys');
     } else {
         console.log('✓  Stripe TEST mode ready — use card 4242 4242 4242 4242');
+        if (automaticTaxEnabled) {
+            console.log('✓  Automatic tax enabled — enable Stripe Tax in your test dashboard');
+        } else if (taxPercent > 0) {
+            console.log(`✓  Checkout sales tax set to ${taxPercent}%`);
+        }
     }
 });
