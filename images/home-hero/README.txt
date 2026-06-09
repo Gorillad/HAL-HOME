@@ -2,9 +2,10 @@ Homepage hero images
 ====================
 
 Active on index.html:
-  hero-01.png   — main hero background (in use)
+  hero-06-08.png   — main hero background (in use)
 
 Alternates (swap filename in index.html to use):
+  hero-01.png
   hero-02.jpg
   hero-03.png
   sideview.webp

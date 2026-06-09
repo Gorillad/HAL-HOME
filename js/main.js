@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initContactForm();
     initPricingToggle();
+    initHeroRays();
     Cart.initUI();
 });
 
@@ -192,4 +193,25 @@ function showContactMsg(el, text, type) {
     el.textContent = text;
     el.classList.toggle('is-success', type === 'success');
     el.classList.toggle('is-error', type === 'error');
+}
+
+function initHeroRays() {
+    const hero = document.querySelector('.hero');
+    const beams = document.querySelector('.hero-rays-beams');
+    const source = document.querySelector('.hero-rays-source');
+    if (!hero || !beams || !source) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        beams.style.transform = `rotate(${(x - 0.2) * 7}deg) translateX(${(x - 0.2) * 36}px) scale(1.02)`;
+        source.style.transform = `translate(${x * 22}px, ${y * 10}px) scale(1.04)`;
+    });
+
+    hero.addEventListener('mouseleave', () => {
+        beams.style.transform = '';
+        source.style.transform = '';
+    });
 }
