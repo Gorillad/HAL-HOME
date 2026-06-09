@@ -394,7 +394,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Search style', headerToolbar.searchStyle || 'Single bottom border underline'],
         ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
         ['Header logo', header.logoFilename || 'header-logo.png'],
-        ['Header logo size', header.logoDimensions || 'max 180 × 56 px'],
+        ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
         ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
     ]);
     const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
@@ -558,7 +558,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     };
     writeSpecRows([
         ['Footer logo', footer.logoUseHeader !== false ? 'Same as header (header-logo.png)' : (footer.logoFilename || 'footer-logo.png')],
-        ['Footer logo size', footer.logoDimensions || 'max 240 × 80 px'],
+        ['Footer logo size', footer.logoDimensions || 'max 280 × 94 px'],
         ['Email', footer.email],
         ['Company', footer.companyName],
         ['Address', footer.address],
@@ -666,7 +666,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             logoSharedWithFooter: header.logoSharedWithFooter !== false,
             logo: {
                 filename: header.logoFilename || 'header-logo.png',
-                dimensions: header.logoDimensions || 'max 180 × 56 px',
+                dimensions: header.logoDimensions || 'max 220 × 68 px',
             },
             contentColumnWidth: header.contentColumnWidth || '1429 px',
             banner: {
@@ -799,7 +799,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             logoUseHeader: footer.logoUseHeader !== false,
             logo: {
                 filename: footer.logoFilename || 'footer-logo.png',
-                dimensions: footer.logoDimensions || 'max 240 × 80 px',
+                dimensions: footer.logoDimensions || 'max 280 × 94 px',
             },
             email: footer.email || '',
             companyName: footer.companyName || '',

@@ -2749,7 +2749,7 @@
                         })),
                     header: {
                         logoSharedWithFooter: state.footerLogoUseHeader !== false,
-                        logoDimensions: 'max 180 × 56 px in header',
+                        logoDimensions: 'max 220 × 68 px in header',
                         logoFilename: 'header-logo.png',
                         contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
                         banner: {
@@ -2882,7 +2882,7 @@
                     footer: {
                         logoUseHeader: state.footerLogoUseHeader !== false,
                         logoFilename: 'footer-logo.png',
-                        logoDimensions: 'max 240 × 80 px',
+                        logoDimensions: 'max 280 × 94 px',
                         email: state.footerEmail,
                         companyName: state.footerCompanyName,
                         address: state.footerAddress,
@@ -2955,7 +2955,7 @@
                     {
                         filename: 'header-logo.png',
                         label: 'Company logo (header)',
-                        dimensions: 'max 180 × 56 px',
+                        dimensions: 'max 220 × 68 px',
                         dataUrl: state.headerLogoImage || '',
                     },
                     {
@@ -2963,7 +2963,7 @@
                         label: state.footerLogoUseHeader !== false
                             ? 'Company logo (footer — same as header)'
                             : 'Company logo (footer)',
-                        dimensions: 'max 240 × 80 px',
+                        dimensions: 'max 280 × 94 px',
                         dataUrl: getEffectiveFooterLogo() || '',
                     },
                 ],
