@@ -225,7 +225,7 @@ body.cart-open {
     height: calc(100% + 230px);
     object-fit: cover;
     object-position: center top;
-    transform: translateY(-230px);
+    transform: translateY(-190px);
     display: block;
 }
 
