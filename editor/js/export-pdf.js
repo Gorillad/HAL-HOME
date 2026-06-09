@@ -4,6 +4,7 @@
  */
 window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const {
+        headerEl,
         heroEl,
         categoriesEl,
         aboutEl,
@@ -341,6 +342,69 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     writeLines('Copy-paste markup', { bold: true, size: 10, gap: 6 });
     writeCodeBlock(adaPasteMarkup);
 
+    writeSectionTitle('Header');
+    const header = spec.header || {};
+    const headerBanner = header.banner || {};
+    const headerToolbar = header.toolbar || {};
+    const headerMainNav = header.mainNav || {};
+    const headerBannerLinks = normalizeFooterLinksForExport(headerBanner.links);
+    const headerMainNavItems = Array.isArray(headerMainNav.items) ? headerMainNav.items : [];
+    writeSpecRows([
+        ['Top banner height', headerBanner.height || '70 px'],
+        ['Banner background', headerBanner.backgroundColor || '#000000'],
+        ['Banner text', headerBanner.textColor || '#ffffff'],
+        ['Banner alignment', headerBanner.alignment || 'right'],
+        ['Link separator', headerBanner.separator || '|'],
+    ]);
+    if (headerBannerLinks.length) {
+        writeLines('Top banner links', { bold: true, size: 10, gap: 4 });
+        writeItemList(
+            headerBannerLinks,
+            (item) => `${item.label}: ${item.url || '—'}`,
+        );
+    }
+    writeSpecRows([
+        ['Main toolbar layout', headerToolbar.layout || 'search left · logo center · icons right'],
+        ['Search bar', headerToolbar.searchBarHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
+        ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
+        ['Logo', header.logoSharedWithFooter !== false ? 'Shared with footer (footer-logo.png)' : 'footer-logo.png'],
+        ['Logo size', header.logoDimensions || 'max 180 × 56 px in header · max 240 × 80 px in footer'],
+    ]);
+    const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
+    if (headerToolbarIcons.length) {
+        writeLines('Toolbar icons', { bold: true, size: 10, gap: 4 });
+        writeItemList(
+            headerToolbarIcons,
+            (item) => `${item.label || item.id || '—'} → ${item.url || '—'}`,
+        );
+    }
+    writeSpecRows([
+        ['Main navigation', headerMainNav.editable !== false ? 'Editable in template editor' : '—'],
+        ['Dropdown menus', headerMainNav.hasDropdowns !== false ? 'Yes — one per top-level item' : 'No'],
+        ['Subcategories pending', headerMainNav.subcategoriesPending ? 'Yes — some categories need links' : 'No'],
+    ]);
+    if (headerMainNavItems.length) {
+        headerMainNavItems.forEach((item) => {
+            writeLines(item.label || item.id || 'Category', { bold: true, size: 10, gap: 4 });
+            if (item.url) {
+                writeLines(`Category link: ${item.url}`, { size: 9, gap: 4 });
+            }
+            const subs = Array.isArray(item.subcategories) ? item.subcategories : [];
+            if (!subs.length) {
+                writeLines('No subcategories configured yet.', { size: 9, color: [90, 90, 90], gap: 8 });
+                return;
+            }
+            writeItemList(
+                subs,
+                (sub) => {
+                    const status = sub.visible === false ? 'hidden' : 'shown';
+                    return `${sub.label || '—'} → ${sub.url || '—'} (${status})`;
+                },
+            );
+            y += 4;
+        });
+    }
+
     writeSectionTitle('Hero');
     writeSpecRows([
         ['Collection title', spec.title],
@@ -355,9 +419,17 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const visibleCategories = spec.featuredCategories || [];
     writeSpecRows([
         ['Shop All link', spec.shopAllUrl || '/catalog'],
+        ['Card size', spec.featuredCategoryCardSize || '300 × 70 px'],
+        ['Thumbnail size', spec.featuredCategoryThumbnailSize || '70 × 70 px'],
+        ['Category images', spec.featuredCategoryImagesHardcoded ? 'Hardcoded — not editable in template' : '—'],
+        ['Image directory', spec.featuredCategoryImageDirectory || 'editor/assets/featured-categories/'],
         ['Visible count', String(visibleCategories.length)],
-        ['Categories', visibleCategories.map((c) => c.label).join(', ') || '—'],
     ]);
+    if (visibleCategories.length) {
+        writeItemList(visibleCategories, (category) => (
+            `${category.label || category.id || '—'} · ${category.imageFile || '—'}`
+        ));
+    }
 
     writeSectionTitle('About Us');
     const aboutUs = spec.aboutUs || {};
@@ -485,6 +557,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         throw new Error('Nothing to capture for hero preview.');
     }
 
+    if (headerEl) {
+        await appendCanvasPreview(await captureElement(headerEl), 'Preview — Header');
+    }
+
     await appendCanvasPreview(await captureElement(heroTarget), 'Preview — Hero');
 
     if (categoriesEl) {
@@ -521,7 +597,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     const specJson = {
         template: spec.template || 'Showroom',
-        sections: ['homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'sketch-section', 'you-may-like', 'get-inspired', 'footer'],
+        sections: ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'sketch-section', 'you-may-like', 'get-inspired', 'footer'],
         generatedAt: new Date().toISOString(),
         adaCompliance: {
             required: true,
@@ -537,9 +613,46 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             cta: spec.cta || '',
             backgroundColor: spec.copyBackgroundColor || '',
         },
+        header: {
+            logoSharedWithFooter: header.logoSharedWithFooter !== false,
+            logo: { filename: 'footer-logo.png', dimensions: header.logoDimensions || 'max 180 × 56 px in header · max 240 × 80 px in footer' },
+            banner: {
+                height: headerBanner.height || '70 px',
+                backgroundColor: headerBanner.backgroundColor || '#000000',
+                textColor: headerBanner.textColor || '#ffffff',
+                alignment: headerBanner.alignment || 'right',
+                separator: headerBanner.separator || '|',
+                links: headerBannerLinks,
+            },
+            toolbar: {
+                layout: headerToolbar.layout || 'search left · logo center · icons right',
+                searchBarHardcoded: headerToolbar.searchBarHardcoded !== false,
+                iconsHardcoded: headerToolbar.iconsHardcoded !== false,
+                icons: Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [],
+            },
+            mainNav: {
+                editable: headerMainNav.editable !== false,
+                hasDropdowns: headerMainNav.hasDropdowns !== false,
+                subcategoriesPending: headerMainNav.subcategoriesPending === true,
+                items: headerMainNavItems.map((item) => ({
+                    id: item.id || '',
+                    label: item.label || '',
+                    url: item.url || '',
+                    subcategories: (Array.isArray(item.subcategories) ? item.subcategories : []).map((sub) => ({
+                        id: sub.id || '',
+                        label: sub.label || '',
+                        url: sub.url || '',
+                        visible: sub.visible !== false,
+                    })),
+                })),
+            },
+        },
         featuredCategories: {
             shopAllUrl: spec.shopAllUrl || '/catalog',
-            cardDimensions: '300 × 70 px',
+            cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
+            thumbnailSize: spec.featuredCategoryThumbnailSize || '70 × 70 px',
+            imageDirectory: spec.featuredCategoryImageDirectory || 'editor/assets/featured-categories/',
+            imagesHardcoded: spec.featuredCategoryImagesHardcoded !== false,
             visible: spec.featuredCategories || [],
         },
         aboutUs: {

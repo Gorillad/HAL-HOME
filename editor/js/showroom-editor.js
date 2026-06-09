@@ -42,6 +42,161 @@
         { label: 'Privacy', urlKey: 'footerPrivacyUrl', defaultUrl: '/privacy' },
         { label: 'Shipping', urlKey: 'footerShippingUrl', defaultUrl: '/shipping' },
     ];
+    const DEFAULT_HEADER_BANNER_BG = '#000000';
+    const DEFAULT_HEADER_BANNER_LINKS = [
+        { label: 'Home', defaultUrl: '/' },
+        { label: 'About Us', defaultUrl: '/about-us' },
+        { label: 'Contact', defaultUrl: '/contact-us' },
+    ];
+    const HEADER_TOOLBAR_ICONS = [
+        {
+            id: 'location',
+            label: 'Location',
+            iconClass: 'fa-solid fa-location-dot',
+            url: '#',
+        },
+        {
+            id: 'wishlist',
+            label: 'Wish List',
+            iconClass: 'fa-regular fa-heart',
+            url: '#',
+        },
+        {
+            id: 'account',
+            label: 'Account',
+            iconClass: 'fa-regular fa-user',
+            url: '#',
+        },
+        {
+            id: 'cart',
+            label: 'Shopping Cart',
+            iconClass: 'fa-solid fa-cart-shopping',
+            url: '#',
+        },
+    ];
+    const DEFAULT_MAIN_NAV_TEMPLATE = [
+        {
+            id: 'ceiling-lights',
+            label: 'Ceiling Lights',
+            subcategories: [
+                { id: 'ceiling-lights-chandeliers', label: 'Chandeliers', url: '/lighting-fixtures/chandeliers' },
+                { id: 'ceiling-lights-candle-chandeliers', label: 'Candle Chandeliers', url: '/lighting-fixtures/candle-chandeliers' },
+                { id: 'ceiling-lights-chandelier-accessories', label: 'Chandelier Accessories', url: '/lighting-fixtures/chandeliers/chandelier-accessories' },
+                { id: 'ceiling-lights-down-chandeliers', label: 'Down Chandeliers', url: '/lighting-fixtures/chandeliers/down-chandeliers' },
+                { id: 'ceiling-lights-other-chandeliers', label: 'Other Chandeliers', url: '/lighting-fixtures/chandeliers/other-chandeliers' },
+                { id: 'ceiling-lights-ring-chandeliers', label: 'Ring Chandeliers', url: '/lighting-fixtures/chandeliers/ring-chandeliers' },
+                { id: 'ceiling-lights-up-chandeliers', label: 'Up Chandeliers', url: '/lighting-fixtures/chandeliers/up-chandeliers' },
+            ],
+        },
+        {
+            id: 'wall-fixtures',
+            label: 'Wall Fixtures',
+            subcategories: [
+                { id: 'wall-fixtures-sconces', label: 'Sconces', url: '/lighting-fixtures/sconces' },
+                { id: 'wall-fixtures-wall-sconces', label: 'Wall Sconces', url: '/lighting-fixtures/sconces/wall-sconces' },
+                { id: 'wall-fixtures-sconce-accessories', label: 'Sconce Accessories', url: '/lighting-fixtures/sconces/sconce-accessories' },
+                { id: 'wall-fixtures-outdoor-wall-lights', label: 'Outdoor Wall Lights', url: '/lighting-fixtures/sconces/outdoor-wall-lights' },
+                { id: 'wall-fixtures-picture-display-lights', label: 'Picture Display Lights', url: '/lighting-fixtures/sconces/picture-display-lights' },
+                { id: 'wall-fixtures-other-wall-lights', label: 'Other Wall Lights', url: '/lighting-fixtures/sconces/other-wall-lights' },
+            ],
+        },
+        {
+            id: 'fans',
+            label: 'Fans',
+            url: '/lighting-fixtures/fans',
+            subcategories: [
+                { id: 'fans-ceiling-fans', label: 'Ceiling Fans', url: '/lighting-fixtures/fans/ceiling-fans' },
+                { id: 'fans-ceiling-fans-with-light', label: 'Ceiling Fans with Light', url: '/lighting-fixtures/fans/ceiling-fans-with-light' },
+                { id: 'fans-wall-fans', label: 'Wall Fans', url: '/lighting-fixtures/fans/wall-fans' },
+                { id: 'fans-outdoor-fans', label: 'Outdoor Fans', url: '/lighting-fixtures/fans/outdoor-fans' },
+                { id: 'fans-portable-fans', label: 'Portable Fans', url: '/lighting-fixtures/fans/portable-fans' },
+                { id: 'fans-other-fans', label: 'Other Fans', url: '/lighting-fixtures/fans/other-fans' },
+                { id: 'fans-huggers', label: 'Huggers', url: '/lighting-fixtures/fans/huggers' },
+                { id: 'fans-fandeliers', label: 'Fandeliers', url: '/lighting-fixtures/fans/fandeliers' },
+                { id: 'fans-belt-fans', label: 'Belt Fans', url: '/lighting-fixtures/fans/belt-fans' },
+                { id: 'fans-dual-motor-fans', label: 'Dual Motor Fans', url: '/lighting-fixtures/fans/dual-motor-fans' },
+                { id: 'fans-fan-motor-without-blades', label: 'Fan Motor Without Blades', url: '/lighting-fixtures/fans/fan-motor-without-blades' },
+            ],
+        },
+        {
+            id: 'bathroom',
+            label: 'Bathroom',
+            url: '/lighting-fixtures/bathroom-fixtures',
+            subcategories: [
+                { id: 'bathroom-bathroom-fixtures', label: 'Bathroom Fixtures', url: '/lighting-fixtures/bathroom-fixtures' },
+                { id: 'bathroom-bath-fans', label: 'Bath Fans', url: '/lighting-fixtures/bathroom-fixtures/bath-fans' },
+                { id: 'bathroom-bathroom-sconces', label: 'Bathroom Sconces', url: '/lighting-fixtures/bathroom-fixtures/bathroom-sconces' },
+                { id: 'bathroom-other-bathroom-fixtures', label: 'Other Bathroom Fixtures', url: '/lighting-fixtures/bathroom-fixtures/other-bathroom-fixtures' },
+                { id: 'bathroom-vanity-lights', label: 'Vanity Lights', url: '/lighting-fixtures/bathroom-fixtures/vanity-lights' },
+            ],
+        },
+        {
+            id: 'outdoor',
+            label: 'Outdoor',
+            url: '/lighting-fixtures/exterior',
+            subcategories: [
+                { id: 'outdoor-exterior', label: 'Exterior', url: '/lighting-fixtures/exterior' },
+                { id: 'outdoor-exterior-chandeliers', label: 'Exterior Chandeliers', url: '/lighting-fixtures/exterior/exterior-chandeliers' },
+                { id: 'outdoor-exterior-fans', label: 'Exterior Fans', url: '/lighting-fixtures/exterior/exterior-fans' },
+                { id: 'outdoor-exterior-pendants', label: 'Exterior Pendants', url: '/lighting-fixtures/exterior/exterior-pendants' },
+                { id: 'outdoor-exterior-flush-mounts', label: 'Exterior Flush Mounts', url: '/lighting-fixtures/exterior/exterior-flush-mounts' },
+                { id: 'outdoor-exterior-foyer-hall-lanterns', label: 'Exterior Foyer / Hall Lanterns', url: '/lighting-fixtures/exterior/exterior-foyer-hall-lanterns' },
+                { id: 'outdoor-exterior-semi-flush-mts', label: 'Exterior Semi-Flush Mounts', url: '/lighting-fixtures/exterior/exterior-semi-flush-mts' },
+                { id: 'outdoor-exterior-accessories', label: 'Exterior Accessories', url: '/lighting-fixtures/exterior/exterior-accessories' },
+                { id: 'outdoor-other-exterior', label: 'Other Exterior', url: '/lighting-fixtures/exterior/other-exterior' },
+                { id: 'outdoor-marine-lights', label: 'Marine Lights', url: '/lighting-fixtures/exterior/marine-lights' },
+                { id: 'outdoor-posts', label: 'Posts', url: '/lighting-fixtures/exterior/posts' },
+                { id: 'outdoor-post-mount-lights', label: 'Post Mount Lights', url: '/lighting-fixtures/exterior/post-mount-lights' },
+                { id: 'outdoor-portable-lanterns', label: 'Portable Lanterns', url: '/lighting-fixtures/exterior/portable-lanterns' },
+                { id: 'outdoor-post-adaptors', label: 'Post Adaptors', url: '/lighting-fixtures/exterior/post-adaptors' },
+                { id: 'outdoor-pier-mount-lights', label: 'Pier Mount Lights', url: '/lighting-fixtures/exterior/pier-mount-lights' },
+                { id: 'outdoor-pier-mounts', label: 'Pier Mounts', url: '/lighting-fixtures/exterior/pier-mounts' },
+                { id: 'outdoor-hanging-lanterns', label: 'Hanging Lanterns', url: '/lighting-fixtures/exterior/hanging-lanterns' },
+                { id: 'outdoor-deck-lights', label: 'Deck Lights', url: '/lighting-fixtures/exterior/deck-lights' },
+                { id: 'outdoor-wall-lanterns', label: 'Wall Lanterns', url: '/lighting-fixtures/exterior/wall-lanterns' },
+                { id: 'outdoor-wall-lights', label: 'Wall Lights', url: '/lighting-fixtures/exterior/wall-lights' },
+                { id: 'outdoor-solar-lights', label: 'Solar Lights', url: '/lighting-fixtures/exterior/solar-lights' },
+                { id: 'outdoor-bollards', label: 'Bollards', url: '/lighting-fixtures/exterior/bollards' },
+                { id: 'outdoor-door-bells', label: 'Door Bells', url: '/lighting-fixtures/exterior/door-bells' },
+                { id: 'outdoor-wind-chimes', label: 'Wind Chimes', url: '/lighting-fixtures/exterior/wind-chimes' },
+                { id: 'outdoor-mail-boxes', label: 'Mail Boxes', url: '/lighting-fixtures/exterior/mail-boxes' },
+                { id: 'outdoor-address-numbers', label: 'Address Numbers', url: '/lighting-fixtures/exterior/address-numbers' },
+            ],
+        },
+        {
+            id: 'directional-lights',
+            label: 'Directional Lights',
+            url: '/lighting-fixtures/directional-lights',
+            subcategories: [
+                { id: 'directional-lights-directional-flush-mounts', label: 'Directional Flush Mounts', url: '/lighting-fixtures/directional-lights/directional-flush-mounts' },
+                { id: 'directional-lights-directional-island-lights', label: 'Directional Island Lights', url: '/lighting-fixtures/directional-lights/directional-island-lights' },
+                { id: 'directional-lights-directional-light-sconces', label: 'Directional Light Sconces', url: '/lighting-fixtures/directional-lights/directional-light-sconces' },
+                { id: 'directional-lights-directional-recessed-lights', label: 'Directional Recessed Lights', url: '/lighting-fixtures/directional-lights/directional-recessed-lights' },
+                { id: 'directional-lights-directional-semi-flush-mts', label: 'Directional Semi-Flush Mounts', url: '/lighting-fixtures/directional-lights/directional-semi-flush-mts' },
+                { id: 'directional-lights-directional-spot-lights', label: 'Directional Spot Lights', url: '/lighting-fixtures/directional-lights/directional-spot-lights' },
+                { id: 'directional-lights-directional-wall-lights', label: 'Directional Wall Lights', url: '/lighting-fixtures/directional-lights/directional-wall-lights' },
+                { id: 'directional-lights-directional-light-accessories', label: 'Directional Light Accessories', url: '/lighting-fixtures/directional-lights/directional-light-accessories' },
+                { id: 'directional-lights-other-directional-lights', label: 'Other Directional Lights', url: '/lighting-fixtures/directional-lights/other-directional-lights' },
+                { id: 'directional-lights-outdoor-directional-lights', label: 'Outdoor Directional Lights', url: '/lighting-fixtures/directional-lights/outdoor-directional-lights' },
+                { id: 'directional-lights-mono-points', label: 'Mono Points', url: '/lighting-fixtures/directional-lights/mono-points' },
+            ],
+        },
+        {
+            id: 'other-categories',
+            label: 'Other Categories',
+            subcategories: [
+                { id: 'other-categories-marine-lights', label: 'Marine Lights', url: '/lighting-fixtures/exterior/marine-lights' },
+                { id: 'other-categories-puck-lights', label: 'Puck Lights', url: '/lighting-fixtures/recessed-ltg' },
+                { id: 'other-categories-security-lights', label: 'Security Lights', url: '/lighting-fixtures?itemNumVal=Security%20Lights&limitRange=0' },
+                { id: 'other-categories-replacement-glass', label: 'Replacement Glass', url: '/lighting-fixtures/glass/replacement-glass' },
+                { id: 'other-categories-mirrors', label: 'Mirrors', url: '/lighting-fixtures/decor-home-accents/mirrors' },
+                { id: 'other-categories-other-decor-home-accents', label: 'Other Decor / Home Accents', url: '/lighting-fixtures/decor-home-accents/other-decor-home-accents' },
+                { id: 'other-categories-door-bells', label: 'Door Bells', url: '/lighting-fixtures/exterior/door-bells' },
+                { id: 'other-categories-wind-chimes', label: 'Wind Chimes', url: '/lighting-fixtures/exterior/wind-chimes' },
+            ],
+        },
+        { id: 'shop-by-brand', label: 'Shop by Brand', url: '/brands', subcategories: [] },
+    ];
     const FOOTER_SOCIAL_LINKS = [
         {
             id: 'facebook',
@@ -87,6 +242,7 @@
         '1003': { title: 'Meridian Pendant', price: '$625' },
     };
     const SKETCH_IMAGE_DIR = 'assets/sketch-section/';
+    const FEATURED_CATEGORY_IMAGE_DIR = 'assets/featured-categories/';
     const SKETCH_CARDS = [
         {
             id: 'visit',
@@ -115,14 +271,14 @@
     ];
 
     const FEATURED_CATEGORIES = [
-        { id: 'chandeliers', label: 'Chandeliers' },
-        { id: 'fans', label: 'Fans' },
-        { id: 'flush-mounts', label: 'Flush mounts' },
-        { id: 'furniture', label: 'Furniture' },
-        { id: 'exterior', label: 'Exterior' },
-        { id: 'directional-lights', label: 'Directional lights' },
-        { id: 'sconce', label: 'Sconce' },
-        { id: 'pendants', label: 'Pendants' },
+        { id: 'chandeliers', label: 'Chandeliers', imageFile: 'chandeliers.jpg' },
+        { id: 'fans', label: 'Fans', imageFile: 'fans.jpg' },
+        { id: 'flush-mounts', label: 'Flush mounts', imageFile: 'flush-mounts.jpg' },
+        { id: 'furniture', label: 'Furniture', imageFile: 'furniture.jpg' },
+        { id: 'exterior', label: 'Exterior', imageFile: 'exterior.jpg' },
+        { id: 'directional-lights', label: 'Directional lights', imageFile: 'directional-lights.jpg' },
+        { id: 'sconce', label: 'Sconce', imageFile: 'sconces.jpg' },
+        { id: 'pendants', label: 'Pendants', imageFile: 'pendants.jpg' },
     ];
 
     const fields = {
@@ -174,6 +330,8 @@
         footerAddress: document.getElementById('fieldFooterAddress'),
         footerPhone: document.getElementById('fieldFooterPhone'),
         footerCopyrightName: document.getElementById('fieldFooterCopyrightName'),
+        headerBannerBackgroundColor: document.getElementById('fieldHeaderBannerBg'),
+        headerBannerBackgroundColorValue: document.getElementById('fieldHeaderBannerBgValue'),
     };
 
     const preview = {
@@ -223,6 +381,16 @@
     let evolvedToastRemoveTimer = null;
     const previewRoot = document.getElementById('showroomPreview');
     const heroRoot = document.getElementById('showroomHeroSection');
+    const headerRoot = document.getElementById('showroomHeaderSection');
+    const previewHeaderLogo = document.getElementById('previewHeaderLogo');
+    const previewHeaderLogoWrap = document.getElementById('previewHeaderLogoWrap');
+    const previewHeaderBanner = document.getElementById('previewHeaderBanner');
+    const previewHeaderBannerLinks = document.getElementById('previewHeaderBannerLinks');
+    const previewHeaderIcons = document.getElementById('previewHeaderIcons');
+    const previewMainNav = document.getElementById('previewMainNav');
+    const mainNavEditor = document.getElementById('mainNavEditor');
+    const headerBannerLinksEditor = document.getElementById('headerBannerLinksEditor');
+    const addHeaderBannerLinkBtn = document.getElementById('addHeaderBannerLinkBtn');
     const categoriesRoot = document.getElementById('showroomCategoriesSection');
     const aboutRoot = document.getElementById('showroomAboutSection');
     const featureTilesRoot = document.getElementById('showroomFeatureTilesSection');
@@ -295,6 +463,9 @@
         youMayLikeItems: defaultYouMayLikeItems(),
         getInspiredLifestyleImage: '',
         getInspiredItems: defaultGetInspiredItems(),
+        headerBannerBackgroundColor: DEFAULT_HEADER_BANNER_BG,
+        headerBannerLinks: defaultHeaderBannerLinks(),
+        mainNavItems: defaultMainNavItems(),
         footerLogoImage: '',
         footerEmail: DEFAULT_FOOTER_EMAIL,
         footerFacebookUrl: '',
@@ -585,8 +756,403 @@
         syncYouMayLikePreview();
         syncGetInspiredPreview();
         syncFooterPreview();
+        syncHeaderPreview();
 
         requestAnimationFrame(fitPreviewScale);
+    }
+
+    function defaultHeaderBannerLinks() {
+        return DEFAULT_HEADER_BANNER_LINKS.map((link, index) => createFooterLinkItem({
+            label: link.label,
+            url: link.defaultUrl,
+        }, index, 'hbl'));
+    }
+
+    function migrateHeaderBannerLinks(data) {
+        if (Array.isArray(data.headerBannerLinks) && data.headerBannerLinks.length > 0) {
+            return data.headerBannerLinks.map((item, index) => createFooterLinkItem(item, index, 'hbl'));
+        }
+
+        if (Array.isArray(data.headerBannerLinks)) {
+            return [];
+        }
+
+        return defaultHeaderBannerLinks();
+    }
+
+    function renderHeaderBannerLinksEditor() {
+        renderFooterLinksEditor(headerBannerLinksEditor, state.headerBannerLinks, 'Banner link');
+    }
+
+    function readHeaderBannerLinksFromEditor() {
+        if (!headerBannerLinksEditor) return;
+        headerBannerLinksEditor.querySelectorAll('[data-field]').forEach((input) => {
+            const item = state.headerBannerLinks.find((link) => link.id === input.dataset.itemId);
+            if (!item) return;
+            item[input.dataset.field] = input.value.trim();
+        });
+    }
+
+    function saveHeaderBannerLinksDraft() {
+        readHeaderBannerLinksFromEditor();
+        syncHeaderPreview();
+        saveState();
+    }
+
+    function addHeaderBannerLink() {
+        readHeaderBannerLinksFromEditor();
+        state.headerBannerLinks.push(createFooterLinkItem({
+            label: 'New link',
+            url: '/',
+        }, state.headerBannerLinks.length, 'hbl'));
+        renderHeaderBannerLinksEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Banner link added');
+    }
+
+    function removeHeaderBannerLink(id) {
+        readHeaderBannerLinksFromEditor();
+        state.headerBannerLinks = state.headerBannerLinks.filter((item) => item.id !== id);
+        renderHeaderBannerLinksEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Banner link removed');
+    }
+
+    function mainNavSubcategoriesPending() {
+        return state.mainNavItems.some((item) => {
+            const subs = Array.isArray(item.subcategories) ? item.subcategories : [];
+            return subs.length === 0 || !subs.some((sub) => sub.visible !== false);
+        });
+    }
+
+    function createMainNavSubcategory(data = {}, index = 0, prefix = 'mns') {
+        return {
+            id: data.id || `${prefix}-${index + 1}-${Math.random().toString(36).slice(2, 8)}`,
+            label: String(data.label || '').trim() || 'Subcategory',
+            url: String(data.url || '').trim() || '/',
+            visible: data.visible !== false,
+        };
+    }
+
+    function createMainNavItem(data = {}) {
+        const id = data.id || `mn-${Math.random().toString(36).slice(2, 8)}`;
+        const subcategories = Array.isArray(data.subcategories)
+            ? data.subcategories.map((sub, index) => createMainNavSubcategory(sub, index, `${id}-sub`))
+            : [];
+
+        return {
+            id,
+            label: String(data.label || '').trim() || 'Category',
+            url: String(data.url || '').trim(),
+            subcategories,
+        };
+    }
+
+    function defaultMainNavItems() {
+        return DEFAULT_MAIN_NAV_TEMPLATE.map((item) => createMainNavItem({
+            id: item.id,
+            label: item.label,
+            url: item.url || '',
+            subcategories: (item.subcategories || []).map((sub) => ({
+                ...sub,
+                visible: true,
+            })),
+        }));
+    }
+
+    function migrateMainNavItems(data) {
+        const defaults = defaultMainNavItems();
+        if (!Array.isArray(data.mainNavItems)) {
+            return defaults;
+        }
+
+        return defaults.map((defaultItem) => {
+            const savedItem = data.mainNavItems.find((item) => item.id === defaultItem.id);
+            if (!savedItem) {
+                return defaultItem;
+            }
+
+            const savedSubs = Array.isArray(savedItem.subcategories) ? savedItem.subcategories : [];
+            let subcategories;
+
+            if (defaultItem.subcategories.length) {
+                subcategories = defaultItem.subcategories.map((defaultSub) => {
+                    const savedSub = savedSubs.find((sub) => sub.id === defaultSub.id)
+                        || savedSubs.find((sub) => sub.label === defaultSub.label);
+                    if (!savedSub) {
+                        return defaultSub;
+                    }
+                    return createMainNavSubcategory({
+                        ...defaultSub,
+                        ...savedSub,
+                        id: defaultSub.id,
+                    }, 0, defaultItem.id);
+                });
+
+                savedSubs.forEach((savedSub, index) => {
+                    if (!subcategories.some((sub) => sub.id === savedSub.id)) {
+                        subcategories.push(createMainNavSubcategory(savedSub, index, defaultItem.id));
+                    }
+                });
+            } else {
+                subcategories = savedSubs.map((sub, index) => createMainNavSubcategory(sub, index, defaultItem.id));
+            }
+
+            return createMainNavItem({
+                id: defaultItem.id,
+                label: savedItem.label || defaultItem.label,
+                url: savedItem.url || defaultItem.url || '',
+                subcategories,
+            });
+        });
+    }
+
+    function getMainNavCategory(navId) {
+        return state.mainNavItems.find((item) => item.id === navId);
+    }
+
+    function getMainNavSubcategory(navId, subId) {
+        const category = getMainNavCategory(navId);
+        if (!category) return null;
+        return category.subcategories.find((sub) => sub.id === subId) || null;
+    }
+
+    function renderMainNavSubEditor(navId, sub) {
+        return (
+            `<div class="editor-main-nav-sub-item" data-sub-id="${sub.id}" data-nav-id="${navId}">
+                <div class="editor-main-nav-sub-item-head">
+                    <label class="editor-toggle editor-toggle--compact">
+                        <input type="checkbox" data-sub-field="visible" data-sub-id="${sub.id}" data-nav-id="${navId}"${sub.visible !== false ? ' checked' : ''}>
+                        Show in dropdown
+                    </label>
+                    <button type="button" class="editor-footer-link-remove" data-action="remove-main-nav-sub">Remove</button>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label>Subcategory name</label>
+                    <input type="text" value="${escapeHtml(sub.label)}" data-sub-field="label" data-sub-id="${sub.id}" data-nav-id="${navId}" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label>URL</label>
+                    <input type="text" value="${escapeHtml(sub.url)}" data-sub-field="url" data-sub-id="${sub.id}" data-nav-id="${navId}" placeholder="/lighting-fixtures/..." autocomplete="off">
+                </div>
+            </div>`
+        );
+    }
+
+    function renderMainNavEditor() {
+        if (!mainNavEditor) return;
+
+        mainNavEditor.innerHTML = state.mainNavItems.map((category, categoryIndex) => (
+            `<fieldset class="editor-fieldset editor-main-nav-category" data-nav-id="${category.id}">
+                <legend>${escapeHtml(category.label || `Category ${categoryIndex + 1}`)}</legend>
+                <div class="editor-field editor-field--compact">
+                    <label>Category name</label>
+                    <input type="text" value="${escapeHtml(category.label)}" data-nav-field="label" data-nav-id="${category.id}" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label>Category link</label>
+                    <input type="text" value="${escapeHtml(category.url || '')}" data-nav-field="url" data-nav-id="${category.id}" placeholder="/lighting-fixtures/fans" autocomplete="off">
+                </div>
+                ${category.subcategories.length
+                    ? '<p class="editor-field-hint editor-field-hint--fieldset">Edit subcategory names and URLs. Uncheck any you want hidden from the dropdown.</p>'
+                    : '<p class="editor-field-hint editor-field-hint--fieldset">No subcategories yet — add links for this dropdown when ready.</p>'}
+                <div class="editor-main-nav-subs" data-nav-id="${category.id}">
+                    ${category.subcategories.map((sub) => renderMainNavSubEditor(category.id, sub)).join('')}
+                </div>
+                <button type="button" class="btn btn-secondary editor-add-item-btn editor-main-nav-add-sub" data-nav-id="${category.id}">Add subcategory</button>
+            </fieldset>`
+        )).join('');
+    }
+
+    function readMainNavFromEditor() {
+        if (!mainNavEditor) return;
+
+        state.mainNavItems.forEach((category) => {
+            const labelInput = mainNavEditor.querySelector(`[data-nav-field="label"][data-nav-id="${category.id}"]`);
+            if (labelInput) {
+                category.label = labelInput.value.trim() || category.label;
+            }
+
+            const urlInput = mainNavEditor.querySelector(`[data-nav-field="url"][data-nav-id="${category.id}"]`);
+            if (urlInput) {
+                category.url = urlInput.value.trim();
+            }
+
+            category.subcategories.forEach((sub) => {
+                mainNavEditor.querySelectorAll(`[data-sub-field][data-nav-id="${category.id}"][data-sub-id="${sub.id}"]`).forEach((input) => {
+                    const field = input.dataset.subField;
+                    if (field === 'visible') {
+                        sub.visible = input.checked;
+                    } else if (field) {
+                        sub[field] = input.value.trim();
+                    }
+                });
+            });
+        });
+    }
+
+    function saveMainNavDraft(reRenderEditor = false) {
+        readMainNavFromEditor();
+        if (reRenderEditor) {
+            renderMainNavEditor();
+        }
+        syncHeaderPreview();
+        saveState();
+    }
+
+    function addMainNavSubcategory(navId) {
+        readMainNavFromEditor();
+        const category = getMainNavCategory(navId);
+        if (!category) return;
+
+        category.subcategories.push(createMainNavSubcategory({
+            label: 'New subcategory',
+            url: '/',
+        }, category.subcategories.length, navId));
+
+        renderMainNavEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Subcategory added');
+    }
+
+    function removeMainNavSubcategory(navId, subId) {
+        readMainNavFromEditor();
+        const category = getMainNavCategory(navId);
+        if (!category) return;
+
+        category.subcategories = category.subcategories.filter((sub) => sub.id !== subId);
+        renderMainNavEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Subcategory removed');
+    }
+
+    function bindMainNavEditorEvents() {
+        if (!mainNavEditor) return;
+
+        mainNavEditor.addEventListener('input', (event) => {
+            if (event.target.matches('[data-nav-field="label"]')) {
+                const fieldset = event.target.closest('.editor-main-nav-category');
+                const legend = fieldset?.querySelector('legend');
+                if (legend) {
+                    legend.textContent = event.target.value.trim() || 'Category';
+                }
+            }
+            if (event.target.matches('[data-nav-field], [data-sub-field]:not([data-sub-field="visible"])')) {
+                saveMainNavDraft(false);
+            }
+        });
+
+        mainNavEditor.addEventListener('change', (event) => {
+            if (event.target.matches('[data-sub-field="visible"]')) {
+                saveMainNavDraft(false);
+            }
+        });
+
+        mainNavEditor.addEventListener('click', (event) => {
+            const addButton = event.target.closest('.editor-main-nav-add-sub');
+            if (addButton?.dataset.navId) {
+                addMainNavSubcategory(addButton.dataset.navId);
+                return;
+            }
+
+            const removeButton = event.target.closest('[data-action="remove-main-nav-sub"]');
+            if (!removeButton) return;
+
+            const wrap = removeButton.closest('[data-nav-id][data-sub-id]');
+            if (wrap) {
+                removeMainNavSubcategory(wrap.dataset.navId, wrap.dataset.subId);
+            }
+        });
+    }
+
+    function bindHeaderBannerEditorEvents() {
+        if (headerBannerLinksEditor) {
+            headerBannerLinksEditor.addEventListener('input', (event) => {
+                if (event.target.matches('[data-field]')) {
+                    saveHeaderBannerLinksDraft();
+                }
+            });
+
+            headerBannerLinksEditor.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-action="remove-footer-link"]');
+                if (!button) return;
+                const wrap = button.closest('[data-item-id]');
+                if (wrap) removeHeaderBannerLink(wrap.dataset.itemId);
+            });
+        }
+
+        if (addHeaderBannerLinkBtn) {
+            addHeaderBannerLinkBtn.addEventListener('click', addHeaderBannerLink);
+        }
+
+        if (fields.headerBannerBackgroundColor) {
+            fields.headerBannerBackgroundColor.addEventListener('input', readForm);
+        }
+    }
+
+    function syncHeaderPreview() {
+        applyImage(previewHeaderLogo, previewHeaderLogoWrap, state.footerLogoImage);
+
+        const bannerBg = normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
+        if (previewHeaderBanner) {
+            previewHeaderBanner.style.backgroundColor = bannerBg;
+        }
+
+        if (previewHeaderBannerLinks) {
+            const visibleBannerLinks = (state.headerBannerLinks || []).filter((link) => link.label || link.url);
+            previewHeaderBannerLinks.innerHTML = visibleBannerLinks.map((link, index) => {
+                const url = escapeHtml(link.url || '#');
+                const label = escapeHtml(link.label || 'Link');
+                const separator = index > 0
+                    ? '<span class="showroom-header-banner-sep" aria-hidden="true">|</span>'
+                    : '';
+                return `${separator}<a href="${url}">${label}</a>`;
+            }).join('');
+        }
+
+        if (previewHeaderIcons) {
+            previewHeaderIcons.innerHTML = HEADER_TOOLBAR_ICONS.map((item) => {
+                const url = escapeHtml(item.url || '#');
+                return (
+                    `<a href="${url}" class="showroom-header-icon-btn" aria-label="${escapeHtml(item.label)}" title="${escapeHtml(item.label)}"><i class="${item.iconClass}" aria-hidden="true"></i></a>`
+                );
+            }).join('');
+        }
+
+        if (previewMainNav) {
+            previewMainNav.innerHTML = (
+                `<ul class="showroom-main-nav-list">${state.mainNavItems.map((item) => {
+                    const visibleSubcategories = (item.subcategories || []).filter((sub) => sub.visible !== false);
+                    const dropdownMarkup = visibleSubcategories.length
+                        ? `<ul class="showroom-main-nav-dropdown">${visibleSubcategories.map((sub) => {
+                            const url = escapeHtml(sub.url || '#');
+                            const label = escapeHtml(sub.label || 'Link');
+                            return `<li><a href="${url}">${label}</a></li>`;
+                        }).join('')}</ul>`
+                        : `<ul class="showroom-main-nav-dropdown showroom-main-nav-dropdown--empty" aria-hidden="true"><li><span class="showroom-main-nav-dropdown-placeholder">Subcategories coming soon</span></li></ul>`;
+
+                    const categoryUrl = String(item.url || '').trim();
+                    const label = escapeHtml(item.label || 'Category');
+                    const triggerLabel = categoryUrl
+                        ? `<a href="${escapeHtml(categoryUrl)}" class="showroom-main-nav-label-link">${label}</a>`
+                        : `<span class="showroom-main-nav-label">${label}</span>`;
+
+                    return (
+                        `<li class="showroom-main-nav-item has-dropdown">
+                            <div class="showroom-main-nav-trigger" aria-haspopup="true">
+                                ${triggerLabel}
+                                <i class="fa-solid fa-chevron-down showroom-main-nav-caret" aria-hidden="true"></i>
+                            </div>
+                            ${dropdownMarkup}
+                        </li>`
+                    );
+                }).join('')}</ul>`
+            );
+        }
     }
 
     function footerTelHref(phone) {
@@ -1361,7 +1927,9 @@
         const visible = FEATURED_CATEGORIES.filter((category) => state.featuredCategories[category.id]);
         preview.categoriesGrid.innerHTML = visible.map((category) => (
             `<article class="showroom-category-card">
-                <div class="showroom-category-card-thumb" aria-hidden="true"></div>
+                <div class="showroom-category-card-thumb" aria-hidden="true">
+                    <img src="${FEATURED_CATEGORY_IMAGE_DIR}${category.imageFile}" alt="">
+                </div>
                 <span class="showroom-category-card-label">${escapeHtml(category.label)}</span>
             </article>`
         )).join('');
@@ -1475,8 +2043,32 @@
         if (fields.footerAddress) state.footerAddress = fields.footerAddress.value.trim() || DEFAULT_FOOTER_ADDRESS;
         if (fields.footerPhone) state.footerPhone = fields.footerPhone.value.trim() || DEFAULT_FOOTER_PHONE;
         if (fields.footerCopyrightName) state.footerCopyrightName = fields.footerCopyrightName.value.trim();
+        readHeaderBannerLinksFromEditor();
+        readMainNavFromEditor();
+        if (fields.headerBannerBackgroundColor) {
+            state.headerBannerBackgroundColor = normalizeHex(fields.headerBannerBackgroundColor.value || DEFAULT_HEADER_BANNER_BG);
+            fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
+            if (fields.headerBannerBackgroundColorValue) {
+                fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+            }
+        }
         syncPreview();
         saveState();
+    }
+
+    function populateHeaderFields(data) {
+        state.headerBannerBackgroundColor = normalizeHex(data.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
+        state.headerBannerLinks = migrateHeaderBannerLinks(data);
+        state.mainNavItems = migrateMainNavItems(data);
+
+        renderHeaderBannerLinksEditor();
+        renderMainNavEditor();
+        if (fields.headerBannerBackgroundColor) {
+            fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
+            if (fields.headerBannerBackgroundColorValue) {
+                fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+            }
+        }
     }
 
     function populateFooterFields(data) {
@@ -1605,6 +2197,7 @@
         }
         populateYouMayLikeFields(data);
         populateGetInspiredFields(data);
+        populateHeaderFields(data);
         populateFooterFields(data);
         syncCategoryCheckboxes();
         syncPreview();
@@ -1746,6 +2339,15 @@
         }
     }
 
+    async function loadFeaturedCategoryAssetsForExport() {
+        return Promise.all(FEATURED_CATEGORIES.map(async (category) => ({
+            filename: `featured-categories/${category.imageFile}`,
+            label: `Featured category — ${category.label}`,
+            dimensions: '70 × 70 px',
+            dataUrl: await fetchAssetAsDataUrl(`${FEATURED_CATEGORY_IMAGE_DIR}${category.imageFile}`),
+        })));
+    }
+
     async function loadSketchAssetsForExport() {
         return Promise.all(SKETCH_CARDS.map(async (card) => ({
             filename: card.imageFile,
@@ -1770,6 +2372,7 @@
         setExportLoading(true);
         readYouMayLikeFieldsFromEditor();
         readGetInspiredFieldsFromEditor();
+        readMainNavFromEditor();
         syncPreview();
         const prevTransform = previewRoot.style.transform;
         const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
@@ -1783,12 +2386,14 @@
         }
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         try {
+            const featuredCategoryAssets = await loadFeaturedCategoryAssetsForExport();
             const sketchAssets = state.sketchSectionVisible
                 ? await loadSketchAssetsForExport()
                 : [];
             const youMayLikeAssets = await loadYouMayLikeAssetsForExport();
             const getInspiredCardAssets = await loadGetInspiredCardAssetsForExport();
             await window.exportShowroomHandoff({
+                headerEl: headerRoot,
                 heroEl: heroRoot,
                 categoriesEl: categoriesRoot,
                 aboutEl: aboutRoot,
@@ -1807,9 +2412,59 @@
                     productImageSize: '563 × 342 px',
                     lifestyleImageSize: '854 × 670 px min',
                     shopAllUrl: state.shopAllUrl,
+                    featuredCategoryImageDirectory: FEATURED_CATEGORY_IMAGE_DIR,
+                    featuredCategoryThumbnailSize: '70 × 70 px',
+                    featuredCategoryCardSize: '300 × 70 px',
+                    featuredCategoryImagesHardcoded: true,
                     featuredCategories: FEATURED_CATEGORIES
                         .filter((category) => state.featuredCategories[category.id])
-                        .map((category) => ({ id: category.id, label: category.label })),
+                        .map((category) => ({
+                            id: category.id,
+                            label: category.label,
+                            imageFile: category.imageFile,
+                        })),
+                    header: {
+                        logoSharedWithFooter: true,
+                        logoDimensions: 'max 180 × 56 px in header · max 240 × 80 px in footer',
+                        banner: {
+                            height: '70 px',
+                            backgroundColor: state.headerBannerBackgroundColor,
+                            textColor: '#ffffff',
+                            alignment: 'right',
+                            separator: '|',
+                            links: state.headerBannerLinks.map((link) => ({
+                                label: link.label,
+                                url: link.url,
+                            })),
+                        },
+                        toolbar: {
+                            layout: 'search left · logo center · icons right',
+                            searchBarHardcoded: true,
+                            iconsHardcoded: true,
+                            icons: HEADER_TOOLBAR_ICONS.map((item) => ({
+                                id: item.id,
+                                label: item.label,
+                                iconClass: item.iconClass,
+                                url: item.url,
+                            })),
+                        },
+                        mainNav: {
+                            editable: true,
+                            hasDropdowns: true,
+                            subcategoriesPending: mainNavSubcategoriesPending(),
+                            items: state.mainNavItems.map((item) => ({
+                                id: item.id,
+                                label: item.label,
+                                url: item.url || '',
+                                subcategories: (item.subcategories || []).map((sub) => ({
+                                    id: sub.id,
+                                    label: sub.label,
+                                    url: sub.url,
+                                    visible: sub.visible !== false,
+                                })),
+                            })),
+                        },
+                    },
                     aboutUs: {
                         header: state.aboutHeader,
                         paragraph: state.aboutParagraph,
@@ -1951,6 +2606,7 @@
                         dimensions: '780 × 1014 px',
                         dataUrl: state.featureRightImage || '',
                     },
+                    ...featuredCategoryAssets,
                     ...sketchAssets,
                     ...youMayLikeAssets,
                     {
@@ -1962,7 +2618,7 @@
                     ...getInspiredCardAssets,
                     {
                         filename: 'footer-logo.png',
-                        label: 'Footer company logo',
+                        label: 'Company logo (header + footer)',
                         dimensions: 'max 240 × 80 px',
                         dataUrl: state.footerLogoImage || '',
                     },
@@ -1995,6 +2651,8 @@
         bindPreviewScroll();
         bindYouMayLikeEditorEvents();
         bindGetInspiredEditorEvents();
+        bindHeaderBannerEditorEvents();
+        bindMainNavEditorEvents();
         bindFooterLinksEditorEvents();
 
         const saved = loadState();
