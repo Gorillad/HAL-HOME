@@ -9,7 +9,6 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         categoriesEl,
         aboutEl,
         featureTilesEl,
-        sketchSectionEl,
         youMayLikeEl,
         getInspiredEl,
         footerEl,
@@ -29,7 +28,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     const doc = new JsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
     const margin = 48;
-    const labelColW = 118;
+    const labelColW = 210;
+    const specColGap = 12;
     const previewEdge = 28;
     const previewLabelH = 12;
     let pageW = doc.internal.pageSize.getWidth();
@@ -169,19 +169,31 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         y += blockH + gap;
     }
 
+    function pdfAscii(text) {
+        return String(text ?? '')
+            .replace(/\u2014/g, ' - ')
+            .replace(/\u2192/g, '->')
+            .replace(/\u00b7/g, ' | ');
+    }
+
     function writeSpecRows(rows) {
+        const valueColW = contentW - labelColW - specColGap;
+
         for (const [label, value] of rows) {
-            const valueLines = doc.splitTextToSize(String(value ?? '—'), contentW - labelColW);
-            const rowH = Math.max(lineHeight(10), textBlockHeight(valueLines, 10)) + 8;
+            const labelLines = doc.splitTextToSize(`${pdfAscii(label)}:`, labelColW);
+            const valueLines = doc.splitTextToSize(pdfAscii(value ?? '-'), valueColW);
+            const labelH = textBlockHeight(labelLines, 10);
+            const valueH = textBlockHeight(valueLines, 10);
+            const rowH = Math.max(labelH, valueH) + 8;
             ensureSpace(rowH);
 
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${label}:`, margin, y);
+            doc.text(labelLines, margin, y);
 
             doc.setFont('helvetica', 'normal');
-            doc.text(valueLines, margin + labelColW, y);
+            doc.text(valueLines, margin + labelColW + specColGap, y);
 
             y += rowH;
         }
@@ -240,6 +252,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         clonedDoc.querySelectorAll('.showroom-hero-copy, .showroom-feature-card-overlay').forEach((panel) => {
             panel.style.overflow = 'hidden';
         });
+    }
+
+    function isCapturable(el) {
+        if (!el || el.hidden) return false;
+        const style = window.getComputedStyle(el);
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        const rect = el.getBoundingClientRect();
+        return rect.width > 1 && rect.height > 1;
     }
 
     async function captureElement(el) {
@@ -338,7 +358,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     writeLines('Showroom Homepage — Developer Handoff', { bold: true, size: 18, gap: 10 });
     writeLines(`Generated ${new Date().toLocaleString()}`, { size: 9, color: [90, 90, 90], gap: 14 });
     writeLines(
-        'This PDF lists copy, links, and layout notes. Section previews and uploaded assets follow on separate pages. Full image files are also in the ZIP.',
+        'This PDF lists copy, links, and layout notes. Section layout previews follow on separate pages.',
+        { size: 9, color: [90, 90, 90], gap: 6 },
+    );
+    writeLines(
+        'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
         { size: 9, color: [90, 90, 90], gap: 16 },
     );
 
@@ -354,7 +378,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         { size: 9, color: [140, 30, 30], gap: 8 },
     );
     writeLines(
-        'Copy from the code block below or use footer-copyright-snippet.html in the ZIP.',
+        'Copy from the code block below or use spec/footer-copyright-snippet.html in the ZIP.',
         { size: 9, color: [90, 90, 90], gap: 8 },
     );
     writeSpecRows([
@@ -393,8 +417,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Search placeholder', headerToolbar.searchPlaceholder || 'Enter Keyword or Item#'],
         ['Search style', headerToolbar.searchStyle || 'Single bottom border underline'],
         ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
-        ['Header logo', header.logoFilename || 'header-logo.png'],
         ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
+        ['Header logo in handoff', 'No — upload separately'],
         ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
     ]);
     const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
@@ -452,23 +476,25 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['CTA button background', spec.heroCtaBackgroundColor || spec.copyBackgroundColor || '#44301f'],
         ['CTA button text', spec.heroCtaTextColor || '#ffffff'],
         ['Copy background', spec.copyBackgroundColor],
-        ['Product image', spec.productImageSize || '563 × 342 px'],
-        ['Lifestyle image', spec.lifestyleImageSize || '854 × 670 px min'],
+        ['Hero images in handoff', 'No — upload separately'],
+        ['Product image size', spec.productImageSize || '563 × 342 px'],
+        ['Lifestyle image size', spec.lifestyleImageSize || '854 × 670 px min'],
     ]);
 
     writeSectionTitle('Featured Categories');
-    const visibleCategories = spec.featuredCategories || [];
+    const featuredCategoryList = Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [];
+    const visibleCategoryCount = featuredCategoryList.filter((category) => category.visible !== false).length;
     writeSpecRows([
         ['Shop All link', spec.shopAllUrl || '/catalog'],
         ['Card size', spec.featuredCategoryCardSize || '300 × 70 px'],
         ['Thumbnail size', spec.featuredCategoryThumbnailSize || '70 × 70 px'],
-        ['Category images', spec.featuredCategoryImagesHardcoded ? 'Hardcoded — not editable in template' : '—'],
-        ['Image directory', spec.featuredCategoryImageDirectory || 'editor/classic/featured-categories/'],
-        ['Visible count', String(visibleCategories.length)],
+        ['Category images in handoff', 'No — thumbnails are hardcoded in the template'],
+        ['Visible on site', `${visibleCategoryCount} of ${featuredCategoryList.length}`],
     ]);
-    if (visibleCategories.length) {
-        writeItemList(visibleCategories, (category) => (
-            `${category.label || category.id || '—'} · ${category.imageFile || '—'}`
+    if (featuredCategoryList.length) {
+        writeLines('Category visibility', { bold: true, size: 10, gap: 4 });
+        writeItemList(featuredCategoryList, (category) => (
+            `${category.label || category.id || '—'} · ${category.visible !== false ? 'Visible' : 'Hidden'}`
         ));
     }
 
@@ -479,7 +505,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     writeSpecRows([
         ['Header', aboutUs.header],
         ['Paragraph', aboutUs.paragraph],
-        ['Employee photo', aboutUs.employeeImageSize || '417 × 282 px'],
+        ['Employee photo size', aboutUs.employeeImageSize || '417 × 282 px'],
+        ['Employee photo in handoff', 'Yes — about-employee-image.png'],
         ['Primary button', pdfLinkLine(primaryButton.label, primaryButton.url)],
         ['Secondary button', pdfLinkLine(secondaryButton.label, secondaryButton.url)],
         ['Button background', aboutUs.buttonBackgroundColor || '#2b2b2b'],
@@ -494,6 +521,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const rightButton = featureRight.button || {};
     writeSpecRows([
         ['Photo size', featureTiles.imageSize || '780 × 1014 px'],
+        ['Feature photos in handoff', 'Yes — feature-left-image.png and feature-right-image.png'],
         ['Left header', featureLeft.header],
         ['Left copy', featureLeft.paragraph],
         ['Left button visible', leftButton.visible !== false ? 'Yes' : 'No'],
@@ -506,19 +534,6 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Button text', featureTiles.buttonTextColor || '#ffffff'],
     ]);
 
-    writeSectionTitle('Sketch Section');
-    const sketchSection = spec.sketchSection || {};
-    const sketchCards = sketchSection.cards || [];
-    writeSpecRows([
-        ['Visible', sketchSection.visible !== false ? 'Yes' : 'No'],
-        ['Icon size', sketchSection.imageSize || '180 × 78 px'],
-    ]);
-    if (sketchSection.visible !== false) {
-        writeItemList(sketchCards, (card, index) => (
-            `${index + 1}. ${card.header || '—'} — ${card.imageFile || '—'}`
-        ));
-    }
-
     writeSectionTitle('You May Like');
     const youMayLike = spec.youMayLike || {};
     const youMayLikeItems = youMayLike.items || [];
@@ -526,6 +541,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Title', youMayLike.title || 'You May Like'],
         ['Image size', youMayLike.imageSize || '500 × 750 px'],
         ['Product count', String(youMayLike.itemCount || youMayLikeItems.length || 0)],
+        ['Product images in handoff', 'Yes — one file per configured item'],
         ['Live site', 'Title, name, and price from You May Like dashboard attribute'],
     ]);
     writeItemList(youMayLikeItems, (item) => (
@@ -537,8 +553,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const getInspiredItems = getInspired.items || [];
     writeSpecRows([
         ['Title', getInspired.title || 'Get Inspired'],
-        ['Lifestyle (left)', getInspired.lifestyleImageSize || '508 × 610 px'],
-        ['Grid cards', getInspired.cardImageSize || '155 × 155 px'],
+        ['Lifestyle photo size', getInspired.lifestyleImageSize || '508 × 610 px'],
+        ['Lifestyle photo in handoff', 'Yes — get-inspired-lifestyle.png'],
+        ['Grid card size', getInspired.cardImageSize || '155 × 155 px'],
+        ['Grid card images in handoff', 'No — resolved from catalog on the live site'],
         ['Live site', 'Name, price, and image from You May Like dashboard attribute'],
     ]);
     writeItemList(getInspiredItems, (item) => (
@@ -557,8 +575,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         return `${entry.url || '—'} (${status})`;
     };
     writeSpecRows([
-        ['Footer logo', footer.logoUseHeader !== false ? 'Same as header (header-logo.png)' : (footer.logoFilename || 'footer-logo.png')],
+        ['Footer logo', footer.logoUseHeader !== false ? 'Same as header logo' : (footer.logoFilename || 'footer-logo.png')],
         ['Footer logo size', footer.logoDimensions || 'max 280 × 94 px'],
+        ['Footer logo in handoff', footer.logoUseHeader !== false
+            ? 'No — uses header logo'
+            : 'Yes — footer-logo.png'],
         ['Email', footer.email],
         ['Company', footer.companyName],
         ['Address', footer.address],
@@ -587,13 +608,16 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         );
     }
 
-    writeSectionTitle('ZIP assets');
-    const includedAssets = assets.filter((asset) => asset.dataUrl);
+    writeSectionTitle('Handoff images');
+    const includedAssets = assets.filter(
+        (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
+    );
     if (!includedAssets.length) {
-        writeLines('No images uploaded in this draft.', { size: 9, color: [90, 90, 90], gap: 8 });
+        writeLines('No client images are included in this handoff.', { size: 9, color: [90, 90, 90], gap: 8 });
     } else {
+        writeLines('These files are included in the ZIP and shown on the following pages.', { size: 9, color: [90, 90, 90], gap: 6 });
         writeItemList(includedAssets, (asset, index) => (
-            `${index + 1}. ${asset.filename} — ${asset.label} (${asset.dimensions})`
+            `${index + 1}. images/${asset.filename} — ${asset.label} (${asset.dimensions})`
         ));
     }
 
@@ -603,31 +627,28 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         throw new Error('Nothing to capture for hero preview.');
     }
 
-    if (headerEl) {
+    if (isCapturable(headerEl)) {
         await appendCanvasPreview(await captureElement(headerEl), 'Preview — Header');
     }
 
     await appendCanvasPreview(await captureElement(heroTarget), 'Preview — Hero');
 
-    if (categoriesEl) {
+    if (isCapturable(categoriesEl)) {
         await appendCanvasPreview(await captureElement(categoriesEl), 'Preview — Featured Categories');
     }
-    if (aboutEl) {
+    if (isCapturable(aboutEl)) {
         await appendCanvasPreview(await captureElement(aboutEl), 'Preview — About Us');
     }
-    if (featureTilesEl) {
+    if (isCapturable(featureTilesEl)) {
         await appendCanvasPreview(await captureElement(featureTilesEl), 'Preview — Feature Cards');
     }
-    if (sketchSectionEl && sketchSection.visible !== false) {
-        await appendCanvasPreview(await captureElement(sketchSectionEl), 'Preview — Sketch Section');
-    }
-    if (youMayLikeEl) {
+    if (isCapturable(youMayLikeEl)) {
         await appendCanvasPreview(await captureElement(youMayLikeEl), 'Preview — You May Like');
     }
-    if (getInspiredEl) {
+    if (isCapturable(getInspiredEl)) {
         await appendCanvasPreview(await captureElement(getInspiredEl), 'Preview — Get Inspired');
     }
-    if (footerEl) {
+    if (isCapturable(footerEl)) {
         await appendCanvasPreview(await captureElement(footerEl), 'Preview — Footer');
     }
 
@@ -637,13 +658,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     const pdfBlob = doc.output('blob');
-
-    const zip = new JSZip();
-    zip.file(pdfFilename, pdfBlob);
+    const handoffImageZipPath = (filename) => `images/${filename}`;
 
     const specJson = {
         template: spec.template || 'Showroom',
-        sections: ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'sketch-section', 'you-may-like', 'get-inspired', 'footer'],
+        sections: ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
         generatedAt: new Date().toISOString(),
         adaCompliance: {
             required: true,
@@ -651,7 +670,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             companyName: adaCompanyName,
             markup: adaPasteMarkup,
             popupAttribute: footerForAda.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px',
-            snippetFile: 'footer-copyright-snippet.html',
+            snippetFile: 'spec/footer-copyright-snippet.html',
         },
         copy: {
             title: spec.title || '',
@@ -667,6 +686,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             logo: {
                 filename: header.logoFilename || 'header-logo.png',
                 dimensions: header.logoDimensions || 'max 220 × 68 px',
+                includedInHandoff: false,
             },
             contentColumnWidth: header.contentColumnWidth || '1429 px',
             banner: {
@@ -708,9 +728,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             shopAllUrl: spec.shopAllUrl || '/catalog',
             cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
             thumbnailSize: spec.featuredCategoryThumbnailSize || '70 × 70 px',
-            imageDirectory: spec.featuredCategoryImageDirectory || 'editor/classic/featured-categories/',
             imagesHardcoded: spec.featuredCategoryImagesHardcoded !== false,
-            visible: spec.featuredCategories || [],
+            imagesIncludedInHandoff: false,
+            categories: Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [],
         },
         aboutUs: {
             header: aboutUs.header || '',
@@ -718,6 +738,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             employeeImage: {
                 filename: 'about-employee-image.png',
                 dimensions: aboutUs.employeeImageSize || '417 × 282 px',
+                includedInHandoff: true,
             },
             buttonBackgroundColor: aboutUs.buttonBackgroundColor || '#2b2b2b',
             buttonTextColor: aboutUs.buttonTextColor || '#ffffff',
@@ -737,7 +758,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             left: {
                 header: featureLeft.header || '',
                 paragraph: featureLeft.paragraph || '',
-                image: { filename: 'feature-left-image.png', dimensions: featureTiles.imageSize || '780 × 1014 px' },
+                image: {
+                    filename: 'feature-left-image.png',
+                    dimensions: featureTiles.imageSize || '780 × 1014 px',
+                    includedInHandoff: true,
+                },
                 button: {
                     label: leftButton.label || '',
                     url: leftButton.url || '',
@@ -747,7 +772,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             right: {
                 header: featureRight.header || '',
                 paragraph: featureRight.paragraph || '',
-                image: { filename: 'feature-right-image.png', dimensions: featureTiles.imageSize || '780 × 1014 px' },
+                image: {
+                    filename: 'feature-right-image.png',
+                    dimensions: featureTiles.imageSize || '780 × 1014 px',
+                    includedInHandoff: true,
+                },
                 button: {
                     label: rightButton.label || '',
                     url: rightButton.url || '',
@@ -755,20 +784,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 },
             },
         },
-        sketchSection: {
-            visible: sketchSection.visible !== false,
-            imageSize: sketchSection.imageSize || '180 × 78 px',
-            imageDirectory: sketchSection.imageDirectory || 'editor/classic/sketch-section/',
-            cards: sketchCards.map((card) => ({
-                id: card.id || '',
-                imageFile: card.imageFile || '',
-                header: card.header || '',
-                paragraph: card.paragraph || '',
-            })),
-        },
         youMayLike: {
             title: youMayLike.title || 'You May Like',
             imageSize: youMayLike.imageSize || '500 × 750 px',
+            imagesIncludedInHandoff: true,
             catalogResolvedOnLiveSite: youMayLike.catalogResolvedOnLiveSite !== false,
             items: youMayLikeItems.map((item) => ({
                 itemNumber: item.itemNumber || '',
@@ -782,9 +801,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             lifestyleImage: {
                 filename: 'get-inspired-lifestyle.png',
                 dimensions: getInspired.lifestyleImageSize || '508 × 610 px',
+                includedInHandoff: true,
             },
             cardImageSize: getInspired.cardImageSize || '155 × 155 px',
             gridLayout: getInspired.gridLayout || '4 columns × 2 rows',
+            gridImagesIncludedInHandoff: false,
             imageDirectory: getInspired.imageDirectory || 'editor/classic/get-inspired/',
             catalogResolvedOnLiveSite: getInspired.catalogResolvedOnLiveSite !== false,
             items: getInspiredItems.map((item) => ({
@@ -800,6 +821,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             logo: {
                 filename: footer.logoFilename || 'footer-logo.png',
                 dimensions: footer.logoDimensions || 'max 280 × 94 px',
+                includedInHandoff: footer.logoUseHeader === false,
             },
             email: footer.email || '',
             companyName: footer.companyName || '',
@@ -830,43 +852,75 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             quickLinks: footerQuickLinks,
             policies: footerPolicies,
         },
+        imageHandoffPolicy: {
+            headerLogo: false,
+            heroImages: false,
+            featuredCategoryThumbnails: false,
+            aboutEmployeePhoto: true,
+            featureCardPhotos: true,
+            youMayLikePhotos: true,
+            getInspiredLifestylePhoto: true,
+            getInspiredGridPhotos: false,
+            footerLogoOnlyWhenDifferentFromHeader: true,
+        },
         slots: {
-            product: { filename: 'product-image.png', dimensions: spec.productImageSize || '563 × 342 px' },
-            lifestyle: { filename: 'lifestyle-image.png', dimensions: spec.lifestyleImageSize || '854 × 670 px min' },
+            product: {
+                filename: 'product-image.png',
+                dimensions: spec.productImageSize || '563 × 342 px',
+                includedInHandoff: false,
+            },
+            lifestyle: {
+                filename: 'lifestyle-image.png',
+                dimensions: spec.lifestyleImageSize || '854 × 670 px min',
+                includedInHandoff: false,
+            },
         },
         assets: assets.map((a) => ({
             filename: a.filename,
+            zipPath: a.dataUrl && String(a.dataUrl).startsWith('data:')
+                ? handoffImageZipPath(a.filename)
+                : null,
             label: a.label,
             dimensions: a.dimensions,
-            included: Boolean(a.dataUrl),
+            included: Boolean(a.dataUrl && String(a.dataUrl).startsWith('data:')),
         })),
     };
 
-    zip.file('homepage-spec.json', JSON.stringify(specJson, null, 2));
     const adaSnippetFile = [
         '<!-- REQUIRED: Paste at the very bottom of every website footer. -->',
         adaPasteMarkup,
         '',
     ].join('\n');
 
-    zip.file('footer-copyright-snippet.html', adaSnippetFile);
-    zip.file('README.txt', [
+    const readmeText = [
         'Showroom Homepage — Developer Handoff',
         '=====================================',
         '',
         'REQUIRED — ADA compliance footer (all websites)',
-        'Place footer-copyright-snippet.html markup at the very bottom of every site footer.',
+        'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
         '',
-        `${pdfFilename} — Copy spec (header, main nav, all sections), layout previews, and uploaded assets`,
-        'homepage-spec.json — Machine-readable spec',
-        'footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+        `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
+        '2. images/ — Client image files referenced in the PDF',
+        '3. spec/homepage-spec.json — Machine-readable spec',
+        '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
         '',
-        'Image files in this ZIP match the filenames listed in the PDF spec.',
-    ].join('\n'));
+        'Handoff image files (when present): About Us employee photo, feature card photos,',
+        'You May Like product images, Get Inspired lifestyle photo, and footer logo only when',
+        'it differs from the header logo. Header logo, hero images, and featured category',
+        'thumbnails are not included — upload those separately.',
+    ].join('\n');
+
+    const zip = new JSZip();
+    zip.file(pdfFilename, pdfBlob);
 
     for (const asset of includedAssets) {
-        zip.file(asset.filename, dataUrlToBlob(asset.dataUrl));
+        if (!String(asset.dataUrl).startsWith('data:')) continue;
+        zip.file(handoffImageZipPath(asset.filename), dataUrlToBlob(asset.dataUrl));
     }
+
+    zip.file('spec/homepage-spec.json', JSON.stringify(specJson, null, 2));
+    zip.file('spec/footer-copyright-snippet.html', adaSnippetFile);
+    zip.file('spec/README.txt', readmeText);
 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     downloadBlob(zipBlob, zipFilename);
@@ -902,7 +956,12 @@ function detectImageFormat(dataUrl) {
 }
 
 function dataUrlToBlob(dataUrl) {
-    const [header, base64] = dataUrl.split(',');
+    if (!dataUrl || !String(dataUrl).startsWith('data:')) {
+        throw new Error('Invalid asset data URL.');
+    }
+    const commaIndex = dataUrl.indexOf(',');
+    const header = dataUrl.slice(0, commaIndex);
+    const base64 = dataUrl.slice(commaIndex + 1);
     const mime = (header.match(/:(.*?);/) || [])[1] || 'application/octet-stream';
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);

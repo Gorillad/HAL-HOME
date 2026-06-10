@@ -6,7 +6,7 @@
     <title>Showroom Homepage Editor — LogicXO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link href="css/editor.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -20,7 +20,7 @@
             <div class="editor-toolbar-title">
                 <div class="editor-toolbar-heading">
                     <h1>Showroom editor</h1>
-                    <span class="editor-template-name" id="editorTemplateName">Classic</span>
+                    <span class="editor-template-name" id="editorTemplateName">McQueen</span>
                 </div>
                 <p class="editor-toolbar-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
             </div>
@@ -29,9 +29,9 @@
             <span class="editor-status" id="editorStatus" aria-live="polite"></span>
             <button type="button" class="btn btn-primary" id="exportPdfBtn">Export handoff</button>
             <span class="editor-evolved-toast" id="evolvedToast" hidden>
-                <img src="assets/rubber-duck.svg" alt="" class="editor-evolved-duck" width="16" height="14">
-                evolved
-                <img src="assets/rubber-duck.svg" alt="" class="editor-evolved-duck" width="16" height="14">
+                <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                <span class="editor-evolved-label">Evolved</span>
+                <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
             </span>
         </div>
     </header>
@@ -123,6 +123,13 @@
                         <span class="editor-color-value" id="fieldHeaderBannerBgValue">#000000</span>
                     </div>
                 </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldHeaderBannerText">Banner text color</label>
+                    <div class="editor-color">
+                        <input type="color" id="fieldHeaderBannerText" name="headerBannerTextColor" value="#ffffff">
+                        <span class="editor-color-value" id="fieldHeaderBannerTextValue">#ffffff</span>
+                    </div>
+                </div>
                 <p class="editor-field-hint editor-field-hint--fieldset">Edit banner link names and URLs, or remove any you do not need.</p>
                 <div id="headerBannerLinksEditor"></div>
                 <button type="button" class="btn btn-secondary editor-add-item-btn" id="addHeaderBannerLinkBtn">Add banner link</button>
@@ -150,7 +157,7 @@
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-hero">Hero</h3>
 
             <div class="editor-hero-gallery" id="editorHeroGallery" hidden>
-                <p class="editor-panel-lead editor-panel-lead--compact">Three lifestyle photos form a 500 px tall rectangle, centered at 1479 px wide (Classic hero width + 50 px). The large image fills the left half; two images stack on the right.</p>
+                <p class="editor-panel-lead editor-panel-lead--compact">Three lifestyle photos form a 500 px tall rectangle, centered at 1479 px wide (McQueen hero width + 50 px). The large image fills the left half; two images stack on the right.</p>
                 <div class="editor-field">
                     <label for="fieldGalleryHeroPrimary">Large lifestyle image (left)<span class="editor-field-hint">Full height · half width</span></label>
                     <div class="editor-upload">

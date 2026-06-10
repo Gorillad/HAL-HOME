@@ -1,4 +1,4 @@
-Classic template default images
+McQueen template default images
 =================================
 
 Paths are relative to editor/showroom.html (classic/).
@@ -7,8 +7,8 @@ Header
   header/logo-classic.png           Company logo
 
 Hero
-  Gemma_FR33738VBZ_H_Models-min.jpg Product image (left)
-  gemma.jpg                         Lifestyle image (right)
+  gemma.jpg                         Product image (left, top)
+  Gemma_FR33738VBZ_H_Models-min.jpg Lifestyle image (right)
 
 About Us
   lady-showroom.jpg                 Employee photo

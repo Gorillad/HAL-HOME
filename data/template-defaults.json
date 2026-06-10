@@ -61,6 +61,7 @@
       { "id": "gi-8", "itemNumber": "1008" }
     ],
     "headerBannerBackgroundColor": "#000000",
+    "headerBannerTextColor": "#ffffff",
     "headerBannerLinks": [
       { "id": "hbl-1", "label": "Home", "url": "/" },
       { "id": "hbl-2", "label": "About Us", "url": "/about-us" },

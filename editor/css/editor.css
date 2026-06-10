@@ -117,18 +117,14 @@
     top: calc(100% + 10px);
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
+    gap: 8px;
+    padding: 7px 16px;
     border-radius: 999px;
-    font-family: var(--font-display);
-    font-size: 0.82rem;
-    font-style: italic;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #e5252a;
-    background: #0a0a0a;
-    border: 1px solid #1a1a1a;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    background: linear-gradient(135deg, #0a0f14 0%, #101820 100%);
+    border: 1px solid rgba(94, 231, 255, 0.35);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.35),
+        0 0 18px rgba(94, 231, 255, 0.12);
     opacity: 0;
     transform: translateY(-6px) scale(0.96);
     transition: opacity 0.35s ease, transform 0.35s ease;
@@ -141,11 +137,20 @@
     transform: translateY(0) scale(1);
 }
 
-.editor-evolved-duck {
+.editor-evolved-label {
+    font-family: 'Orbitron', ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #e8f7ff;
+    text-shadow: 0 0 10px rgba(94, 231, 255, 0.45);
+}
+
+.editor-evolved-icon {
     flex-shrink: 0;
-    display: block;
-    width: 16px;
-    height: 14px;
+    font-size: 0.95rem;
+    line-height: 1;
 }
 
 .btn-primary.is-exporting {
@@ -1010,7 +1015,7 @@
     height: 50px;
     padding: 0;
     background: #000;
-    color: #fff;
+    color: var(--header-banner-text, #fff);
     box-sizing: border-box;
 }
 
@@ -1025,19 +1030,20 @@
 .showroom-header-banner-links a {
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
+    color: var(--header-banner-text, #fff);
     text-decoration: none;
     white-space: nowrap;
 }
 
 .showroom-header-banner-links a:hover {
-    color: rgba(255, 255, 255, 0.82);
+    opacity: 0.82;
     text-decoration: underline;
 }
 
 .showroom-header-banner-sep {
     padding: 0 12px;
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--header-banner-text, #fff);
+    opacity: 0.72;
     font-size: 13px;
     font-weight: 400;
     user-select: none;
@@ -2086,6 +2092,23 @@
     outline: 2px solid rgba(61, 90, 115, 0.35);
     outline-offset: 1px;
     border-color: #3d5a73;
+}
+
+.editor-preview-jump-target {
+    cursor: pointer;
+    transition: box-shadow 0.15s ease;
+}
+
+.editor-preview-jump-target:hover {
+    box-shadow: inset 0 0 0 2px rgba(26, 123, 189, 0.42);
+}
+
+.editor-panel-block {
+    scroll-margin-top: 12px;
+}
+
+.editor-panel-block.is-jump-highlight {
+    animation: editor-header-jump-flash 1.4s ease;
 }
 
 .editor-header-jump-target {

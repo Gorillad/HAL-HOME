@@ -206,13 +206,13 @@ function initShowroomDesignTabs() {
     const designNote = document.getElementById('showroomDesignNote');
 
     const designLabels = {
-        classic: 'Classic',
-        gallery: 'Gallery',
+        classic: 'McQueen',
+        gallery: 'Classic',
         spotlight: 'Spotlight',
     };
 
     function setActiveDesign(design) {
-        const label = designLabels[design] || 'Classic';
+        const label = designLabels[design] || 'McQueen';
 
         tabs.forEach((item) => {
             const isActive = item.dataset.showroomDesign === design;

@@ -1,7 +1,7 @@
 (function () {
     const TEMPLATE_DESIGNS = {
-        classic: 'Classic',
-        gallery: 'Gallery',
+        classic: 'McQueen',
+        gallery: 'Classic',
         spotlight: 'Spotlight',
     };
 
@@ -58,11 +58,13 @@
         { label: 'Shipping', urlKey: 'footerShippingUrl', defaultUrl: '/shipping' },
     ];
     const DEFAULT_HEADER_BANNER_BG = '#000000';
+    const DEFAULT_HEADER_BANNER_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HEADER_BAR_BG = '#525962';
     const DEFAULT_GALLERY_HEADER_CENTER_COPY = 'For pricing and orders call 123-456-7891';
     const DEFAULT_GALLERY_HEADER_WISHLIST = 'Wishlist';
     const DEFAULT_GALLERY_HEADER_SIGN_IN = 'Please sign in';
     const GALLERY_SEARCH_PLACEHOLDER = 'Search...';
+    const HEADER_SEARCH_PLACEHOLDER = 'Enter Keyword or Item#';
     const DEFAULT_GALLERY_MAIN_NAV_LINKS = [
         { label: 'Shop', defaultUrl: '/catalog' },
         { label: 'About Us', defaultUrl: '/about' },
@@ -71,8 +73,8 @@
     const GALLERY_IMAGE_DIR = 'gallery/';
     const CLASSIC_IMAGE_DIR = 'classic/';
     const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}header/logo-classic.png`;
-    const DEFAULT_CLASSIC_PRODUCT_IMAGE = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
-    const DEFAULT_CLASSIC_LIFESTYLE_IMAGE = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
+    const DEFAULT_CLASSIC_PRODUCT_IMAGE = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
+    const DEFAULT_CLASSIC_LIFESTYLE_IMAGE = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
     const DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE = `${CLASSIC_IMAGE_DIR}lady-showroom.jpg`;
     const DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE = `${CLASSIC_IMAGE_DIR}kitchEnclavePhoto-min.jpg`;
     const DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE = `${CLASSIC_IMAGE_DIR}exteriorLightingPhoto-min.jpg`;
@@ -431,6 +433,8 @@
         footerCopyrightName: document.getElementById('fieldFooterCopyrightName'),
         headerBannerBackgroundColor: document.getElementById('fieldHeaderBannerBg'),
         headerBannerBackgroundColorValue: document.getElementById('fieldHeaderBannerBgValue'),
+        headerBannerTextColor: document.getElementById('fieldHeaderBannerText'),
+        headerBannerTextColorValue: document.getElementById('fieldHeaderBannerTextValue'),
     };
 
     const preview = {
@@ -604,6 +608,7 @@
         getInspiredLifestyleImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
         getInspiredItems: defaultGetInspiredItems(),
         headerBannerBackgroundColor: DEFAULT_HEADER_BANNER_BG,
+        headerBannerTextColor: DEFAULT_HEADER_BANNER_TEXT,
         headerBannerLinks: defaultHeaderBannerLinks(),
         mainNavItems: defaultMainNavItems(),
         headerLogoImage: templateDesign === 'gallery' ? DEFAULT_GALLERY_HEADER_LOGO : DEFAULT_CLASSIC_HEADER_LOGO,
@@ -877,6 +882,112 @@
         window.setTimeout(() => target.classList.remove('is-jump-highlight'), 1400);
     }
 
+    const PREVIEW_SECTION_JUMP_TARGETS = [
+        {
+            previewId: 'showroomGalleryCatalogSection',
+            editorSectionId: 'editor-section-gallery-catalog',
+            template: 'gallery',
+        },
+        { previewId: 'showroomHeaderSection', editorSectionId: 'editor-section-header' },
+        { previewId: 'showroomHeroSection', editorSectionId: 'editor-section-hero' },
+        {
+            previewId: 'showroomCategoriesSection',
+            editorSectionId: 'editor-section-featured-categories',
+            template: 'classic',
+        },
+        { previewId: 'showroomAboutSection', editorSectionId: 'editor-section-about-us', template: 'classic' },
+        {
+            previewId: 'showroomFeatureTilesSection',
+            editorSectionId: 'editor-section-feature-cards',
+            template: 'classic',
+        },
+        {
+            previewId: 'showroomSketchSection',
+            editorSectionId: 'editor-section-sketch-section',
+            template: 'classic',
+        },
+        {
+            previewId: 'showroomYouMayLikeSection',
+            editorSectionId: 'editor-section-you-may-like',
+            template: 'classic',
+        },
+        {
+            previewId: 'showroomGetInspiredSection',
+            editorSectionId: 'editor-section-get-inspired',
+            template: 'classic',
+        },
+        { previewId: 'showroomFooterSection', editorSectionId: 'editor-section-footer' },
+    ];
+
+    function isPreviewJumpTargetActive(mapping) {
+        if (mapping.template === 'gallery' && templateDesign !== 'gallery') return false;
+        if (mapping.template === 'classic' && templateDesign === 'gallery') return false;
+
+        const el = document.getElementById(mapping.previewId);
+        if (!el || el.hidden) return false;
+
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+    }
+
+    function markPreviewJumpTargets() {
+        PREVIEW_SECTION_JUMP_TARGETS.forEach((mapping) => {
+            const el = document.getElementById(mapping.previewId);
+            if (!el) return;
+            el.classList.toggle('editor-preview-jump-target', isPreviewJumpTargetActive(mapping));
+        });
+    }
+
+    function resolvePreviewEditorSection(clickTarget) {
+        if (!clickTarget || !previewRoot) return null;
+
+        for (const mapping of PREVIEW_SECTION_JUMP_TARGETS) {
+            if (!isPreviewJumpTargetActive(mapping)) continue;
+
+            const section = document.getElementById(mapping.previewId);
+            if (section && section.contains(clickTarget)) {
+                return mapping.editorSectionId;
+            }
+        }
+
+        return null;
+    }
+
+    function shouldIgnorePreviewJumpClick(target) {
+        if (!target) return true;
+        if (target.closest('.showroom-you-may-like-nav')) return true;
+        if (target.closest('button, input, textarea, select')) return true;
+        if (previewRoot?.classList.contains('is-pdf-export-capture')) return true;
+        return false;
+    }
+
+    function jumpToEditorSection(sectionId) {
+        if (!sectionId || !editorPanel) return false;
+
+        const heading = document.getElementById(sectionId);
+        const block = editorPanel.querySelector(`.editor-panel-block[data-section-id="${sectionId}"]`);
+        if (!heading && !block) return false;
+
+        scrollEditorPanelTo(`#${sectionId}`);
+        setActiveEditorSection(sectionId);
+        flashJumpTarget(block || heading);
+        return true;
+    }
+
+    function bindPreviewSectionJump() {
+        if (!previewRoot) return;
+
+        previewRoot.addEventListener('click', (event) => {
+            if (shouldIgnorePreviewJumpClick(event.target)) return;
+
+            const sectionId = resolvePreviewEditorSection(event.target);
+            if (!sectionId) return;
+
+            event.preventDefault();
+            jumpToEditorSection(sectionId);
+        });
+    }
+
     function structureEditorPanel() {
         if (!editorPanel) return;
 
@@ -953,11 +1064,7 @@
                 event.preventDefault();
                 const selector = link.getAttribute('href');
                 const sectionId = selector ? selector.slice(1) : '';
-                if (!scrollEditorPanelTo(selector)) return;
-
-                if (sectionId) {
-                    setActiveEditorSection(sectionId);
-                }
+                jumpToEditorSection(sectionId);
             });
         });
     }
@@ -1161,6 +1268,22 @@
         return savedClassicImageRef(saved) || fallback;
     }
 
+    function migrateClassicHeroImages(productImage, lifestyleImage) {
+        const product = savedClassicImageRef(productImage);
+        const lifestyle = savedClassicImageRef(lifestyleImage);
+        const swappedProductDefault = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
+        const swappedLifestyleDefault = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
+
+        if (product === swappedProductDefault && lifestyle === swappedLifestyleDefault) {
+            return {
+                productImage: swappedLifestyleDefault,
+                lifestyleImage: swappedProductDefault,
+            };
+        }
+
+        return { productImage, lifestyleImage };
+    }
+
     function ensureClassicImageDefaults() {
         if (templateDesign === 'gallery') return;
 
@@ -1196,11 +1319,13 @@
             return saved;
         }
 
+        const heroImages = migrateClassicHeroImages(saved.productImage, saved.lifestyleImage);
+
         return {
             ...saved,
             headerLogoImage: savedClassicImageRef(saved.headerLogoImage) || DEFAULT_CLASSIC_HEADER_LOGO,
-            productImage: resolveClassicImage(saved.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE),
-            lifestyleImage: resolveClassicImage(saved.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE),
+            productImage: resolveClassicImage(heroImages.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE),
+            lifestyleImage: resolveClassicImage(heroImages.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE),
             aboutEmployeeImage: resolveClassicImage(
                 saved.aboutEmployeeImage,
                 DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE,
@@ -1245,7 +1370,7 @@
             layout: 'split-lifestyle',
             height: '500 px',
             width: '1479 px',
-            alignment: 'Centered · Classic hero width + 50 px',
+            alignment: 'Centered · McQueen hero width + 50 px',
             columns: 'Large image left · two stacked images right',
             imageFit: 'cover',
             imageDirectory: `editor/${GALLERY_IMAGE_DIR}`,
@@ -1633,15 +1758,6 @@
         };
     }
 
-    async function loadGalleryCatalogAssetsForExport() {
-        return Promise.all(state.galleryCatalogTiles.map(async (tile, index) => ({
-            filename: `gallery-catalog-tile-${index + 1}.jpg`,
-            label: `Catalog highlight — ${tile.label}`,
-            dimensions: 'Tile in 4-column row',
-            dataUrl: await resolveImageDataUrlForExport(tile.image),
-        })));
-    }
-
     function defaultGalleryMainNavLinks() {
         return DEFAULT_GALLERY_MAIN_NAV_LINKS.map((link, index) => createFooterLinkItem({
             label: link.label,
@@ -2008,6 +2124,9 @@
         if (fields.headerBannerBackgroundColor) {
             fields.headerBannerBackgroundColor.addEventListener('input', readForm);
         }
+        if (fields.headerBannerTextColor) {
+            fields.headerBannerTextColor.addEventListener('input', readForm);
+        }
     }
 
     function getEffectiveFooterLogo() {
@@ -2074,8 +2193,10 @@
         syncLogoUploadPreviews();
 
         const bannerBg = normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
+        const bannerText = normalizeHexColor(state.headerBannerTextColor, DEFAULT_HEADER_BANNER_TEXT);
         if (previewHeaderBanner) {
             previewHeaderBanner.style.backgroundColor = bannerBg;
+            previewHeaderBanner.style.setProperty('--header-banner-text', bannerText);
         }
 
         if (previewHeaderBannerLinks) {
@@ -2181,7 +2302,7 @@
             banner: {
                 height: '50 px',
                 backgroundColor: state.headerBannerBackgroundColor,
-                textColor: '#ffffff',
+                textColor: state.headerBannerTextColor || DEFAULT_HEADER_BANNER_TEXT,
                 alignment: 'right',
                 separator: '|',
                 links: state.headerBannerLinks.map((link) => ({
@@ -2722,17 +2843,11 @@
 
         for (const [index, item] of state.youMayLikeItems.entries()) {
             const number = String(item.itemNumber || '').trim();
-            let dataUrl = item.image || '';
-
-            if (!dataUrl && savedClassicImageRef(item.image)) {
-                dataUrl = await fetchAssetAsDataUrl(item.image);
-            }
-
             assets.push({
                 filename: `you-may-like-${index + 1}.png`,
                 label: `You May Like — item ${number || index + 1}`,
                 dimensions: '500 × 750 px',
-                dataUrl,
+                dataUrl: await resolveImageDataUrlForExport(item.image),
             });
         }
 
@@ -3172,6 +3287,16 @@
                 fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
             }
         }
+        if (fields.headerBannerTextColor) {
+            state.headerBannerTextColor = normalizeHexColor(
+                fields.headerBannerTextColor.value,
+                DEFAULT_HEADER_BANNER_TEXT,
+            );
+            fields.headerBannerTextColor.value = state.headerBannerTextColor;
+            if (fields.headerBannerTextColorValue) {
+                fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
+            }
+        }
         if (fields.galleryHeaderBarBackgroundColor) {
             state.galleryHeaderBarBackgroundColor = normalizeHex(
                 fields.galleryHeaderBarBackgroundColor.value || DEFAULT_GALLERY_HEADER_BAR_BG,
@@ -3238,6 +3363,10 @@
                 || DEFAULT_CLASSIC_HEADER_LOGO;
         }
         state.headerBannerBackgroundColor = normalizeHex(data.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
+        state.headerBannerTextColor = normalizeHexColor(
+            data.headerBannerTextColor,
+            DEFAULT_HEADER_BANNER_TEXT,
+        );
         state.headerBannerLinks = migrateHeaderBannerLinks(data);
         state.mainNavItems = migrateMainNavItems(data);
         populateGalleryHeaderFields(data);
@@ -3248,6 +3377,12 @@
             fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
             if (fields.headerBannerBackgroundColorValue) {
                 fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+            }
+        }
+        if (fields.headerBannerTextColor) {
+            fields.headerBannerTextColor.value = state.headerBannerTextColor;
+            if (fields.headerBannerTextColorValue) {
+                fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
             }
         }
     }
@@ -3645,63 +3780,60 @@
         return fetchAssetAsDataUrl(src);
     }
 
-    async function loadGalleryHeroAssetsForExport() {
-        const items = [
+    async function resolveAssetsForExport(assets) {
+        return Promise.all(assets.map(async (asset) => ({
+            ...asset,
+            dataUrl: await resolveImageDataUrlForExport(asset.dataUrl),
+        })));
+    }
+
+    async function buildHandoffAssetsForExport() {
+        const assets = [
             {
-                filename: 'gallery-hero-primary.jpg',
-                label: 'Gallery hero — large lifestyle (left)',
-                dimensions: '500 px height · half width',
-                src: state.galleryHeroPrimaryImage,
+                filename: 'about-employee-image.png',
+                label: 'About Us employee photo (centered, overlaps panel)',
+                dimensions: '417 × 282 px',
+                dataUrl: state.aboutEmployeeImage || '',
             },
             {
-                filename: 'gallery-hero-secondary-top.jpg',
-                label: 'Gallery hero — lifestyle (top right)',
-                dimensions: '250 px height · half width',
-                src: state.galleryHeroSecondaryTopImage,
+                filename: 'feature-left-image.png',
+                label: 'Feature card photo (left)',
+                dimensions: '780 × 1014 px',
+                dataUrl: state.featureLeftImage || '',
             },
             {
-                filename: 'gallery-hero-secondary-bottom.jpg',
-                label: 'Gallery hero — lifestyle (bottom right)',
-                dimensions: '250 px height · half width',
-                src: state.galleryHeroSecondaryBottomImage,
+                filename: 'feature-right-image.png',
+                label: 'Feature card photo (right)',
+                dimensions: '780 × 1014 px',
+                dataUrl: state.featureRightImage || '',
+            },
+            ...(await loadYouMayLikeAssetsForExport()),
+            {
+                filename: 'get-inspired-lifestyle.png',
+                label: 'Get Inspired lifestyle photo (left)',
+                dimensions: '508 × 610 px',
+                dataUrl: state.getInspiredLifestyleImage || '',
             },
         ];
 
-        return Promise.all(items.map(async (item) => ({
-            filename: item.filename,
-            label: item.label,
-            dimensions: item.dimensions,
-            dataUrl: await resolveImageDataUrlForExport(item.src),
-        })));
+        if (state.footerLogoUseHeader === false && state.footerLogoImage) {
+            assets.push({
+                filename: 'footer-logo.png',
+                label: 'Company logo (footer)',
+                dimensions: 'max 280 × 94 px',
+                dataUrl: state.footerLogoImage,
+            });
+        }
+
+        return resolveAssetsForExport(assets);
     }
 
-    async function loadFeaturedCategoryAssetsForExport() {
-        return Promise.all(FEATURED_CATEGORIES.map(async (category) => ({
-            filename: `featured-categories/${category.imageFile}`,
-            label: `Featured category — ${category.label}`,
-            dimensions: '70 × 70 px',
-            dataUrl: await fetchAssetAsDataUrl(`${FEATURED_CATEGORY_IMAGE_DIR}${category.imageFile}`),
-        })));
-    }
-
-    async function loadSketchAssetsForExport() {
-        return Promise.all(SKETCH_CARDS.map(async (card) => ({
-            filename: card.imageFile,
-            label: `Sketch section — ${card.defaultHeader}`,
-            dimensions: '180 × 78 px',
-            dataUrl: await fetchAssetAsDataUrl(`${SKETCH_IMAGE_DIR}${card.imageFile}`),
-        })));
-    }
-
-    async function loadGetInspiredCardAssetsForExport() {
-        return Promise.all(
-            Array.from({ length: GET_INSPIRED_CARD_COUNT }, async (_, index) => ({
-                filename: `${index + 1}.png`,
-                label: `Get Inspired grid card ${index + 1}`,
-                dimensions: '155 × 155 px',
-                dataUrl: await fetchAssetAsDataUrl(`${GET_INSPIRED_IMAGE_DIR}${index + 1}.png`),
-            })),
-        );
+    function buildFeaturedCategoriesExportList() {
+        return FEATURED_CATEGORIES.map((category) => ({
+            id: category.id,
+            label: category.label,
+            visible: Boolean(state.featuredCategories[category.id]),
+        }));
     }
 
     exportBtn.addEventListener('click', async () => {
@@ -3722,18 +3854,7 @@
         }
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         try {
-            const featuredCategoryAssets = await loadFeaturedCategoryAssetsForExport();
-            const sketchAssets = state.sketchSectionVisible
-                ? await loadSketchAssetsForExport()
-                : [];
-            const youMayLikeAssets = await loadYouMayLikeAssetsForExport();
-            const getInspiredCardAssets = await loadGetInspiredCardAssetsForExport();
-            const galleryHeroAssets = templateDesign === 'gallery'
-                ? await loadGalleryHeroAssetsForExport()
-                : [];
-            const galleryCatalogAssets = templateDesign === 'gallery'
-                ? await loadGalleryCatalogAssetsForExport()
-                : [];
+            const handoffAssets = await buildHandoffAssetsForExport();
             await window.exportShowroomHandoff({
                 headerEl: headerRoot,
                 heroEl: heroRoot,
@@ -3741,7 +3862,6 @@
                 categoriesEl: categoriesRoot,
                 aboutEl: aboutRoot,
                 featureTilesEl: featureTilesRoot,
-                sketchSectionEl: sketchRoot,
                 youMayLikeEl: youMayLikeRoot,
                 getInspiredEl: getInspiredRoot,
                 footerEl: footerRoot,
@@ -3763,13 +3883,7 @@
                     featuredCategoryThumbnailSize: '70 × 70 px',
                     featuredCategoryCardSize: '300 × 70 px',
                     featuredCategoryImagesHardcoded: true,
-                    featuredCategories: FEATURED_CATEGORIES
-                        .filter((category) => state.featuredCategories[category.id])
-                        .map((category) => ({
-                            id: category.id,
-                            label: category.label,
-                            imageFile: category.imageFile,
-                        })),
+                    featuredCategories: buildFeaturedCategoriesExportList(),
                     header: buildHeaderExportSpec(),
                     ...(templateDesign === 'gallery'
                         ? {
@@ -3818,17 +3932,6 @@
                                 visible: state.featureRightButtonVisible !== false,
                             },
                         },
-                    },
-                    sketchSection: {
-                        visible: state.sketchSectionVisible,
-                        imageSize: '180 × 78 px',
-                        imageDirectory: 'editor/classic/sketch-section/',
-                        cards: SKETCH_CARDS.map((card) => ({
-                            id: card.id,
-                            imageFile: card.imageFile,
-                            header: card.defaultHeader,
-                            paragraph: card.defaultParagraph,
-                        })),
                     },
                     youMayLike: {
                         title: 'You May Like',
@@ -3897,68 +4000,7 @@
                         })),
                     },
                 },
-                assets: [
-                    ...(templateDesign === 'gallery'
-                        ? [...galleryHeroAssets, ...galleryCatalogAssets]
-                        : [
-                            {
-                                filename: 'product-image.png',
-                                label: 'Product image (left, top)',
-                                dimensions: '563 × 342 px',
-                                dataUrl: state.productImage || '',
-                            },
-                            {
-                                filename: 'lifestyle-image.png',
-                                label: 'Lifestyle image (right)',
-                                dimensions: '854 × 670 px min',
-                                dataUrl: state.lifestyleImage || '',
-                            },
-                        ]),
-                    {
-                        filename: 'about-employee-image.png',
-                        label: 'About Us employee photo (centered, overlaps panel)',
-                        dimensions: '417 × 282 px',
-                        dataUrl: state.aboutEmployeeImage || '',
-                    },
-                    {
-                        filename: 'feature-left-image.png',
-                        label: 'Feature card photo (left)',
-                        dimensions: '780 × 1014 px',
-                        dataUrl: state.featureLeftImage || '',
-                    },
-                    {
-                        filename: 'feature-right-image.png',
-                        label: 'Feature card photo (right)',
-                        dimensions: '780 × 1014 px',
-                        dataUrl: state.featureRightImage || '',
-                    },
-                    ...featuredCategoryAssets,
-                    ...sketchAssets,
-                    ...youMayLikeAssets,
-                    {
-                        filename: 'get-inspired-lifestyle.png',
-                        label: 'Get Inspired lifestyle photo (left)',
-                        dimensions: '508 × 610 px',
-                        dataUrl: state.getInspiredLifestyleImage || '',
-                    },
-                    ...getInspiredCardAssets,
-                    {
-                        filename: 'header-logo.png',
-                        label: 'Company logo (header)',
-                        dimensions: templateDesign === 'gallery'
-                            ? 'max 150 px high'
-                            : 'max 220 × 68 px',
-                        dataUrl: state.headerLogoImage || '',
-                    },
-                    {
-                        filename: 'footer-logo.png',
-                        label: state.footerLogoUseHeader !== false
-                            ? 'Company logo (footer — same as header)'
-                            : 'Company logo (footer)',
-                        dimensions: 'max 280 × 94 px',
-                        dataUrl: getEffectiveFooterLogo() || '',
-                    },
-                ],
+                assets: handoffAssets,
                 pdfFilename: 'showroom-homepage-brief.pdf',
                 zipFilename: 'showroom-homepage-handoff.zip',
             });
@@ -3966,7 +4008,8 @@
             showEvolvedToast();
         } catch (err) {
             console.error(err);
-            setStatus('Export failed — try again.');
+            const detail = err && err.message ? ` — ${err.message}` : '';
+            setStatus(`Export failed${detail}`);
         } finally {
             previewRoot.style.transform = prevTransform;
             previewRoot.classList.remove('is-pdf-export-capture');
@@ -4046,6 +4089,8 @@
             }
             syncGalleryPreview();
         }
+
+        markPreviewJumpTargets();
     }
 
     function finishGalleryEditorInit(options = {}) {
@@ -4086,6 +4131,7 @@
         bindSectionScrollSpy();
         bindHeaderJumpNav();
         bindPreviewScroll();
+        bindPreviewSectionJump();
         bindYouMayLikeEditorEvents();
         bindGetInspiredEditorEvents();
         bindHeaderBannerEditorEvents();

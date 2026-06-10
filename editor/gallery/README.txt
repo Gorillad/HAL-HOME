@@ -1,4 +1,4 @@
-Gallery template default images
+Classic template default images
 ===============================
 
 Paths are relative to editor/showroom.html (gallery/).
