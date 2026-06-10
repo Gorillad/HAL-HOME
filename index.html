@@ -76,25 +76,61 @@
                 <article class="template-card template-card--showroom">
                     <span class="template-badge">The Premier Tier</span>
                     <div class="template-preview template-preview--showroom">
-                        <div class="template-browser">
-                            <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                            <a href="editor/showroom.html" class="template-browser-body template-browser-body--link" aria-label="Open Showroom hero editor">
-                                <div class="mock-hero mock-hero--compact">
-                                    <div class="mock-hero-left">
-                                        <span class="mock-hero-product"></span>
-                                        <span class="mock-hero-copy"></span>
+                        <div class="showroom-design-tabs" role="tablist" aria-label="Showroom design options">
+                            <button type="button" class="showroom-design-tab is-active" role="tab" id="showroom-design-tab-classic" aria-selected="true" aria-controls="showroom-design-classic" data-showroom-design="classic">Classic</button>
+                            <button type="button" class="showroom-design-tab" role="tab" id="showroom-design-tab-gallery" aria-selected="false" aria-controls="showroom-design-gallery" data-showroom-design="gallery">Gallery</button>
+                            <button type="button" class="showroom-design-tab" role="tab" id="showroom-design-tab-spotlight" aria-selected="false" aria-controls="showroom-design-spotlight" data-showroom-design="spotlight">Spotlight</button>
+                        </div>
+                        <div class="showroom-design-views">
+                            <div class="showroom-design-view is-active" id="showroom-design-classic" role="tabpanel" aria-labelledby="showroom-design-tab-classic" data-showroom-design="classic">
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-hero mock-hero--compact">
+                                            <div class="mock-hero-left">
+                                                <span class="mock-hero-product"></span>
+                                                <span class="mock-hero-copy"></span>
+                                            </div>
+                                            <span class="mock-hero-feature"></span>
+                                        </div>
+                                        <div class="mock-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
                                     </div>
-                                    <span class="mock-hero-feature"></span>
                                 </div>
-                                <div class="mock-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-                            </a>
+                            </div>
+                            <div class="showroom-design-view" id="showroom-design-gallery" role="tabpanel" aria-labelledby="showroom-design-tab-gallery" data-showroom-design="gallery" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-showroom mock-showroom--gallery">
+                                            <span class="mock-gallery-nav" aria-hidden="true"></span>
+                                            <span class="mock-gallery-hero" aria-hidden="true"></span>
+                                            <div class="mock-gallery-row" aria-hidden="true"><span></span><span></span><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="showroom-design-view" id="showroom-design-spotlight" role="tabpanel" aria-labelledby="showroom-design-tab-spotlight" data-showroom-design="spotlight" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-showroom mock-showroom--spotlight">
+                                            <span class="mock-spotlight-banner" aria-hidden="true"></span>
+                                            <div class="mock-spotlight-hero" aria-hidden="true">
+                                                <span class="mock-spotlight-copy"></span>
+                                            </div>
+                                            <div class="mock-spotlight-strip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <h3>Showroom</h3>
                     <p class="template-tagline">Small shops &amp; boutique showrooms</p>
                     <p class="template-desc">Built for modern showrooms. Catalog-first layouts, bold product displays, and the most current design trends baked in.</p>
                     <p class="template-from">From <strong>$469/mo</strong></p>
-                    <a href="editor/showroom.html" class="btn btn-primary btn-block">Showroom editor</a>
+                    <p class="showroom-design-note" id="showroomDesignNote">Classic selected — open the editor below to customize this layout.</p>
+                    <a href="editor/showroom.html?design=classic" class="btn btn-primary btn-block" id="showroomEditorBtn" aria-label="Open Classic template in Showroom editor">Open Classic editor</a>
                 </article>
 
                 <article class="template-card template-card--featured">

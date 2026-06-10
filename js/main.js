@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initPricingToggle();
     initHeroRays();
+    initShowroomDesignTabs();
     Cart.initUI();
 });
 
@@ -193,6 +194,63 @@ function showContactMsg(el, text, type) {
     el.textContent = text;
     el.classList.toggle('is-success', type === 'success');
     el.classList.toggle('is-error', type === 'error');
+}
+
+function initShowroomDesignTabs() {
+    const tablist = document.querySelector('.showroom-design-tabs');
+    if (!tablist) return;
+
+    const tabs = [...tablist.querySelectorAll('.showroom-design-tab')];
+    const views = [...document.querySelectorAll('.showroom-design-view')];
+    const editorBtn = document.getElementById('showroomEditorBtn');
+    const designNote = document.getElementById('showroomDesignNote');
+
+    const designLabels = {
+        classic: 'Classic',
+        gallery: 'Gallery',
+        spotlight: 'Spotlight',
+    };
+
+    function setActiveDesign(design) {
+        const label = designLabels[design] || 'Classic';
+
+        tabs.forEach((item) => {
+            const isActive = item.dataset.showroomDesign === design;
+            item.classList.toggle('is-active', isActive);
+            item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        views.forEach((view) => {
+            const isActive = view.dataset.showroomDesign === design;
+            view.classList.toggle('is-active', isActive);
+            view.hidden = !isActive;
+        });
+
+        if (editorBtn && design) {
+            editorBtn.href = `editor/showroom.html?design=${encodeURIComponent(design)}`;
+            editorBtn.textContent = `Open ${label} editor`;
+            editorBtn.setAttribute('aria-label', `Open ${label} template in Showroom editor`);
+        }
+
+        if (designNote) {
+            designNote.textContent = `${label} selected — open the editor below to customize this layout.`;
+        }
+    }
+
+    tablist.addEventListener('click', (e) => {
+        const tab = e.target.closest('.showroom-design-tab');
+        if (!tab || !tablist.contains(tab)) return;
+
+        const design = tab.dataset.showroomDesign;
+        if (!design) return;
+
+        setActiveDesign(design);
+    });
+
+    const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
+    if (activeTab?.dataset.showroomDesign) {
+        setActiveDesign(activeTab.dataset.showroomDesign);
+    }
 }
 
 function initHeroRays() {

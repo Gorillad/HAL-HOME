@@ -14,9 +14,14 @@
 <body class="editor-page">
     <header class="editor-toolbar">
         <div class="editor-toolbar-left">
-            <a href="../index.html#templates" class="editor-back">← Templates</a>
+            <a href="../index.html" class="editor-home" aria-label="Back to LogicXO home">
+                <img src="../images/logicxo.png" alt="" width="152" height="48">
+            </a>
             <div class="editor-toolbar-title">
-                <h1>Showroom editor</h1>
+                <div class="editor-toolbar-heading">
+                    <h1>Showroom editor</h1>
+                    <span class="editor-template-name" id="editorTemplateName">Classic</span>
+                </div>
                 <p class="editor-toolbar-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
             </div>
         </div>
@@ -34,13 +39,14 @@
     <nav class="editor-section-nav" id="editorSectionNav" aria-label="Jump to editor section">
         <a href="#editor-section-header" class="editor-section-nav-link">Header</a>
         <a href="#editor-section-hero" class="editor-section-nav-link">Hero</a>
-        <a href="#editor-section-featured-categories" class="editor-section-nav-link">Featured Categories</a>
-        <a href="#editor-section-about-us" class="editor-section-nav-link">About Us</a>
-        <a href="#editor-section-feature-cards" class="editor-section-nav-link">Feature Cards</a>
-        <a href="#editor-section-sketch-section" class="editor-section-nav-link">Sketch Section</a>
-        <a href="#editor-section-you-may-like" class="editor-section-nav-link">You May Like</a>
-        <a href="#editor-section-get-inspired" class="editor-section-nav-link">Get Inspired</a>
-        <a href="#editor-section-footer" class="editor-section-nav-link">Footer</a>
+        <a href="#editor-section-gallery-catalog" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryCatalog" hidden>Catalog Highlights</a>
+        <a href="#editor-section-featured-categories" class="editor-section-nav-link editor-section-nav-link--classic" id="editorNavFeaturedCategories">Featured Categories</a>
+        <a href="#editor-section-about-us" class="editor-section-nav-link editor-section-nav-link--classic">About Us</a>
+        <a href="#editor-section-feature-cards" class="editor-section-nav-link editor-section-nav-link--classic">Feature Cards</a>
+        <a href="#editor-section-sketch-section" class="editor-section-nav-link editor-section-nav-link--classic">Sketch Section</a>
+        <a href="#editor-section-you-may-like" class="editor-section-nav-link editor-section-nav-link--classic">You May Like</a>
+        <a href="#editor-section-get-inspired" class="editor-section-nav-link editor-section-nav-link--classic">Get Inspired</a>
+        <a href="#editor-section-footer" class="editor-section-nav-link editor-section-nav-link--classic">Footer</a>
     </nav>
 
     <div class="editor-layout">
@@ -49,12 +55,65 @@
             <p class="editor-panel-lead">Configure the Showroom homepage template. Your draft saves automatically in this browser. Export includes all homepage sections and assets in a ZIP with PDF brief and JSON spec.</p>
 
             <h3 class="editor-panel-subhead editor-panel-section" id="editor-section-header">Header</h3>
+
             <div class="editor-header-jump">
                 <label for="headerJumpNav">Jump to</label>
                 <select id="headerJumpNav" class="editor-header-jump-select" aria-label="Jump to header edit section">
                     <option value="">Choose a header area…</option>
                 </select>
             </div>
+
+            <div class="editor-header-gallery" id="editorHeaderGallery" hidden>
+                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-top-bar">
+                    <legend>Top bar</legend>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeaderBarBg">Bar background color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldGalleryHeaderBarBg" name="galleryHeaderBarBackgroundColor" value="#525962">
+                            <span class="editor-color-value" id="fieldGalleryHeaderBarBgValue">#525962</span>
+                        </div>
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeaderCenterCopy">Center copy</label>
+                        <input type="text" id="fieldGalleryHeaderCenterCopy" name="galleryHeaderCenterCopy" autocomplete="off">
+                        <p class="editor-field-hint">Centered on the top bar — e.g. pricing and orders phone number.</p>
+                    </div>
+                </fieldset>
+
+                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-utils">
+                    <legend>Top bar links (right)</legend>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeaderWishlist">Wishlist label</label>
+                        <input type="text" id="fieldGalleryHeaderWishlist" name="galleryHeaderWishlistLabel" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeaderSignIn">Sign in label</label>
+                        <input type="text" id="fieldGalleryHeaderSignIn" name="galleryHeaderSignInLabel" autocomplete="off">
+                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Shown as “Wishlist | Please sign in” on the right side of the top bar. Link URLs are fixed in this template.</p>
+                </fieldset>
+
+                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-logo">
+                    <legend>Company logo</legend>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Centered below the top bar. PNG or SVG · max 150 px high.</p>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeaderLogo">Upload logo</label>
+                        <div class="editor-upload editor-upload--logo">
+                            <div class="editor-upload-preview editor-upload-preview--gallery-header-logo is-empty" id="uploadPreviewGalleryHeaderLogo"></div>
+                            <input type="file" id="fieldGalleryHeaderLogo" name="galleryHeaderLogoImage" accept="image/*">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-main-nav">
+                    <legend>Main navigation</legend>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Centered below the logo. Edit link names and URLs, or add more nav links. The search bar is fixed on the right with placeholder “Search…”.</p>
+                    <div id="galleryMainNavEditor"></div>
+                    <button type="button" class="btn btn-secondary editor-add-item-btn" id="addGalleryMainNavLinkBtn">Add nav link</button>
+                </fieldset>
+            </div>
+
+            <div class="editor-header-classic" id="editorHeaderClassic">
             <fieldset class="editor-fieldset editor-header-jump-target" id="editor-header-banner">
                 <legend>Top banner</legend>
                 <div class="editor-field">
@@ -74,7 +133,7 @@
                 <p class="editor-field-hint editor-field-hint--fieldset">Centered in the header toolbar. PNG or SVG · max 220 × 68 px.</p>
                 <div class="editor-field">
                     <label for="fieldHeaderLogo">Upload logo</label>
-                    <div class="editor-upload">
+                    <div class="editor-upload editor-upload--logo">
                         <div class="editor-upload-preview editor-upload-preview--header-logo is-empty" id="uploadPreviewHeaderLogo"></div>
                         <input type="file" id="fieldHeaderLogo" name="headerLogoImage" accept="image/*">
                     </div>
@@ -86,8 +145,36 @@
             <p class="editor-panel-lead editor-panel-lead--compact">The main navigation bar below that has eight dropdown menus. Edit each category name, subcategory names, and URLs. Uncheck any subcategory to hide it from the dropdown.</p>
 
             <div id="mainNavEditor"></div>
+            </div>
 
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-hero">Hero</h3>
+
+            <div class="editor-hero-gallery" id="editorHeroGallery" hidden>
+                <p class="editor-panel-lead editor-panel-lead--compact">Three lifestyle photos form a 500 px tall rectangle, centered at 1479 px wide (Classic hero width + 50 px). The large image fills the left half; two images stack on the right.</p>
+                <div class="editor-field">
+                    <label for="fieldGalleryHeroPrimary">Large lifestyle image (left)<span class="editor-field-hint">Full height · half width</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--gallery-hero-primary is-empty" id="uploadPreviewGalleryHeroPrimary"></div>
+                        <input type="file" id="fieldGalleryHeroPrimary" name="galleryHeroPrimaryImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldGalleryHeroSecondaryTop">Lifestyle image (top right)<span class="editor-field-hint">Half height · half width</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--gallery-hero-secondary is-empty" id="uploadPreviewGalleryHeroSecondaryTop"></div>
+                        <input type="file" id="fieldGalleryHeroSecondaryTop" name="galleryHeroSecondaryTopImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldGalleryHeroSecondaryBottom">Lifestyle image (bottom right)<span class="editor-field-hint">Half height · half width</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--gallery-hero-secondary is-empty" id="uploadPreviewGalleryHeroSecondaryBottom"></div>
+                        <input type="file" id="fieldGalleryHeroSecondaryBottom" name="galleryHeroSecondaryBottomImage" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-hero-classic" id="editorHeroClassic">
             <div class="editor-field">
                 <label for="fieldTitle">Collection title</label>
                 <input type="text" id="fieldTitle" name="title" autocomplete="off">
@@ -151,7 +238,16 @@
                 </div>
             </div>
 
+            </div>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-gallery-catalog">Catalog Highlights</h3>
+            <div class="editor-gallery-catalog" id="editorGalleryCatalog" hidden>
+                <p class="editor-panel-lead editor-panel-lead--compact">Four lifestyle tiles linking to catalog sections. Edit each tile’s image, label, and catalog link below — same width as the hero above.</p>
+                <div id="galleryCatalogTilesEditor"></div>
+            </div>
+
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-featured-categories">Featured Categories</h3>
+            <div class="editor-featured-categories-classic" id="editorClassicSections">
             <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows).</p>
 
             <div class="editor-field">
@@ -163,6 +259,7 @@
                 <legend>Visible categories</legend>
                 <ul class="editor-category-list" id="categoryCheckboxList"></ul>
             </fieldset>
+            </div>
 
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-about-us">About Us</h3>
 
@@ -227,10 +324,11 @@
             </fieldset>
 
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-feature-cards">Feature Cards</h3>
+            <div class="editor-feature-cards-classic">
             <p class="editor-panel-lead editor-panel-lead--compact">Two large photo cards side by side with centered copy and a button on each image.</p>
 
-            <fieldset class="editor-button-group">
-                <legend>Left card</legend>
+            <div class="editor-feature-card-group">
+                <p class="editor-feature-card-name">Left card</p>
                 <div class="editor-field">
                     <label for="fieldFeatureLeftImage">Photo<span class="editor-field-hint">780 × 1014 px</span></label>
                     <div class="editor-upload">
@@ -260,10 +358,10 @@
                         Hide button
                     </label>
                 </div>
-            </fieldset>
+            </div>
 
-            <fieldset class="editor-button-group">
-                <legend>Right card</legend>
+            <div class="editor-feature-card-group">
+                <p class="editor-feature-card-name">Right card</p>
                 <div class="editor-field">
                     <label for="fieldFeatureRightImage">Photo<span class="editor-field-hint">780 × 1014 px</span></label>
                     <div class="editor-upload">
@@ -293,9 +391,9 @@
                         Hide button
                     </label>
                 </div>
-            </fieldset>
+            </div>
 
-            <fieldset class="editor-button-group" id="featureButtonColorFieldset">
+            <fieldset class="editor-fieldset editor-button-group" id="featureButtonColorFieldset">
                 <legend>Button colors</legend>
                 <div class="editor-field">
                     <label for="fieldFeatureButtonBg">Background color</label>
@@ -312,6 +410,7 @@
                     </div>
                 </div>
             </fieldset>
+            </div>
 
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-sketch-section">Sketch Section</h3>
 
@@ -354,7 +453,7 @@
 
             <div class="editor-field" id="footerLogoField" hidden>
                 <label for="fieldFooterLogo">Footer logo<span class="editor-field-hint">PNG or SVG · max 280 × 94 px</span></label>
-                <div class="editor-upload">
+                <div class="editor-upload editor-upload--logo">
                     <div class="editor-upload-preview editor-upload-preview--footer-logo is-empty" id="uploadPreviewFooterLogo"></div>
                     <input type="file" id="fieldFooterLogo" name="footerLogoImage" accept="image/*">
                 </div>
@@ -446,45 +545,94 @@
             <div class="editor-preview-scaler" id="previewScaler">
                 <div class="editor-preview-frame" id="showroomPreview">
                 <header class="showroom-header-section" id="showroomHeaderSection" aria-label="Site header preview">
-                    <div class="showroom-header-banner" id="previewHeaderBanner">
-                        <nav class="showroom-header-banner-links showroom-hero-align" id="previewHeaderBannerLinks" aria-label="Top banner"></nav>
+                    <div class="showroom-header-classic" id="showroomHeaderClassic">
+                        <div class="showroom-header-banner" id="previewHeaderBanner">
+                            <nav class="showroom-header-banner-links showroom-hero-align" id="previewHeaderBannerLinks" aria-label="Top banner"></nav>
+                        </div>
+                        <div class="showroom-header-content showroom-hero-align">
+                            <div class="showroom-header-inner">
+                                <div class="showroom-header-search">
+                                    <label class="showroom-header-search-field">
+                                        <span class="showroom-header-search-label">Search</span>
+                                        <i class="fa-solid fa-magnifying-glass showroom-header-search-icon" aria-hidden="true"></i>
+                                        <input type="search" class="showroom-header-search-input" placeholder="Enter Keyword or Item#" disabled aria-disabled="true">
+                                    </label>
+                                </div>
+                                <div class="showroom-header-logo-wrap">
+                                    <a href="/" class="showroom-header-logo is-empty" id="previewHeaderLogoWrap">
+                                        <img id="previewHeaderLogo" alt="" hidden>
+                                    </a>
+                                </div>
+                                <div class="showroom-header-icons" id="previewHeaderIcons" aria-label="Header utilities"></div>
+                            </div>
+                            <nav class="showroom-main-nav" id="previewMainNav" aria-label="Main navigation"></nav>
+                        </div>
                     </div>
-                    <div class="showroom-header-content showroom-hero-align">
-                        <div class="showroom-header-inner">
-                            <div class="showroom-header-search">
-                                <label class="showroom-header-search-field">
-                                    <span class="showroom-header-search-label">Search</span>
-                                    <i class="fa-solid fa-magnifying-glass showroom-header-search-icon" aria-hidden="true"></i>
-                                    <input type="search" class="showroom-header-search-input" placeholder="Enter Keyword or Item#" disabled aria-disabled="true">
+                    <div class="showroom-header-gallery" id="showroomHeaderGallery" hidden>
+                        <div class="showroom-gallery-top-bar" id="previewGalleryTopBar">
+                            <div class="showroom-gallery-top-bar-inner">
+                                <div class="showroom-gallery-top-bar-spacer" aria-hidden="true"></div>
+                                <p class="showroom-gallery-top-bar-copy" id="previewGalleryTopBarCopy"></p>
+                                <nav class="showroom-gallery-top-bar-utils" id="previewGalleryTopBarUtils" aria-label="Account utilities"></nav>
+                            </div>
+                        </div>
+                        <div class="showroom-gallery-logo-row">
+                            <a href="/" class="showroom-gallery-logo is-empty" id="previewGalleryLogoWrap">
+                                <img id="previewGalleryLogo" alt="" hidden>
+                            </a>
+                        </div>
+                        <nav class="showroom-gallery-main-nav" id="previewGalleryMainNav" aria-label="Main navigation">
+                            <div class="showroom-gallery-main-nav-inner">
+                                <ul class="showroom-gallery-main-nav-links" id="previewGalleryMainNavLinks"></ul>
+                                <label class="showroom-gallery-main-nav-search">
+                                    <span class="showroom-gallery-main-nav-search-label">Search</span>
+                                    <input type="search" class="showroom-gallery-main-nav-search-input" placeholder="Search..." disabled aria-disabled="true">
+                                    <i class="fa-solid fa-magnifying-glass showroom-gallery-main-nav-search-icon" aria-hidden="true"></i>
                                 </label>
                             </div>
-                            <div class="showroom-header-logo-wrap">
-                                <a href="/" class="showroom-header-logo is-empty" id="previewHeaderLogoWrap">
-                                    <img id="previewHeaderLogo" alt="" hidden>
-                                </a>
-                            </div>
-                            <div class="showroom-header-icons" id="previewHeaderIcons" aria-label="Header utilities"></div>
-                        </div>
-                        <nav class="showroom-main-nav" id="previewMainNav" aria-label="Main navigation"></nav>
+                        </nav>
                     </div>
                 </header>
                 <section class="showroom-hero-section" id="showroomHeroSection" aria-label="Hero section preview">
-                    <div class="showroom-hero showroom-hero-align" id="showroomHero">
-                        <div class="showroom-hero-left">
-                            <div class="showroom-hero-product" id="previewProductPlaceholder">
-                                <img id="previewProductImage" alt="" hidden>
+                    <div class="showroom-hero-classic" id="showroomHeroClassic">
+                        <div class="showroom-hero showroom-hero-align" id="showroomHero">
+                            <div class="showroom-hero-left">
+                                <div class="showroom-hero-product" id="previewProductPlaceholder">
+                                    <img id="previewProductImage" alt="" hidden>
+                                </div>
+                                <div class="showroom-hero-copy" id="previewCopy">
+                                    <h2 id="previewTitle">Collection title</h2>
+                                    <p id="previewDescription">Add a short description for this collection.</p>
+                                    <span class="showroom-hero-cta" id="previewCta">Explore collection</span>
+                                </div>
                             </div>
-                            <div class="showroom-hero-copy" id="previewCopy">
-                                <h2 id="previewTitle">Collection title</h2>
-                                <p id="previewDescription">Add a short description for this collection.</p>
-                                <span class="showroom-hero-cta" id="previewCta">Explore collection</span>
+                            <div class="showroom-hero-feature" id="previewLifestylePlaceholder">
+                                <img id="previewLifestyleImage" alt="" hidden>
                             </div>
                         </div>
-                        <div class="showroom-hero-feature" id="previewLifestylePlaceholder">
-                            <img id="previewLifestyleImage" alt="" hidden>
+                    </div>
+                    <div class="showroom-gallery-hero" id="showroomHeroGallery" hidden>
+                        <div class="showroom-gallery-content-column">
+                            <div class="showroom-gallery-hero-layout">
+                                <div class="showroom-gallery-hero-primary is-empty" id="previewGalleryHeroPrimary">
+                                    <img id="previewGalleryHeroPrimaryImage" alt="" hidden>
+                                </div>
+                                <div class="showroom-gallery-hero-stack">
+                                    <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryTop">
+                                        <img id="previewGalleryHeroSecondaryTopImage" alt="" hidden>
+                                    </div>
+                                    <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryBottom">
+                                        <img id="previewGalleryHeroSecondaryBottomImage" alt="" hidden>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="showroom-gallery-catalog-band" id="showroomGalleryCatalogSection" aria-label="Catalog highlights preview">
+                                <div class="showroom-gallery-catalog-grid" id="previewGalleryCatalogGrid"></div>
+                            </div>
                         </div>
                     </div>
                 </section>
+                <div id="showroomClassicSections">
                 <section class="showroom-categories-section" id="showroomCategoriesSection" aria-label="Featured Categories preview">
                     <div class="showroom-categories-content showroom-hero-align">
                         <div class="showroom-categories-header">
@@ -580,6 +728,7 @@
                         <div class="showroom-footer-copyright" id="previewFooterCopyright"></div>
                     </div>
                 </footer>
+                </div>
             </div>
         </div>
         </div>

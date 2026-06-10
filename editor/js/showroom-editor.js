@@ -1,5 +1,17 @@
 (function () {
-    const STORAGE_KEY = 'logicxo-editor-showroom';
+    const TEMPLATE_DESIGNS = {
+        classic: 'Classic',
+        gallery: 'Gallery',
+        spotlight: 'Spotlight',
+    };
+
+    function getTemplateDesign() {
+        const param = new URLSearchParams(window.location.search).get('design');
+        return Object.prototype.hasOwnProperty.call(TEMPLATE_DESIGNS, param) ? param : 'classic';
+    }
+
+    const templateDesign = getTemplateDesign();
+    const STORAGE_KEY = `logicxo-editor-showroom-${templateDesign}`;
     const DEFAULT_COPY_BG = '#5a3d2b';
     const DEFAULT_HERO_CTA_BG = '#44301f';
     const DEFAULT_HERO_CTA_TEXT = '#ffffff';
@@ -46,7 +58,54 @@
         { label: 'Shipping', urlKey: 'footerShippingUrl', defaultUrl: '/shipping' },
     ];
     const DEFAULT_HEADER_BANNER_BG = '#000000';
-    const HEADER_SEARCH_PLACEHOLDER = 'Enter Keyword or Item#';
+    const DEFAULT_GALLERY_HEADER_BAR_BG = '#525962';
+    const DEFAULT_GALLERY_HEADER_CENTER_COPY = 'For pricing and orders call 123-456-7891';
+    const DEFAULT_GALLERY_HEADER_WISHLIST = 'Wishlist';
+    const DEFAULT_GALLERY_HEADER_SIGN_IN = 'Please sign in';
+    const GALLERY_SEARCH_PLACEHOLDER = 'Search...';
+    const DEFAULT_GALLERY_MAIN_NAV_LINKS = [
+        { label: 'Shop', defaultUrl: '/catalog' },
+        { label: 'About Us', defaultUrl: '/about' },
+        { label: 'Account', defaultUrl: '/account' },
+    ];
+    const GALLERY_IMAGE_DIR = 'gallery/';
+    const CLASSIC_IMAGE_DIR = 'classic/';
+    const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}header/logo-classic.png`;
+    const DEFAULT_CLASSIC_PRODUCT_IMAGE = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
+    const DEFAULT_CLASSIC_LIFESTYLE_IMAGE = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
+    const DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE = `${CLASSIC_IMAGE_DIR}lady-showroom.jpg`;
+    const DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE = `${CLASSIC_IMAGE_DIR}kitchEnclavePhoto-min.jpg`;
+    const DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE = `${CLASSIC_IMAGE_DIR}exteriorLightingPhoto-min.jpg`;
+    const DEFAULT_GALLERY_HEADER_LOGO = `${GALLERY_IMAGE_DIR}xologic-logo.png`;
+    const DEFAULT_GALLERY_HERO_PRIMARY = `${GALLERY_IMAGE_DIR}quorum1.jpg`;
+    const DEFAULT_GALLERY_HERO_SECONDARY_TOP = `${GALLERY_IMAGE_DIR}chandelier4.jpg`;
+    const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM = `${GALLERY_IMAGE_DIR}pendants3.jpg`;
+    const GALLERY_CATALOG_TILE_DEFAULTS = [
+        {
+            id: 'bathroom-fixtures',
+            label: 'BATHROOM FIXTURES',
+            defaultUrl: '/catalog/bathroom-fixtures',
+            defaultImage: `${GALLERY_IMAGE_DIR}bathroom1.jpg`,
+        },
+        {
+            id: 'exterior',
+            label: 'EXTERIOR',
+            defaultUrl: '/catalog/exterior',
+            defaultImage: `${GALLERY_IMAGE_DIR}exterior1.jpg`,
+        },
+        {
+            id: 'fans',
+            label: 'FANS',
+            defaultUrl: '/catalog/fans',
+            defaultImage: `${GALLERY_IMAGE_DIR}fans1.jpg`,
+        },
+        {
+            id: 'foyer-hall-lanterns',
+            label: 'FOYER HALL LANTERNS',
+            defaultUrl: '/catalog/foyer-hall-lanterns',
+            defaultImage: `${GALLERY_IMAGE_DIR}hall-lantern3.jpg`,
+        },
+    ];
     const SHOWROOM_CONTENT_COLUMN_WIDTH = '1429 px';
     const DEFAULT_HEADER_BANNER_LINKS = [
         { label: 'Home', defaultUrl: '/' },
@@ -239,15 +298,30 @@
             iconClass: 'fa-brands fa-linkedin-in',
         },
     ];
-    const YOUMAYLIKE_IMAGE_DIR = 'assets/you-may-like/';
-    const GET_INSPIRED_IMAGE_DIR = 'assets/get-inspired/';
+    const YOUMAYLIKE_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}you-may-like/`;
+    const GET_INSPIRED_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}get-inspired/`;
+    const DEFAULT_YOUMAYLIKE_SLOT_DEFAULTS = [
+        {
+            itemNumber: '1001',
+            image: `${YOUMAYLIKE_IMAGE_DIR}Hinkley500750opt.jpg`,
+        },
+        {
+            itemNumber: '1002',
+            image: `${YOUMAYLIKE_IMAGE_DIR}modernforms500750opt.jpg`,
+        },
+        {
+            itemNumber: '1003',
+            image: `${YOUMAYLIKE_IMAGE_DIR}Eurofase500750opt.jpg`,
+        },
+    ];
+    const DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE = `${GET_INSPIRED_IMAGE_DIR}Everett_4398BN_Models.jpg`;
     const YOUMAYLIKE_TEMPLATE_CATALOG = {
         '1001': { title: 'Gemma Chandelier', price: '$2,450' },
         '1002': { title: 'Arc Floor Lamp', price: '$895' },
         '1003': { title: 'Meridian Pendant', price: '$625' },
     };
-    const SKETCH_IMAGE_DIR = 'assets/sketch-section/';
-    const FEATURED_CATEGORY_IMAGE_DIR = 'assets/featured-categories/';
+    const SKETCH_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}sketch-section/`;
+    const FEATURED_CATEGORY_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}featured-categories/`;
     const SKETCH_CARDS = [
         {
             id: 'visit',
@@ -329,6 +403,15 @@
         featureButtonTextColorValue: document.getElementById('fieldFeatureButtonTextValue'),
         sketchSectionVisible: document.getElementById('fieldSketchSectionVisible'),
         headerLogo: document.getElementById('fieldHeaderLogo'),
+        galleryHeaderLogo: document.getElementById('fieldGalleryHeaderLogo'),
+        galleryHeaderBarBackgroundColor: document.getElementById('fieldGalleryHeaderBarBg'),
+        galleryHeaderBarBackgroundColorValue: document.getElementById('fieldGalleryHeaderBarBgValue'),
+        galleryHeaderCenterCopy: document.getElementById('fieldGalleryHeaderCenterCopy'),
+        galleryHeaderWishlistLabel: document.getElementById('fieldGalleryHeaderWishlist'),
+        galleryHeaderSignInLabel: document.getElementById('fieldGalleryHeaderSignIn'),
+        galleryHeroPrimary: document.getElementById('fieldGalleryHeroPrimary'),
+        galleryHeroSecondaryTop: document.getElementById('fieldGalleryHeroSecondaryTop'),
+        galleryHeroSecondaryBottom: document.getElementById('fieldGalleryHeroSecondaryBottom'),
         footerLogo: document.getElementById('fieldFooterLogo'),
         footerLogoUseHeader: document.getElementById('fieldFooterLogoUseHeader'),
         footerEmail: document.getElementById('fieldFooterEmail'),
@@ -397,6 +480,20 @@
     let evolvedToastRemoveTimer = null;
     const previewRoot = document.getElementById('showroomPreview');
     const heroRoot = document.getElementById('showroomHeroSection');
+    const showroomHeroClassic = document.getElementById('showroomHeroClassic');
+    const showroomHeroGallery = document.getElementById('showroomHeroGallery');
+    const previewGalleryHeroPrimary = document.getElementById('previewGalleryHeroPrimary');
+    const previewGalleryHeroPrimaryImage = document.getElementById('previewGalleryHeroPrimaryImage');
+    const previewGalleryHeroSecondaryTop = document.getElementById('previewGalleryHeroSecondaryTop');
+    const previewGalleryHeroSecondaryTopImage = document.getElementById('previewGalleryHeroSecondaryTopImage');
+    const previewGalleryHeroSecondaryBottom = document.getElementById('previewGalleryHeroSecondaryBottom');
+    const previewGalleryHeroSecondaryBottomImage = document.getElementById('previewGalleryHeroSecondaryBottomImage');
+    const uploadPreviewGalleryHeroPrimary = document.getElementById('uploadPreviewGalleryHeroPrimary');
+    const uploadPreviewGalleryHeroSecondaryTop = document.getElementById('uploadPreviewGalleryHeroSecondaryTop');
+    const uploadPreviewGalleryHeroSecondaryBottom = document.getElementById('uploadPreviewGalleryHeroSecondaryBottom');
+    const editorHeroClassic = document.getElementById('editorHeroClassic');
+    const editorHeroGallery = document.getElementById('editorHeroGallery');
+    const editorGalleryCatalog = document.getElementById('editorGalleryCatalog');
     const headerRoot = document.getElementById('showroomHeaderSection');
     const previewHeaderLogo = document.getElementById('previewHeaderLogo');
     const previewHeaderLogoWrap = document.getElementById('previewHeaderLogoWrap');
@@ -404,7 +501,26 @@
     const previewHeaderBannerLinks = document.getElementById('previewHeaderBannerLinks');
     const previewHeaderIcons = document.getElementById('previewHeaderIcons');
     const previewMainNav = document.getElementById('previewMainNav');
+    const showroomHeaderClassic = document.getElementById('showroomHeaderClassic');
+    const showroomHeaderGallery = document.getElementById('showroomHeaderGallery');
+    const previewGalleryTopBar = document.getElementById('previewGalleryTopBar');
+    const previewGalleryTopBarCopy = document.getElementById('previewGalleryTopBarCopy');
+    const previewGalleryTopBarUtils = document.getElementById('previewGalleryTopBarUtils');
+    const previewGalleryLogo = document.getElementById('previewGalleryLogo');
+    const previewGalleryLogoWrap = document.getElementById('previewGalleryLogoWrap');
+    const uploadPreviewGalleryHeaderLogo = document.getElementById('uploadPreviewGalleryHeaderLogo');
+    const editorHeaderClassic = document.getElementById('editorHeaderClassic');
+    const editorHeaderGallery = document.getElementById('editorHeaderGallery');
     const mainNavEditor = document.getElementById('mainNavEditor');
+    const galleryMainNavEditor = document.getElementById('galleryMainNavEditor');
+    const galleryCatalogTilesEditor = document.getElementById('galleryCatalogTilesEditor');
+    const previewGalleryCatalogGrid = document.getElementById('previewGalleryCatalogGrid');
+    const galleryCatalogRoot = document.getElementById('showroomGalleryCatalogSection');
+    const editorClassicSections = document.getElementById('editorClassicSections');
+    const showroomClassicSections = document.getElementById('showroomClassicSections');
+    const editorNavGalleryCatalog = document.getElementById('editorNavGalleryCatalog');
+    const addGalleryMainNavLinkBtn = document.getElementById('addGalleryMainNavLinkBtn');
+    const previewGalleryMainNavLinks = document.getElementById('previewGalleryMainNavLinks');
     const headerJumpNav = document.getElementById('headerJumpNav');
     const headerBannerLinksEditor = document.getElementById('headerBannerLinksEditor');
     const addHeaderBannerLinkBtn = document.getElementById('addHeaderBannerLinkBtn');
@@ -456,8 +572,8 @@
         heroCtaBackgroundColor: DEFAULT_HERO_CTA_BG,
         heroCtaTextColor: DEFAULT_HERO_CTA_TEXT,
         heroCtaVisible: true,
-        productImage: '',
-        lifestyleImage: '',
+        productImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_PRODUCT_IMAGE,
+        lifestyleImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_LIFESTYLE_IMAGE,
         shopAllUrl: DEFAULT_SHOP_ALL_URL,
         featuredCategories: defaultFeaturedCategories(),
         aboutHeader: DEFAULT_ABOUT_HEADER,
@@ -468,29 +584,38 @@
         aboutSecondaryUrl: DEFAULT_ABOUT_SECONDARY_URL,
         aboutButtonBackgroundColor: DEFAULT_ABOUT_BTN_BG,
         aboutButtonTextColor: DEFAULT_ABOUT_BTN_TEXT,
-        aboutEmployeeImage: '',
+        aboutEmployeeImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE,
         featureLeftHeader: DEFAULT_FEATURE_LEFT_HEADER,
         featureLeftParagraph: DEFAULT_FEATURE_LEFT_PARAGRAPH,
         featureLeftButtonLabel: DEFAULT_FEATURE_LEFT_BUTTON_LABEL,
         featureLeftButtonUrl: DEFAULT_FEATURE_LEFT_BUTTON_URL,
         featureLeftButtonVisible: true,
-        featureLeftImage: '',
+        featureLeftImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE,
         featureRightHeader: DEFAULT_FEATURE_RIGHT_HEADER,
         featureRightParagraph: DEFAULT_FEATURE_RIGHT_PARAGRAPH,
         featureRightButtonLabel: DEFAULT_FEATURE_RIGHT_BUTTON_LABEL,
         featureRightButtonUrl: DEFAULT_FEATURE_RIGHT_BUTTON_URL,
         featureRightButtonVisible: true,
-        featureRightImage: '',
+        featureRightImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE,
         featureButtonBackgroundColor: DEFAULT_FEATURE_BTN_BG,
         featureButtonTextColor: DEFAULT_FEATURE_BTN_TEXT,
         sketchSectionVisible: true,
         youMayLikeItems: defaultYouMayLikeItems(),
-        getInspiredLifestyleImage: '',
+        getInspiredLifestyleImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
         getInspiredItems: defaultGetInspiredItems(),
         headerBannerBackgroundColor: DEFAULT_HEADER_BANNER_BG,
         headerBannerLinks: defaultHeaderBannerLinks(),
         mainNavItems: defaultMainNavItems(),
-        headerLogoImage: '',
+        headerLogoImage: templateDesign === 'gallery' ? DEFAULT_GALLERY_HEADER_LOGO : DEFAULT_CLASSIC_HEADER_LOGO,
+        galleryHeaderBarBackgroundColor: DEFAULT_GALLERY_HEADER_BAR_BG,
+        galleryHeaderCenterCopy: DEFAULT_GALLERY_HEADER_CENTER_COPY,
+        galleryHeaderWishlistLabel: DEFAULT_GALLERY_HEADER_WISHLIST,
+        galleryHeaderSignInLabel: DEFAULT_GALLERY_HEADER_SIGN_IN,
+        galleryMainNavLinks: defaultGalleryMainNavLinks(),
+        galleryHeroPrimaryImage: DEFAULT_GALLERY_HERO_PRIMARY,
+        galleryHeroSecondaryTopImage: DEFAULT_GALLERY_HERO_SECONDARY_TOP,
+        galleryHeroSecondaryBottomImage: DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
+        galleryCatalogTiles: defaultGalleryCatalogTiles(),
         footerLogoImage: '',
         footerLogoUseHeader: true,
         footerEmail: DEFAULT_FOOTER_EMAIL,
@@ -550,27 +675,42 @@
     }
 
     function defaultYouMayLikeItems() {
-        return [
-            createYouMayLikeItem({ id: 'ymml-1', itemNumber: '1001' }),
-            createYouMayLikeItem({ id: 'ymml-2', itemNumber: '1002' }),
-            createYouMayLikeItem({ id: 'ymml-3', itemNumber: '1003' }),
-        ];
+        return DEFAULT_YOUMAYLIKE_SLOT_DEFAULTS.map((slot, index) => createYouMayLikeItem({
+            id: `ymml-${index + 1}`,
+            itemNumber: slot.itemNumber,
+            image: slot.image,
+        }));
+    }
+
+    function applyYouMayLikeImageDefaults(items) {
+        return items.map((item, index) => {
+            const slot = DEFAULT_YOUMAYLIKE_SLOT_DEFAULTS[index];
+            const next = createYouMayLikeItem(item);
+            if (!savedClassicImageRef(next.image) && slot?.image) {
+                next.image = slot.image;
+            }
+            if (!next.itemNumber && slot?.itemNumber) {
+                next.itemNumber = slot.itemNumber;
+            }
+            return next;
+        });
     }
 
     function normalizeYouMayLikeItems(saved) {
         if (!Array.isArray(saved) || saved.length === 0) {
             return defaultYouMayLikeItems();
         }
-        return saved.map((item, index) => {
+        return applyYouMayLikeImageDefaults(saved.map((item, index) => {
+            const slot = DEFAULT_YOUMAYLIKE_SLOT_DEFAULTS[index];
             if (item.itemNumber) {
                 return createYouMayLikeItem(item);
             }
-            const legacyDefaults = ['1001', '1002', '1003'];
             return createYouMayLikeItem({
                 id: item.id,
-                itemNumber: legacyDefaults[index] || '',
+                itemNumber: slot?.itemNumber || '',
+                image: item.image,
             });
-        });
+        }));
     }
 
     function resolveYouMayLikePreviewItem(item) {
@@ -582,7 +722,7 @@
             title: catalog?.title || (number ? `Item ${number}` : 'Catalog product'),
             price: catalog?.price || 'Price from catalog',
             url: number ? `/catalog/${number}` : DEFAULT_CATALOG_URL,
-            imageSrc: item?.image || (number ? `${YOUMAYLIKE_IMAGE_DIR}${number}.png` : ''),
+            imageSrc: savedClassicImageRef(item?.image) || '',
         };
     }
 
@@ -681,14 +821,37 @@
         }
     }
 
+    let previewFitRaf = null;
+    let previewResizeObserver = null;
+
+    function scheduleFitPreviewScale() {
+        if (previewFitRaf) cancelAnimationFrame(previewFitRaf);
+        previewFitRaf = requestAnimationFrame(() => {
+            previewFitRaf = requestAnimationFrame(fitPreviewScale);
+        });
+    }
+
     function fitPreviewScale() {
         if (!previewWrap || !previewRoot || !previewScaler) return;
 
-        const available = previewWrap.clientWidth - 48;
+        const available = Math.max(0, previewWrap.clientWidth - 48);
+        if (available <= 0) return;
+
         const scale = Math.min(1, available / TEMPLATE_FRAME_WIDTH);
         previewRoot.style.transform = scale < 1 ? `scale(${scale})` : '';
         previewScaler.style.height = `${previewRoot.offsetHeight * scale}px`;
         requestAnimationFrame(clampPreviewScroll);
+    }
+
+    function bindPreviewResizeObserver() {
+        if (!previewRoot || typeof ResizeObserver === 'undefined') return;
+
+        if (previewResizeObserver) previewResizeObserver.disconnect();
+
+        previewResizeObserver = new ResizeObserver(() => {
+            scheduleFitPreviewScale();
+        });
+        previewResizeObserver.observe(previewRoot);
     }
 
     function scrollEditorPanelTo(selector) {
@@ -803,16 +966,27 @@
         if (!headerJumpNav) return;
 
         const selectedValue = headerJumpNav.value;
-        const navOptions = state.mainNavItems.map((category) => (
-            `<option value="#editor-main-nav-${category.id}">${escapeHtml(category.label || 'Category')}</option>`
-        )).join('');
 
-        headerJumpNav.innerHTML = (
-            `<option value="">Choose a header area…</option>
-            <option value="#editor-header-banner">Top banner</option>
-            <option value="#editor-header-logo">Company logo</option>
-            <optgroup label="Main navigation">${navOptions}</optgroup>`
-        );
+        if (templateDesign === 'gallery') {
+            headerJumpNav.innerHTML = (
+                `<option value="">Choose a header area…</option>
+                <option value="#editor-gallery-top-bar">Top bar</option>
+                <option value="#editor-gallery-utils">Top bar links</option>
+                <option value="#editor-gallery-logo">Company logo</option>
+                <option value="#editor-gallery-main-nav">Main navigation</option>`
+            );
+        } else {
+            const navOptions = state.mainNavItems.map((category) => (
+                `<option value="#editor-main-nav-${category.id}">${escapeHtml(category.label || 'Category')}</option>`
+            )).join('');
+
+            headerJumpNav.innerHTML = (
+                `<option value="">Choose a header area…</option>
+                <option value="#editor-header-banner">Top banner</option>
+                <option value="#editor-header-logo">Company logo</option>
+                <optgroup label="Main navigation">${navOptions}</optgroup>`
+            );
+        }
 
         if (selectedValue && headerJumpNav.querySelector(`option[value="${selectedValue}"]`)) {
             headerJumpNav.value = selectedValue;
@@ -856,6 +1030,71 @@
         return null;
     }
 
+    function ensureGalleryImageDefaults() {
+        if (templateDesign !== 'gallery') return;
+
+        if (!savedGalleryImageRef(state.headerLogoImage)) {
+            state.headerLogoImage = DEFAULT_GALLERY_HEADER_LOGO;
+        }
+
+        state.galleryHeroPrimaryImage = resolveGalleryHeroImage(
+            state.galleryHeroPrimaryImage,
+            DEFAULT_GALLERY_HERO_PRIMARY,
+        );
+        state.galleryHeroSecondaryTopImage = resolveGalleryHeroImage(
+            state.galleryHeroSecondaryTopImage,
+            DEFAULT_GALLERY_HERO_SECONDARY_TOP,
+        );
+        state.galleryHeroSecondaryBottomImage = resolveGalleryHeroImage(
+            state.galleryHeroSecondaryBottomImage,
+            DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
+        );
+
+        if (!Array.isArray(state.galleryCatalogTiles) || state.galleryCatalogTiles.length === 0) {
+            state.galleryCatalogTiles = defaultGalleryCatalogTiles();
+        } else {
+            state.galleryCatalogTiles = GALLERY_CATALOG_TILE_DEFAULTS.map((defaults) => {
+                const saved = state.galleryCatalogTiles.find((tile) => tile.id === defaults.id) || {};
+                return {
+                    id: defaults.id,
+                    label: String(saved.label || defaults.label).trim() || defaults.label,
+                    url: String(saved.url || defaults.defaultUrl).trim() || defaults.defaultUrl,
+                    image: savedGalleryImageRef(saved.image) || defaults.defaultImage || '',
+                };
+            });
+        }
+    }
+
+    function migrateLoadedGalleryState(saved) {
+        if (templateDesign !== 'gallery' || !saved || typeof saved !== 'object') {
+            return saved;
+        }
+
+        return {
+            ...saved,
+            headerLogoImage: savedGalleryImageRef(saved.headerLogoImage) || DEFAULT_GALLERY_HEADER_LOGO,
+            galleryHeroPrimaryImage: resolveGalleryHeroImage(
+                saved.galleryHeroPrimaryImage,
+                DEFAULT_GALLERY_HERO_PRIMARY,
+            ),
+            galleryHeroSecondaryTopImage: resolveGalleryHeroImage(
+                saved.galleryHeroSecondaryTopImage,
+                DEFAULT_GALLERY_HERO_SECONDARY_TOP,
+            ),
+            galleryHeroSecondaryBottomImage: resolveGalleryHeroImage(
+                saved.galleryHeroSecondaryBottomImage,
+                DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
+            ),
+            galleryCatalogTiles: migrateGalleryCatalogTiles(saved),
+        };
+    }
+
+    function syncGalleryPreview() {
+        syncGalleryHeaderPreview();
+        syncGalleryHeroPreview();
+        syncGalleryCatalogPreview();
+    }
+
     function applyImage(targetImg, placeholderWrap, dataUrl) {
         if (dataUrl) {
             targetImg.src = dataUrl;
@@ -868,42 +1107,203 @@
         }
     }
 
-    function syncPreview() {
-        preview.title.textContent = state.title || 'Collection title';
-        preview.description.textContent = state.description || 'Add a short description for this collection.';
-        preview.cta.textContent = state.cta || 'Explore collection';
+    function syncGalleryHeroUploadPreviews() {
+        const previews = [
+            [uploadPreviewGalleryHeroPrimary, state.galleryHeroPrimaryImage],
+            [uploadPreviewGalleryHeroSecondaryTop, state.galleryHeroSecondaryTopImage],
+            [uploadPreviewGalleryHeroSecondaryBottom, state.galleryHeroSecondaryBottomImage],
+        ];
+        previews.forEach(([el, src]) => setUploadPreviewImage(el, src));
+    }
 
-        const copyBg = normalizeHex(state.copyBackgroundColor);
-        preview.copy.style.backgroundColor = copyBg;
-        preview.cta.style.backgroundColor = normalizeHexColor(
-            state.heroCtaBackgroundColor,
-            darkenHex(copyBg),
+    function syncGalleryHeroPreview() {
+        applyImage(
+            previewGalleryHeroPrimaryImage,
+            previewGalleryHeroPrimary,
+            state.galleryHeroPrimaryImage,
         );
-        preview.cta.style.color = normalizeHexColor(state.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
-        const showHeroCta = state.heroCtaVisible !== false;
-        preview.cta.classList.toggle('is-hidden', !showHeroCta);
-        preview.cta.hidden = !showHeroCta;
-        preview.cta.style.display = showHeroCta ? '' : 'none';
+        applyImage(
+            previewGalleryHeroSecondaryTopImage,
+            previewGalleryHeroSecondaryTop,
+            state.galleryHeroSecondaryTopImage,
+        );
+        applyImage(
+            previewGalleryHeroSecondaryBottomImage,
+            previewGalleryHeroSecondaryBottom,
+            state.galleryHeroSecondaryBottomImage,
+        );
+        syncGalleryHeroUploadPreviews();
+    }
 
-        const heroCtaColorField = document.getElementById('heroCtaColorField');
-        if (heroCtaColorField) {
-            heroCtaColorField.hidden = !state.heroCtaVisible;
+    function savedGalleryImageRef(src) {
+        const trimmed = String(src || '').trim();
+        if (!trimmed) return '';
+        if (trimmed.startsWith('data:')) return trimmed;
+        if (trimmed.startsWith('assets/gallery/')) {
+            return `gallery/${trimmed.slice('assets/gallery/'.length)}`;
+        }
+        if (trimmed.startsWith('gallery/')) return trimmed;
+        return '';
+    }
+
+    function savedClassicImageRef(src) {
+        const trimmed = String(src || '').trim();
+        if (!trimmed) return '';
+        if (trimmed.startsWith('data:')) return trimmed;
+        if (trimmed.startsWith('assets/')) {
+            return `${CLASSIC_IMAGE_DIR}${trimmed.slice('assets/'.length)}`;
+        }
+        if (trimmed.startsWith('classic/')) return trimmed;
+        return '';
+    }
+
+    function resolveClassicImage(saved, fallback) {
+        return savedClassicImageRef(saved) || fallback;
+    }
+
+    function ensureClassicImageDefaults() {
+        if (templateDesign === 'gallery') return;
+
+        if (!savedClassicImageRef(state.headerLogoImage)) {
+            state.headerLogoImage = DEFAULT_CLASSIC_HEADER_LOGO;
         }
 
-        applyImage(preview.productImage, preview.productPlaceholder, state.productImage);
-        applyImage(preview.lifestyleImage, preview.lifestylePlaceholder, state.lifestyleImage);
+        state.productImage = resolveClassicImage(state.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE);
+        state.lifestyleImage = resolveClassicImage(state.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE);
+        state.aboutEmployeeImage = resolveClassicImage(
+            state.aboutEmployeeImage,
+            DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE,
+        );
+        state.featureLeftImage = resolveClassicImage(
+            state.featureLeftImage,
+            DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE,
+        );
+        state.featureRightImage = resolveClassicImage(
+            state.featureRightImage,
+            DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE,
+        );
+        state.getInspiredLifestyleImage = resolveClassicImage(
+            state.getInspiredLifestyleImage,
+            DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
+        );
+        state.youMayLikeItems = applyYouMayLikeImageDefaults(
+            normalizeYouMayLikeItems(state.youMayLikeItems),
+        );
+    }
 
-        if (uploadPreviews.product) {
-            uploadPreviews.product.innerHTML = state.productImage
-                ? `<img src="${state.productImage}" alt="">`
-                : '';
-            uploadPreviews.product.classList.toggle('is-empty', !state.productImage);
+    function migrateLoadedClassicState(saved) {
+        if (templateDesign === 'gallery' || !saved || typeof saved !== 'object') {
+            return saved;
         }
-        if (uploadPreviews.lifestyle) {
-            uploadPreviews.lifestyle.innerHTML = state.lifestyleImage
-                ? `<img src="${state.lifestyleImage}" alt="">`
-                : '';
-            uploadPreviews.lifestyle.classList.toggle('is-empty', !state.lifestyleImage);
+
+        return {
+            ...saved,
+            headerLogoImage: savedClassicImageRef(saved.headerLogoImage) || DEFAULT_CLASSIC_HEADER_LOGO,
+            productImage: resolveClassicImage(saved.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE),
+            lifestyleImage: resolveClassicImage(saved.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE),
+            aboutEmployeeImage: resolveClassicImage(
+                saved.aboutEmployeeImage,
+                DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE,
+            ),
+            featureLeftImage: resolveClassicImage(
+                saved.featureLeftImage,
+                DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE,
+            ),
+            featureRightImage: resolveClassicImage(
+                saved.featureRightImage,
+                DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE,
+            ),
+            getInspiredLifestyleImage: resolveClassicImage(
+                saved.getInspiredLifestyleImage,
+                DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
+            ),
+            youMayLikeItems: normalizeYouMayLikeItems(saved.youMayLikeItems),
+        };
+    }
+
+    function resolveGalleryHeroImage(saved, fallback) {
+        return savedGalleryImageRef(saved) || fallback;
+    }
+
+    function populateGalleryHeroFields(data) {
+        state.galleryHeroPrimaryImage = resolveGalleryHeroImage(
+            data.galleryHeroPrimaryImage,
+            DEFAULT_GALLERY_HERO_PRIMARY,
+        );
+        state.galleryHeroSecondaryTopImage = resolveGalleryHeroImage(
+            data.galleryHeroSecondaryTopImage,
+            DEFAULT_GALLERY_HERO_SECONDARY_TOP,
+        );
+        state.galleryHeroSecondaryBottomImage = resolveGalleryHeroImage(
+            data.galleryHeroSecondaryBottomImage,
+            DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
+        );
+    }
+
+    function buildGalleryHeroExportSpec() {
+        return {
+            layout: 'split-lifestyle',
+            height: '500 px',
+            width: '1479 px',
+            alignment: 'Centered · Classic hero width + 50 px',
+            columns: 'Large image left · two stacked images right',
+            imageFit: 'cover',
+            imageDirectory: `editor/${GALLERY_IMAGE_DIR}`,
+            primary: {
+                label: 'Large lifestyle image (left)',
+                filename: 'gallery-hero-primary.jpg',
+            },
+            secondaryTop: {
+                label: 'Lifestyle image (top right)',
+                filename: 'gallery-hero-secondary-top.jpg',
+            },
+            secondaryBottom: {
+                label: 'Lifestyle image (bottom right)',
+                filename: 'gallery-hero-secondary-bottom.jpg',
+            },
+        };
+    }
+
+    function syncPreview() {
+        if (templateDesign === 'gallery') {
+            syncGalleryPreview();
+        } else {
+            preview.title.textContent = state.title || 'Collection title';
+            preview.description.textContent = state.description || 'Add a short description for this collection.';
+            preview.cta.textContent = state.cta || 'Explore collection';
+
+            const copyBg = normalizeHex(state.copyBackgroundColor);
+            preview.copy.style.backgroundColor = copyBg;
+            preview.cta.style.backgroundColor = normalizeHexColor(
+                state.heroCtaBackgroundColor,
+                darkenHex(copyBg),
+            );
+            preview.cta.style.color = normalizeHexColor(state.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
+            const showHeroCta = state.heroCtaVisible !== false;
+            preview.cta.classList.toggle('is-hidden', !showHeroCta);
+            preview.cta.hidden = !showHeroCta;
+            preview.cta.style.display = showHeroCta ? '' : 'none';
+
+            const heroCtaColorField = document.getElementById('heroCtaColorField');
+            if (heroCtaColorField) {
+                heroCtaColorField.hidden = !state.heroCtaVisible;
+            }
+
+            applyImage(preview.productImage, preview.productPlaceholder, state.productImage);
+            applyImage(preview.lifestyleImage, preview.lifestylePlaceholder, state.lifestyleImage);
+
+            if (uploadPreviews.product) {
+                uploadPreviews.product.innerHTML = state.productImage
+                    ? `<img src="${state.productImage}" alt="">`
+                    : '';
+                uploadPreviews.product.classList.toggle('is-empty', !state.productImage);
+            }
+            if (uploadPreviews.lifestyle) {
+                uploadPreviews.lifestyle.innerHTML = state.lifestyleImage
+                    ? `<img src="${state.lifestyleImage}" alt="">`
+                    : '';
+                uploadPreviews.lifestyle.classList.toggle('is-empty', !state.lifestyleImage);
+            }
         }
 
         syncCategoriesPreview();
@@ -913,9 +1313,11 @@
         syncYouMayLikePreview();
         syncGetInspiredPreview();
         syncFooterPreview();
-        syncHeaderPreview();
+        if (templateDesign !== 'gallery') {
+            syncHeaderPreview();
+        }
 
-        requestAnimationFrame(fitPreviewScale);
+        scheduleFitPreviewScale();
     }
 
     function defaultHeaderBannerLinks() {
@@ -975,6 +1377,349 @@
         syncHeaderPreview();
         saveState();
         setStatus('Banner link removed');
+    }
+
+    function setUploadPreviewImage(container, src) {
+        if (!container) return;
+        container.innerHTML = '';
+        if (!src) {
+            container.classList.add('is-empty');
+            return;
+        }
+        container.classList.remove('is-empty');
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        container.appendChild(img);
+    }
+
+    function defaultGalleryCatalogTiles() {
+        return GALLERY_CATALOG_TILE_DEFAULTS.map((tile) => ({
+            id: tile.id,
+            label: tile.label,
+            url: tile.defaultUrl,
+            image: tile.defaultImage || '',
+        }));
+    }
+
+    function migrateGalleryCatalogTiles(data) {
+        if (!Array.isArray(data.galleryCatalogTiles) || data.galleryCatalogTiles.length === 0) {
+            return defaultGalleryCatalogTiles();
+        }
+
+        return GALLERY_CATALOG_TILE_DEFAULTS.map((defaults) => {
+            const saved = data.galleryCatalogTiles.find((tile) => tile.id === defaults.id) || {};
+            return {
+                id: defaults.id,
+                label: String(saved.label || defaults.label).trim() || defaults.label,
+                url: String(saved.url || defaults.defaultUrl).trim() || defaults.defaultUrl,
+                image: savedGalleryImageRef(saved.image) || defaults.defaultImage || '',
+            };
+        });
+    }
+
+    let galleryCatalogDraftSaveTimer = null;
+
+    function readGalleryCatalogTilesFromEditor() {
+        if (!galleryCatalogTilesEditor) return;
+
+        galleryCatalogTilesEditor.querySelectorAll('[data-tile-field]').forEach((input) => {
+            const tile = state.galleryCatalogTiles.find((item) => item.id === input.dataset.tileId);
+            if (!tile) return;
+            tile[input.dataset.tileField] = input.value.trim();
+        });
+    }
+
+    function saveGalleryCatalogTilesDraft(options = {}) {
+        readGalleryCatalogTilesFromEditor();
+        syncGalleryCatalogPreview({ incremental: true });
+        clearTimeout(galleryCatalogDraftSaveTimer);
+        galleryCatalogDraftSaveTimer = window.setTimeout(() => {
+            saveState({ silent: true });
+        }, options.immediate ? 0 : 350);
+    }
+
+    function flushGalleryCatalogTilesDraft() {
+        clearTimeout(galleryCatalogDraftSaveTimer);
+        readGalleryCatalogTilesFromEditor();
+        syncGalleryCatalogPreview();
+        saveState({ silent: true });
+    }
+
+    function renderGalleryCatalogTilesEditor() {
+        if (!galleryCatalogTilesEditor) return;
+
+        galleryCatalogTilesEditor.innerHTML = state.galleryCatalogTiles.map((tile, index) => {
+            const tileName = tile.label || `Tile ${index + 1}`;
+            return (
+                `<div class="editor-gallery-catalog-tile-group" data-tile-id="${tile.id}">
+                    <p class="editor-gallery-catalog-tile-name">${escapeHtml(tileName)}</p>
+                    <div class="editor-field">
+                        <label for="fieldGalleryCatalogImage-${tile.id}">Lifestyle image</label>
+                        <div class="editor-upload">
+                            <div class="editor-upload-preview editor-upload-preview--gallery-catalog-tile is-empty" id="uploadPreviewGalleryCatalog-${tile.id}"></div>
+                            <input type="file" id="fieldGalleryCatalogImage-${tile.id}" data-tile-id="${tile.id}" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldGalleryCatalogLabel-${tile.id}">Label</label>
+                        <input type="text" id="fieldGalleryCatalogLabel-${tile.id}" value="${escapeHtml(tile.label)}" data-tile-id="${tile.id}" data-tile-field="label" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldGalleryCatalogUrl-${tile.id}">Catalog link</label>
+                        <input type="text" id="fieldGalleryCatalogUrl-${tile.id}" value="${escapeHtml(tile.url)}" data-tile-id="${tile.id}" data-tile-field="url" autocomplete="off" placeholder="/catalog/...">
+                    </div>
+                </div>`
+            );
+        }).join('');
+
+        state.galleryCatalogTiles.forEach((tile) => {
+            setUploadPreviewImage(
+                document.getElementById(`uploadPreviewGalleryCatalog-${tile.id}`),
+                tile.image,
+            );
+        });
+    }
+
+    function syncGalleryCatalogPreview(options = {}) {
+        if (!previewGalleryCatalogGrid) return;
+
+        if (!Array.isArray(state.galleryCatalogTiles) || state.galleryCatalogTiles.length === 0) {
+            state.galleryCatalogTiles = defaultGalleryCatalogTiles();
+        }
+
+        if (options.incremental && previewGalleryCatalogGrid.childElementCount === state.galleryCatalogTiles.length) {
+            state.galleryCatalogTiles.forEach((tile) => {
+                const link = previewGalleryCatalogGrid.querySelector(`[data-tile-id="${tile.id}"]`);
+                if (!link) return;
+
+                link.href = tile.url || '#';
+                link.classList.toggle('is-empty', !tile.image);
+
+                let img = link.querySelector('img');
+                if (tile.image) {
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.alt = '';
+                        link.insertBefore(img, link.firstChild);
+                    }
+                    if (img.src !== tile.image) img.src = tile.image;
+                } else if (img) {
+                    img.remove();
+                }
+
+                const label = link.querySelector('.showroom-gallery-catalog-tile-label');
+                if (label) label.textContent = (tile.label || '').toUpperCase();
+            });
+            return;
+        }
+
+        previewGalleryCatalogGrid.innerHTML = '';
+
+        state.galleryCatalogTiles.forEach((tile) => {
+            const link = document.createElement('a');
+            link.href = tile.url || '#';
+            link.dataset.tileId = tile.id;
+            link.className = `showroom-gallery-catalog-tile${tile.image ? '' : ' is-empty'}`;
+
+            if (tile.image) {
+                const img = document.createElement('img');
+                img.src = tile.image;
+                img.alt = '';
+                link.appendChild(img);
+            }
+
+            const label = document.createElement('span');
+            label.className = 'showroom-gallery-catalog-tile-label';
+            label.textContent = (tile.label || '').toUpperCase();
+            link.appendChild(label);
+
+            previewGalleryCatalogGrid.appendChild(link);
+        });
+    }
+
+    function populateGalleryCatalogFields(data) {
+        state.galleryCatalogTiles = migrateGalleryCatalogTiles(data);
+        renderGalleryCatalogTilesEditor();
+    }
+
+    function bindGalleryCatalogEditorEvents() {
+        if (!galleryCatalogTilesEditor) return;
+
+        galleryCatalogTilesEditor.addEventListener('input', (event) => {
+            if (!event.target.matches('[data-tile-field]')) return;
+
+            if (event.target.dataset.tileField === 'label') {
+                const tileName = galleryCatalogTilesEditor.querySelector(
+                    `.editor-gallery-catalog-tile-group[data-tile-id="${event.target.dataset.tileId}"] .editor-gallery-catalog-tile-name`,
+                );
+                if (tileName) {
+                    tileName.textContent = event.target.value.trim() || 'Tile';
+                }
+            }
+
+            saveGalleryCatalogTilesDraft();
+        });
+
+        galleryCatalogTilesEditor.addEventListener('focusout', (event) => {
+            if (event.target.matches('[data-tile-field]')) {
+                flushGalleryCatalogTilesDraft();
+            }
+        });
+
+        galleryCatalogTilesEditor.addEventListener('change', (event) => {
+            const input = event.target;
+            if (!input.matches('input[type="file"][data-tile-id]')) return;
+
+            const tileId = input.dataset.tileId;
+            onGalleryCatalogTileImageUpload(input, tileId);
+        });
+    }
+
+    async function onGalleryCatalogTileImageUpload(input, tileId) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+
+        const tile = state.galleryCatalogTiles.find((item) => item.id === tileId);
+        if (!tile) {
+            setStatus('Could not find catalog tile.');
+            input.value = '';
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            setStatus('Please choose an image file.');
+            input.value = '';
+            return;
+        }
+
+        if (file.size > FEATURE_IMAGE_MAX_BYTES) {
+            setStatus(`Image must be under ${Math.round(FEATURE_IMAGE_MAX_BYTES / (1024 * 1024))} MB.`);
+            input.value = '';
+            return;
+        }
+
+        try {
+            readGalleryCatalogTilesFromEditor();
+            tile.image = await readFileAsDataUrl(file);
+            setUploadPreviewImage(
+                document.getElementById(`uploadPreviewGalleryCatalog-${tileId}`),
+                tile.image,
+            );
+            syncGalleryCatalogPreview();
+            saveState();
+            setStatus('Catalog tile image updated');
+        } catch {
+            setStatus('Could not read image.');
+        } finally {
+            input.value = '';
+        }
+    }
+
+    function buildGalleryCatalogExportSpec() {
+        return {
+            layout: 'four-tile-row',
+            alignment: 'Centered · matches Gallery hero width',
+            labelStyle: 'White · uppercase · centered on image',
+            linksToCatalog: true,
+            imageDirectory: `editor/${GALLERY_IMAGE_DIR}`,
+            tiles: state.galleryCatalogTiles.map((tile, index) => ({
+                index: index + 1,
+                id: tile.id,
+                label: tile.label,
+                url: tile.url,
+                imageFilename: `gallery-catalog-tile-${index + 1}.jpg`,
+            })),
+        };
+    }
+
+    async function loadGalleryCatalogAssetsForExport() {
+        return Promise.all(state.galleryCatalogTiles.map(async (tile, index) => ({
+            filename: `gallery-catalog-tile-${index + 1}.jpg`,
+            label: `Catalog highlight — ${tile.label}`,
+            dimensions: 'Tile in 4-column row',
+            dataUrl: await resolveImageDataUrlForExport(tile.image),
+        })));
+    }
+
+    function defaultGalleryMainNavLinks() {
+        return DEFAULT_GALLERY_MAIN_NAV_LINKS.map((link, index) => createFooterLinkItem({
+            label: link.label,
+            url: link.defaultUrl,
+        }, index, 'gmn'));
+    }
+
+    function migrateGalleryMainNavLinks(data) {
+        if (Array.isArray(data.galleryMainNavLinks) && data.galleryMainNavLinks.length > 0) {
+            return data.galleryMainNavLinks.map((item, index) => createFooterLinkItem(item, index, 'gmn'));
+        }
+
+        if (Array.isArray(data.galleryMainNavLinks)) {
+            return [];
+        }
+
+        return defaultGalleryMainNavLinks();
+    }
+
+    function renderGalleryMainNavEditor() {
+        renderFooterLinksEditor(galleryMainNavEditor, state.galleryMainNavLinks, 'Nav link');
+    }
+
+    function readGalleryMainNavFromEditor() {
+        if (!galleryMainNavEditor) return;
+        galleryMainNavEditor.querySelectorAll('[data-field]').forEach((input) => {
+            const item = state.galleryMainNavLinks.find((link) => link.id === input.dataset.itemId);
+            if (!item) return;
+            item[input.dataset.field] = input.value.trim();
+        });
+    }
+
+    function saveGalleryMainNavDraft() {
+        readGalleryMainNavFromEditor();
+        syncHeaderPreview();
+        saveState();
+    }
+
+    function addGalleryMainNavLink() {
+        readGalleryMainNavFromEditor();
+        state.galleryMainNavLinks.push(createFooterLinkItem({
+            label: 'New link',
+            url: '/',
+        }, state.galleryMainNavLinks.length, 'gmn'));
+        renderGalleryMainNavEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Nav link added');
+    }
+
+    function removeGalleryMainNavLink(id) {
+        readGalleryMainNavFromEditor();
+        state.galleryMainNavLinks = state.galleryMainNavLinks.filter((item) => item.id !== id);
+        renderGalleryMainNavEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Nav link removed');
+    }
+
+    function bindGalleryMainNavEditorEvents() {
+        if (galleryMainNavEditor) {
+            galleryMainNavEditor.addEventListener('input', (event) => {
+                if (event.target.matches('[data-field]')) {
+                    saveGalleryMainNavDraft();
+                }
+            });
+
+            galleryMainNavEditor.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-action="remove-footer-link"]');
+                if (!button) return;
+                const wrap = button.closest('[data-item-id]');
+                if (wrap) removeGalleryMainNavLink(wrap.dataset.itemId);
+            });
+        }
+
+        if (addGalleryMainNavLinkBtn) {
+            addGalleryMainNavLinkBtn.addEventListener('click', addGalleryMainNavLink);
+        }
     }
 
     function mainNavSubcategoriesPending() {
@@ -1280,22 +2025,51 @@
     }
 
     function syncLogoUploadPreviews() {
-        if (uploadPreviewHeaderLogo) {
-            uploadPreviewHeaderLogo.innerHTML = state.headerLogoImage
-                ? `<img src="${state.headerLogoImage}" alt="">`
-                : '';
-            uploadPreviewHeaderLogo.classList.toggle('is-empty', !state.headerLogoImage);
+        setUploadPreviewImage(uploadPreviewHeaderLogo, state.headerLogoImage);
+        setUploadPreviewImage(uploadPreviewGalleryHeaderLogo, state.headerLogoImage);
+        setUploadPreviewImage(uploadPreviewFooterLogo, getEffectiveFooterLogo());
+    }
+
+    function syncGalleryHeaderPreview() {
+        applyImage(previewGalleryLogo, previewGalleryLogoWrap, state.headerLogoImage);
+        syncLogoUploadPreviews();
+
+        const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
+        if (previewGalleryTopBar) {
+            previewGalleryTopBar.style.backgroundColor = barBg;
         }
-        if (uploadPreviewFooterLogo) {
-            const footerLogo = getEffectiveFooterLogo();
-            uploadPreviewFooterLogo.innerHTML = footerLogo
-                ? `<img src="${footerLogo}" alt="">`
-                : '';
-            uploadPreviewFooterLogo.classList.toggle('is-empty', !footerLogo);
+
+        if (previewGalleryTopBarCopy) {
+            previewGalleryTopBarCopy.textContent = state.galleryHeaderCenterCopy
+                || DEFAULT_GALLERY_HEADER_CENTER_COPY;
+        }
+
+        if (previewGalleryTopBarUtils) {
+            const wishlist = escapeHtml(state.galleryHeaderWishlistLabel || DEFAULT_GALLERY_HEADER_WISHLIST);
+            const signIn = escapeHtml(state.galleryHeaderSignInLabel || DEFAULT_GALLERY_HEADER_SIGN_IN);
+            previewGalleryTopBarUtils.innerHTML = (
+                `<a href="/wishlist">${wishlist}</a>`
+                + '<span class="showroom-gallery-top-bar-sep" aria-hidden="true">|</span>'
+                + `<a href="/sign-in">${signIn}</a>`
+            );
+        }
+
+        if (previewGalleryMainNavLinks) {
+            const visibleLinks = (state.galleryMainNavLinks || []).filter((link) => link.label || link.url);
+            previewGalleryMainNavLinks.innerHTML = visibleLinks.map((link) => {
+                const url = escapeHtml(link.url || '#');
+                const label = escapeHtml(link.label || 'Link');
+                return `<li><a href="${url}">${label}</a></li>`;
+            }).join('');
         }
     }
 
     function syncHeaderPreview() {
+        if (templateDesign === 'gallery') {
+            syncGalleryHeaderPreview();
+            return;
+        }
+
         applyImage(previewHeaderLogo, previewHeaderLogoWrap, state.headerLogoImage);
         syncLogoUploadPreviews();
 
@@ -1354,6 +2128,99 @@
                 }).join('')}</ul>`
             );
         }
+    }
+
+    function buildHeaderExportSpec() {
+        if (templateDesign === 'gallery') {
+            return {
+                layout: 'gallery',
+                logoSharedWithFooter: state.footerLogoUseHeader !== false,
+                logoDimensions: 'max 150 px high · centered below top bar',
+                logoFilename: 'header-logo.png',
+                contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
+                topBar: {
+                    backgroundColor: state.galleryHeaderBarBackgroundColor,
+                    centerCopyBackground: 'transparent',
+                    centerCopyColor: '#ffffff',
+                    centerCopy: state.galleryHeaderCenterCopy,
+                    utilities: {
+                        alignment: 'right',
+                        separator: '|',
+                        wishlist: {
+                            label: state.galleryHeaderWishlistLabel,
+                            url: '/wishlist',
+                        },
+                        signIn: {
+                            label: state.galleryHeaderSignInLabel,
+                            url: '/sign-in',
+                        },
+                    },
+                },
+                mainNav: {
+                    alignment: 'center',
+                    links: state.galleryMainNavLinks.map((link) => ({
+                        label: link.label,
+                        url: link.url,
+                    })),
+                    search: {
+                        hardcoded: true,
+                        placeholder: GALLERY_SEARCH_PLACEHOLDER,
+                        iconPosition: 'right',
+                        style: 'Square bordered field',
+                    },
+                },
+            };
+        }
+
+        return {
+            layout: 'classic',
+            logoSharedWithFooter: state.footerLogoUseHeader !== false,
+            logoDimensions: 'max 220 × 68 px in header',
+            logoFilename: 'header-logo.png',
+            contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
+            banner: {
+                height: '50 px',
+                backgroundColor: state.headerBannerBackgroundColor,
+                textColor: '#ffffff',
+                alignment: 'right',
+                separator: '|',
+                links: state.headerBannerLinks.map((link) => ({
+                    label: link.label,
+                    url: link.url,
+                })),
+            },
+            toolbar: {
+                layout: 'search left · logo center · icons right',
+                searchBarHardcoded: true,
+                searchPlaceholder: HEADER_SEARCH_PLACEHOLDER,
+                searchStyle: 'Single bottom border underline',
+                iconsHardcoded: true,
+                icons: HEADER_TOOLBAR_ICONS.map((item) => ({
+                    id: item.id,
+                    label: item.label,
+                    iconClass: item.iconClass,
+                    url: item.url,
+                })),
+            },
+            mainNav: {
+                editable: true,
+                hasDropdowns: true,
+                fontSize: '15 px',
+                alignment: 'Full content width · first category aligns with search · last category aligns with cart',
+                subcategoriesPending: mainNavSubcategoriesPending(),
+                items: state.mainNavItems.map((item) => ({
+                    id: item.id,
+                    label: item.label,
+                    url: item.url || '',
+                    subcategories: (item.subcategories || []).map((sub) => ({
+                        id: sub.id,
+                        label: sub.label,
+                        url: sub.url,
+                        visible: sub.visible !== false,
+                    })),
+                })),
+            },
+        };
     }
 
     function footerTelHref(phone) {
@@ -1689,7 +2556,7 @@
         }
 
         if (!state.sketchSectionVisible) {
-            requestAnimationFrame(fitPreviewScale);
+            scheduleFitPreviewScale();
             return;
         }
 
@@ -1857,8 +2724,8 @@
             const number = String(item.itemNumber || '').trim();
             let dataUrl = item.image || '';
 
-            if (!dataUrl && number) {
-                dataUrl = await fetchAssetAsDataUrl(`${YOUMAYLIKE_IMAGE_DIR}${number}.png`);
+            if (!dataUrl && savedClassicImageRef(item.image)) {
+                dataUrl = await fetchAssetAsDataUrl(item.image);
             }
 
             assets.push({
@@ -2077,7 +2944,12 @@
     }
 
     function populateGetInspiredFields(data) {
-        state.getInspiredLifestyleImage = data.getInspiredLifestyleImage || '';
+        state.getInspiredLifestyleImage = templateDesign === 'gallery'
+            ? (data.getInspiredLifestyleImage || '')
+            : resolveClassicImage(
+                data.getInspiredLifestyleImage,
+                DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
+            );
         state.getInspiredItems = normalizeGetInspiredItems(data.getInspiredItems);
         renderGetInspiredEditor();
     }
@@ -2291,6 +3163,8 @@
         if (fields.footerCopyrightName) state.footerCopyrightName = fields.footerCopyrightName.value.trim();
         readHeaderBannerLinksFromEditor();
         readMainNavFromEditor();
+        readGalleryMainNavFromEditor();
+        readGalleryCatalogTilesFromEditor();
         if (fields.headerBannerBackgroundColor) {
             state.headerBannerBackgroundColor = normalizeHex(fields.headerBannerBackgroundColor.value || DEFAULT_HEADER_BANNER_BG);
             fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
@@ -2298,15 +3172,75 @@
                 fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
             }
         }
+        if (fields.galleryHeaderBarBackgroundColor) {
+            state.galleryHeaderBarBackgroundColor = normalizeHex(
+                fields.galleryHeaderBarBackgroundColor.value || DEFAULT_GALLERY_HEADER_BAR_BG,
+            );
+            fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
+            if (fields.galleryHeaderBarBackgroundColorValue) {
+                fields.galleryHeaderBarBackgroundColorValue.textContent = state.galleryHeaderBarBackgroundColor;
+            }
+        }
+        if (fields.galleryHeaderCenterCopy) {
+            state.galleryHeaderCenterCopy = fields.galleryHeaderCenterCopy.value.trim()
+                || DEFAULT_GALLERY_HEADER_CENTER_COPY;
+            fields.galleryHeaderCenterCopy.value = state.galleryHeaderCenterCopy;
+        }
+        if (fields.galleryHeaderWishlistLabel) {
+            state.galleryHeaderWishlistLabel = fields.galleryHeaderWishlistLabel.value.trim()
+                || DEFAULT_GALLERY_HEADER_WISHLIST;
+            fields.galleryHeaderWishlistLabel.value = state.galleryHeaderWishlistLabel;
+        }
+        if (fields.galleryHeaderSignInLabel) {
+            state.galleryHeaderSignInLabel = fields.galleryHeaderSignInLabel.value.trim()
+                || DEFAULT_GALLERY_HEADER_SIGN_IN;
+            fields.galleryHeaderSignInLabel.value = state.galleryHeaderSignInLabel;
+        }
         syncPreview();
         saveState();
     }
 
+    function populateGalleryHeaderFields(data) {
+        state.galleryHeaderBarBackgroundColor = normalizeHex(
+            data.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG,
+        );
+        state.galleryHeaderCenterCopy = data.galleryHeaderCenterCopy || DEFAULT_GALLERY_HEADER_CENTER_COPY;
+        state.galleryHeaderWishlistLabel = data.galleryHeaderWishlistLabel || DEFAULT_GALLERY_HEADER_WISHLIST;
+        state.galleryHeaderSignInLabel = data.galleryHeaderSignInLabel || DEFAULT_GALLERY_HEADER_SIGN_IN;
+
+        if (fields.galleryHeaderBarBackgroundColor) {
+            fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
+            if (fields.galleryHeaderBarBackgroundColorValue) {
+                fields.galleryHeaderBarBackgroundColorValue.textContent = state.galleryHeaderBarBackgroundColor;
+            }
+        }
+        if (fields.galleryHeaderCenterCopy) {
+            fields.galleryHeaderCenterCopy.value = state.galleryHeaderCenterCopy;
+        }
+        if (fields.galleryHeaderWishlistLabel) {
+            fields.galleryHeaderWishlistLabel.value = state.galleryHeaderWishlistLabel;
+        }
+        if (fields.galleryHeaderSignInLabel) {
+            fields.galleryHeaderSignInLabel.value = state.galleryHeaderSignInLabel;
+        }
+        state.galleryMainNavLinks = migrateGalleryMainNavLinks(data);
+        renderGalleryMainNavEditor();
+        populateGalleryHeroFields(data);
+        populateGalleryCatalogFields(data);
+    }
+
     function populateHeaderFields(data) {
-        state.headerLogoImage = data.headerLogoImage || data.footerLogoImage || '';
+        if (templateDesign === 'gallery') {
+            state.headerLogoImage = savedGalleryImageRef(data.headerLogoImage) || DEFAULT_GALLERY_HEADER_LOGO;
+        } else {
+            state.headerLogoImage = savedClassicImageRef(data.headerLogoImage)
+                || savedClassicImageRef(data.footerLogoImage)
+                || DEFAULT_CLASSIC_HEADER_LOGO;
+        }
         state.headerBannerBackgroundColor = normalizeHex(data.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
         state.headerBannerLinks = migrateHeaderBannerLinks(data);
         state.mainNavItems = migrateMainNavItems(data);
+        populateGalleryHeaderFields(data);
 
         renderHeaderBannerLinksEditor();
         renderMainNavEditor();
@@ -2402,8 +3336,19 @@
         state.featureRightParagraph = fields.featureRightParagraph ? fields.featureRightParagraph.value.trim() : DEFAULT_FEATURE_RIGHT_PARAGRAPH;
         state.featureRightButtonLabel = fields.featureRightButtonLabel ? fields.featureRightButtonLabel.value.trim() : DEFAULT_FEATURE_RIGHT_BUTTON_LABEL;
         state.featureRightButtonUrl = fields.featureRightButtonUrl ? fields.featureRightButtonUrl.value.trim() || DEFAULT_FEATURE_RIGHT_BUTTON_URL : DEFAULT_FEATURE_RIGHT_BUTTON_URL;
-        state.featureLeftImage = data.featureLeftImage || '';
-        state.featureRightImage = data.featureRightImage || '';
+        if (templateDesign === 'gallery') {
+            state.featureLeftImage = data.featureLeftImage || '';
+            state.featureRightImage = data.featureRightImage || '';
+        } else {
+            state.featureLeftImage = resolveClassicImage(
+                data.featureLeftImage,
+                DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE,
+            );
+            state.featureRightImage = resolveClassicImage(
+                data.featureRightImage,
+                DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE,
+            );
+        }
     }
 
     function populateAboutFields(data) {
@@ -2434,7 +3379,9 @@
         state.aboutPrimaryUrl = fields.aboutPrimaryUrl ? fields.aboutPrimaryUrl.value.trim() || DEFAULT_ABOUT_PRIMARY_URL : DEFAULT_ABOUT_PRIMARY_URL;
         state.aboutSecondaryLabel = fields.aboutSecondaryLabel ? fields.aboutSecondaryLabel.value.trim() : DEFAULT_ABOUT_SECONDARY_LABEL;
         state.aboutSecondaryUrl = fields.aboutSecondaryUrl ? fields.aboutSecondaryUrl.value.trim() || DEFAULT_ABOUT_SECONDARY_URL : DEFAULT_ABOUT_SECONDARY_URL;
-        state.aboutEmployeeImage = data.aboutEmployeeImage || '';
+        state.aboutEmployeeImage = templateDesign === 'gallery'
+            ? (data.aboutEmployeeImage || '')
+            : resolveClassicImage(data.aboutEmployeeImage, DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE);
     }
 
     function populateForm(data) {
@@ -2470,8 +3417,13 @@
         if (fields.shopAllUrl) {
             fields.shopAllUrl.value = data.shopAllUrl || DEFAULT_SHOP_ALL_URL;
         }
-        state.productImage = data.productImage || '';
-        state.lifestyleImage = data.lifestyleImage || '';
+        if (templateDesign === 'gallery') {
+            state.productImage = data.productImage || '';
+            state.lifestyleImage = data.lifestyleImage || '';
+        } else {
+            state.productImage = resolveClassicImage(data.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE);
+            state.lifestyleImage = resolveClassicImage(data.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE);
+        }
         state.shopAllUrl = fields.shopAllUrl ? fields.shopAllUrl.value.trim() || DEFAULT_SHOP_ALL_URL : DEFAULT_SHOP_ALL_URL;
         state.featuredCategories = mergeFeaturedCategories(data.featuredCategories);
         state.title = fields.title.value;
@@ -2606,6 +3558,33 @@
             onImageUpload(fields.headerLogo, 'headerLogoImage');
         });
     }
+    if (fields.galleryHeroPrimary) {
+        fields.galleryHeroPrimary.addEventListener('change', () => {
+            onImageUpload(fields.galleryHeroPrimary, 'galleryHeroPrimaryImage');
+        });
+    }
+    if (fields.galleryHeroSecondaryTop) {
+        fields.galleryHeroSecondaryTop.addEventListener('change', () => {
+            onImageUpload(fields.galleryHeroSecondaryTop, 'galleryHeroSecondaryTopImage');
+        });
+    }
+    if (fields.galleryHeroSecondaryBottom) {
+        fields.galleryHeroSecondaryBottom.addEventListener('change', () => {
+            onImageUpload(fields.galleryHeroSecondaryBottom, 'galleryHeroSecondaryBottomImage');
+        });
+    }
+
+    if (fields.galleryHeaderLogo) {
+        fields.galleryHeaderLogo.addEventListener('change', () => {
+            onImageUpload(fields.galleryHeaderLogo, 'headerLogoImage');
+        });
+    }
+    if (fields.galleryHeaderBarBackgroundColor) {
+        fields.galleryHeaderBarBackgroundColor.addEventListener('input', readForm);
+    }
+    ['galleryHeaderCenterCopy', 'galleryHeaderWishlistLabel', 'galleryHeaderSignInLabel'].forEach((key) => {
+        if (fields[key]) fields[key].addEventListener('input', readForm);
+    });
 
     if (fields.footerLogo) {
         fields.footerLogo.addEventListener('change', () => {
@@ -2658,6 +3637,42 @@
         } catch {
             return '';
         }
+    }
+
+    async function resolveImageDataUrlForExport(src) {
+        if (!src) return '';
+        if (String(src).startsWith('data:')) return src;
+        return fetchAssetAsDataUrl(src);
+    }
+
+    async function loadGalleryHeroAssetsForExport() {
+        const items = [
+            {
+                filename: 'gallery-hero-primary.jpg',
+                label: 'Gallery hero — large lifestyle (left)',
+                dimensions: '500 px height · half width',
+                src: state.galleryHeroPrimaryImage,
+            },
+            {
+                filename: 'gallery-hero-secondary-top.jpg',
+                label: 'Gallery hero — lifestyle (top right)',
+                dimensions: '250 px height · half width',
+                src: state.galleryHeroSecondaryTopImage,
+            },
+            {
+                filename: 'gallery-hero-secondary-bottom.jpg',
+                label: 'Gallery hero — lifestyle (bottom right)',
+                dimensions: '250 px height · half width',
+                src: state.galleryHeroSecondaryBottomImage,
+            },
+        ];
+
+        return Promise.all(items.map(async (item) => ({
+            filename: item.filename,
+            label: item.label,
+            dimensions: item.dimensions,
+            dataUrl: await resolveImageDataUrlForExport(item.src),
+        })));
     }
 
     async function loadFeaturedCategoryAssetsForExport() {
@@ -2713,9 +3728,16 @@
                 : [];
             const youMayLikeAssets = await loadYouMayLikeAssetsForExport();
             const getInspiredCardAssets = await loadGetInspiredCardAssetsForExport();
+            const galleryHeroAssets = templateDesign === 'gallery'
+                ? await loadGalleryHeroAssetsForExport()
+                : [];
+            const galleryCatalogAssets = templateDesign === 'gallery'
+                ? await loadGalleryCatalogAssetsForExport()
+                : [];
             await window.exportShowroomHandoff({
                 headerEl: headerRoot,
                 heroEl: heroRoot,
+                galleryCatalogEl: galleryCatalogRoot,
                 categoriesEl: categoriesRoot,
                 aboutEl: aboutRoot,
                 featureTilesEl: featureTilesRoot,
@@ -2725,7 +3747,8 @@
                 footerEl: footerRoot,
                 previewEl: previewRoot,
                 spec: {
-                    template: 'Showroom',
+                    template: `Showroom — ${TEMPLATE_DESIGNS[templateDesign]}`,
+                    design: templateDesign,
                     title: state.title,
                     description: state.description,
                     cta: state.cta,
@@ -2736,7 +3759,7 @@
                     productImageSize: '563 × 342 px',
                     lifestyleImageSize: '854 × 670 px min',
                     shopAllUrl: state.shopAllUrl,
-                    featuredCategoryImageDirectory: FEATURED_CATEGORY_IMAGE_DIR,
+                    featuredCategoryImageDirectory: `editor/${FEATURED_CATEGORY_IMAGE_DIR}`,
                     featuredCategoryThumbnailSize: '70 × 70 px',
                     featuredCategoryCardSize: '300 × 70 px',
                     featuredCategoryImagesHardcoded: true,
@@ -2747,54 +3770,17 @@
                             label: category.label,
                             imageFile: category.imageFile,
                         })),
-                    header: {
-                        logoSharedWithFooter: state.footerLogoUseHeader !== false,
-                        logoDimensions: 'max 220 × 68 px in header',
-                        logoFilename: 'header-logo.png',
-                        contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
-                        banner: {
-                            height: '50 px',
-                            backgroundColor: state.headerBannerBackgroundColor,
-                            textColor: '#ffffff',
-                            alignment: 'right',
-                            separator: '|',
-                            links: state.headerBannerLinks.map((link) => ({
-                                label: link.label,
-                                url: link.url,
-                            })),
-                        },
-                        toolbar: {
-                            layout: 'search left · logo center · icons right',
-                            searchBarHardcoded: true,
-                            searchPlaceholder: HEADER_SEARCH_PLACEHOLDER,
-                            searchStyle: 'Single bottom border underline',
-                            iconsHardcoded: true,
-                            icons: HEADER_TOOLBAR_ICONS.map((item) => ({
-                                id: item.id,
-                                label: item.label,
-                                iconClass: item.iconClass,
-                                url: item.url,
-                            })),
-                        },
-                        mainNav: {
-                            editable: true,
-                            hasDropdowns: true,
-                            fontSize: '15 px',
-                            alignment: 'Full content width · first category aligns with search · last category aligns with cart',
-                            subcategoriesPending: mainNavSubcategoriesPending(),
-                            items: state.mainNavItems.map((item) => ({
-                                id: item.id,
-                                label: item.label,
-                                url: item.url || '',
-                                subcategories: (item.subcategories || []).map((sub) => ({
-                                    id: sub.id,
-                                    label: sub.label,
-                                    url: sub.url,
-                                    visible: sub.visible !== false,
-                                })),
-                            })),
-                        },
-                    },
+                    header: buildHeaderExportSpec(),
+                    ...(templateDesign === 'gallery'
+                        ? {
+                            hero: buildGalleryHeroExportSpec(),
+                            catalogHighlights: buildGalleryCatalogExportSpec(),
+                        }
+                        : {
+                            heroLayout: 'classic',
+                            productImageSize: '563 × 342 px',
+                            lifestyleImageSize: '854 × 670 px min',
+                        }),
                     aboutUs: {
                         header: state.aboutHeader,
                         paragraph: state.aboutParagraph,
@@ -2836,7 +3822,7 @@
                     sketchSection: {
                         visible: state.sketchSectionVisible,
                         imageSize: '180 × 78 px',
-                        imageDirectory: 'editor/assets/sketch-section/',
+                        imageDirectory: 'editor/classic/sketch-section/',
                         cards: SKETCH_CARDS.map((card) => ({
                             id: card.id,
                             imageFile: card.imageFile,
@@ -2865,7 +3851,7 @@
                         lifestyleImageSize: '508 × 610 px',
                         cardImageSize: '155 × 155 px',
                         gridLayout: '4 columns × 2 rows',
-                        imageDirectory: 'editor/assets/get-inspired/',
+                        imageDirectory: 'editor/classic/get-inspired/',
                         catalogResolvedOnLiveSite: true,
                         items: state.getInspiredItems.map((item, index) => {
                             const resolved = resolveGetInspiredPreviewItem(item, index);
@@ -2912,18 +3898,22 @@
                     },
                 },
                 assets: [
-                    {
-                        filename: 'product-image.png',
-                        label: 'Product image (left, top)',
-                        dimensions: '563 × 342 px',
-                        dataUrl: state.productImage || '',
-                    },
-                    {
-                        filename: 'lifestyle-image.png',
-                        label: 'Lifestyle image (right)',
-                        dimensions: '854 × 670 px min',
-                        dataUrl: state.lifestyleImage || '',
-                    },
+                    ...(templateDesign === 'gallery'
+                        ? [...galleryHeroAssets, ...galleryCatalogAssets]
+                        : [
+                            {
+                                filename: 'product-image.png',
+                                label: 'Product image (left, top)',
+                                dimensions: '563 × 342 px',
+                                dataUrl: state.productImage || '',
+                            },
+                            {
+                                filename: 'lifestyle-image.png',
+                                label: 'Lifestyle image (right)',
+                                dimensions: '854 × 670 px min',
+                                dataUrl: state.lifestyleImage || '',
+                            },
+                        ]),
                     {
                         filename: 'about-employee-image.png',
                         label: 'About Us employee photo (centered, overlaps panel)',
@@ -2955,7 +3945,9 @@
                     {
                         filename: 'header-logo.png',
                         label: 'Company logo (header)',
-                        dimensions: 'max 220 × 68 px',
+                        dimensions: templateDesign === 'gallery'
+                            ? 'max 150 px high'
+                            : 'max 220 × 68 px',
                         dataUrl: state.headerLogoImage || '',
                     },
                     {
@@ -2987,7 +3979,105 @@
         }
     });
 
-    window.addEventListener('resize', fitPreviewScale);
+    window.addEventListener('resize', scheduleFitPreviewScale);
+
+    const GALLERY_EDITOR_SECTIONS = new Set([
+        'editor-section-header',
+        'editor-section-hero',
+        'editor-section-gallery-catalog',
+    ]);
+
+    function applyGalleryEditorPanelVisibility(isGallery) {
+        if (!editorPanel) return;
+
+        editorPanel.querySelectorAll('.editor-panel-block').forEach((block) => {
+            const sectionId = block.dataset.sectionId || '';
+            if (isGallery) {
+                block.hidden = !GALLERY_EDITOR_SECTIONS.has(sectionId);
+            } else {
+                block.hidden = sectionId === 'editor-section-gallery-catalog';
+            }
+        });
+    }
+
+    function applyTemplateDesignUI() {
+        const label = TEMPLATE_DESIGNS[templateDesign];
+        const nameEl = document.getElementById('editorTemplateName');
+        if (nameEl) nameEl.textContent = label;
+
+        document.title = `Showroom Editor — ${label} — LogicXO`;
+        document.body.classList.add(`editor-page--${templateDesign}`);
+        document.body.dataset.templateDesign = templateDesign;
+
+        const isGallery = templateDesign === 'gallery';
+        if (editorHeaderClassic) editorHeaderClassic.hidden = isGallery;
+        if (editorHeaderGallery) editorHeaderGallery.hidden = !isGallery;
+        if (showroomHeaderClassic) showroomHeaderClassic.hidden = isGallery;
+        if (showroomHeaderGallery) showroomHeaderGallery.hidden = !isGallery;
+        if (editorHeroClassic) editorHeroClassic.hidden = isGallery;
+        if (editorHeroGallery) editorHeroGallery.hidden = !isGallery;
+        if (editorGalleryCatalog) editorGalleryCatalog.hidden = !isGallery;
+        if (showroomHeroClassic) showroomHeroClassic.hidden = isGallery;
+        if (showroomHeroGallery) showroomHeroGallery.hidden = !isGallery;
+        if (editorClassicSections) editorClassicSections.hidden = isGallery;
+        if (showroomClassicSections) showroomClassicSections.hidden = isGallery;
+        if (editorNavGalleryCatalog) editorNavGalleryCatalog.hidden = !isGallery;
+
+        if (editorSectionNav) {
+            editorSectionNav.querySelectorAll('.editor-section-nav-link--classic').forEach((link) => {
+                link.hidden = isGallery;
+            });
+        }
+
+        applyGalleryEditorPanelVisibility(isGallery);
+        renderHeaderJumpNav();
+
+        if (isGallery) {
+            ensureGalleryImageDefaults();
+            if (galleryCatalogTilesEditor && !galleryCatalogTilesEditor.childElementCount) {
+                renderGalleryCatalogTilesEditor();
+            } else if (galleryCatalogTilesEditor) {
+                state.galleryCatalogTiles.forEach((tile) => {
+                    setUploadPreviewImage(
+                        document.getElementById(`uploadPreviewGalleryCatalog-${tile.id}`),
+                        tile.image,
+                    );
+                });
+            }
+            syncGalleryPreview();
+        }
+    }
+
+    function finishGalleryEditorInit(options = {}) {
+        if (templateDesign !== 'gallery') return;
+
+        ensureGalleryImageDefaults();
+        if (galleryCatalogTilesEditor) {
+            renderGalleryCatalogTilesEditor();
+        }
+        applyTemplateDesignUI();
+        syncGalleryPreview();
+        scheduleFitPreviewScale();
+
+        if (options.restoredDraft) {
+            setStatus('Draft restored');
+        }
+    }
+
+    function finishClassicEditorInit(options = {}) {
+        if (templateDesign === 'gallery') return;
+
+        ensureClassicImageDefaults();
+        if (youMayLikeEditor) {
+            renderYouMayLikeEditor();
+        }
+        applyTemplateDesignUI();
+        syncPreview();
+
+        if (options.restoredDraft) {
+            setStatus('Draft restored');
+        }
+    }
 
     async function init() {
         buildCategoryCheckboxes();
@@ -2999,14 +4089,28 @@
         bindYouMayLikeEditorEvents();
         bindGetInspiredEditorEvents();
         bindHeaderBannerEditorEvents();
+        bindGalleryMainNavEditorEvents();
+        bindGalleryCatalogEditorEvents();
         bindMainNavEditorEvents();
         bindFooterLinksEditorEvents();
+        bindPreviewResizeObserver();
+        window.addEventListener('load', scheduleFitPreviewScale);
+
+        if (templateDesign === 'gallery') {
+            applyTemplateDesignUI();
+        }
 
         const saved = loadState();
         if (saved) {
-            populateForm(saved);
-            setStatus('Draft restored');
-            fitPreviewScale();
+            const restored = templateDesign === 'gallery'
+                ? migrateLoadedGalleryState(saved)
+                : migrateLoadedClassicState(saved);
+            populateForm(restored);
+            if (templateDesign === 'gallery') {
+                finishGalleryEditorInit({ restoredDraft: true });
+            } else {
+                finishClassicEditorInit({ restoredDraft: true });
+            }
             return;
         }
 
@@ -3015,13 +4119,19 @@
             if (res.ok) {
                 const data = await res.json();
                 populateForm(data.showroom || {});
-                saveState();
+            } else {
+                populateForm({});
             }
         } catch {
             populateForm({});
         }
 
-        fitPreviewScale();
+        if (templateDesign === 'gallery') {
+            finishGalleryEditorInit();
+        } else {
+            finishClassicEditorInit();
+        }
+        saveState({ silent: true });
     }
 
     init();

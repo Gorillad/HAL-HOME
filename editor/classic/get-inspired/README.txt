@@ -20,4 +20,7 @@ File order when you drop them in does not matter — rename to 1.png through 8.p
 On the live site, product name, price, and images come from the You May Like
 dashboard attribute using each card's catalog item number.
 
-The left lifestyle column image is uploaded in the editor (508 × 610 px), not stored here.
+Default lifestyle column image:
+  Everett_4398BN_Models.jpg   — Left column (508 × 610 px)
+
+Replace or upload in the editor to override.

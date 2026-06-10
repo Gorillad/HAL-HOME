@@ -38,7 +38,9 @@ Use `npm start` (not a static file server) — cart checkout requires the Node A
 │   ├── css/editor.css
 │   ├── js/showroom-editor.js
 │   ├── js/export-pdf.js
-│   ├── assets/                # Editor thumbnails & placeholders
+│   ├── gallery/               # Gallery template default images
+│   ├── classic/               # Classic template images (categories, get-inspired, etc.)
+│   ├── assets/                # Shared editor assets (e.g. rubber-duck.svg)
 │   └── vendor/                # html2canvas, jsPDF, JSZip (PDF export)
 ├── server/
 │   ├── index.js               # Express: static files + Stripe API

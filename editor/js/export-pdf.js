@@ -463,7 +463,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Card size', spec.featuredCategoryCardSize || '300 × 70 px'],
         ['Thumbnail size', spec.featuredCategoryThumbnailSize || '70 × 70 px'],
         ['Category images', spec.featuredCategoryImagesHardcoded ? 'Hardcoded — not editable in template' : '—'],
-        ['Image directory', spec.featuredCategoryImageDirectory || 'editor/assets/featured-categories/'],
+        ['Image directory', spec.featuredCategoryImageDirectory || 'editor/classic/featured-categories/'],
         ['Visible count', String(visibleCategories.length)],
     ]);
     if (visibleCategories.length) {
@@ -708,7 +708,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             shopAllUrl: spec.shopAllUrl || '/catalog',
             cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
             thumbnailSize: spec.featuredCategoryThumbnailSize || '70 × 70 px',
-            imageDirectory: spec.featuredCategoryImageDirectory || 'editor/assets/featured-categories/',
+            imageDirectory: spec.featuredCategoryImageDirectory || 'editor/classic/featured-categories/',
             imagesHardcoded: spec.featuredCategoryImagesHardcoded !== false,
             visible: spec.featuredCategories || [],
         },
@@ -758,7 +758,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         sketchSection: {
             visible: sketchSection.visible !== false,
             imageSize: sketchSection.imageSize || '180 × 78 px',
-            imageDirectory: sketchSection.imageDirectory || 'editor/assets/sketch-section/',
+            imageDirectory: sketchSection.imageDirectory || 'editor/classic/sketch-section/',
             cards: sketchCards.map((card) => ({
                 id: card.id || '',
                 imageFile: card.imageFile || '',
@@ -785,7 +785,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             },
             cardImageSize: getInspired.cardImageSize || '155 × 155 px',
             gridLayout: getInspired.gridLayout || '4 columns × 2 rows',
-            imageDirectory: getInspired.imageDirectory || 'editor/assets/get-inspired/',
+            imageDirectory: getInspired.imageDirectory || 'editor/classic/get-inspired/',
             catalogResolvedOnLiveSite: getInspired.catalogResolvedOnLiveSite !== false,
             items: getInspiredItems.map((item) => ({
                 itemNumber: item.itemNumber || '',
