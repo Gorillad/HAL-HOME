@@ -28,6 +28,7 @@
                 <nav aria-label="Primary">
                     <ul class="site-nav-links">
                         <li><a href="#templates">Templates</a></li>
+                        <li><a href="#template-editor">Editor</a></li>
                         <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#campaigns">Campaigns</a></li>
                         <li><a href="#design-services">Design</a></li>
@@ -69,12 +70,73 @@
 
     <div class="container">
 
+        <section id="template-editor" class="section editor-spotlight" aria-labelledby="editor-spotlight-title">
+            <div class="editor-spotlight-grid">
+                <div class="editor-spotlight-copy">
+                    <span class="editor-spotlight-badge">Built into Showroom</span>
+                    <h2 id="editor-spotlight-title">Homepage Template Editor</h2>
+                    <p class="section-lead section-lead--flush editor-spotlight-lead">Customize your showroom homepage in a live preview — copy, images, navigation, catalog highlights, and footer — then export a developer handoff your team can ship with confidence.</p>
+                    <ul class="check-list editor-spotlight-list">
+                        <li>Section-by-section editing with instant preview</li>
+                        <li>McQueen &amp; Classic layouts tuned for lighting retail</li>
+                        <li>PDF brief, layout captures, and JSON spec in one ZIP</li>
+                        <li>Only your uploaded images are bundled — defaults stay in the template</li>
+                    </ul>
+                    <div class="editor-spotlight-actions">
+                        <a href="#templates" class="btn btn-primary">Homepage templates</a>
+                        <a href="editor/showroom.html" class="btn btn-secondary">Try the editor</a>
+                    </div>
+                </div>
+                <div class="editor-spotlight-demo">
+                    <div class="showroom-editor-quicklinks showroom-editor-quicklinks--spotlight" aria-label="Open Showroom layouts in the template editor">
+                        <span class="showroom-editor-quicklinks-label">Open in editor</span>
+                        <div class="showroom-editor-quicklinks-row">
+                            <a href="editor/showroom.html?design=classic" class="showroom-editor-quicklink">McQueen</a>
+                            <a href="editor/showroom.html?design=gallery" class="showroom-editor-quicklink">Classic</a>
+                        </div>
+                    </div>
+                    <div class="editor-mock" aria-hidden="true">
+                        <div class="editor-mock-sidebar">
+                            <span class="editor-mock-sidebar-title">Homepage content</span>
+                            <span class="editor-mock-nav-item is-active">Header</span>
+                            <span class="editor-mock-nav-item">Hero</span>
+                            <span class="editor-mock-nav-item">Catalog Highlights</span>
+                            <span class="editor-mock-nav-item">Footer</span>
+                            <span class="editor-mock-nav-item">Copyright</span>
+                            <span class="editor-mock-export">Export handoff</span>
+                        </div>
+                        <div class="editor-mock-workspace">
+                            <div class="template-browser editor-mock-browser">
+                                <div class="template-browser-bar"><span></span><span></span><span></span></div>
+                                <div class="template-browser-body">
+                                    <div class="editor-mock-preview-header"></div>
+                                    <div class="editor-mock-preview-hero">
+                                        <span class="editor-mock-preview-copy"></span>
+                                        <span class="editor-mock-preview-image"></span>
+                                    </div>
+                                    <div class="editor-mock-preview-tiles"><span></span><span></span><span></span><span></span></div>
+                                </div>
+                            </div>
+                            <span class="editor-mock-caption">Live preview · autosave · handoff export</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="templates" class="section" aria-labelledby="templates-title">
             <h2 id="templates-title">Homepage templates</h2>
             <p class="section-lead">Three tiers designed for lighting retail — from catalog-first showrooms to high-end designer experiences.</p>
             <div class="template-grid">
                 <article class="template-card template-card--showroom">
                     <span class="template-badge">The Premier Tier</span>
+                    <div class="showroom-editor-quicklinks" aria-label="Open Showroom layouts in the template editor">
+                        <span class="showroom-editor-quicklinks-label">Open in editor</span>
+                        <div class="showroom-editor-quicklinks-row">
+                            <a href="editor/showroom.html?design=classic" class="showroom-editor-quicklink">McQueen</a>
+                            <a href="editor/showroom.html?design=gallery" class="showroom-editor-quicklink">Classic</a>
+                        </div>
+                    </div>
                     <div class="template-preview template-preview--showroom">
                         <div class="showroom-design-tabs" role="tablist" aria-label="Showroom design options">
                             <button type="button" class="showroom-design-tab is-active" role="tab" id="showroom-design-tab-classic" aria-selected="true" aria-controls="showroom-design-classic" data-showroom-design="classic">McQueen</button>
@@ -447,6 +509,7 @@
                     <ul class="footer-links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="#templates">Templates</a></li>
+                        <li><a href="#template-editor">Template Editor</a></li>
                         <li><a href="#pricing">Pricing</a></li>
                         <li><a href="#campaigns">Campaigns</a></li>
                         <li><a href="#design-services">Design Services</a></li>

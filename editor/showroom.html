@@ -6,7 +6,7 @@
     <title>Showroom Homepage Editor — LogicXO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Josefin+Sans:ital,wght@0,200;0,300;1,200&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link href="css/editor.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -14,15 +14,24 @@
 <body class="editor-page">
     <header class="editor-toolbar">
         <div class="editor-toolbar-left">
-            <a href="../index.html" class="editor-home" aria-label="Back to LogicXO home">
-                <img src="../images/logicxo.png" alt="" width="152" height="48">
-            </a>
-            <div class="editor-toolbar-title">
-                <div class="editor-toolbar-heading">
-                    <h1>Showroom editor</h1>
-                    <span class="editor-template-name" id="editorTemplateName">McQueen</span>
+            <nav class="editor-breadcrumb" aria-label="Breadcrumb">
+                <ol class="editor-breadcrumb-list">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#templates">Homepage templates</a></li>
+                    <li><span aria-current="page">Showroom editor</span></li>
+                </ol>
+            </nav>
+            <div class="editor-toolbar-intro">
+                <a href="../index.html" class="editor-home" aria-label="Home">
+                    <img src="../images/logicxo.png" alt="LogicXO" width="152" height="48">
+                </a>
+                <div class="editor-toolbar-title">
+                    <div class="editor-toolbar-heading">
+                        <h1>Showroom editor</h1>
+                        <span class="editor-template-name" id="editorTemplateName">McQueen</span>
+                    </div>
+                    <p class="editor-toolbar-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
                 </div>
-                <p class="editor-toolbar-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
             </div>
         </div>
         <div class="editor-toolbar-actions">
@@ -37,16 +46,18 @@
     </header>
 
     <nav class="editor-section-nav" id="editorSectionNav" aria-label="Jump to editor section">
-        <a href="#editor-section-header" class="editor-section-nav-link">Header</a>
-        <a href="#editor-section-hero" class="editor-section-nav-link">Hero</a>
-        <a href="#editor-section-gallery-catalog" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryCatalog" hidden>Catalog Highlights</a>
-        <a href="#editor-section-featured-categories" class="editor-section-nav-link editor-section-nav-link--classic" id="editorNavFeaturedCategories">Featured Categories</a>
-        <a href="#editor-section-about-us" class="editor-section-nav-link editor-section-nav-link--classic">About Us</a>
-        <a href="#editor-section-feature-cards" class="editor-section-nav-link editor-section-nav-link--classic">Feature Cards</a>
-        <a href="#editor-section-sketch-section" class="editor-section-nav-link editor-section-nav-link--classic">Sketch Section</a>
-        <a href="#editor-section-you-may-like" class="editor-section-nav-link editor-section-nav-link--classic">You May Like</a>
-        <a href="#editor-section-get-inspired" class="editor-section-nav-link editor-section-nav-link--classic">Get Inspired</a>
-        <a href="#editor-section-footer" class="editor-section-nav-link editor-section-nav-link--classic">Footer</a>
+        <a href="#editor-section-header" class="editor-section-nav-link editor-section-nav-link--shared">Header</a>
+        <a href="#editor-section-hero" class="editor-section-nav-link editor-section-nav-link--shared">Hero</a>
+        <a href="#editor-section-gallery-catalog" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryCatalog">Catalog Highlights</a>
+        <a href="#editor-section-footer-classic" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavFooterClassic">Footer</a>
+        <a href="#editor-section-copyright-classic" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavCopyrightClassic">Copyright</a>
+        <a href="#editor-section-featured-categories" class="editor-section-nav-link editor-section-nav-link--mcqueen" id="editorNavFeaturedCategories">Featured Categories</a>
+        <a href="#editor-section-about-us" class="editor-section-nav-link editor-section-nav-link--mcqueen">About Us</a>
+        <a href="#editor-section-feature-cards" class="editor-section-nav-link editor-section-nav-link--mcqueen">Feature Cards</a>
+        <a href="#editor-section-sketch-section" class="editor-section-nav-link editor-section-nav-link--mcqueen">Sketch Section</a>
+        <a href="#editor-section-you-may-like" class="editor-section-nav-link editor-section-nav-link--mcqueen">You May Like</a>
+        <a href="#editor-section-get-inspired" class="editor-section-nav-link editor-section-nav-link--mcqueen">Get Inspired</a>
+        <a href="#editor-section-footer" class="editor-section-nav-link editor-section-nav-link--mcqueen">Footer</a>
     </nav>
 
     <div class="editor-layout">
@@ -157,7 +168,6 @@
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-hero">Hero</h3>
 
             <div class="editor-hero-gallery" id="editorHeroGallery" hidden>
-                <p class="editor-panel-lead editor-panel-lead--compact">Three lifestyle photos form a 500 px tall rectangle, centered at 1479 px wide (McQueen hero width + 50 px). The large image fills the left half; two images stack on the right.</p>
                 <div class="editor-field">
                     <label for="fieldGalleryHeroPrimary">Large lifestyle image (left)<span class="editor-field-hint">Full height · half width</span></label>
                     <div class="editor-upload">
@@ -172,6 +182,15 @@
                         <input type="file" id="fieldGalleryHeroSecondaryTop" name="galleryHeroSecondaryTopImage" accept="image/*">
                     </div>
                 </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldGalleryHeroSecondaryTopHeading">Top right image heading</label>
+                    <input type="text" id="fieldGalleryHeroSecondaryTopHeading" name="galleryHeroSecondaryTopHeading" autocomplete="off">
+                    <p class="editor-field-hint">Left-aligned, vertically centered on the top right image.</p>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldGalleryHeroSecondaryTopUrl">Top right image link</label>
+                    <input type="text" id="fieldGalleryHeroSecondaryTopUrl" name="galleryHeroSecondaryTopUrl" autocomplete="off" placeholder="/catalog/chandeliers">
+                </div>
                 <div class="editor-field">
                     <label for="fieldGalleryHeroSecondaryBottom">Lifestyle image (bottom right)<span class="editor-field-hint">Half height · half width</span></label>
                     <div class="editor-upload">
@@ -179,6 +198,59 @@
                         <input type="file" id="fieldGalleryHeroSecondaryBottom" name="galleryHeroSecondaryBottomImage" accept="image/*">
                     </div>
                 </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldGalleryHeroSecondaryBottomHeading">Bottom right image heading</label>
+                    <input type="text" id="fieldGalleryHeroSecondaryBottomHeading" name="galleryHeroSecondaryBottomHeading" autocomplete="off">
+                    <p class="editor-field-hint">Left-aligned, vertically centered on the bottom right image.</p>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldGalleryHeroSecondaryBottomUrl">Bottom right image link</label>
+                    <input type="text" id="fieldGalleryHeroSecondaryBottomUrl" name="galleryHeroSecondaryBottomUrl" autocomplete="off" placeholder="/catalog/pendants">
+                </div>
+
+                <fieldset class="editor-fieldset">
+                    <legend>Large lifestyle image copy</legend>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned overlay on the large image: headline, body copy, and square Shop Now button. Headline lines 2 and 3 are optional — leave blank to hide them.</p>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroHeadline1">Headline line 1</label>
+                        <input type="text" id="fieldGalleryHeroHeadline1" name="galleryHeroHeadlineLine1" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroHeadline2">Headline line 2 <span class="editor-field-hint">(optional)</span></label>
+                        <input type="text" id="fieldGalleryHeroHeadline2" name="galleryHeroHeadlineLine2" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroHeadline3">Headline line 3 <span class="editor-field-hint">(optional)</span></label>
+                        <input type="text" id="fieldGalleryHeroHeadline3" name="galleryHeroHeadlineLine3" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroCopy">Body copy</label>
+                        <textarea id="fieldGalleryHeroCopy" name="galleryHeroCopy" rows="3" autocomplete="off"></textarea>
+                        <p class="editor-field-hint">Three lines of supporting copy below the headline.</p>
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroButtonLabel">Button label</label>
+                        <input type="text" id="fieldGalleryHeroButtonLabel" name="galleryHeroButtonLabel" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldGalleryHeroButtonUrl">Button link</label>
+                        <input type="text" id="fieldGalleryHeroButtonUrl" name="galleryHeroButtonUrl" autocomplete="off" placeholder="/catalog">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroButtonBg">Button background color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldGalleryHeroButtonBg" name="galleryHeroButtonBackgroundColor" value="#2b2b2b">
+                            <span class="editor-color-value" id="fieldGalleryHeroButtonBgValue">#2b2b2b</span>
+                        </div>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldGalleryHeroButtonText">Button text color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldGalleryHeroButtonText" name="galleryHeroButtonTextColor" value="#ffffff">
+                            <span class="editor-color-value" id="fieldGalleryHeroButtonTextValue">#ffffff</span>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="editor-hero-classic" id="editorHeroClassic">
@@ -251,6 +323,103 @@
             <div class="editor-gallery-catalog" id="editorGalleryCatalog" hidden>
                 <p class="editor-panel-lead editor-panel-lead--compact">Four lifestyle tiles linking to catalog sections. Edit each tile’s image, label, and catalog link below — same width as the hero above.</p>
                 <div id="galleryCatalogTilesEditor"></div>
+            </div>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-footer-classic">Footer</h3>
+            <div class="editor-footer-classic" id="editorFooterClassic" hidden>
+                <p class="editor-panel-lead editor-panel-lead--compact">Four-column footer: company name and about copy, grouped quick links, contact address, and store hours. Shop links can be renamed or removed; About Us and Accounts link labels are fixed — edit URLs only.</p>
+
+                <fieldset class="editor-fieldset">
+                    <legend>Footer colors</legend>
+                    <div class="editor-field">
+                        <label for="fieldClassicFooterBg">Background color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldClassicFooterBg" name="classicFooterBackgroundColor" value="#ffffff">
+                            <span class="editor-color-value" id="fieldClassicFooterBgValue">#ffffff</span>
+                        </div>
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldClassicFooterText">Text color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldClassicFooterText" name="classicFooterTextColor" value="#2b2b2b">
+                            <span class="editor-color-value" id="fieldClassicFooterTextValue">#2b2b2b</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="editor-field">
+                    <label for="fieldClassicFooterCompanyName">Company name</label>
+                    <input type="text" id="fieldClassicFooterCompanyName" name="classicFooterCompanyName" autocomplete="off">
+                </div>
+
+                <div class="editor-field">
+                    <label for="fieldClassicFooterAboutCopy">About us copy</label>
+                    <textarea id="fieldClassicFooterAboutCopy" name="classicFooterAboutCopy" rows="4" autocomplete="off"></textarea>
+                </div>
+
+                <fieldset class="editor-fieldset">
+                    <legend>Quick links</legend>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Column heading: QUICK LINKS. Sub-headings SHOP, ABOUT US, and ACCOUNTS are fixed on site.</p>
+                    <p class="editor-field-hint editor-field-hint--fieldset editor-field-hint--tight">Shop — rename, remove, or add links</p>
+                    <div id="classicFooterShopLinksEditor"></div>
+                    <button type="button" class="btn btn-secondary editor-add-item-btn" id="addClassicFooterShopLinkBtn">Add shop link</button>
+                    <p class="editor-field-hint editor-field-hint--fieldset editor-field-hint--tight">About us</p>
+                    <div id="classicFooterAboutLinksEditor"></div>
+                    <p class="editor-field-hint editor-field-hint--fieldset editor-field-hint--tight">Accounts</p>
+                    <div id="classicFooterAccountLinksEditor"></div>
+                </fieldset>
+
+                <div class="editor-field">
+                    <label for="fieldClassicFooterAddress">Address</label>
+                    <textarea id="fieldClassicFooterAddress" name="classicFooterAddress" rows="3" autocomplete="off"></textarea>
+                </div>
+
+                <fieldset class="editor-fieldset">
+                    <legend>Store hours</legend>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Header: STORE HOURS (uppercase on site).</p>
+                    <div class="editor-field">
+                        <label for="fieldClassicFooterHoursMonFri">Monday – Friday</label>
+                        <input type="text" id="fieldClassicFooterHoursMonFri" name="classicFooterHoursMonFri" autocomplete="off" placeholder="9:00 AM - 5:00 PM">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldClassicFooterHoursSaturday">Saturday</label>
+                        <input type="text" id="fieldClassicFooterHoursSaturday" name="classicFooterHoursSaturday" autocomplete="off" placeholder="Closed">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldClassicFooterHoursSunday">Sunday</label>
+                        <input type="text" id="fieldClassicFooterHoursSunday" name="classicFooterHoursSunday" autocomplete="off" placeholder="Closed">
+                    </div>
+                </fieldset>
+
+            </div>
+
+            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-copyright-classic">Copyright</h3>
+            <div class="editor-copyright-classic" id="editorCopyrightClassic" hidden>
+                <p class="editor-panel-lead editor-panel-lead--compact">Required copyright + ADA compliance line shown below the footer. This is a separate site section — not part of the footer columns above.</p>
+
+                <fieldset class="editor-fieldset">
+                    <legend>Copyright colors</legend>
+                    <div class="editor-field">
+                        <label for="fieldClassicFooterCopyrightBg">Background color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldClassicFooterCopyrightBg" name="classicFooterCopyrightBackgroundColor" value="#f5f5f5">
+                            <span class="editor-color-value" id="fieldClassicFooterCopyrightBgValue">#f5f5f5</span>
+                        </div>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldClassicFooterCopyrightText">Text color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldClassicFooterCopyrightText" name="classicFooterCopyrightTextColor" value="#5c5c5c">
+                            <span class="editor-color-value" id="fieldClassicFooterCopyrightTextValue">#5c5c5c</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="editor-field">
+                    <label for="fieldClassicFooterCopyrightName">Copyright company name</label>
+                    <input type="text" id="fieldClassicFooterCopyrightName" name="classicFooterCopyrightName" autocomplete="off">
+                    <span class="editor-field-hint">Used in the required copyright + ADA compliance line. Leave blank to use the footer company name.</span>
+                </div>
             </div>
 
             <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-featured-categories">Featured Categories</h3>
@@ -620,17 +789,36 @@
                     </div>
                     <div class="showroom-gallery-hero" id="showroomHeroGallery" hidden>
                         <div class="showroom-gallery-content-column">
-                            <div class="showroom-gallery-hero-layout">
+                            <div class="showroom-gallery-hero-layout" id="showroomGalleryHeroLayout">
                                 <div class="showroom-gallery-hero-primary is-empty" id="previewGalleryHeroPrimary">
                                     <img id="previewGalleryHeroPrimaryImage" alt="" hidden>
+                                    <div class="showroom-gallery-hero-primary-overlay">
+                                        <div class="showroom-gallery-hero-primary-headline">
+                                            <span class="showroom-gallery-hero-primary-headline-line" id="previewGalleryHeroHeadlineLine1">STEP UP</span>
+                                            <span class="showroom-gallery-hero-primary-headline-line" id="previewGalleryHeroHeadlineLine2">YOUR</span>
+                                            <span class="showroom-gallery-hero-primary-headline-line" id="previewGalleryHeroHeadlineLine3">LIGHTING</span>
+                                        </div>
+                                        <p class="showroom-gallery-hero-primary-copy" id="previewGalleryHeroCopy"></p>
+                                        <a class="showroom-gallery-hero-primary-cta" id="previewGalleryHeroCta" href="#">Shop Now</a>
+                                    </div>
                                 </div>
                                 <div class="showroom-gallery-hero-stack">
-                                    <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryTop">
-                                        <img id="previewGalleryHeroSecondaryTopImage" alt="" hidden>
-                                    </div>
-                                    <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryBottom">
-                                        <img id="previewGalleryHeroSecondaryBottomImage" alt="" hidden>
-                                    </div>
+                                    <a class="showroom-gallery-hero-secondary-link" id="previewGalleryHeroSecondaryTopLink" href="/catalog/chandeliers">
+                                        <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryTop">
+                                            <img id="previewGalleryHeroSecondaryTopImage" alt="" hidden>
+                                            <div class="showroom-gallery-hero-secondary-overlay">
+                                                <h3 class="showroom-gallery-hero-secondary-heading" id="previewGalleryHeroSecondaryTopHeading">Chandelier</h3>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a class="showroom-gallery-hero-secondary-link" id="previewGalleryHeroSecondaryBottomLink" href="/catalog/pendants">
+                                        <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryBottom">
+                                            <img id="previewGalleryHeroSecondaryBottomImage" alt="" hidden>
+                                            <div class="showroom-gallery-hero-secondary-overlay">
+                                                <h3 class="showroom-gallery-hero-secondary-heading" id="previewGalleryHeroSecondaryBottomHeading">Pendants</h3>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="showroom-gallery-catalog-band" id="showroomGalleryCatalogSection" aria-label="Catalog highlights preview">
@@ -710,7 +898,7 @@
                         <div class="showroom-get-inspired-grid" id="previewGetInspiredGrid"></div>
                     </div>
                 </section>
-                <footer class="showroom-footer-section" id="showroomFooterSection" aria-label="Footer preview">
+                <footer class="showroom-footer-section showroom-footer-mcqueen" id="showroomFooterSection" aria-label="Footer preview">
                     <div class="showroom-footer-main">
                         <div class="showroom-footer-col showroom-footer-col--brand">
                             <div class="showroom-footer-logo is-empty" id="previewFooterLogoWrap">
@@ -735,6 +923,44 @@
                         <div class="showroom-footer-copyright" id="previewFooterCopyright"></div>
                     </div>
                 </footer>
+                </div>
+                <footer class="showroom-footer-classic-section" id="showroomFooterClassicSection" aria-label="Footer preview" hidden>
+                    <div class="showroom-footer-classic-main showroom-gallery-content-column">
+                        <div class="showroom-footer-classic-col showroom-footer-classic-col--about">
+                            <h3 class="showroom-footer-classic-company" id="previewClassicFooterCompany">Company Name</h3>
+                            <p class="showroom-footer-classic-about" id="previewClassicFooterAbout"></p>
+                        </div>
+                        <div class="showroom-footer-classic-col showroom-footer-classic-col--links">
+                            <h4 class="showroom-footer-classic-heading">QUICK LINKS</h4>
+                            <div class="showroom-footer-classic-quick-links">
+                                <div class="showroom-footer-classic-link-group">
+                                    <h5 class="showroom-footer-classic-subheading">SHOP</h5>
+                                    <ul class="showroom-footer-classic-links" id="previewClassicFooterShopLinks"></ul>
+                                </div>
+                                <div class="showroom-footer-classic-link-group">
+                                    <h5 class="showroom-footer-classic-subheading">ABOUT US</h5>
+                                    <ul class="showroom-footer-classic-links" id="previewClassicFooterAboutLinks"></ul>
+                                </div>
+                                <div class="showroom-footer-classic-link-group">
+                                    <h5 class="showroom-footer-classic-subheading">ACCOUNTS</h5>
+                                    <ul class="showroom-footer-classic-links" id="previewClassicFooterAccountLinks"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="showroom-footer-classic-col showroom-footer-classic-col--contact">
+                            <h4 class="showroom-footer-classic-heading">CONTACT US</h4>
+                            <p class="showroom-footer-classic-address" id="previewClassicFooterAddress"></p>
+                        </div>
+                        <div class="showroom-footer-classic-col showroom-footer-classic-col--hours">
+                            <h4 class="showroom-footer-classic-heading">STORE HOURS</h4>
+                            <ul class="showroom-footer-classic-hours" id="previewClassicFooterHours"></ul>
+                        </div>
+                    </div>
+                </footer>
+                <div class="showroom-copyright-classic-section" id="showroomCopyrightClassicSection" aria-label="Copyright preview" hidden>
+                    <div class="showroom-copyright-classic-inner showroom-gallery-content-column">
+                        <div class="showroom-copyright-classic-text" id="previewClassicCopyright"></div>
+                    </div>
                 </div>
             </div>
         </div>

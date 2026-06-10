@@ -12,11 +12,38 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         youMayLikeEl,
         getInspiredEl,
         footerEl,
+        copyrightEl,
+        galleryCatalogEl,
         spec,
         assets = [],
         pdfFilename = 'showroom-homepage-brief.pdf',
         zipFilename = 'showroom-homepage-handoff.zip',
     } = options;
+
+    const isGallery = spec?.design === 'gallery';
+    const resolvedHandoffAssets = assets.filter(
+        (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
+    );
+
+    function assetIncludedInHandoff(filename) {
+        return resolvedHandoffAssets.some((asset) => asset.filename === filename);
+    }
+
+    function galleryHandoffImageLine(filename, defaultLabel) {
+        return assetIncludedInHandoff(filename)
+            ? `Yes — ${filename}`
+            : `No — template default (${defaultLabel})`;
+    }
+
+    function galleryHandoffAssetListLine(prefix) {
+        const matches = resolvedHandoffAssets
+            .map((asset) => asset.filename)
+            .filter((filename) => filename && filename.startsWith(prefix));
+        if (!matches.length) {
+            return 'No — template defaults (source separately)';
+        }
+        return `Yes — ${matches.join(', ')}`;
+    }
 
     const JsPDF = window.jspdf?.jsPDF || window.jsPDF;
     if (typeof html2canvas !== 'function' || !JsPDF) {
@@ -228,11 +255,48 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         });
     }
 
-    function prepareCloneForCapture(clonedDoc, clonedEl) {
+    function copyLoadedImageToClone(originalImg, cloneImg) {
+        if (!originalImg || !cloneImg) return;
+        if (!originalImg.complete || originalImg.naturalWidth <= 0) return;
+
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = originalImg.naturalWidth;
+            canvas.height = originalImg.naturalHeight;
+            const context = canvas.getContext('2d');
+            if (!context) return;
+            context.drawImage(originalImg, 0, 0);
+            cloneImg.src = canvas.toDataURL('image/png');
+        } catch {
+            cloneImg.src = originalImg.currentSrc || originalImg.src;
+        }
+
+        cloneImg.hidden = false;
+        cloneImg.removeAttribute('hidden');
+    }
+
+    function inlineLoadedImagesForClone(sourceEl, clonedEl) {
+        if (!sourceEl || !clonedEl) return;
+
+        sourceEl.querySelectorAll('img[id]').forEach((originalImg) => {
+            const cloneImg = clonedEl.querySelector(`#${CSS.escape(originalImg.id)}`);
+            copyLoadedImageToClone(originalImg, cloneImg);
+        });
+
+        const sourceImages = [...sourceEl.querySelectorAll('img')];
+        const cloneImages = [...clonedEl.querySelectorAll('img')];
+        sourceImages.forEach((originalImg, index) => {
+            if (originalImg.id) return;
+            copyLoadedImageToClone(originalImg, cloneImages[index]);
+        });
+    }
+
+    function prepareCloneForCapture(clonedDoc, clonedEl, sourceEl) {
         if (clonedEl) {
             clonedEl.classList.add('is-pdf-export-capture');
             clonedEl.style.transform = 'none';
             clonedEl.style.boxShadow = 'none';
+            inlineLoadedImagesForClone(sourceEl, clonedEl);
         }
 
         const previewFrame = clonedDoc.getElementById('showroomPreview');
@@ -254,6 +318,22 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         });
     }
 
+    async function waitForImagesInElement(el) {
+        if (!el) return;
+
+        const images = [...el.querySelectorAll('img[src]')];
+        await Promise.all(images.map((img) => {
+            if (img.complete && img.naturalWidth > 0) {
+                return Promise.resolve();
+            }
+
+            return new Promise((resolve) => {
+                img.addEventListener('load', resolve, { once: true });
+                img.addEventListener('error', resolve, { once: true });
+            });
+        }));
+    }
+
     function isCapturable(el) {
         if (!el || el.hidden) return false;
         const style = window.getComputedStyle(el);
@@ -271,6 +351,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             await document.fonts.ready;
         }
 
+        await waitForImagesInElement(el);
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
         const canvas = await html2canvas(el, {
@@ -280,7 +361,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             logging: false,
             backgroundColor: '#ffffff',
             imageTimeout: 15000,
-            onclone: prepareCloneForCapture,
+            onclone: (clonedDoc, clonedEl) => prepareCloneForCapture(clonedDoc, clonedEl, el),
         });
 
         if (!canvas.width || !canvas.height) {
@@ -362,13 +443,24 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         { size: 9, color: [90, 90, 90], gap: 6 },
     );
     writeLines(
-        'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
+        isGallery
+            ? (resolvedHandoffAssets.length
+                ? 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. Client-replaced images are included in the ZIP and on dedicated PDF pages after the layout previews. Template default images are not bundled.'
+                : 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. No client-replaced images are bundled — template defaults are shown in the layout previews only.')
+            : 'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
         { size: 9, color: [90, 90, 90], gap: 16 },
     );
 
+    const copyrightForAda = spec.copyright || spec.footer || {};
     const footerForAda = spec.footer || {};
-    const adaCompanyName = footerForAda.copyrightName || footerForAda.companyName || 'Company Name';
-    const adaPasteMarkup = footerForAda.copyrightPasteMarkup
+    const adaCompanyName = copyrightForAda.copyrightName
+        || copyrightForAda.companyName
+        || footerForAda.copyrightName
+        || footerForAda.companyName
+        || 'Company Name';
+    const adaPasteMarkup = copyrightForAda.copyrightPasteMarkup
+        || copyrightForAda.copyrightMarkup
+        || footerForAda.copyrightPasteMarkup
         || footerForAda.copyrightMarkup
         || `<div id="rightCol"> &copy; ${new Date().getFullYear()} ${adaCompanyName} | All Rights Reserved <a ajax-popup="ada-compliance::ADA Compliance::600px">ADA Compliant</a></div>`;
 
@@ -384,7 +476,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     writeSpecRows([
         ['Company name', adaCompanyName],
         ['Placement', 'Very bottom of footer on every page/site'],
-        ['Popup attribute', footerForAda.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px'],
+        ['Popup attribute', copyrightForAda.adaCompliancePopup || footerForAda.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px'],
     ]);
     writeLines('Copy-paste markup', { bold: true, size: 10, gap: 6 });
     writeCodeBlock(adaPasteMarkup);
@@ -396,172 +488,248 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const headerMainNav = header.mainNav || {};
     const headerBannerLinks = normalizeFooterLinksForExport(headerBanner.links);
     const headerMainNavItems = Array.isArray(headerMainNav.items) ? headerMainNav.items : [];
-    writeSpecRows([
-        ['Top banner height', headerBanner.height || '50 px'],
-        ['Banner background', headerBanner.backgroundColor || '#000000'],
-        ['Banner text', headerBanner.textColor || '#ffffff'],
-        ['Banner alignment', headerBanner.alignment || 'right'],
-        ['Link separator', headerBanner.separator || '|'],
-    ]);
-    if (headerBannerLinks.length) {
-        writeLines('Top banner links', { bold: true, size: 10, gap: 4 });
-        writeItemList(
-            headerBannerLinks,
-            (item) => `${item.label}: ${item.url || '—'}`,
-        );
-    }
-    writeSpecRows([
-        ['Content column width', header.contentColumnWidth || '1429 px'],
-        ['Main toolbar layout', headerToolbar.layout || 'search left · logo center · icons right'],
-        ['Search bar', headerToolbar.searchBarHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
-        ['Search placeholder', headerToolbar.searchPlaceholder || 'Enter Keyword or Item#'],
-        ['Search style', headerToolbar.searchStyle || 'Single bottom border underline'],
-        ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
-        ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
-        ['Header logo in handoff', 'No — upload separately'],
-        ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
-    ]);
-    const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
-    if (headerToolbarIcons.length) {
-        writeLines('Toolbar icons', { bold: true, size: 10, gap: 4 });
-        writeItemList(
-            headerToolbarIcons,
-            (item) => pdfLinkLine(item.label || item.id, item.url),
-        );
-    }
-    writeSpecRows([
-        ['Main navigation', headerMainNav.editable !== false ? 'Editable in template editor' : '—'],
-        ['Dropdown menus', headerMainNav.hasDropdowns !== false ? 'Yes — one per top-level item' : 'No'],
-        ['Nav font size', headerMainNav.fontSize || '15 px'],
-        ['Nav alignment', headerMainNav.alignment || 'Full content width · first category aligns with search · last category aligns with cart'],
-        ['Category count', headerMainNavItems.length ? String(headerMainNavItems.length) : '0'],
-        ['Subcategories pending', headerMainNav.subcategoriesPending ? 'Yes — some categories need links' : 'No'],
-    ]);
-    if (headerMainNavItems.length) {
-        writeLines('Top-level categories', { bold: true, size: 10, gap: 4 });
-        writeLines(
-            headerMainNavItems.map((item) => {
-                const categoryUrl = String(item.url || '').trim();
-                return categoryUrl ? `${item.label || '—'} (${categoryUrl})` : (item.label || '—');
-            }).join(' · '),
-            { size: 9, gap: 8 },
-        );
-        headerMainNavItems.forEach((item) => {
-            writeLines(item.label || item.id || 'Category', { bold: true, size: 10, gap: 4 });
-            if (item.url) {
-                writeLines(`Category link: ${item.url}`, { size: 9, gap: 4 });
-            }
-            const subs = Array.isArray(item.subcategories) ? item.subcategories : [];
-            if (!subs.length) {
-                writeLines('No subcategories configured yet.', { size: 9, color: [90, 90, 90], gap: 8 });
-                return;
-            }
-            writeSubcategoryList(
-                subs,
-                (sub) => {
-                    const status = `(${sub.visible === false ? 'hidden' : 'shown'})`;
-                    return pdfLinkLine(sub.label, sub.url, status);
-                },
+    if (isGallery) {
+        const topBar = header.topBar || {};
+        const utilities = topBar.utilities || {};
+        const galleryNavLinks = Array.isArray(header.mainNav?.links) ? header.mainNav.links : [];
+        writeSpecRows([
+            ['Layout', header.layout || 'gallery'],
+            ['Content column width', header.contentColumnWidth || '1479 px'],
+            ['Top bar background', topBar.backgroundColor || '—'],
+            ['Center copy', topBar.centerCopy || '—'],
+            ['Wishlist', pdfLinkLine(utilities.wishlist?.label, utilities.wishlist?.url)],
+            ['Sign in', pdfLinkLine(utilities.signIn?.label, utilities.signIn?.url)],
+            ['Header logo size', header.logoDimensions || 'max 150 px high'],
+            ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'hardcoded in template')],
+            ['Main nav alignment', header.mainNav?.alignment || 'center'],
+            ['Search bar', header.mainNav?.search?.hardcoded !== false
+                ? `Hardcoded — placeholder “${header.mainNav?.search?.placeholder || 'Search…'}”`
+                : '—'],
+        ]);
+        if (galleryNavLinks.length) {
+            writeLines('Main navigation links', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                galleryNavLinks,
+                (item) => `${item.label || '—'}: ${item.url || '—'}`,
             );
-            y += 4;
-        });
+        }
+    } else {
+        writeSpecRows([
+            ['Top banner height', headerBanner.height || '50 px'],
+            ['Banner background', headerBanner.backgroundColor || '#000000'],
+            ['Banner text', headerBanner.textColor || '#ffffff'],
+            ['Banner alignment', headerBanner.alignment || 'right'],
+            ['Link separator', headerBanner.separator || '|'],
+        ]);
+        if (headerBannerLinks.length) {
+            writeLines('Top banner links', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                headerBannerLinks,
+                (item) => `${item.label}: ${item.url || '—'}`,
+            );
+        }
+        writeSpecRows([
+            ['Content column width', header.contentColumnWidth || '1429 px'],
+            ['Main toolbar layout', headerToolbar.layout || 'search left · logo center · icons right'],
+            ['Search bar', headerToolbar.searchBarHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
+            ['Search placeholder', headerToolbar.searchPlaceholder || 'Enter Keyword or Item#'],
+            ['Search style', headerToolbar.searchStyle || 'Single bottom border underline'],
+            ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
+            ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
+            ['Header logo in handoff', 'No — upload separately'],
+            ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
+        ]);
+        const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
+        if (headerToolbarIcons.length) {
+            writeLines('Toolbar icons', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                headerToolbarIcons,
+                (item) => pdfLinkLine(item.label || item.id, item.url),
+            );
+        }
+        writeSpecRows([
+            ['Main navigation', headerMainNav.editable !== false ? 'Editable in template editor' : '—'],
+            ['Dropdown menus', headerMainNav.hasDropdowns !== false ? 'Yes — one per top-level item' : 'No'],
+            ['Nav font size', headerMainNav.fontSize || '15 px'],
+            ['Nav alignment', headerMainNav.alignment || 'Full content width · first category aligns with search · last category aligns with cart'],
+            ['Category count', headerMainNavItems.length ? String(headerMainNavItems.length) : '0'],
+            ['Subcategories pending', headerMainNav.subcategoriesPending ? 'Yes — some categories need links' : 'No'],
+        ]);
+        if (headerMainNavItems.length) {
+            writeLines('Top-level categories', { bold: true, size: 10, gap: 4 });
+            writeLines(
+                headerMainNavItems.map((item) => {
+                    const categoryUrl = String(item.url || '').trim();
+                    return categoryUrl ? `${item.label || '—'} (${categoryUrl})` : (item.label || '—');
+                }).join(' · '),
+                { size: 9, gap: 8 },
+            );
+            headerMainNavItems.forEach((item) => {
+                writeLines(item.label || item.id || 'Category', { bold: true, size: 10, gap: 4 });
+                if (item.url) {
+                    writeLines(`Category link: ${item.url}`, { size: 9, gap: 4 });
+                }
+                const subs = Array.isArray(item.subcategories) ? item.subcategories : [];
+                if (!subs.length) {
+                    writeLines('No subcategories configured yet.', { size: 9, color: [90, 90, 90], gap: 8 });
+                    return;
+                }
+                writeSubcategoryList(
+                    subs,
+                    (sub) => {
+                        const status = `(${sub.visible === false ? 'hidden' : 'shown'})`;
+                        return pdfLinkLine(sub.label, sub.url, status);
+                    },
+                );
+                y += 4;
+            });
+        }
     }
 
     writeSectionTitle('Hero');
-    writeSpecRows([
-        ['Collection title', spec.title],
-        ['Description', spec.description],
-        ['CTA button', spec.cta],
-        ['CTA button visible', spec.heroCtaVisible !== false ? 'Yes' : 'No'],
-        ['CTA button background', spec.heroCtaBackgroundColor || spec.copyBackgroundColor || '#44301f'],
-        ['CTA button text', spec.heroCtaTextColor || '#ffffff'],
-        ['Copy background', spec.copyBackgroundColor],
-        ['Hero images in handoff', 'No — upload separately'],
-        ['Product image size', spec.productImageSize || '563 × 342 px'],
-        ['Lifestyle image size', spec.lifestyleImageSize || '854 × 670 px min'],
-    ]);
-
-    writeSectionTitle('Featured Categories');
-    const featuredCategoryList = Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [];
-    const visibleCategoryCount = featuredCategoryList.filter((category) => category.visible !== false).length;
-    writeSpecRows([
-        ['Shop All link', spec.shopAllUrl || '/catalog'],
-        ['Card size', spec.featuredCategoryCardSize || '300 × 70 px'],
-        ['Thumbnail size', spec.featuredCategoryThumbnailSize || '70 × 70 px'],
-        ['Category images in handoff', 'No — thumbnails are hardcoded in the template'],
-        ['Visible on site', `${visibleCategoryCount} of ${featuredCategoryList.length}`],
-    ]);
-    if (featuredCategoryList.length) {
-        writeLines('Category visibility', { bold: true, size: 10, gap: 4 });
-        writeItemList(featuredCategoryList, (category) => (
-            `${category.label || category.id || '—'} · ${category.visible !== false ? 'Visible' : 'Hidden'}`
-        ));
+    const galleryHero = spec.hero || {};
+    const galleryHeroOverlay = galleryHero.primary?.overlay || {};
+    const galleryHeroButton = galleryHeroOverlay.button || {};
+    const galleryHeroSecondaryTopOverlay = galleryHero.secondaryTop?.overlay || {};
+    const galleryHeroSecondaryBottomOverlay = galleryHero.secondaryBottom?.overlay || {};
+    if (isGallery) {
+        writeSpecRows([
+            ['Layout', galleryHero.layout || 'split-lifestyle'],
+            ['Hero size', `${galleryHero.width || '1479 px'} × ${galleryHero.height || '500 px'}`],
+            ['Headline font', galleryHeroOverlay.headlineFont || "'Josefin Sans', sans-serif"],
+            ['Headline style', galleryHeroOverlay.headlineStyle || 'thin tall sans-serif uppercase'],
+            ['Headline weight', galleryHeroOverlay.headlineWeight || 200],
+            ['Large image headline line 1', galleryHeroOverlay.headline?.[0] || '(hidden)'],
+            ['Large image headline line 2', galleryHeroOverlay.headline?.[1] || '(hidden)'],
+            ['Large image headline line 3', galleryHeroOverlay.headline?.[2] || '(hidden)'],
+            ['Large image copy', galleryHeroOverlay.copy || '—'],
+            ['Shop button label', galleryHeroButton.label || '—'],
+            ['Shop button link', galleryHeroButton.url || '—'],
+            ['Shop button background', galleryHeroButton.backgroundColor || '#2b2b2b'],
+            ['Shop button text', galleryHeroButton.textColor || '#ffffff'],
+            ['Top right image heading', galleryHeroSecondaryTopOverlay.heading || '—'],
+            ['Top right image link', galleryHeroSecondaryTopOverlay.url || '—'],
+            ['Bottom right image heading', galleryHeroSecondaryBottomOverlay.heading || '—'],
+            ['Bottom right image link', galleryHeroSecondaryBottomOverlay.url || '—'],
+            ['Hero images in handoff', galleryHandoffAssetListLine('gallery-hero-')],
+        ]);
+    } else {
+        writeSpecRows([
+            ['Collection title', spec.title],
+            ['Description', spec.description],
+            ['CTA button', spec.cta],
+            ['CTA button visible', spec.heroCtaVisible !== false ? 'Yes' : 'No'],
+            ['CTA button background', spec.heroCtaBackgroundColor || spec.copyBackgroundColor || '#44301f'],
+            ['CTA button text', spec.heroCtaTextColor || '#ffffff'],
+            ['Copy background', spec.copyBackgroundColor],
+            ['Hero images in handoff', 'No — upload separately'],
+            ['Product image size', spec.productImageSize || '563 × 342 px'],
+            ['Lifestyle image size', spec.lifestyleImageSize || '854 × 670 px min'],
+        ]);
     }
 
-    writeSectionTitle('About Us');
     const aboutUs = spec.aboutUs || {};
+    const featureTiles = spec.featureTiles || {};
+    const youMayLike = spec.youMayLike || {};
+    const getInspired = spec.getInspired || {};
     const primaryButton = aboutUs.primaryButton || {};
     const secondaryButton = aboutUs.secondaryButton || {};
-    writeSpecRows([
-        ['Header', aboutUs.header],
-        ['Paragraph', aboutUs.paragraph],
-        ['Employee photo size', aboutUs.employeeImageSize || '417 × 282 px'],
-        ['Employee photo in handoff', 'Yes — about-employee-image.png'],
-        ['Primary button', pdfLinkLine(primaryButton.label, primaryButton.url)],
-        ['Secondary button', pdfLinkLine(secondaryButton.label, secondaryButton.url)],
-        ['Button background', aboutUs.buttonBackgroundColor || '#2b2b2b'],
-        ['Button text', aboutUs.buttonTextColor || '#ffffff'],
-    ]);
-
-    writeSectionTitle('Feature Cards');
-    const featureTiles = spec.featureTiles || {};
     const featureLeft = featureTiles.left || {};
     const featureRight = featureTiles.right || {};
     const leftButton = featureLeft.button || {};
     const rightButton = featureRight.button || {};
-    writeSpecRows([
-        ['Photo size', featureTiles.imageSize || '780 × 1014 px'],
-        ['Feature photos in handoff', 'Yes — feature-left-image.png and feature-right-image.png'],
-        ['Left header', featureLeft.header],
-        ['Left copy', featureLeft.paragraph],
-        ['Left button visible', leftButton.visible !== false ? 'Yes' : 'No'],
-        ['Left button', pdfLinkLine(leftButton.label, leftButton.url)],
-        ['Right header', featureRight.header],
-        ['Right copy', featureRight.paragraph],
-        ['Right button visible', rightButton.visible !== false ? 'Yes' : 'No'],
-        ['Right button', pdfLinkLine(rightButton.label, rightButton.url)],
-        ['Button background', featureTiles.buttonBackgroundColor || '#2b2b2b'],
-        ['Button text', featureTiles.buttonTextColor || '#ffffff'],
-    ]);
-
-    writeSectionTitle('You May Like');
-    const youMayLike = spec.youMayLike || {};
     const youMayLikeItems = youMayLike.items || [];
-    writeSpecRows([
-        ['Title', youMayLike.title || 'You May Like'],
-        ['Image size', youMayLike.imageSize || '500 × 750 px'],
-        ['Product count', String(youMayLike.itemCount || youMayLikeItems.length || 0)],
-        ['Product images in handoff', 'Yes — one file per configured item'],
-        ['Live site', 'Title, name, and price from You May Like dashboard attribute'],
-    ]);
-    writeItemList(youMayLikeItems, (item) => (
-        `${item.index || '—'}. ${item.itemNumber || '—'}`
-    ));
-
-    writeSectionTitle('Get Inspired');
-    const getInspired = spec.getInspired || {};
     const getInspiredItems = getInspired.items || [];
-    writeSpecRows([
-        ['Title', getInspired.title || 'Get Inspired'],
-        ['Lifestyle photo size', getInspired.lifestyleImageSize || '508 × 610 px'],
-        ['Lifestyle photo in handoff', 'Yes — get-inspired-lifestyle.png'],
-        ['Grid card size', getInspired.cardImageSize || '155 × 155 px'],
-        ['Grid card images in handoff', 'No — resolved from catalog on the live site'],
-        ['Live site', 'Name, price, and image from You May Like dashboard attribute'],
-    ]);
-    writeItemList(getInspiredItems, (item) => (
-        `${item.index || '—'}. Item #${item.itemNumber || '—'} (${item.row || '—'} row) · ${item.previewTitle || '—'}`
-    ));
+
+    if (isGallery) {
+        writeSectionTitle('Catalog Highlights');
+        const catalogHighlights = spec.catalogHighlights || {};
+        const catalogTiles = Array.isArray(catalogHighlights.tiles) ? catalogHighlights.tiles : [];
+        writeSpecRows([
+            ['Layout', catalogHighlights.layout || 'four-tile-row'],
+            ['Alignment', catalogHighlights.alignment || '—'],
+            ['Label style', catalogHighlights.labelStyle || '—'],
+            ['Links to catalog', catalogHighlights.linksToCatalog !== false ? 'Yes' : 'No'],
+            ['Tile images in handoff', galleryHandoffAssetListLine('gallery-catalog-tile-')],
+        ]);
+        if (catalogTiles.length) {
+            writeLines('Catalog tiles', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                catalogTiles,
+                (tile) => `${tile.index || '—'}. ${tile.label || '—'}: ${tile.url || '—'}`,
+            );
+        }
+    } else {
+        writeSectionTitle('Featured Categories');
+        const featuredCategoryList = Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [];
+        const visibleCategoryCount = featuredCategoryList.filter((category) => category.visible !== false).length;
+        writeSpecRows([
+            ['Shop All link', spec.shopAllUrl || '/catalog'],
+            ['Card size', spec.featuredCategoryCardSize || '300 × 70 px'],
+            ['Thumbnail size', spec.featuredCategoryThumbnailSize || '70 × 70 px'],
+            ['Category images in handoff', 'No — thumbnails are hardcoded in the template'],
+            ['Visible on site', `${visibleCategoryCount} of ${featuredCategoryList.length}`],
+        ]);
+        if (featuredCategoryList.length) {
+            writeLines('Category visibility', { bold: true, size: 10, gap: 4 });
+            writeItemList(featuredCategoryList, (category) => (
+                `${category.label || category.id || '—'} · ${category.visible !== false ? 'Visible' : 'Hidden'}`
+            ));
+        }
+
+        writeSectionTitle('About Us');
+        writeSpecRows([
+            ['Header', aboutUs.header],
+            ['Paragraph', aboutUs.paragraph],
+            ['Employee photo size', aboutUs.employeeImageSize || '417 × 282 px'],
+            ['Employee photo in handoff', 'Yes — about-employee-image.png'],
+            ['Primary button', pdfLinkLine(primaryButton.label, primaryButton.url)],
+            ['Secondary button', pdfLinkLine(secondaryButton.label, secondaryButton.url)],
+            ['Button background', aboutUs.buttonBackgroundColor || '#2b2b2b'],
+            ['Button text', aboutUs.buttonTextColor || '#ffffff'],
+        ]);
+
+        writeSectionTitle('Feature Cards');
+        writeSpecRows([
+            ['Photo size', featureTiles.imageSize || '780 × 1014 px'],
+            ['Feature photos in handoff', 'Yes — feature-left-image.png and feature-right-image.png'],
+            ['Left header', featureLeft.header],
+            ['Left copy', featureLeft.paragraph],
+            ['Left button visible', leftButton.visible !== false ? 'Yes' : 'No'],
+            ['Left button', pdfLinkLine(leftButton.label, leftButton.url)],
+            ['Right header', featureRight.header],
+            ['Right copy', featureRight.paragraph],
+            ['Right button visible', rightButton.visible !== false ? 'Yes' : 'No'],
+            ['Right button', pdfLinkLine(rightButton.label, rightButton.url)],
+            ['Button background', featureTiles.buttonBackgroundColor || '#2b2b2b'],
+            ['Button text', featureTiles.buttonTextColor || '#ffffff'],
+        ]);
+
+        writeSectionTitle('You May Like');
+        writeSpecRows([
+            ['Title', youMayLike.title || 'You May Like'],
+            ['Image size', youMayLike.imageSize || '500 × 750 px'],
+            ['Product count', String(youMayLike.itemCount || youMayLikeItems.length || 0)],
+            ['Product images in handoff', 'Yes — one file per configured item'],
+            ['Live site', 'Title, name, and price from You May Like dashboard attribute'],
+        ]);
+        writeItemList(youMayLikeItems, (item) => (
+            `${item.index || '—'}. ${item.itemNumber || '—'}`
+        ));
+
+        writeSectionTitle('Get Inspired');
+        writeSpecRows([
+            ['Title', getInspired.title || 'Get Inspired'],
+            ['Lifestyle photo size', getInspired.lifestyleImageSize || '508 × 610 px'],
+            ['Lifestyle photo in handoff', 'Yes — get-inspired-lifestyle.png'],
+            ['Grid card size', getInspired.cardImageSize || '155 × 155 px'],
+            ['Grid card images in handoff', 'No — resolved from catalog on the live site'],
+            ['Live site', 'Name, price, and image from You May Like dashboard attribute'],
+        ]);
+        writeItemList(getInspiredItems, (item) => (
+            `${item.index || '—'}. Item #${item.itemNumber || '—'} (${item.row || '—'} row) · ${item.previewTitle || '—'}`
+        ));
+    }
 
     writeSectionTitle('Footer');
     const footer = spec.footer || {};
@@ -574,7 +742,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         const status = entry.visible === false ? 'hidden' : 'shown';
         return `${entry.url || '—'} (${status})`;
     };
-    writeSpecRows([
+    const copyrightSection = spec.copyright || null;
+    const isClassicFooter = footer.layout === 'four-column';
+    const footerSpecRows = isClassicFooter ? [] : [
         ['Footer logo', footer.logoUseHeader !== false ? 'Same as header logo' : (footer.logoFilename || 'footer-logo.png')],
         ['Footer logo size', footer.logoDimensions || 'max 280 × 94 px'],
         ['Footer logo in handoff', footer.logoUseHeader !== false
@@ -584,23 +754,68 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['Company', footer.companyName],
         ['Address', footer.address],
         ['Phone', footer.phone],
-        ['Copyright', footer.copyrightSpec
-            || `© ${new Date().getFullYear()} ${footer.copyrightName || footer.companyName || '—'} | All Rights Reserved · ADA Compliant (ada-compliance::ADA Compliance::600px)`],
-        ['Copyright markup', footer.copyrightPasteMarkup || footer.copyrightMarkup || '—'],
         ['Facebook', formatFooterSocial(footerSocial.facebook)],
         ['Instagram', formatFooterSocial(footerSocial.instagram)],
         ['X', formatFooterSocial(footerSocial.x)],
         ['YouTube', formatFooterSocial(footerSocial.youtube)],
         ['LinkedIn', formatFooterSocial(footerSocial.linkedin)],
-    ]);
-    if (footerQuickLinks.length) {
+    ];
+    if (!copyrightSection && !isClassicFooter) {
+        footerSpecRows.push(
+            ['Copyright', footer.copyrightSpec
+                || `© ${new Date().getFullYear()} ${footer.copyrightName || footer.companyName || '—'} | All Rights Reserved · ADA Compliant (ada-compliance::ADA Compliance::600px)`],
+            ['Copyright markup', footer.copyrightPasteMarkup || footer.copyrightMarkup || '—'],
+        );
+    }
+    if (footerSpecRows.length) {
+        writeSpecRows(footerSpecRows);
+    }
+    if (isClassicFooter) {
+        writeSpecRows([
+            ['Layout', 'Four-column footer'],
+            ['Background color', footer.backgroundColor || '—'],
+            ['Text color', footer.textColor || '—'],
+            ['About company', footer.companyName || '—'],
+            ['About copy', footer.aboutCopy || '—'],
+            ['Contact address', footer.address || '—'],
+        ]);
+        const storeHours = footer.storeHours || {};
+        writeSpecRows([
+            ['Store hours (Mon–Fri)', storeHours.mondayFriday || '—'],
+            ['Store hours (Saturday)', storeHours.saturday || '—'],
+            ['Store hours (Sunday)', storeHours.sunday || '—'],
+        ]);
+        const linkGroups = footer.linkGroups || {};
+        Object.values(linkGroups).forEach((group) => {
+            const links = Array.isArray(group?.links) ? group.links : [];
+            if (!links.length) return;
+            writeLines(group.heading || 'Links', { bold: true, size: 10, gap: 4 });
+            writeItemList(links, (item) => `${item.label}: ${item.url || '—'}`);
+        });
+    }
+    if (copyrightSection) {
+        writeSectionTitle('Copyright');
+        writeLines(
+            'Separate section below the footer. Required ADA compliance markup must appear on every site.',
+            { size: 9, color: [90, 90, 90], gap: 8 },
+        );
+        writeSpecRows([
+            ['Company name', copyrightSection.companyName || copyrightSection.copyrightName || '—'],
+            ['Background color', copyrightSection.backgroundColor || '—'],
+            ['Text color', copyrightSection.textColor || '—'],
+            ['Copyright', copyrightSection.copyrightSpec
+                || `© ${new Date().getFullYear()} ${copyrightSection.copyrightName || copyrightSection.companyName || '—'} | All Rights Reserved · ADA Compliant (ada-compliance::ADA Compliance::600px)`],
+            ['Copyright markup', copyrightSection.copyrightPasteMarkup || copyrightSection.copyrightMarkup || '—'],
+        ]);
+    }
+    if (!isClassicFooter && footerQuickLinks.length) {
         writeLines('Quick Links', { bold: true, size: 10, gap: 4 });
         writeItemList(
             footerQuickLinks,
             (item) => `${item.label}: ${item.url || '—'}`,
         );
     }
-    if (footerPolicies.length) {
+    if (!isClassicFooter && footerPolicies.length) {
         writeLines('Policies', { bold: true, size: 10, gap: 4 });
         writeItemList(
             footerPolicies,
@@ -609,14 +824,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     writeSectionTitle('Handoff images');
-    const includedAssets = assets.filter(
-        (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
-    );
-    if (!includedAssets.length) {
+    if (!resolvedHandoffAssets.length) {
         writeLines('No client images are included in this handoff.', { size: 9, color: [90, 90, 90], gap: 8 });
     } else {
         writeLines('These files are included in the ZIP and shown on the following pages.', { size: 9, color: [90, 90, 90], gap: 6 });
-        writeItemList(includedAssets, (asset, index) => (
+        writeItemList(resolvedHandoffAssets, (asset, index) => (
             `${index + 1}. images/${asset.filename} — ${asset.label} (${asset.dimensions})`
         ));
     }
@@ -633,36 +845,45 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     await appendCanvasPreview(await captureElement(heroTarget), 'Preview — Hero');
 
-    if (isCapturable(categoriesEl)) {
+    if (isGallery && isCapturable(galleryCatalogEl)) {
+        await appendCanvasPreview(await captureElement(galleryCatalogEl), 'Preview — Catalog Highlights');
+    }
+    if (!isGallery && isCapturable(categoriesEl)) {
         await appendCanvasPreview(await captureElement(categoriesEl), 'Preview — Featured Categories');
     }
-    if (isCapturable(aboutEl)) {
+    if (!isGallery && isCapturable(aboutEl)) {
         await appendCanvasPreview(await captureElement(aboutEl), 'Preview — About Us');
     }
-    if (isCapturable(featureTilesEl)) {
+    if (!isGallery && isCapturable(featureTilesEl)) {
         await appendCanvasPreview(await captureElement(featureTilesEl), 'Preview — Feature Cards');
     }
-    if (isCapturable(youMayLikeEl)) {
+    if (!isGallery && isCapturable(youMayLikeEl)) {
         await appendCanvasPreview(await captureElement(youMayLikeEl), 'Preview — You May Like');
     }
-    if (isCapturable(getInspiredEl)) {
+    if (!isGallery && isCapturable(getInspiredEl)) {
         await appendCanvasPreview(await captureElement(getInspiredEl), 'Preview — Get Inspired');
     }
     if (isCapturable(footerEl)) {
         await appendCanvasPreview(await captureElement(footerEl), 'Preview — Footer');
     }
+    if (isCapturable(copyrightEl)) {
+        await appendCanvasPreview(await captureElement(copyrightEl), 'Preview — Copyright');
+    }
 
     // ——— Uploaded asset pages ———
-    for (const asset of includedAssets) {
+    for (const asset of resolvedHandoffAssets) {
         await appendAssetPage(asset);
     }
 
     const pdfBlob = doc.output('blob');
     const handoffImageZipPath = (filename) => `images/${filename}`;
 
-    const specJson = {
+    const specJsonShared = {
         template: spec.template || 'Showroom',
-        sections: ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
+        design: spec.design || 'classic',
+        sections: isGallery
+            ? ['header', 'homepage-hero', 'catalog-highlights', 'footer', 'copyright']
+            : ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
         generatedAt: new Date().toISOString(),
         adaCompliance: {
             required: true,
@@ -671,209 +892,6 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             markup: adaPasteMarkup,
             popupAttribute: footerForAda.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px',
             snippetFile: 'spec/footer-copyright-snippet.html',
-        },
-        copy: {
-            title: spec.title || '',
-            description: spec.description || '',
-            cta: spec.cta || '',
-            ctaVisible: spec.heroCtaVisible !== false,
-            ctaBackgroundColor: spec.heroCtaBackgroundColor || '',
-            ctaTextColor: spec.heroCtaTextColor || '#ffffff',
-            backgroundColor: spec.copyBackgroundColor || '',
-        },
-        header: {
-            logoSharedWithFooter: header.logoSharedWithFooter !== false,
-            logo: {
-                filename: header.logoFilename || 'header-logo.png',
-                dimensions: header.logoDimensions || 'max 220 × 68 px',
-                includedInHandoff: false,
-            },
-            contentColumnWidth: header.contentColumnWidth || '1429 px',
-            banner: {
-                height: headerBanner.height || '50 px',
-                backgroundColor: headerBanner.backgroundColor || '#000000',
-                textColor: headerBanner.textColor || '#ffffff',
-                alignment: headerBanner.alignment || 'right',
-                separator: headerBanner.separator || '|',
-                links: headerBannerLinks,
-            },
-            toolbar: {
-                layout: headerToolbar.layout || 'search left · logo center · icons right',
-                searchBarHardcoded: headerToolbar.searchBarHardcoded !== false,
-                searchPlaceholder: headerToolbar.searchPlaceholder || 'Enter Keyword or Item#',
-                searchStyle: headerToolbar.searchStyle || 'Single bottom border underline',
-                iconsHardcoded: headerToolbar.iconsHardcoded !== false,
-                icons: Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [],
-            },
-            mainNav: {
-                editable: headerMainNav.editable !== false,
-                hasDropdowns: headerMainNav.hasDropdowns !== false,
-                fontSize: headerMainNav.fontSize || '15 px',
-                alignment: headerMainNav.alignment || 'Full content width · first category aligns with search · last category aligns with cart',
-                subcategoriesPending: headerMainNav.subcategoriesPending === true,
-                items: headerMainNavItems.map((item) => ({
-                    id: item.id || '',
-                    label: item.label || '',
-                    url: item.url || '',
-                    subcategories: (Array.isArray(item.subcategories) ? item.subcategories : []).map((sub) => ({
-                        id: sub.id || '',
-                        label: sub.label || '',
-                        url: sub.url || '',
-                        visible: sub.visible !== false,
-                    })),
-                })),
-            },
-        },
-        featuredCategories: {
-            shopAllUrl: spec.shopAllUrl || '/catalog',
-            cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
-            thumbnailSize: spec.featuredCategoryThumbnailSize || '70 × 70 px',
-            imagesHardcoded: spec.featuredCategoryImagesHardcoded !== false,
-            imagesIncludedInHandoff: false,
-            categories: Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [],
-        },
-        aboutUs: {
-            header: aboutUs.header || '',
-            paragraph: aboutUs.paragraph || '',
-            employeeImage: {
-                filename: 'about-employee-image.png',
-                dimensions: aboutUs.employeeImageSize || '417 × 282 px',
-                includedInHandoff: true,
-            },
-            buttonBackgroundColor: aboutUs.buttonBackgroundColor || '#2b2b2b',
-            buttonTextColor: aboutUs.buttonTextColor || '#ffffff',
-            primaryButton: {
-                label: primaryButton.label || '',
-                url: primaryButton.url || '',
-            },
-            secondaryButton: {
-                label: secondaryButton.label || '',
-                url: secondaryButton.url || '',
-            },
-        },
-        featureTiles: {
-            imageSize: featureTiles.imageSize || '780 × 1014 px',
-            buttonBackgroundColor: featureTiles.buttonBackgroundColor || '#2b2b2b',
-            buttonTextColor: featureTiles.buttonTextColor || '#ffffff',
-            left: {
-                header: featureLeft.header || '',
-                paragraph: featureLeft.paragraph || '',
-                image: {
-                    filename: 'feature-left-image.png',
-                    dimensions: featureTiles.imageSize || '780 × 1014 px',
-                    includedInHandoff: true,
-                },
-                button: {
-                    label: leftButton.label || '',
-                    url: leftButton.url || '',
-                    visible: leftButton.visible !== false,
-                },
-            },
-            right: {
-                header: featureRight.header || '',
-                paragraph: featureRight.paragraph || '',
-                image: {
-                    filename: 'feature-right-image.png',
-                    dimensions: featureTiles.imageSize || '780 × 1014 px',
-                    includedInHandoff: true,
-                },
-                button: {
-                    label: rightButton.label || '',
-                    url: rightButton.url || '',
-                    visible: rightButton.visible !== false,
-                },
-            },
-        },
-        youMayLike: {
-            title: youMayLike.title || 'You May Like',
-            imageSize: youMayLike.imageSize || '500 × 750 px',
-            imagesIncludedInHandoff: true,
-            catalogResolvedOnLiveSite: youMayLike.catalogResolvedOnLiveSite !== false,
-            items: youMayLikeItems.map((item) => ({
-                itemNumber: item.itemNumber || '',
-                imageFilename: item.imageFilename || '',
-                previewTitle: item.previewTitle || '',
-                previewPrice: item.previewPrice || '',
-            })),
-        },
-        getInspired: {
-            title: getInspired.title || 'Get Inspired',
-            lifestyleImage: {
-                filename: 'get-inspired-lifestyle.png',
-                dimensions: getInspired.lifestyleImageSize || '508 × 610 px',
-                includedInHandoff: true,
-            },
-            cardImageSize: getInspired.cardImageSize || '155 × 155 px',
-            gridLayout: getInspired.gridLayout || '4 columns × 2 rows',
-            gridImagesIncludedInHandoff: false,
-            imageDirectory: getInspired.imageDirectory || 'editor/classic/get-inspired/',
-            catalogResolvedOnLiveSite: getInspired.catalogResolvedOnLiveSite !== false,
-            items: getInspiredItems.map((item) => ({
-                itemNumber: item.itemNumber || '',
-                row: item.row || '',
-                previewImageFile: item.previewImageFile || '',
-                previewTitle: item.previewTitle || '',
-                previewPrice: item.previewPrice || '',
-            })),
-        },
-        footer: {
-            logoUseHeader: footer.logoUseHeader !== false,
-            logo: {
-                filename: footer.logoFilename || 'footer-logo.png',
-                dimensions: footer.logoDimensions || 'max 280 × 94 px',
-                includedInHandoff: footer.logoUseHeader === false,
-            },
-            email: footer.email || '',
-            companyName: footer.companyName || '',
-            address: footer.address || '',
-            phone: footer.phone || '',
-            copyrightName: footer.copyrightName || footer.companyName || '',
-            copyrightSpec: footer.copyrightSpec || '',
-            copyrightMarkup: footer.copyrightMarkup || '',
-            copyrightPasteMarkup: footer.copyrightPasteMarkup || adaPasteMarkup,
-            adaCompliancePopup: footer.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px',
-            social: {
-                facebook: typeof footerSocial.facebook === 'object'
-                    ? footerSocial.facebook
-                    : { url: footerSocial.facebook || '', visible: true },
-                instagram: typeof footerSocial.instagram === 'object'
-                    ? footerSocial.instagram
-                    : { url: footerSocial.instagram || '', visible: true },
-                x: typeof footerSocial.x === 'object'
-                    ? footerSocial.x
-                    : { url: footerSocial.x || '', visible: true },
-                youtube: typeof footerSocial.youtube === 'object'
-                    ? footerSocial.youtube
-                    : { url: footerSocial.youtube || '', visible: true },
-                linkedin: typeof footerSocial.linkedin === 'object'
-                    ? footerSocial.linkedin
-                    : { url: footerSocial.linkedin || '', visible: true },
-            },
-            quickLinks: footerQuickLinks,
-            policies: footerPolicies,
-        },
-        imageHandoffPolicy: {
-            headerLogo: false,
-            heroImages: false,
-            featuredCategoryThumbnails: false,
-            aboutEmployeePhoto: true,
-            featureCardPhotos: true,
-            youMayLikePhotos: true,
-            getInspiredLifestylePhoto: true,
-            getInspiredGridPhotos: false,
-            footerLogoOnlyWhenDifferentFromHeader: true,
-        },
-        slots: {
-            product: {
-                filename: 'product-image.png',
-                dimensions: spec.productImageSize || '563 × 342 px',
-                includedInHandoff: false,
-            },
-            lifestyle: {
-                filename: 'lifestyle-image.png',
-                dimensions: spec.lifestyleImageSize || '854 × 670 px min',
-                includedInHandoff: false,
-            },
         },
         assets: assets.map((a) => ({
             filename: a.filename,
@@ -886,34 +904,300 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         })),
     };
 
+    const specJson = isGallery
+        ? {
+            ...specJsonShared,
+            header: {
+                layout: header.layout || 'gallery',
+                logoSharedWithFooter: header.logoSharedWithFooter !== false,
+                logo: {
+                    filename: header.logoFilename || 'header-logo.png',
+                    dimensions: header.logoDimensions || 'max 150 px high',
+                    includedInHandoff: assetIncludedInHandoff('header-logo.png'),
+                },
+                contentColumnWidth: header.contentColumnWidth || '1479 px',
+                topBar: header.topBar || {},
+                mainNav: header.mainNav || {},
+            },
+            hero: spec.hero || {},
+            catalogHighlights: spec.catalogHighlights || {},
+            footer: spec.footer || {},
+            copyright: spec.copyright ? {
+                companyName: spec.copyright.companyName || spec.copyright.copyrightName || '',
+                backgroundColor: spec.copyright.backgroundColor || '',
+                textColor: spec.copyright.textColor || '',
+                copyrightName: spec.copyright.copyrightName || spec.copyright.companyName || '',
+                copyrightSpec: spec.copyright.copyrightSpec || '',
+                copyrightMarkup: spec.copyright.copyrightMarkup || '',
+                copyrightPasteMarkup: spec.copyright.copyrightPasteMarkup || adaPasteMarkup,
+                adaCompliancePopup: spec.copyright.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px',
+            } : null,
+            imageHandoffPolicy: {
+                headerLogo: assetIncludedInHandoff('header-logo.png'),
+                heroImages: resolvedHandoffAssets.some((asset) => (
+                    String(asset.filename || '').startsWith('gallery-hero-')
+                )),
+                catalogHighlightTileImages: resolvedHandoffAssets.some((asset) => (
+                    String(asset.filename || '').startsWith('gallery-catalog-tile-')
+                )),
+                templateDefaultsExcluded: true,
+            },
+        }
+        : {
+            ...specJsonShared,
+            copy: {
+                title: spec.title || '',
+                description: spec.description || '',
+                cta: spec.cta || '',
+                ctaVisible: spec.heroCtaVisible !== false,
+                ctaBackgroundColor: spec.heroCtaBackgroundColor || '',
+                ctaTextColor: spec.heroCtaTextColor || '#ffffff',
+                backgroundColor: spec.copyBackgroundColor || '',
+            },
+            header: {
+                layout: header.layout || 'classic',
+                logoSharedWithFooter: header.logoSharedWithFooter !== false,
+                logo: {
+                    filename: header.logoFilename || 'header-logo.png',
+                    dimensions: header.logoDimensions || 'max 220 × 68 px',
+                    includedInHandoff: false,
+                },
+                contentColumnWidth: header.contentColumnWidth || '1429 px',
+                banner: {
+                    height: headerBanner.height || '50 px',
+                    backgroundColor: headerBanner.backgroundColor || '#000000',
+                    textColor: headerBanner.textColor || '#ffffff',
+                    alignment: headerBanner.alignment || 'right',
+                    separator: headerBanner.separator || '|',
+                    links: headerBannerLinks,
+                },
+                toolbar: {
+                    layout: headerToolbar.layout || 'search left · logo center · icons right',
+                    searchBarHardcoded: headerToolbar.searchBarHardcoded !== false,
+                    searchPlaceholder: headerToolbar.searchPlaceholder || 'Enter Keyword or Item#',
+                    searchStyle: headerToolbar.searchStyle || 'Single bottom border underline',
+                    iconsHardcoded: headerToolbar.iconsHardcoded !== false,
+                    icons: Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [],
+                },
+                mainNav: {
+                    editable: headerMainNav.editable !== false,
+                    hasDropdowns: headerMainNav.hasDropdowns !== false,
+                    fontSize: headerMainNav.fontSize || '15 px',
+                    alignment: headerMainNav.alignment || 'Full content width · first category aligns with search · last category aligns with cart',
+                    subcategoriesPending: headerMainNav.subcategoriesPending === true,
+                    items: headerMainNavItems.map((item) => ({
+                        id: item.id || '',
+                        label: item.label || '',
+                        url: item.url || '',
+                        subcategories: (Array.isArray(item.subcategories) ? item.subcategories : []).map((sub) => ({
+                            id: sub.id || '',
+                            label: sub.label || '',
+                            url: sub.url || '',
+                            visible: sub.visible !== false,
+                        })),
+                    })),
+                },
+            },
+            featuredCategories: {
+                shopAllUrl: spec.shopAllUrl || '/catalog',
+                cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
+                thumbnailSize: spec.featuredCategoryThumbnailSize || '70 × 70 px',
+                imagesHardcoded: spec.featuredCategoryImagesHardcoded !== false,
+                imagesIncludedInHandoff: false,
+                categories: Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [],
+            },
+            aboutUs: {
+                header: aboutUs.header || '',
+                paragraph: aboutUs.paragraph || '',
+                employeeImage: {
+                    filename: 'about-employee-image.png',
+                    dimensions: aboutUs.employeeImageSize || '417 × 282 px',
+                    includedInHandoff: true,
+                },
+                buttonBackgroundColor: aboutUs.buttonBackgroundColor || '#2b2b2b',
+                buttonTextColor: aboutUs.buttonTextColor || '#ffffff',
+                primaryButton: {
+                    label: primaryButton.label || '',
+                    url: primaryButton.url || '',
+                },
+                secondaryButton: {
+                    label: secondaryButton.label || '',
+                    url: secondaryButton.url || '',
+                },
+            },
+            featureTiles: {
+                imageSize: featureTiles.imageSize || '780 × 1014 px',
+                buttonBackgroundColor: featureTiles.buttonBackgroundColor || '#2b2b2b',
+                buttonTextColor: featureTiles.buttonTextColor || '#ffffff',
+                left: {
+                    header: featureLeft.header || '',
+                    paragraph: featureLeft.paragraph || '',
+                    image: {
+                        filename: 'feature-left-image.png',
+                        dimensions: featureTiles.imageSize || '780 × 1014 px',
+                        includedInHandoff: true,
+                    },
+                    button: {
+                        label: leftButton.label || '',
+                        url: leftButton.url || '',
+                        visible: leftButton.visible !== false,
+                    },
+                },
+                right: {
+                    header: featureRight.header || '',
+                    paragraph: featureRight.paragraph || '',
+                    image: {
+                        filename: 'feature-right-image.png',
+                        dimensions: featureTiles.imageSize || '780 × 1014 px',
+                        includedInHandoff: true,
+                    },
+                    button: {
+                        label: rightButton.label || '',
+                        url: rightButton.url || '',
+                        visible: rightButton.visible !== false,
+                    },
+                },
+            },
+            youMayLike: {
+                title: youMayLike.title || 'You May Like',
+                imageSize: youMayLike.imageSize || '500 × 750 px',
+                imagesIncludedInHandoff: true,
+                catalogResolvedOnLiveSite: youMayLike.catalogResolvedOnLiveSite !== false,
+                items: youMayLikeItems.map((item) => ({
+                    itemNumber: item.itemNumber || '',
+                    imageFilename: item.imageFilename || '',
+                    previewTitle: item.previewTitle || '',
+                    previewPrice: item.previewPrice || '',
+                })),
+            },
+            getInspired: {
+                title: getInspired.title || 'Get Inspired',
+                lifestyleImage: {
+                    filename: 'get-inspired-lifestyle.png',
+                    dimensions: getInspired.lifestyleImageSize || '508 × 610 px',
+                    includedInHandoff: true,
+                },
+                cardImageSize: getInspired.cardImageSize || '155 × 155 px',
+                gridLayout: getInspired.gridLayout || '4 columns × 2 rows',
+                gridImagesIncludedInHandoff: false,
+                imageDirectory: getInspired.imageDirectory || 'editor/classic/get-inspired/',
+                catalogResolvedOnLiveSite: getInspired.catalogResolvedOnLiveSite !== false,
+                items: getInspiredItems.map((item) => ({
+                    itemNumber: item.itemNumber || '',
+                    row: item.row || '',
+                    previewImageFile: item.previewImageFile || '',
+                    previewTitle: item.previewTitle || '',
+                    previewPrice: item.previewPrice || '',
+                })),
+            },
+            footer: {
+                logoUseHeader: footer.logoUseHeader !== false,
+                logo: {
+                    filename: footer.logoFilename || 'footer-logo.png',
+                    dimensions: footer.logoDimensions || 'max 280 × 94 px',
+                    includedInHandoff: footer.logoUseHeader === false,
+                },
+                email: footer.email || '',
+                companyName: footer.companyName || '',
+                address: footer.address || '',
+                phone: footer.phone || '',
+                copyrightName: footer.copyrightName || footer.companyName || '',
+                copyrightSpec: footer.copyrightSpec || '',
+                copyrightMarkup: footer.copyrightMarkup || '',
+                copyrightPasteMarkup: footer.copyrightPasteMarkup || adaPasteMarkup,
+                adaCompliancePopup: footer.adaCompliancePopup || 'ada-compliance::ADA Compliance::600px',
+                social: {
+                    facebook: typeof footerSocial.facebook === 'object'
+                        ? footerSocial.facebook
+                        : { url: footerSocial.facebook || '', visible: true },
+                    instagram: typeof footerSocial.instagram === 'object'
+                        ? footerSocial.instagram
+                        : { url: footerSocial.instagram || '', visible: true },
+                    x: typeof footerSocial.x === 'object'
+                        ? footerSocial.x
+                        : { url: footerSocial.x || '', visible: true },
+                    youtube: typeof footerSocial.youtube === 'object'
+                        ? footerSocial.youtube
+                        : { url: footerSocial.youtube || '', visible: true },
+                    linkedin: typeof footerSocial.linkedin === 'object'
+                        ? footerSocial.linkedin
+                        : { url: footerSocial.linkedin || '', visible: true },
+                },
+                quickLinks: footerQuickLinks,
+                policies: footerPolicies,
+            },
+            imageHandoffPolicy: {
+                headerLogo: false,
+                heroImages: false,
+                featuredCategoryThumbnails: false,
+                aboutEmployeePhoto: true,
+                featureCardPhotos: true,
+                youMayLikePhotos: true,
+                getInspiredLifestylePhoto: true,
+                getInspiredGridPhotos: false,
+                footerLogoOnlyWhenDifferentFromHeader: true,
+            },
+            slots: {
+                product: {
+                    filename: 'product-image.png',
+                    dimensions: spec.productImageSize || '563 × 342 px',
+                    includedInHandoff: false,
+                },
+                lifestyle: {
+                    filename: 'lifestyle-image.png',
+                    dimensions: spec.lifestyleImageSize || '854 × 670 px min',
+                    includedInHandoff: false,
+                },
+            },
+        };
+
     const adaSnippetFile = [
         '<!-- REQUIRED: Paste at the very bottom of every website footer. -->',
         adaPasteMarkup,
         '',
     ].join('\n');
 
-    const readmeText = [
-        'Showroom Homepage — Developer Handoff',
-        '=====================================',
-        '',
-        'REQUIRED — ADA compliance footer (all websites)',
-        'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
-        '',
-        `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
-        '2. images/ — Client image files referenced in the PDF',
-        '3. spec/homepage-spec.json — Machine-readable spec',
-        '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
-        '',
-        'Handoff image files (when present): About Us employee photo, feature card photos,',
-        'You May Like product images, Get Inspired lifestyle photo, and footer logo only when',
-        'it differs from the header logo. Header logo, hero images, and featured category',
-        'thumbnails are not included — upload those separately.',
-    ].join('\n');
+    const readmeText = isGallery
+        ? [
+            'Showroom Classic — Developer Handoff',
+            '====================================',
+            '',
+            'REQUIRED — ADA compliance footer (all websites)',
+            'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
+            '',
+            `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
+            resolvedHandoffAssets.length
+                ? '2. images/ — Client-replaced images only (template defaults are not bundled)'
+                : '2. images/ — Omitted (no client-replaced images in this export)',
+            '3. spec/homepage-spec.json — Machine-readable spec (Header, Hero, Catalog Highlights, Footer, Copyright)',
+            '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+            '',
+            resolvedHandoffAssets.length
+                ? 'Handoff image files are listed in the PDF under “Handoff images”.'
+                : 'Template default images are shown in layout previews only — source those separately on the live site.',
+        ].join('\n')
+        : [
+            'Showroom Homepage — Developer Handoff',
+            '=====================================',
+            '',
+            'REQUIRED — ADA compliance footer (all websites)',
+            'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
+            '',
+            `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
+            '2. images/ — Client image files referenced in the PDF',
+            '3. spec/homepage-spec.json — Machine-readable spec',
+            '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+            '',
+            'Handoff image files (when present): About Us employee photo, feature card photos,',
+            'You May Like product images, Get Inspired lifestyle photo, and footer logo only when',
+            'it differs from the header logo. Header logo, hero images, and featured category',
+            'thumbnails are not included — upload those separately.',
+        ].join('\n');
 
     const zip = new JSZip();
     zip.file(pdfFilename, pdfBlob);
 
-    for (const asset of includedAssets) {
+    for (const asset of resolvedHandoffAssets) {
         if (!String(asset.dataUrl).startsWith('data:')) continue;
         zip.file(handoffImageZipPath(asset.filename), dataUrlToBlob(asset.dataUrl));
     }

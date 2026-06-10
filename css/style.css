@@ -588,6 +588,66 @@ body.cart-open {
     background: transparent;
 }
 
+.showroom-editor-quicklinks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 12px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--xo-border);
+    border-radius: 10px;
+    background: #f7fafc;
+}
+
+.showroom-editor-quicklinks-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--xo-grey);
+}
+
+.showroom-editor-quicklinks-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.showroom-editor-quicklink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    padding: 8px 14px;
+    border: 1px solid var(--xo-blue);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--xo-blue-dark);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.showroom-editor-quicklink:hover {
+    background: var(--xo-blue);
+    color: #fff;
+    box-shadow: 0 4px 14px var(--xo-shadow);
+}
+
+.showroom-editor-quicklink:focus-visible {
+    outline: 2px solid var(--xo-blue);
+    outline-offset: 2px;
+}
+
+.showroom-editor-quicklinks--spotlight {
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
 .showroom-design-tabs {
     display: flex;
     gap: 6px;
@@ -965,6 +1025,178 @@ body.cart-open {
     margin-bottom: 18px;
     font-size: 0.82rem;
     color: var(--xo-grey);
+}
+
+/* ——— Homepage template editor spotlight ——— */
+.editor-spotlight {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(26, 123, 189, 0.22);
+    background: linear-gradient(135deg, #ffffff 0%, #f3f9fd 58%, #e8f4fb 100%);
+    box-shadow: 0 14px 40px rgba(26, 123, 189, 0.14);
+}
+
+.editor-spotlight::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--xo-accent-gradient);
+}
+
+.editor-spotlight-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 36px;
+    align-items: center;
+}
+
+.editor-spotlight-badge {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--xo-blue);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.editor-spotlight-lead {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    max-width: 540px;
+}
+
+.editor-spotlight-list {
+    margin-bottom: 26px;
+}
+
+.editor-spotlight-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.editor-spotlight-demo {
+    min-width: 0;
+}
+
+.editor-mock {
+    display: grid;
+    grid-template-columns: 118px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--xo-border);
+    border-radius: 12px;
+    background: #f7fafc;
+    box-shadow: 0 10px 28px rgba(26, 123, 189, 0.12);
+}
+
+.editor-mock-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid var(--xo-border);
+}
+
+.editor-mock-sidebar-title {
+    margin-bottom: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--xo-grey);
+}
+
+.editor-mock-nav-item {
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--xo-grey);
+    background: #f4f8fb;
+}
+
+.editor-mock-nav-item.is-active {
+    color: #fff;
+    background: var(--xo-blue);
+}
+
+.editor-mock-export {
+    margin-top: auto;
+    padding: 8px 6px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #3a96d4 0%, #1a7bbd 100%);
+}
+
+.editor-mock-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.editor-mock-browser {
+    border-color: #c5d9e8;
+}
+
+.editor-mock-preview-header {
+    height: 18px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #2b3a42 0%, #3d5160 100%);
+}
+
+.editor-mock-preview-hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.editor-mock-preview-copy {
+    height: 54px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #e6eef4 0%, #d2e0ea 100%);
+}
+
+.editor-mock-preview-image {
+    height: 54px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #b8cfe0 0%, #8eb3ca 100%);
+}
+
+.editor-mock-preview-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.editor-mock-preview-tiles span {
+    height: 22px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #6a8fa8 0%, #4f7289 100%);
+}
+
+.editor-mock-caption {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--xo-blue-dark);
+    text-align: center;
 }
 
 /* ——— Campaigns ——— */
@@ -1617,8 +1849,13 @@ body.cart-open .cart-backdrop {
         grid-template-columns: 1fr 1fr;
     }
 
-    .split-section {
+    .split-section,
+    .editor-spotlight-grid {
         grid-template-columns: 1fr;
+    }
+
+    .editor-spotlight-demo {
+        order: -1;
     }
 }
 
@@ -1736,6 +1973,30 @@ body.cart-open .cart-backdrop {
 
     .hero-actions .btn {
         width: 100%;
+    }
+
+    .editor-spotlight-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .editor-mock {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-mock-sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .editor-mock-sidebar-title {
+        width: 100%;
+    }
+
+    .editor-mock-export {
+        margin-top: 0;
+        margin-left: auto;
     }
 
     .cta-band {

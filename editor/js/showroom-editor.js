@@ -44,6 +44,33 @@
     const DEFAULT_FOOTER_COMPANY = 'Aldervaan Lighting';
     const DEFAULT_FOOTER_ADDRESS = '123 Lighting Way\nSuite 400, Anytown, USA';
     const DEFAULT_FOOTER_PHONE = '(800) 555-1234';
+    const DEFAULT_CLASSIC_FOOTER_ABOUT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+    const DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI = 'Monday - Friday: 9:00 AM - 5:00 PM';
+    const DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY = 'Saturday: Closed';
+    const DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY = 'Sunday: Closed';
+    const DEFAULT_CLASSIC_FOOTER_BG = '#ffffff';
+    const DEFAULT_CLASSIC_FOOTER_TEXT = '#2b2b2b';
+    const DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT = '#5c5c5c';
+    const DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG = '#f5f5f5';
+    const CLASSIC_FOOTER_SHOP_LINKS = [
+        { id: 'catalog', label: 'Catalog', defaultUrl: '/catalog' },
+        { id: 'chandeliers', label: 'Chandeliers', defaultUrl: '/catalog/chandeliers' },
+        { id: 'pendants', label: 'Pendants', defaultUrl: '/catalog/pendants' },
+        { id: 'bathroom-fixtures', label: 'Bathroom Fixtures', defaultUrl: '/catalog/bathroom-fixtures' },
+        { id: 'exterior', label: 'Exterior', defaultUrl: '/catalog/exterior' },
+        { id: 'fans', label: 'Fans', defaultUrl: '/catalog/fans' },
+        { id: 'foyer', label: 'Foyer', defaultUrl: '/catalog/foyer' },
+        { id: 'wall-lights', label: 'Wall Lights', defaultUrl: '/catalog/wall-lights' },
+    ];
+    const CLASSIC_FOOTER_ABOUT_LINKS = [
+        { id: 'about-us', label: 'About Us', defaultUrl: '/about' },
+        { id: 'privacy', label: 'Privacy', defaultUrl: '/privacy' },
+        { id: 'contact-us', label: 'Contact Us', defaultUrl: '/contact' },
+    ];
+    const CLASSIC_FOOTER_ACCOUNT_LINKS = [
+        { id: 'my-account', label: 'My Account', defaultUrl: '/account' },
+        { id: 'wish-list', label: 'Wish List', defaultUrl: '/wishlist' },
+    ];
     const FOOTER_ADA_POPUP = 'ada-compliance::ADA Compliance::600px';
     const DEFAULT_FOOTER_QUICK_LINKS = [
         { label: 'About Us', urlKey: 'footerAboutUsUrl', defaultUrl: '/about' },
@@ -82,6 +109,18 @@
     const DEFAULT_GALLERY_HERO_PRIMARY = `${GALLERY_IMAGE_DIR}quorum1.jpg`;
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP = `${GALLERY_IMAGE_DIR}chandelier4.jpg`;
     const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM = `${GALLERY_IMAGE_DIR}pendants3.jpg`;
+    const DEFAULT_GALLERY_HERO_HEADLINE_1 = 'STEP UP';
+    const DEFAULT_GALLERY_HERO_HEADLINE_2 = 'YOUR';
+    const DEFAULT_GALLERY_HERO_HEADLINE_3 = 'LIGHTING';
+    const DEFAULT_GALLERY_HERO_COPY = 'Refresh your home with bold silhouettes,\nwarm finishes, and lighting that makes\nevery room feel complete.';
+    const DEFAULT_GALLERY_HERO_BUTTON_LABEL = 'Shop Now';
+    const DEFAULT_GALLERY_HERO_BUTTON_URL = '/catalog';
+    const DEFAULT_GALLERY_HERO_BUTTON_BG = '#2b2b2b';
+    const DEFAULT_GALLERY_HERO_BUTTON_TEXT = '#ffffff';
+    const DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING = 'Chandelier';
+    const DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL = '/catalog/chandeliers';
+    const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING = 'Pendants';
+    const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL = '/catalog/pendants';
     const GALLERY_CATALOG_TILE_DEFAULTS = [
         {
             id: 'bathroom-fixtures',
@@ -413,7 +452,21 @@
         galleryHeaderSignInLabel: document.getElementById('fieldGalleryHeaderSignIn'),
         galleryHeroPrimary: document.getElementById('fieldGalleryHeroPrimary'),
         galleryHeroSecondaryTop: document.getElementById('fieldGalleryHeroSecondaryTop'),
+        galleryHeroSecondaryTopHeading: document.getElementById('fieldGalleryHeroSecondaryTopHeading'),
+        galleryHeroSecondaryTopUrl: document.getElementById('fieldGalleryHeroSecondaryTopUrl'),
         galleryHeroSecondaryBottom: document.getElementById('fieldGalleryHeroSecondaryBottom'),
+        galleryHeroSecondaryBottomHeading: document.getElementById('fieldGalleryHeroSecondaryBottomHeading'),
+        galleryHeroSecondaryBottomUrl: document.getElementById('fieldGalleryHeroSecondaryBottomUrl'),
+        galleryHeroHeadlineLine1: document.getElementById('fieldGalleryHeroHeadline1'),
+        galleryHeroHeadlineLine2: document.getElementById('fieldGalleryHeroHeadline2'),
+        galleryHeroHeadlineLine3: document.getElementById('fieldGalleryHeroHeadline3'),
+        galleryHeroCopy: document.getElementById('fieldGalleryHeroCopy'),
+        galleryHeroButtonLabel: document.getElementById('fieldGalleryHeroButtonLabel'),
+        galleryHeroButtonUrl: document.getElementById('fieldGalleryHeroButtonUrl'),
+        galleryHeroButtonBackgroundColor: document.getElementById('fieldGalleryHeroButtonBg'),
+        galleryHeroButtonBackgroundColorValue: document.getElementById('fieldGalleryHeroButtonBgValue'),
+        galleryHeroButtonTextColor: document.getElementById('fieldGalleryHeroButtonText'),
+        galleryHeroButtonTextColorValue: document.getElementById('fieldGalleryHeroButtonTextValue'),
         footerLogo: document.getElementById('fieldFooterLogo'),
         footerLogoUseHeader: document.getElementById('fieldFooterLogoUseHeader'),
         footerEmail: document.getElementById('fieldFooterEmail'),
@@ -431,6 +484,21 @@
         footerAddress: document.getElementById('fieldFooterAddress'),
         footerPhone: document.getElementById('fieldFooterPhone'),
         footerCopyrightName: document.getElementById('fieldFooterCopyrightName'),
+        classicFooterCompanyName: document.getElementById('fieldClassicFooterCompanyName'),
+        classicFooterAboutCopy: document.getElementById('fieldClassicFooterAboutCopy'),
+        classicFooterAddress: document.getElementById('fieldClassicFooterAddress'),
+        classicFooterHoursMonFri: document.getElementById('fieldClassicFooterHoursMonFri'),
+        classicFooterHoursSaturday: document.getElementById('fieldClassicFooterHoursSaturday'),
+        classicFooterHoursSunday: document.getElementById('fieldClassicFooterHoursSunday'),
+        classicFooterCopyrightName: document.getElementById('fieldClassicFooterCopyrightName'),
+        classicFooterBackgroundColor: document.getElementById('fieldClassicFooterBg'),
+        classicFooterBackgroundColorValue: document.getElementById('fieldClassicFooterBgValue'),
+        classicFooterTextColor: document.getElementById('fieldClassicFooterText'),
+        classicFooterTextColorValue: document.getElementById('fieldClassicFooterTextValue'),
+        classicFooterCopyrightTextColor: document.getElementById('fieldClassicFooterCopyrightText'),
+        classicFooterCopyrightTextColorValue: document.getElementById('fieldClassicFooterCopyrightTextValue'),
+        classicFooterCopyrightBackgroundColor: document.getElementById('fieldClassicFooterCopyrightBg'),
+        classicFooterCopyrightBackgroundColorValue: document.getElementById('fieldClassicFooterCopyrightBgValue'),
         headerBannerBackgroundColor: document.getElementById('fieldHeaderBannerBg'),
         headerBannerBackgroundColorValue: document.getElementById('fieldHeaderBannerBgValue'),
         headerBannerTextColor: document.getElementById('fieldHeaderBannerText'),
@@ -484,14 +552,24 @@
     let evolvedToastRemoveTimer = null;
     const previewRoot = document.getElementById('showroomPreview');
     const heroRoot = document.getElementById('showroomHeroSection');
+    const galleryHeroLayoutRoot = document.getElementById('showroomGalleryHeroLayout');
     const showroomHeroClassic = document.getElementById('showroomHeroClassic');
     const showroomHeroGallery = document.getElementById('showroomHeroGallery');
     const previewGalleryHeroPrimary = document.getElementById('previewGalleryHeroPrimary');
     const previewGalleryHeroPrimaryImage = document.getElementById('previewGalleryHeroPrimaryImage');
     const previewGalleryHeroSecondaryTop = document.getElementById('previewGalleryHeroSecondaryTop');
     const previewGalleryHeroSecondaryTopImage = document.getElementById('previewGalleryHeroSecondaryTopImage');
+    const previewGalleryHeroSecondaryTopHeading = document.getElementById('previewGalleryHeroSecondaryTopHeading');
+    const previewGalleryHeroSecondaryTopLink = document.getElementById('previewGalleryHeroSecondaryTopLink');
     const previewGalleryHeroSecondaryBottom = document.getElementById('previewGalleryHeroSecondaryBottom');
     const previewGalleryHeroSecondaryBottomImage = document.getElementById('previewGalleryHeroSecondaryBottomImage');
+    const previewGalleryHeroSecondaryBottomHeading = document.getElementById('previewGalleryHeroSecondaryBottomHeading');
+    const previewGalleryHeroSecondaryBottomLink = document.getElementById('previewGalleryHeroSecondaryBottomLink');
+    const previewGalleryHeroHeadlineLine1 = document.getElementById('previewGalleryHeroHeadlineLine1');
+    const previewGalleryHeroHeadlineLine2 = document.getElementById('previewGalleryHeroHeadlineLine2');
+    const previewGalleryHeroHeadlineLine3 = document.getElementById('previewGalleryHeroHeadlineLine3');
+    const previewGalleryHeroCopy = document.getElementById('previewGalleryHeroCopy');
+    const previewGalleryHeroCta = document.getElementById('previewGalleryHeroCta');
     const uploadPreviewGalleryHeroPrimary = document.getElementById('uploadPreviewGalleryHeroPrimary');
     const uploadPreviewGalleryHeroSecondaryTop = document.getElementById('uploadPreviewGalleryHeroSecondaryTop');
     const uploadPreviewGalleryHeroSecondaryBottom = document.getElementById('uploadPreviewGalleryHeroSecondaryBottom');
@@ -544,6 +622,23 @@
     const previewGetInspiredLifestyleImage = document.getElementById('previewGetInspiredLifestyleImage');
     const previewGetInspiredLifestylePlaceholder = document.getElementById('previewGetInspiredLifestylePlaceholder');
     const footerRoot = document.getElementById('showroomFooterSection');
+    const classicFooterRoot = document.getElementById('showroomFooterClassicSection');
+    const classicCopyrightRoot = document.getElementById('showroomCopyrightClassicSection');
+    const editorFooterClassic = document.getElementById('editorFooterClassic');
+    const editorCopyrightClassic = document.getElementById('editorCopyrightClassic');
+    const editorNavFooterClassic = document.getElementById('editorNavFooterClassic');
+    const classicFooterShopLinksEditor = document.getElementById('classicFooterShopLinksEditor');
+    const addClassicFooterShopLinkBtn = document.getElementById('addClassicFooterShopLinkBtn');
+    const classicFooterAboutLinksEditor = document.getElementById('classicFooterAboutLinksEditor');
+    const classicFooterAccountLinksEditor = document.getElementById('classicFooterAccountLinksEditor');
+    const previewClassicFooterCompany = document.getElementById('previewClassicFooterCompany');
+    const previewClassicFooterAbout = document.getElementById('previewClassicFooterAbout');
+    const previewClassicFooterShopLinks = document.getElementById('previewClassicFooterShopLinks');
+    const previewClassicFooterAboutLinks = document.getElementById('previewClassicFooterAboutLinks');
+    const previewClassicFooterAccountLinks = document.getElementById('previewClassicFooterAccountLinks');
+    const previewClassicFooterAddress = document.getElementById('previewClassicFooterAddress');
+    const previewClassicFooterHours = document.getElementById('previewClassicFooterHours');
+    const previewClassicCopyright = document.getElementById('previewClassicCopyright');
     const previewFooterLogo = document.getElementById('previewFooterLogo');
     const previewFooterLogoWrap = document.getElementById('previewFooterLogoWrap');
     const previewFooterEmail = document.getElementById('previewFooterEmail');
@@ -619,8 +714,34 @@
         galleryMainNavLinks: defaultGalleryMainNavLinks(),
         galleryHeroPrimaryImage: DEFAULT_GALLERY_HERO_PRIMARY,
         galleryHeroSecondaryTopImage: DEFAULT_GALLERY_HERO_SECONDARY_TOP,
+        galleryHeroSecondaryTopHeading: DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING,
+        galleryHeroSecondaryTopUrl: DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
         galleryHeroSecondaryBottomImage: DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
+        galleryHeroSecondaryBottomHeading: DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING,
+        galleryHeroSecondaryBottomUrl: DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
+        galleryHeroHeadlineLine1: DEFAULT_GALLERY_HERO_HEADLINE_1,
+        galleryHeroHeadlineLine2: DEFAULT_GALLERY_HERO_HEADLINE_2,
+        galleryHeroHeadlineLine3: DEFAULT_GALLERY_HERO_HEADLINE_3,
+        galleryHeroCopy: DEFAULT_GALLERY_HERO_COPY,
+        galleryHeroButtonLabel: DEFAULT_GALLERY_HERO_BUTTON_LABEL,
+        galleryHeroButtonUrl: DEFAULT_GALLERY_HERO_BUTTON_URL,
+        galleryHeroButtonBackgroundColor: DEFAULT_GALLERY_HERO_BUTTON_BG,
+        galleryHeroButtonTextColor: DEFAULT_GALLERY_HERO_BUTTON_TEXT,
         galleryCatalogTiles: defaultGalleryCatalogTiles(),
+        classicFooterCompanyName: DEFAULT_FOOTER_COMPANY,
+        classicFooterAboutCopy: DEFAULT_CLASSIC_FOOTER_ABOUT,
+        classicFooterShopLinks: defaultClassicFooterShopLinks(),
+        classicFooterAboutLinks: defaultClassicFooterAboutLinks(),
+        classicFooterAccountLinks: defaultClassicFooterAccountLinks(),
+        classicFooterAddress: DEFAULT_FOOTER_ADDRESS,
+        classicFooterHoursMonFri: DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
+        classicFooterHoursSaturday: DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
+        classicFooterHoursSunday: DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+        classicFooterCopyrightName: '',
+        classicFooterBackgroundColor: DEFAULT_CLASSIC_FOOTER_BG,
+        classicFooterTextColor: DEFAULT_CLASSIC_FOOTER_TEXT,
+        classicFooterCopyrightTextColor: DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT,
+        classicFooterCopyrightBackgroundColor: DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
         footerLogoImage: '',
         footerLogoUseHeader: true,
         footerEmail: DEFAULT_FOOTER_EMAIL,
@@ -916,7 +1037,17 @@
             editorSectionId: 'editor-section-get-inspired',
             template: 'classic',
         },
-        { previewId: 'showroomFooterSection', editorSectionId: 'editor-section-footer' },
+        { previewId: 'showroomFooterSection', editorSectionId: 'editor-section-footer', template: 'classic' },
+        {
+            previewId: 'showroomFooterClassicSection',
+            editorSectionId: 'editor-section-footer-classic',
+            template: 'gallery',
+        },
+        {
+            previewId: 'showroomCopyrightClassicSection',
+            editorSectionId: 'editor-section-copyright-classic',
+            template: 'gallery',
+        },
     ];
 
     function isPreviewJumpTargetActive(mapping) {
@@ -1200,6 +1331,8 @@
         syncGalleryHeaderPreview();
         syncGalleryHeroPreview();
         syncGalleryCatalogPreview();
+        syncClassicFooterPreview();
+        syncClassicCopyrightPreview();
     }
 
     function applyImage(targetImg, placeholderWrap, dataUrl) {
@@ -1223,6 +1356,92 @@
         previews.forEach(([el, src]) => setUploadPreviewImage(el, src));
     }
 
+    function resolveGalleryHeroHeadlineLine(value, fallback) {
+        if (typeof value === 'string') return value.trim();
+        return fallback;
+    }
+
+    function syncGalleryHeroHeadlinePreview() {
+        const headlineLines = [
+            [previewGalleryHeroHeadlineLine1, resolveGalleryHeroHeadlineLine(
+                state.galleryHeroHeadlineLine1,
+                DEFAULT_GALLERY_HERO_HEADLINE_1,
+            )],
+            [previewGalleryHeroHeadlineLine2, resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine2, '')],
+            [previewGalleryHeroHeadlineLine3, resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine3, '')],
+        ];
+
+        headlineLines.forEach(([element, text]) => {
+            if (!element) return;
+            element.textContent = text;
+            element.hidden = !text;
+        });
+
+        const headlineWrap = previewGalleryHeroHeadlineLine1?.parentElement;
+        if (headlineWrap) {
+            headlineWrap.hidden = headlineLines.every(([, text]) => !text);
+        }
+    }
+
+    function syncGalleryHeroOverlayPreview() {
+        syncGalleryHeroHeadlinePreview();
+
+        const copy = state.galleryHeroCopy || DEFAULT_GALLERY_HERO_COPY;
+        const buttonLabel = state.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL;
+        const buttonUrl = state.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL;
+        const buttonBg = normalizeHexColor(
+            state.galleryHeroButtonBackgroundColor,
+            DEFAULT_GALLERY_HERO_BUTTON_BG,
+        );
+        const buttonText = normalizeHexColor(
+            state.galleryHeroButtonTextColor,
+            DEFAULT_GALLERY_HERO_BUTTON_TEXT,
+        );
+
+        state.galleryHeroButtonBackgroundColor = buttonBg;
+        state.galleryHeroButtonTextColor = buttonText;
+
+        if (previewGalleryHeroCopy) previewGalleryHeroCopy.textContent = copy;
+        if (previewGalleryHeroCta) {
+            previewGalleryHeroCta.textContent = buttonLabel;
+            previewGalleryHeroCta.href = buttonUrl || '#';
+            previewGalleryHeroCta.style.backgroundColor = buttonBg;
+            previewGalleryHeroCta.style.color = buttonText;
+        }
+
+        if (fields.galleryHeroButtonBackgroundColor) {
+            fields.galleryHeroButtonBackgroundColor.value = buttonBg;
+            if (fields.galleryHeroButtonBackgroundColorValue) {
+                fields.galleryHeroButtonBackgroundColorValue.textContent = buttonBg;
+            }
+        }
+        if (fields.galleryHeroButtonTextColor) {
+            fields.galleryHeroButtonTextColor.value = buttonText;
+            if (fields.galleryHeroButtonTextColorValue) {
+                fields.galleryHeroButtonTextColorValue.textContent = buttonText;
+            }
+        }
+
+        const secondaryTopHeading = state.galleryHeroSecondaryTopHeading || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
+        const secondaryTopUrl = state.galleryHeroSecondaryTopUrl || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
+        if (previewGalleryHeroSecondaryTopHeading) {
+            previewGalleryHeroSecondaryTopHeading.textContent = secondaryTopHeading;
+        }
+        if (previewGalleryHeroSecondaryTopLink) {
+            previewGalleryHeroSecondaryTopLink.href = secondaryTopUrl || '#';
+        }
+
+        const secondaryBottomHeading = state.galleryHeroSecondaryBottomHeading
+            || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
+        const secondaryBottomUrl = state.galleryHeroSecondaryBottomUrl || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
+        if (previewGalleryHeroSecondaryBottomHeading) {
+            previewGalleryHeroSecondaryBottomHeading.textContent = secondaryBottomHeading;
+        }
+        if (previewGalleryHeroSecondaryBottomLink) {
+            previewGalleryHeroSecondaryBottomLink.href = secondaryBottomUrl || '#';
+        }
+    }
+
     function syncGalleryHeroPreview() {
         applyImage(
             previewGalleryHeroPrimaryImage,
@@ -1239,6 +1458,7 @@
             previewGalleryHeroSecondaryBottom,
             state.galleryHeroSecondaryBottomImage,
         );
+        syncGalleryHeroOverlayPreview();
         syncGalleryHeroUploadPreviews();
     }
 
@@ -1251,6 +1471,14 @@
         }
         if (trimmed.startsWith('gallery/')) return trimmed;
         return '';
+    }
+
+    function isGalleryClientImage(src, defaultPath) {
+        const trimmed = String(src || '').trim();
+        if (!trimmed) return false;
+        if (trimmed.startsWith('data:')) return true;
+        const ref = savedGalleryImageRef(trimmed);
+        return Boolean(ref && ref !== String(defaultPath || '').trim());
     }
 
     function savedClassicImageRef(src) {
@@ -1359,10 +1587,62 @@
             data.galleryHeroSecondaryTopImage,
             DEFAULT_GALLERY_HERO_SECONDARY_TOP,
         );
+        state.galleryHeroSecondaryTopHeading = data.galleryHeroSecondaryTopHeading
+            || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
+        state.galleryHeroSecondaryTopUrl = data.galleryHeroSecondaryTopUrl
+            || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
         state.galleryHeroSecondaryBottomImage = resolveGalleryHeroImage(
             data.galleryHeroSecondaryBottomImage,
             DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
         );
+        state.galleryHeroSecondaryBottomHeading = data.galleryHeroSecondaryBottomHeading
+            || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
+        state.galleryHeroSecondaryBottomUrl = data.galleryHeroSecondaryBottomUrl
+            || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
+        state.galleryHeroHeadlineLine1 = resolveGalleryHeroHeadlineLine(
+            data.galleryHeroHeadlineLine1,
+            DEFAULT_GALLERY_HERO_HEADLINE_1,
+        );
+        state.galleryHeroHeadlineLine2 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine2, '');
+        state.galleryHeroHeadlineLine3 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine3, '');
+        state.galleryHeroCopy = data.galleryHeroCopy || DEFAULT_GALLERY_HERO_COPY;
+        state.galleryHeroButtonLabel = data.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL;
+        state.galleryHeroButtonUrl = data.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL;
+        state.galleryHeroButtonBackgroundColor = normalizeHexColor(
+            data.galleryHeroButtonBackgroundColor,
+            DEFAULT_GALLERY_HERO_BUTTON_BG,
+        );
+        state.galleryHeroButtonTextColor = normalizeHexColor(
+            data.galleryHeroButtonTextColor,
+            DEFAULT_GALLERY_HERO_BUTTON_TEXT,
+        );
+
+        if (fields.galleryHeroHeadlineLine1) {
+            fields.galleryHeroHeadlineLine1.value = state.galleryHeroHeadlineLine1;
+        }
+        if (fields.galleryHeroHeadlineLine2) {
+            fields.galleryHeroHeadlineLine2.value = state.galleryHeroHeadlineLine2;
+        }
+        if (fields.galleryHeroHeadlineLine3) {
+            fields.galleryHeroHeadlineLine3.value = state.galleryHeroHeadlineLine3;
+        }
+        if (fields.galleryHeroCopy) fields.galleryHeroCopy.value = state.galleryHeroCopy;
+        if (fields.galleryHeroButtonLabel) {
+            fields.galleryHeroButtonLabel.value = state.galleryHeroButtonLabel;
+        }
+        if (fields.galleryHeroButtonUrl) fields.galleryHeroButtonUrl.value = state.galleryHeroButtonUrl;
+        if (fields.galleryHeroSecondaryTopHeading) {
+            fields.galleryHeroSecondaryTopHeading.value = state.galleryHeroSecondaryTopHeading;
+        }
+        if (fields.galleryHeroSecondaryTopUrl) {
+            fields.galleryHeroSecondaryTopUrl.value = state.galleryHeroSecondaryTopUrl;
+        }
+        if (fields.galleryHeroSecondaryBottomHeading) {
+            fields.galleryHeroSecondaryBottomHeading.value = state.galleryHeroSecondaryBottomHeading;
+        }
+        if (fields.galleryHeroSecondaryBottomUrl) {
+            fields.galleryHeroSecondaryBottomUrl.value = state.galleryHeroSecondaryBottomUrl;
+        }
     }
 
     function buildGalleryHeroExportSpec() {
@@ -1370,21 +1650,59 @@
             layout: 'split-lifestyle',
             height: '500 px',
             width: '1479 px',
-            alignment: 'Centered · McQueen hero width + 50 px',
+            alignment: 'Centered · Classic hero',
             columns: 'Large image left · two stacked images right',
             imageFit: 'cover',
             imageDirectory: `editor/${GALLERY_IMAGE_DIR}`,
             primary: {
                 label: 'Large lifestyle image (left)',
                 filename: 'gallery-hero-primary.jpg',
+                overlay: {
+                    alignment: 'left',
+                    headlineFont: "'Josefin Sans', sans-serif",
+                    headlineStyle: 'thin tall sans-serif uppercase',
+                    headlineWeight: 200,
+                    headline: [
+                        resolveGalleryHeroHeadlineLine(
+                            state.galleryHeroHeadlineLine1,
+                            DEFAULT_GALLERY_HERO_HEADLINE_1,
+                        ),
+                        resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine2, ''),
+                        resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine3, ''),
+                    ],
+                    copy: state.galleryHeroCopy || DEFAULT_GALLERY_HERO_COPY,
+                    button: {
+                        label: state.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL,
+                        url: state.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL,
+                        backgroundColor: state.galleryHeroButtonBackgroundColor || DEFAULT_GALLERY_HERO_BUTTON_BG,
+                        textColor: state.galleryHeroButtonTextColor || DEFAULT_GALLERY_HERO_BUTTON_TEXT,
+                        shape: 'square',
+                    },
+                },
             },
             secondaryTop: {
                 label: 'Lifestyle image (top right)',
                 filename: 'gallery-hero-secondary-top.jpg',
+                overlay: {
+                    alignment: 'left · vertically centered',
+                    headlineFont: "'Josefin Sans', sans-serif",
+                    headlineStyle: 'thin tall sans-serif uppercase',
+                    headlineWeight: 200,
+                    heading: state.galleryHeroSecondaryTopHeading || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING,
+                    url: state.galleryHeroSecondaryTopUrl || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
+                },
             },
             secondaryBottom: {
                 label: 'Lifestyle image (bottom right)',
                 filename: 'gallery-hero-secondary-bottom.jpg',
+                overlay: {
+                    alignment: 'left · vertically centered',
+                    headlineFont: "'Josefin Sans', sans-serif",
+                    headlineStyle: 'thin tall sans-serif uppercase',
+                    headlineWeight: 200,
+                    heading: state.galleryHeroSecondaryBottomHeading || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING,
+                    url: state.galleryHeroSecondaryBottomUrl || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
+                },
             },
         };
     }
@@ -1437,8 +1755,11 @@
         syncSketchPreview();
         syncYouMayLikePreview();
         syncGetInspiredPreview();
-        syncFooterPreview();
-        if (templateDesign !== 'gallery') {
+        if (templateDesign === 'gallery') {
+            syncClassicFooterPreview();
+            syncClassicCopyrightPreview();
+        } else {
+            syncFooterPreview();
             syncHeaderPreview();
         }
 
@@ -1625,6 +1946,7 @@
                 if (tile.image) {
                     if (!img) {
                         img = document.createElement('img');
+                        img.id = `previewGalleryCatalogTile-${tile.id}`;
                         img.alt = '';
                         link.insertBefore(img, link.firstChild);
                     }
@@ -1649,6 +1971,7 @@
 
             if (tile.image) {
                 const img = document.createElement('img');
+                img.id = `previewGalleryCatalogTile-${tile.id}`;
                 img.src = tile.image;
                 img.alt = '';
                 link.appendChild(img);
@@ -2432,6 +2755,411 @@
             data,
             'fpl',
         );
+    }
+
+    function defaultClassicFooterLinkGroup(definitions) {
+        return definitions.map((item, index) => createFooterLinkItem({
+            id: item.id,
+            label: item.label,
+            url: item.defaultUrl,
+        }, index, item.id));
+    }
+
+    function defaultClassicFooterShopLinks() {
+        return defaultClassicFooterLinkGroup(CLASSIC_FOOTER_SHOP_LINKS);
+    }
+
+    function defaultClassicFooterAboutLinks() {
+        return defaultClassicFooterLinkGroup(CLASSIC_FOOTER_ABOUT_LINKS);
+    }
+
+    function defaultClassicFooterAccountLinks() {
+        return defaultClassicFooterLinkGroup(CLASSIC_FOOTER_ACCOUNT_LINKS);
+    }
+
+    function migrateClassicFooterLinkGroup(savedLinks, definitions, defaults, prefix) {
+        if (!Array.isArray(savedLinks) || !savedLinks.length) {
+            return defaults();
+        }
+
+        const byId = new Map(definitions.map((item) => [item.id, item]));
+        return savedLinks.map((item, index) => {
+            const definition = byId.get(item.id) || definitions[index];
+            return createFooterLinkItem({
+                id: item.id || definition?.id,
+                label: definition?.label || item.label,
+                url: item.url || definition?.defaultUrl || '/',
+            }, index, prefix);
+        });
+    }
+
+    function migrateClassicFooterShopLinks(data) {
+        const saved = data.classicFooterShopLinks;
+        if (!Array.isArray(saved) || !saved.length) {
+            return defaultClassicFooterShopLinks();
+        }
+
+        const byId = new Map(CLASSIC_FOOTER_SHOP_LINKS.map((item) => [item.id, item]));
+        return saved.map((item, index) => {
+            const definition = byId.get(item.id);
+            return createFooterLinkItem({
+                id: item.id,
+                label: item.label || definition?.label || 'Link',
+                url: item.url || definition?.defaultUrl || '/',
+            }, index, 'cfs');
+        });
+    }
+
+    function migrateClassicFooterLinks(data) {
+        return {
+            classicFooterShopLinks: migrateClassicFooterShopLinks(data),
+            classicFooterAboutLinks: migrateClassicFooterLinkGroup(
+                data.classicFooterAboutLinks,
+                CLASSIC_FOOTER_ABOUT_LINKS,
+                defaultClassicFooterAboutLinks,
+                'cfa',
+            ),
+            classicFooterAccountLinks: migrateClassicFooterLinkGroup(
+                data.classicFooterAccountLinks,
+                CLASSIC_FOOTER_ACCOUNT_LINKS,
+                defaultClassicFooterAccountLinks,
+                'cfc',
+            ),
+        };
+    }
+
+    function getClassicFooterCopyrightCompanyName() {
+        return state.classicFooterCopyrightName || state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
+    }
+
+    function renderClassicFooterLinksEditor(container, links) {
+        if (!container) return;
+
+        container.innerHTML = links.map((link) => (
+            `<div class="editor-classic-footer-link-item" data-item-id="${link.id}">
+                <label for="classicFooterLink-${link.id}">${escapeHtml(link.label)}</label>
+                <input type="text" id="classicFooterLink-${link.id}" value="${escapeHtml(link.url)}" data-field="url" data-item-id="${link.id}" placeholder="/catalog" autocomplete="off">
+            </div>`
+        )).join('');
+    }
+
+    function getClassicFooterLinkList(key, id) {
+        return state[key].find((item) => item.id === id);
+    }
+
+    function readClassicFooterLinksFromEditor() {
+        [
+            [classicFooterShopLinksEditor, 'classicFooterShopLinks'],
+            [classicFooterAboutLinksEditor, 'classicFooterAboutLinks'],
+            [classicFooterAccountLinksEditor, 'classicFooterAccountLinks'],
+        ].forEach(([editor, key]) => {
+            if (!editor) return;
+            editor.querySelectorAll('[data-field]').forEach((input) => {
+                const item = getClassicFooterLinkList(key, input.dataset.itemId);
+                if (!item) return;
+                item[input.dataset.field] = input.value.trim();
+            });
+        });
+    }
+
+    function renderClassicFooterLinksEditors() {
+        renderFooterLinksEditor(classicFooterShopLinksEditor, state.classicFooterShopLinks, 'Shop link');
+        renderClassicFooterLinksEditor(classicFooterAboutLinksEditor, state.classicFooterAboutLinks);
+        renderClassicFooterLinksEditor(classicFooterAccountLinksEditor, state.classicFooterAccountLinks);
+    }
+
+    function saveClassicFooterLinksDraft() {
+        readClassicFooterLinksFromEditor();
+        syncClassicFooterPreview();
+        saveState();
+    }
+
+    function addClassicFooterShopLink() {
+        readClassicFooterLinksFromEditor();
+        state.classicFooterShopLinks.push(createFooterLinkItem({
+            label: 'New link',
+            url: '/',
+        }, state.classicFooterShopLinks.length, 'cfs'));
+        renderClassicFooterLinksEditors();
+        syncClassicFooterPreview();
+        saveState();
+        setStatus('Shop link added');
+    }
+
+    function removeClassicFooterShopLink(id) {
+        readClassicFooterLinksFromEditor();
+        state.classicFooterShopLinks = state.classicFooterShopLinks.filter((item) => item.id !== id);
+        renderClassicFooterLinksEditors();
+        syncClassicFooterPreview();
+        saveState();
+        setStatus('Shop link removed');
+    }
+
+    function renderClassicFooterLinkList(container, links) {
+        if (!container) return;
+
+        container.innerHTML = (links || []).map((link) => {
+            const url = escapeHtml(link.url || '#');
+            const label = escapeHtml(link.label || 'Link');
+            return `<li><a href="${url}">${label}</a></li>`;
+        }).join('');
+    }
+
+    function applyClassicFooterTheme() {
+        const bg = normalizeHex(state.classicFooterBackgroundColor || DEFAULT_CLASSIC_FOOTER_BG);
+        const text = normalizeHexColor(state.classicFooterTextColor, DEFAULT_CLASSIC_FOOTER_TEXT);
+
+        state.classicFooterBackgroundColor = bg;
+        state.classicFooterTextColor = text;
+
+        if (classicFooterRoot) {
+            classicFooterRoot.style.setProperty('--classic-footer-bg', bg);
+            classicFooterRoot.style.setProperty('--classic-footer-text', text);
+        }
+
+        if (fields.classicFooterBackgroundColor) {
+            fields.classicFooterBackgroundColor.value = bg;
+            if (fields.classicFooterBackgroundColorValue) {
+                fields.classicFooterBackgroundColorValue.textContent = bg;
+            }
+        }
+        if (fields.classicFooterTextColor) {
+            fields.classicFooterTextColor.value = text;
+            if (fields.classicFooterTextColorValue) {
+                fields.classicFooterTextColorValue.textContent = text;
+            }
+        }
+    }
+
+    function applyClassicCopyrightTheme() {
+        const copyrightText = normalizeHexColor(
+            state.classicFooterCopyrightTextColor,
+            DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT,
+        );
+        const copyrightBg = normalizeHex(
+            state.classicFooterCopyrightBackgroundColor || DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
+        );
+
+        state.classicFooterCopyrightTextColor = copyrightText;
+        state.classicFooterCopyrightBackgroundColor = copyrightBg;
+
+        if (classicCopyrightRoot) {
+            classicCopyrightRoot.style.setProperty('--classic-copyright-text', copyrightText);
+            classicCopyrightRoot.style.setProperty('--classic-copyright-bg', copyrightBg);
+        }
+
+        if (fields.classicFooterCopyrightTextColor) {
+            fields.classicFooterCopyrightTextColor.value = copyrightText;
+            if (fields.classicFooterCopyrightTextColorValue) {
+                fields.classicFooterCopyrightTextColorValue.textContent = copyrightText;
+            }
+        }
+        if (fields.classicFooterCopyrightBackgroundColor) {
+            fields.classicFooterCopyrightBackgroundColor.value = copyrightBg;
+            if (fields.classicFooterCopyrightBackgroundColorValue) {
+                fields.classicFooterCopyrightBackgroundColorValue.textContent = copyrightBg;
+            }
+        }
+    }
+
+    function syncClassicCopyrightPreview() {
+        applyClassicCopyrightTheme();
+
+        if (previewClassicCopyright) {
+            previewClassicCopyright.innerHTML = buildFooterCopyrightHtml(
+                getClassicFooterCopyrightCompanyName(),
+            );
+        }
+    }
+
+    function syncClassicFooterPreview() {
+        applyClassicFooterTheme();
+
+        const companyName = state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
+        if (previewClassicFooterCompany) {
+            previewClassicFooterCompany.textContent = companyName;
+        }
+        if (previewClassicFooterAbout) {
+            previewClassicFooterAbout.textContent = state.classicFooterAboutCopy || DEFAULT_CLASSIC_FOOTER_ABOUT;
+        }
+
+        renderClassicFooterLinkList(previewClassicFooterShopLinks, state.classicFooterShopLinks);
+        renderClassicFooterLinkList(previewClassicFooterAboutLinks, state.classicFooterAboutLinks);
+        renderClassicFooterLinkList(previewClassicFooterAccountLinks, state.classicFooterAccountLinks);
+
+        if (previewClassicFooterAddress) {
+            previewClassicFooterAddress.textContent = state.classicFooterAddress || DEFAULT_FOOTER_ADDRESS;
+        }
+        if (previewClassicFooterHours) {
+            const hours = [
+                state.classicFooterHoursMonFri || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
+                state.classicFooterHoursSaturday || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
+                state.classicFooterHoursSunday || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+            ].filter(Boolean);
+            previewClassicFooterHours.innerHTML = hours.map((line) => `<li>${escapeHtml(line)}</li>`).join('');
+        }
+    }
+
+    function populateClassicCopyrightFields(data) {
+        state.classicFooterCopyrightName = data.classicFooterCopyrightName || '';
+        state.classicFooterCopyrightTextColor = normalizeHexColor(
+            data.classicFooterCopyrightTextColor,
+            DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT,
+        );
+        state.classicFooterCopyrightBackgroundColor = normalizeHex(
+            data.classicFooterCopyrightBackgroundColor || DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
+        );
+
+        if (fields.classicFooterCopyrightName) {
+            fields.classicFooterCopyrightName.value = state.classicFooterCopyrightName;
+        }
+
+        syncClassicCopyrightPreview();
+    }
+
+    function populateClassicFooterFields(data) {
+        const migratedLinks = migrateClassicFooterLinks(data);
+        state.classicFooterShopLinks = migratedLinks.classicFooterShopLinks;
+        state.classicFooterAboutLinks = migratedLinks.classicFooterAboutLinks;
+        state.classicFooterAccountLinks = migratedLinks.classicFooterAccountLinks;
+        state.classicFooterCompanyName = data.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
+        state.classicFooterAboutCopy = data.classicFooterAboutCopy || DEFAULT_CLASSIC_FOOTER_ABOUT;
+        state.classicFooterAddress = data.classicFooterAddress || DEFAULT_FOOTER_ADDRESS;
+        state.classicFooterHoursMonFri = data.classicFooterHoursMonFri || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI;
+        state.classicFooterHoursSaturday = data.classicFooterHoursSaturday || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY;
+        state.classicFooterHoursSunday = data.classicFooterHoursSunday || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY;
+        state.classicFooterBackgroundColor = normalizeHex(
+            data.classicFooterBackgroundColor || DEFAULT_CLASSIC_FOOTER_BG,
+        );
+        state.classicFooterTextColor = normalizeHexColor(
+            data.classicFooterTextColor,
+            DEFAULT_CLASSIC_FOOTER_TEXT,
+        );
+
+        if (fields.classicFooterCompanyName) fields.classicFooterCompanyName.value = state.classicFooterCompanyName;
+        if (fields.classicFooterAboutCopy) fields.classicFooterAboutCopy.value = state.classicFooterAboutCopy;
+        if (fields.classicFooterAddress) fields.classicFooterAddress.value = state.classicFooterAddress;
+        if (fields.classicFooterHoursMonFri) fields.classicFooterHoursMonFri.value = state.classicFooterHoursMonFri;
+        if (fields.classicFooterHoursSaturday) fields.classicFooterHoursSaturday.value = state.classicFooterHoursSaturday;
+        if (fields.classicFooterHoursSunday) fields.classicFooterHoursSunday.value = state.classicFooterHoursSunday;
+        renderClassicFooterLinksEditors();
+        syncClassicFooterPreview();
+        populateClassicCopyrightFields(data);
+    }
+
+    function buildClassicCopyrightExportSpec() {
+        const companyName = getClassicFooterCopyrightCompanyName();
+
+        return {
+            companyName,
+            backgroundColor: state.classicFooterCopyrightBackgroundColor || DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
+            textColor: state.classicFooterCopyrightTextColor || DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT,
+            copyrightName: companyName,
+            copyrightSpec: buildFooterCopyrightSpecText(companyName),
+            copyrightMarkup: buildFooterCopyrightHtml(companyName),
+            copyrightPasteMarkup: buildFooterCopyrightPasteMarkup(companyName),
+            adaCompliancePopup: FOOTER_ADA_POPUP,
+        };
+    }
+
+    function buildClassicFooterExportSpec() {
+        return {
+            layout: 'four-column',
+            columns: ['about', 'quick-links', 'contact', 'store-hours'],
+            companyName: state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY,
+            aboutCopy: state.classicFooterAboutCopy || DEFAULT_CLASSIC_FOOTER_ABOUT,
+            address: state.classicFooterAddress || DEFAULT_FOOTER_ADDRESS,
+            storeHours: {
+                mondayFriday: state.classicFooterHoursMonFri || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
+                saturday: state.classicFooterHoursSaturday || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
+                sunday: state.classicFooterHoursSunday || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+            },
+            backgroundColor: state.classicFooterBackgroundColor || DEFAULT_CLASSIC_FOOTER_BG,
+            textColor: state.classicFooterTextColor || DEFAULT_CLASSIC_FOOTER_TEXT,
+            quickLinksHeading: 'QUICK LINKS',
+            linkGroups: {
+                shop: {
+                    heading: 'SHOP',
+                    links: state.classicFooterShopLinks.map((link) => ({
+                        id: link.id,
+                        label: link.label,
+                        url: link.url,
+                    })),
+                },
+                aboutUs: {
+                    heading: 'ABOUT US',
+                    links: state.classicFooterAboutLinks.map((link) => ({
+                        id: link.id,
+                        label: link.label,
+                        url: link.url,
+                    })),
+                },
+                accounts: {
+                    heading: 'ACCOUNTS',
+                    links: state.classicFooterAccountLinks.map((link) => ({
+                        id: link.id,
+                        label: link.label,
+                        url: link.url,
+                    })),
+                },
+            },
+            contactHeading: 'CONTACT US',
+            storeHoursHeading: 'STORE HOURS',
+        };
+    }
+
+    function bindClassicCopyrightEditorEvents() {
+        [
+            fields.classicFooterCopyrightName,
+            fields.classicFooterCopyrightTextColor,
+            fields.classicFooterCopyrightBackgroundColor,
+        ].forEach((input) => {
+            if (!input) return;
+            input.addEventListener('input', readForm);
+        });
+    }
+
+    function bindClassicFooterEditorEvents() {
+        [
+            fields.classicFooterCompanyName,
+            fields.classicFooterAboutCopy,
+            fields.classicFooterAddress,
+            fields.classicFooterHoursMonFri,
+            fields.classicFooterHoursSaturday,
+            fields.classicFooterHoursSunday,
+            fields.classicFooterBackgroundColor,
+            fields.classicFooterTextColor,
+        ].forEach((input) => {
+            if (!input) return;
+            input.addEventListener('input', readForm);
+        });
+
+        if (classicFooterShopLinksEditor) {
+            classicFooterShopLinksEditor.addEventListener('input', (event) => {
+                if (event.target.matches('[data-field]')) {
+                    saveClassicFooterLinksDraft();
+                }
+            });
+            classicFooterShopLinksEditor.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-action="remove-footer-link"]');
+                if (!button) return;
+                const wrap = button.closest('[data-item-id]');
+                if (wrap) removeClassicFooterShopLink(wrap.dataset.itemId);
+            });
+        }
+
+        if (addClassicFooterShopLinkBtn) {
+            addClassicFooterShopLinkBtn.addEventListener('click', addClassicFooterShopLink);
+        }
+
+        [classicFooterAboutLinksEditor, classicFooterAccountLinksEditor].forEach((editor) => {
+            if (!editor) return;
+            editor.addEventListener('input', (event) => {
+                if (event.target.matches('[data-field]')) {
+                    saveClassicFooterLinksDraft();
+                }
+            });
+        });
     }
 
     function renderFooterLinksEditor(container, links, sectionLabel) {
@@ -3280,6 +4008,69 @@
         readMainNavFromEditor();
         readGalleryMainNavFromEditor();
         readGalleryCatalogTilesFromEditor();
+        readClassicFooterLinksFromEditor();
+        if (fields.classicFooterCompanyName) {
+            state.classicFooterCompanyName = fields.classicFooterCompanyName.value.trim() || DEFAULT_FOOTER_COMPANY;
+        }
+        if (fields.classicFooterAboutCopy) {
+            state.classicFooterAboutCopy = fields.classicFooterAboutCopy.value.trim() || DEFAULT_CLASSIC_FOOTER_ABOUT;
+        }
+        if (fields.classicFooterAddress) {
+            state.classicFooterAddress = fields.classicFooterAddress.value.trim() || DEFAULT_FOOTER_ADDRESS;
+        }
+        if (fields.classicFooterHoursMonFri) {
+            state.classicFooterHoursMonFri = fields.classicFooterHoursMonFri.value.trim()
+                || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI;
+        }
+        if (fields.classicFooterHoursSaturday) {
+            state.classicFooterHoursSaturday = fields.classicFooterHoursSaturday.value.trim()
+                || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY;
+        }
+        if (fields.classicFooterHoursSunday) {
+            state.classicFooterHoursSunday = fields.classicFooterHoursSunday.value.trim()
+                || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY;
+        }
+        if (fields.classicFooterCopyrightName) {
+            state.classicFooterCopyrightName = fields.classicFooterCopyrightName.value.trim();
+        }
+        if (fields.classicFooterBackgroundColor) {
+            state.classicFooterBackgroundColor = normalizeHex(
+                fields.classicFooterBackgroundColor.value || DEFAULT_CLASSIC_FOOTER_BG,
+            );
+            fields.classicFooterBackgroundColor.value = state.classicFooterBackgroundColor;
+            if (fields.classicFooterBackgroundColorValue) {
+                fields.classicFooterBackgroundColorValue.textContent = state.classicFooterBackgroundColor;
+            }
+        }
+        if (fields.classicFooterTextColor) {
+            state.classicFooterTextColor = normalizeHexColor(
+                fields.classicFooterTextColor.value,
+                DEFAULT_CLASSIC_FOOTER_TEXT,
+            );
+            fields.classicFooterTextColor.value = state.classicFooterTextColor;
+            if (fields.classicFooterTextColorValue) {
+                fields.classicFooterTextColorValue.textContent = state.classicFooterTextColor;
+            }
+        }
+        if (fields.classicFooterCopyrightTextColor) {
+            state.classicFooterCopyrightTextColor = normalizeHexColor(
+                fields.classicFooterCopyrightTextColor.value,
+                DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT,
+            );
+            fields.classicFooterCopyrightTextColor.value = state.classicFooterCopyrightTextColor;
+            if (fields.classicFooterCopyrightTextColorValue) {
+                fields.classicFooterCopyrightTextColorValue.textContent = state.classicFooterCopyrightTextColor;
+            }
+        }
+        if (fields.classicFooterCopyrightBackgroundColor) {
+            state.classicFooterCopyrightBackgroundColor = normalizeHex(
+                fields.classicFooterCopyrightBackgroundColor.value || DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
+            );
+            fields.classicFooterCopyrightBackgroundColor.value = state.classicFooterCopyrightBackgroundColor;
+            if (fields.classicFooterCopyrightBackgroundColorValue) {
+                fields.classicFooterCopyrightBackgroundColorValue.textContent = state.classicFooterCopyrightBackgroundColor;
+            }
+        }
         if (fields.headerBannerBackgroundColor) {
             state.headerBannerBackgroundColor = normalizeHex(fields.headerBannerBackgroundColor.value || DEFAULT_HEADER_BANNER_BG);
             fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
@@ -3321,6 +4112,72 @@
                 || DEFAULT_GALLERY_HEADER_SIGN_IN;
             fields.galleryHeaderSignInLabel.value = state.galleryHeaderSignInLabel;
         }
+        if (fields.galleryHeroHeadlineLine1) {
+            state.galleryHeroHeadlineLine1 = fields.galleryHeroHeadlineLine1.value.trim();
+            fields.galleryHeroHeadlineLine1.value = state.galleryHeroHeadlineLine1;
+        }
+        if (fields.galleryHeroHeadlineLine2) {
+            state.galleryHeroHeadlineLine2 = fields.galleryHeroHeadlineLine2.value.trim();
+            fields.galleryHeroHeadlineLine2.value = state.galleryHeroHeadlineLine2;
+        }
+        if (fields.galleryHeroHeadlineLine3) {
+            state.galleryHeroHeadlineLine3 = fields.galleryHeroHeadlineLine3.value.trim();
+            fields.galleryHeroHeadlineLine3.value = state.galleryHeroHeadlineLine3;
+        }
+        if (fields.galleryHeroCopy) {
+            state.galleryHeroCopy = fields.galleryHeroCopy.value.trim() || DEFAULT_GALLERY_HERO_COPY;
+            fields.galleryHeroCopy.value = state.galleryHeroCopy;
+        }
+        if (fields.galleryHeroButtonLabel) {
+            state.galleryHeroButtonLabel = fields.galleryHeroButtonLabel.value.trim()
+                || DEFAULT_GALLERY_HERO_BUTTON_LABEL;
+            fields.galleryHeroButtonLabel.value = state.galleryHeroButtonLabel;
+        }
+        if (fields.galleryHeroButtonUrl) {
+            state.galleryHeroButtonUrl = fields.galleryHeroButtonUrl.value.trim()
+                || DEFAULT_GALLERY_HERO_BUTTON_URL;
+            fields.galleryHeroButtonUrl.value = state.galleryHeroButtonUrl;
+        }
+        if (fields.galleryHeroButtonBackgroundColor) {
+            state.galleryHeroButtonBackgroundColor = normalizeHexColor(
+                fields.galleryHeroButtonBackgroundColor.value,
+                DEFAULT_GALLERY_HERO_BUTTON_BG,
+            );
+            fields.galleryHeroButtonBackgroundColor.value = state.galleryHeroButtonBackgroundColor;
+            if (fields.galleryHeroButtonBackgroundColorValue) {
+                fields.galleryHeroButtonBackgroundColorValue.textContent = state.galleryHeroButtonBackgroundColor;
+            }
+        }
+        if (fields.galleryHeroButtonTextColor) {
+            state.galleryHeroButtonTextColor = normalizeHexColor(
+                fields.galleryHeroButtonTextColor.value,
+                DEFAULT_GALLERY_HERO_BUTTON_TEXT,
+            );
+            fields.galleryHeroButtonTextColor.value = state.galleryHeroButtonTextColor;
+            if (fields.galleryHeroButtonTextColorValue) {
+                fields.galleryHeroButtonTextColorValue.textContent = state.galleryHeroButtonTextColor;
+            }
+        }
+        if (fields.galleryHeroSecondaryTopHeading) {
+            state.galleryHeroSecondaryTopHeading = fields.galleryHeroSecondaryTopHeading.value.trim()
+                || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
+            fields.galleryHeroSecondaryTopHeading.value = state.galleryHeroSecondaryTopHeading;
+        }
+        if (fields.galleryHeroSecondaryTopUrl) {
+            state.galleryHeroSecondaryTopUrl = fields.galleryHeroSecondaryTopUrl.value.trim()
+                || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
+            fields.galleryHeroSecondaryTopUrl.value = state.galleryHeroSecondaryTopUrl;
+        }
+        if (fields.galleryHeroSecondaryBottomHeading) {
+            state.galleryHeroSecondaryBottomHeading = fields.galleryHeroSecondaryBottomHeading.value.trim()
+                || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
+            fields.galleryHeroSecondaryBottomHeading.value = state.galleryHeroSecondaryBottomHeading;
+        }
+        if (fields.galleryHeroSecondaryBottomUrl) {
+            state.galleryHeroSecondaryBottomUrl = fields.galleryHeroSecondaryBottomUrl.value.trim()
+                || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
+            fields.galleryHeroSecondaryBottomUrl.value = state.galleryHeroSecondaryBottomUrl;
+        }
         syncPreview();
         saveState();
     }
@@ -3352,6 +4209,7 @@
         renderGalleryMainNavEditor();
         populateGalleryHeroFields(data);
         populateGalleryCatalogFields(data);
+        populateClassicFooterFields(data);
     }
 
     function populateHeaderFields(data) {
@@ -3708,6 +4566,22 @@
             onImageUpload(fields.galleryHeroSecondaryBottom, 'galleryHeroSecondaryBottomImage');
         });
     }
+    [
+        'galleryHeroHeadlineLine1',
+        'galleryHeroHeadlineLine2',
+        'galleryHeroHeadlineLine3',
+        'galleryHeroSecondaryTopHeading',
+        'galleryHeroSecondaryTopUrl',
+        'galleryHeroSecondaryBottomHeading',
+        'galleryHeroSecondaryBottomUrl',
+        'galleryHeroCopy',
+        'galleryHeroButtonLabel',
+        'galleryHeroButtonUrl',
+        'galleryHeroButtonBackgroundColor',
+        'galleryHeroButtonTextColor',
+    ].forEach((key) => {
+        if (fields[key]) fields[key].addEventListener('input', readForm);
+    });
 
     if (fields.galleryHeaderLogo) {
         fields.galleryHeaderLogo.addEventListener('change', () => {
@@ -3787,7 +4661,80 @@
         })));
     }
 
+    function buildGalleryHandoffSpec() {
+        return {
+            template: `Showroom — ${TEMPLATE_DESIGNS.gallery}`,
+            design: 'gallery',
+            header: buildHeaderExportSpec(),
+            hero: buildGalleryHeroExportSpec(),
+            catalogHighlights: buildGalleryCatalogExportSpec(),
+            footer: buildClassicFooterExportSpec(),
+            copyright: buildClassicCopyrightExportSpec(),
+        };
+    }
+
+    async function buildGalleryHandoffAssetsForExport() {
+        ensureGalleryImageDefaults();
+
+        const assets = [];
+
+        if (isGalleryClientImage(state.headerLogoImage, DEFAULT_GALLERY_HEADER_LOGO)) {
+            assets.push({
+                filename: 'header-logo.png',
+                label: 'Header logo',
+                dimensions: 'max 150 px high',
+                dataUrl: state.headerLogoImage,
+            });
+        }
+
+        if (isGalleryClientImage(state.galleryHeroPrimaryImage, DEFAULT_GALLERY_HERO_PRIMARY)) {
+            assets.push({
+                filename: 'gallery-hero-primary.jpg',
+                label: 'Hero — large lifestyle image (left)',
+                dimensions: '1479 × 500 px (primary panel)',
+                dataUrl: state.galleryHeroPrimaryImage,
+            });
+        }
+
+        if (isGalleryClientImage(state.galleryHeroSecondaryTopImage, DEFAULT_GALLERY_HERO_SECONDARY_TOP)) {
+            assets.push({
+                filename: 'gallery-hero-secondary-top.jpg',
+                label: 'Hero — lifestyle image (top right)',
+                dimensions: 'Hero stack panel',
+                dataUrl: state.galleryHeroSecondaryTopImage,
+            });
+        }
+
+        if (isGalleryClientImage(state.galleryHeroSecondaryBottomImage, DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM)) {
+            assets.push({
+                filename: 'gallery-hero-secondary-bottom.jpg',
+                label: 'Hero — lifestyle image (bottom right)',
+                dimensions: 'Hero stack panel',
+                dataUrl: state.galleryHeroSecondaryBottomImage,
+            });
+        }
+
+        state.galleryCatalogTiles.forEach((tile, index) => {
+            const tileDefaults = GALLERY_CATALOG_TILE_DEFAULTS.find((entry) => entry.id === tile.id)
+                || GALLERY_CATALOG_TILE_DEFAULTS[index];
+            if (!isGalleryClientImage(tile.image, tileDefaults?.defaultImage || '')) return;
+
+            assets.push({
+                filename: `gallery-catalog-tile-${index + 1}.jpg`,
+                label: `Catalog Highlights — ${tile.label || `tile ${index + 1}`}`,
+                dimensions: 'Catalog tile',
+                dataUrl: tile.image,
+            });
+        });
+
+        return resolveAssetsForExport(assets);
+    }
+
     async function buildHandoffAssetsForExport() {
+        if (templateDesign === 'gallery') {
+            return buildGalleryHandoffAssetsForExport();
+        }
+
         const assets = [
             {
                 filename: 'about-employee-image.png',
@@ -3838,9 +4785,15 @@
 
     exportBtn.addEventListener('click', async () => {
         setExportLoading(true);
-        readYouMayLikeFieldsFromEditor();
-        readGetInspiredFieldsFromEditor();
-        readMainNavFromEditor();
+        if (templateDesign === 'gallery') {
+            ensureGalleryImageDefaults();
+            readClassicFooterLinksFromEditor();
+        } else {
+            readYouMayLikeFieldsFromEditor();
+            readGetInspiredFieldsFromEditor();
+            readMainNavFromEditor();
+        }
+        readForm();
         syncPreview();
         const prevTransform = previewRoot.style.transform;
         const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
@@ -3855,20 +4808,11 @@
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         try {
             const handoffAssets = await buildHandoffAssetsForExport();
-            await window.exportShowroomHandoff({
-                headerEl: headerRoot,
-                heroEl: heroRoot,
-                galleryCatalogEl: galleryCatalogRoot,
-                categoriesEl: categoriesRoot,
-                aboutEl: aboutRoot,
-                featureTilesEl: featureTilesRoot,
-                youMayLikeEl: youMayLikeRoot,
-                getInspiredEl: getInspiredRoot,
-                footerEl: footerRoot,
-                previewEl: previewRoot,
-                spec: {
-                    template: `Showroom — ${TEMPLATE_DESIGNS[templateDesign]}`,
-                    design: templateDesign,
+            const handoffSpec = templateDesign === 'gallery'
+                ? buildGalleryHandoffSpec()
+                : {
+                    template: `Showroom — ${TEMPLATE_DESIGNS.classic}`,
+                    design: 'classic',
                     title: state.title,
                     description: state.description,
                     cta: state.cta,
@@ -3885,16 +4829,7 @@
                     featuredCategoryImagesHardcoded: true,
                     featuredCategories: buildFeaturedCategoriesExportList(),
                     header: buildHeaderExportSpec(),
-                    ...(templateDesign === 'gallery'
-                        ? {
-                            hero: buildGalleryHeroExportSpec(),
-                            catalogHighlights: buildGalleryCatalogExportSpec(),
-                        }
-                        : {
-                            heroLayout: 'classic',
-                            productImageSize: '563 × 342 px',
-                            lifestyleImageSize: '854 × 670 px min',
-                        }),
+                    heroLayout: 'classic',
                     aboutUs: {
                         header: state.aboutHeader,
                         paragraph: state.aboutParagraph,
@@ -3999,7 +4934,21 @@
                             url: link.url,
                         })),
                     },
-                },
+                };
+
+            await window.exportShowroomHandoff({
+                headerEl: headerRoot,
+                heroEl: templateDesign === 'gallery' ? galleryHeroLayoutRoot : heroRoot,
+                galleryCatalogEl: templateDesign === 'gallery' ? galleryCatalogRoot : null,
+                categoriesEl: templateDesign === 'gallery' ? null : categoriesRoot,
+                aboutEl: templateDesign === 'gallery' ? null : aboutRoot,
+                featureTilesEl: templateDesign === 'gallery' ? null : featureTilesRoot,
+                youMayLikeEl: templateDesign === 'gallery' ? null : youMayLikeRoot,
+                getInspiredEl: templateDesign === 'gallery' ? null : getInspiredRoot,
+                footerEl: templateDesign === 'gallery' ? classicFooterRoot : footerRoot,
+                copyrightEl: templateDesign === 'gallery' ? classicCopyrightRoot : null,
+                previewEl: previewRoot,
+                spec: handoffSpec,
                 assets: handoffAssets,
                 pdfFilename: 'showroom-homepage-brief.pdf',
                 zipFilename: 'showroom-homepage-handoff.zip',
@@ -4028,6 +4977,8 @@
         'editor-section-header',
         'editor-section-hero',
         'editor-section-gallery-catalog',
+        'editor-section-footer-classic',
+        'editor-section-copyright-classic',
     ]);
 
     function applyGalleryEditorPanelVisibility(isGallery) {
@@ -4064,13 +5015,11 @@
         if (showroomHeroGallery) showroomHeroGallery.hidden = !isGallery;
         if (editorClassicSections) editorClassicSections.hidden = isGallery;
         if (showroomClassicSections) showroomClassicSections.hidden = isGallery;
-        if (editorNavGalleryCatalog) editorNavGalleryCatalog.hidden = !isGallery;
-
-        if (editorSectionNav) {
-            editorSectionNav.querySelectorAll('.editor-section-nav-link--classic').forEach((link) => {
-                link.hidden = isGallery;
-            });
-        }
+        if (editorFooterClassic) editorFooterClassic.hidden = !isGallery;
+        if (editorCopyrightClassic) editorCopyrightClassic.hidden = !isGallery;
+        if (classicFooterRoot) classicFooterRoot.hidden = !isGallery;
+        if (classicCopyrightRoot) classicCopyrightRoot.hidden = !isGallery;
+        if (footerRoot) footerRoot.hidden = isGallery;
 
         applyGalleryEditorPanelVisibility(isGallery);
         renderHeaderJumpNav();
@@ -4087,6 +5036,9 @@
                     );
                 });
             }
+            if (classicFooterShopLinksEditor && !classicFooterShopLinksEditor.childElementCount) {
+                renderClassicFooterLinksEditors();
+            }
             syncGalleryPreview();
         }
 
@@ -4100,6 +5052,7 @@
         if (galleryCatalogTilesEditor) {
             renderGalleryCatalogTilesEditor();
         }
+        renderClassicFooterLinksEditors();
         applyTemplateDesignUI();
         syncGalleryPreview();
         scheduleFitPreviewScale();
@@ -4139,6 +5092,8 @@
         bindGalleryCatalogEditorEvents();
         bindMainNavEditorEvents();
         bindFooterLinksEditorEvents();
+        bindClassicFooterEditorEvents();
+        bindClassicCopyrightEditorEvents();
         bindPreviewResizeObserver();
         window.addEventListener('load', scheduleFitPreviewScale);
 
