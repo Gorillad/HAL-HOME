@@ -11,6 +11,13 @@ const {
     getFromOutbox,
     parseSessionItems,
 } = require('./email');
+const {
+    handleLogin,
+    handleLogout,
+    handleSessionCheck,
+    handleRequestAccess,
+    requireEditorAuth,
+} = require('./access');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT || 4242;
@@ -99,6 +106,23 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
 });
 
 app.use(express.json());
+
+app.post('/api/editor/login', handleLogin);
+app.post('/api/editor/logout', handleLogout);
+app.get('/api/editor/session', handleSessionCheck);
+app.post('/api/editor/request-access', (req, res) => {
+    Promise.resolve(handleRequestAccess(req, res)).catch((err) => {
+        console.error('Access request handler error:', err);
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Could not send your request. Please email hello@logicxo.com.' });
+        }
+    });
+});
+
+app.get('/editor/showroom.html', requireEditorAuth, (_req, res) => {
+    res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
+});
+
 app.use(express.static(ROOT));
 
 app.get('/api/config', (_req, res) => {

@@ -204,6 +204,29 @@ body.cart-open {
     background: var(--xo-blue-dark);
 }
 
+.site-nav-logout {
+    border: 1px solid var(--xo-border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--xo-grey);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.site-nav-logout:hover {
+    color: var(--xo-charcoal);
+    border-color: var(--xo-blue);
+    background: var(--xo-blue-light);
+}
+
+.site-nav-logout[hidden] {
+    display: none;
+}
+
 /* ——— Hero ——— */
 .hero {
     position: relative;
@@ -1934,6 +1957,11 @@ body.cart-open .cart-backdrop {
         height: 44px;
     }
 
+    .site-nav-logout {
+        width: 100%;
+        padding: 12px 18px;
+    }
+
     .section {
         padding: 28px 20px;
     }
@@ -2005,5 +2033,161 @@ body.cart-open .cart-backdrop {
 
     .cta-band h2 {
         font-size: 1.65rem;
+    }
+}
+
+/* Site access gate — blocks homepage until sign-in */
+body.site-locked {
+    overflow: hidden;
+}
+
+.site-access-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    background: #0f2433;
+    overflow-y: auto;
+}
+
+body:not(.site-locked) .site-access-gate {
+    display: none;
+}
+
+.site-access-gate-inner {
+    width: 100%;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+}
+
+.site-access-hero {
+    position: relative;
+    min-height: 240px;
+    overflow: hidden;
+}
+
+.site-access-hero-image {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+}
+
+.site-access-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(8, 18, 28, 0.88) 0%,
+        rgba(8, 18, 28, 0.35) 42%,
+        rgba(8, 18, 28, 0.18) 100%
+    );
+}
+
+.site-access-brand {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    padding: clamp(28px, 5vw, 52px);
+}
+
+.site-access-quote {
+    position: relative;
+    margin: 0 0 24px;
+    max-width: 32ch;
+    padding: 18px 20px 16px;
+    border-radius: 12px;
+    background: linear-gradient(
+        135deg,
+        rgba(8, 18, 28, 0.88) 0%,
+        rgba(8, 18, 28, 0.72) 100%
+    );
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.28);
+}
+
+.site-access-quote p {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #fff;
+}
+
+.site-access-quote cite {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.site-access-brand img {
+    display: block;
+    filter: brightness(0) invert(1);
+    margin-bottom: 12px;
+}
+
+.site-access-tagline {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.92);
+    max-width: 22ch;
+}
+
+.site-access-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(28px, 5vw, 56px);
+    background: #fff;
+}
+
+.site-access-panel h1 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--xo-charcoal);
+}
+
+@media (max-width: 860px) {
+    .site-access-gate-inner {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(220px, 34vh) auto;
+    }
+
+    .site-access-hero {
+        min-height: 220px;
+    }
+
+    .site-access-brand {
+        text-align: center;
+    }
+
+    .site-access-brand img {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .site-access-tagline {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .site-access-quote {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
 }

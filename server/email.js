@@ -88,6 +88,136 @@ function parseSessionItems(session, products) {
     });
 }
 
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function renderAccessRequestEmail(entry) {
+    const rows = [
+        ['Name', entry.name],
+        ['Email', entry.email],
+        ['Company', entry.company || '—'],
+        ['Preferred username', entry.username || '—'],
+        ['Submitted', entry.requestedAt],
+    ];
+
+    const tableRows = rows.map(([label, value]) => `
+        <tr>
+          <td style="padding:10px 14px;font-size:13px;font-weight:600;color:#5c5c5c;border-top:1px solid #d8e3ec;width:160px;">${escapeHtml(label)}</td>
+          <td style="padding:10px 14px;font-size:14px;color:#2b2b2b;border-top:1px solid #d8e3ec;">${escapeHtml(value)}</td>
+        </tr>`).join('');
+
+    const messageBlock = entry.message
+        ? `<p style="margin:20px 0 8px;font-size:13px;font-weight:700;color:#146294;">Message</p>
+           <p style="margin:0;font-size:14px;color:#2b2b2b;line-height:1.6;white-space:pre-wrap;">${escapeHtml(entry.message)}</p>`
+        : '';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<body style="margin:0;padding:24px;background:#eef4f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #d8e3ec;border-radius:10px;overflow:hidden;">
+    <tr>
+      <td style="padding:24px 24px 12px;background:#1a7bbd;color:#ffffff;">
+        <p style="margin:0 0 6px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.85;">LogicXO</p>
+        <h1 style="margin:0;font-size:22px;font-weight:700;">New homepage access request</h1>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:24px;">
+        <p style="margin:0 0 16px;font-size:14px;color:#5c5c5c;line-height:1.6;">Someone submitted the login page access form.</p>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${tableRows}</table>
+        ${messageBlock}
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function renderAccessRequestText(entry) {
+    return [
+        'New LogicXO homepage access request',
+        '',
+        `Name: ${entry.name}`,
+        `Email: ${entry.email}`,
+        `Company: ${entry.company || '—'}`,
+        `Preferred username: ${entry.username || '—'}`,
+        `Submitted: ${entry.requestedAt}`,
+        entry.message ? `\nMessage:\n${entry.message}` : '',
+    ].filter(Boolean).join('\n');
+}
+
+function saveAccessRequestToOutbox(requestId, html) {
+    if (!fs.existsSync(OUTBOX_DIR)) {
+        fs.mkdirSync(OUTBOX_DIR, { recursive: true });
+    }
+    const filePath = path.join(OUTBOX_DIR, `access-${requestId}.html`);
+    fs.writeFileSync(filePath, html, 'utf8');
+    return filePath;
+}
+
+function getAccessRequestFromOutbox(requestId) {
+    const filePath = path.join(OUTBOX_DIR, `access-${requestId}.html`);
+    if (!fs.existsSync(filePath)) return null;
+    return fs.readFileSync(filePath, 'utf8');
+}
+
+function isSmtpConfigured() {
+    const host = process.env.SMTP_HOST;
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+    return Boolean(
+        host
+        && user
+        && pass
+        && !host.includes('your_smtp')
+        && !user.includes('your_smtp')
+        && !pass.includes('your_smtp'),
+    );
+}
+
+async function sendAccessRequestEmail(entry) {
+    const to = process.env.ACCESS_REQUEST_EMAIL || 'hello@logicxo.com';
+    const from = process.env.SMTP_FROM || 'noreply@logicxo.com';
+    const html = renderAccessRequestEmail(entry);
+    const text = renderAccessRequestText(entry);
+
+    saveAccessRequestToOutbox(entry.id, html);
+
+    if (!isSmtpConfigured()) {
+        console.warn(`[access] SMTP not configured — request ${entry.id} saved to outbox only (intended for ${to})`);
+        return { sent: false, to };
+    }
+
+    const nodemailer = require('nodemailer');
+    const port = Number.parseInt(process.env.SMTP_PORT || '587', 10);
+    const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port,
+        secure: port === 465,
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+        },
+    });
+
+    await transporter.sendMail({
+        from,
+        to,
+        replyTo: entry.email,
+        subject: `LogicXO access request — ${entry.name}`,
+        text,
+        html,
+    });
+
+    console.log(`[access] Request email sent to ${to} for ${entry.email}`);
+    return { sent: true, to };
+}
+
 module.exports = {
     loadProducts,
     formatMoney,
@@ -96,4 +226,6 @@ module.exports = {
     getFromOutbox,
     parseSessionItems,
     hasDesignItems,
+    sendAccessRequestEmail,
+    getAccessRequestFromOutbox,
 };

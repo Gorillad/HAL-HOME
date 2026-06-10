@@ -9,6 +9,7 @@ node_modules/
 .env.*.local
 
 server/outbox/
+server/data/access-requests.json
 
 *.log
 npm-debug.log*

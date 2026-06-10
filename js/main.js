@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPricingToggle();
     initHeroRays();
     initShowroomDesignTabs();
+    initSiteAccessGate();
     Cart.initUI();
 });
 

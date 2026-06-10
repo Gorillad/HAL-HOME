@@ -11,9 +11,96 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
     <link href="shared/footer/footer.css" rel="stylesheet">
+    <style>body.site-locked #siteContent{display:none!important}</style>
 </head>
-<body>
+<body class="site-locked">
+    <div class="site-access-gate" id="siteAccessGate" role="dialog" aria-modal="true" aria-labelledby="siteAccessTitle">
+        <div class="site-access-gate-inner">
+            <div class="site-access-hero">
+                <img
+                    class="site-access-hero-image"
+                    src="images/login/login-hero.png"
+                    alt=""
+                    width="960"
+                    height="1080"
+                    fetchpriority="high"
+                >
+                <div class="site-access-hero-overlay" aria-hidden="true"></div>
+                <div class="site-access-brand">
+                    <blockquote class="site-access-quote">
+                        <p>“As long as the probability is above zero, we should keep trying.”</p>
+                        <cite>Elon Musk</cite>
+                    </blockquote>
+                    <img src="images/logicxo.png" alt="LogicXO" width="168" height="52">
+                    <p class="site-access-tagline">Illuminate your presence</p>
+                </div>
+            </div>
+
+            <div class="site-access-panel">
+                <div id="siteAccessLoginView">
+                    <h1 id="siteAccessTitle">Sign in to continue</h1>
+                    <p class="login-lead">Enter your credentials to view the LogicXO homepage.</p>
+
+                    <form id="siteAccessLoginForm" class="login-form" novalidate>
+                        <div class="login-field">
+                            <label for="siteAccessUsername">Username</label>
+                            <input type="text" id="siteAccessUsername" name="username" autocomplete="username" required>
+                        </div>
+                        <div class="login-field">
+                            <label for="siteAccessPassword">Password</label>
+                            <input type="password" id="siteAccessPassword" name="password" autocomplete="current-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary login-submit" id="siteAccessLoginSubmit">Sign in</button>
+                        <p id="siteAccessLoginMsg" class="login-form-msg" role="alert" hidden></p>
+                    </form>
+
+                    <p class="login-switch">
+                        Need access?
+                        <button type="button" class="login-switch-btn" id="siteAccessShowRequest">Request access</button>
+                    </p>
+                </div>
+
+                <div id="siteAccessRequestView" hidden>
+                    <h1>Request access</h1>
+                    <p class="login-lead">Tell us about your showroom and we’ll send credentials.</p>
+
+                    <form id="siteAccessRequestForm" class="login-form" novalidate>
+                        <div class="login-field">
+                            <label for="siteAccessRequestName">Your name</label>
+                            <input type="text" id="siteAccessRequestName" name="name" autocomplete="name" required>
+                        </div>
+                        <div class="login-field">
+                            <label for="siteAccessRequestEmail">Work email</label>
+                            <input type="email" id="siteAccessRequestEmail" name="email" autocomplete="email" required>
+                        </div>
+                        <div class="login-field">
+                            <label for="siteAccessRequestCompany">Company / showroom</label>
+                            <input type="text" id="siteAccessRequestCompany" name="company" autocomplete="organization">
+                        </div>
+                        <div class="login-field">
+                            <label for="siteAccessRequestUsername">Preferred username</label>
+                            <input type="text" id="siteAccessRequestUsername" name="username" autocomplete="username">
+                        </div>
+                        <div class="login-field">
+                            <label for="siteAccessRequestMessage">Anything else?</label>
+                            <textarea id="siteAccessRequestMessage" name="message" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary login-submit">Submit request</button>
+                        <p id="siteAccessRequestMsg" class="login-form-msg" role="status" hidden></p>
+                    </form>
+
+                    <p class="login-switch">
+                        Already have credentials?
+                        <button type="button" class="login-switch-btn" id="siteAccessShowLogin">Back to sign in</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="siteContent">
     <header class="site-nav" aria-label="Site navigation">
         <div class="site-nav-inner">
             <a href="index.html" class="site-nav-logo" aria-label="LogicXO home">
@@ -41,6 +128,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M6 6L5 3H2"/></svg>
                         <span class="site-nav-cart-count" id="cartCount" hidden>0</span>
                     </button>
+                    <button type="button" class="site-nav-logout" id="siteNavLogout" hidden>Log out</button>
                     <a href="#contact" class="site-nav-cta">Request Demo</a>
                 </div>
             </div>
@@ -84,7 +172,7 @@
                     </ul>
                     <div class="editor-spotlight-actions">
                         <a href="#templates" class="btn btn-primary">Homepage templates</a>
-                        <a href="editor/showroom.html" class="btn btn-secondary">Try the editor</a>
+                        <a href="#template-editor" class="btn btn-secondary">Try the editor</a>
                     </div>
                 </div>
                 <div class="editor-spotlight-demo">
@@ -575,9 +663,12 @@
             </div>
         </div>
     </footer>
+    </div><!-- /#siteContent -->
 
     <script src="shared/footer/footer.js" defer></script>
     <script src="js/cart.js" defer></script>
+    <script src="js/editor-access.js" defer></script>
+    <script src="js/site-access-gate.js" defer></script>
     <script src="js/main.js" defer></script>
 </body>
 </html>
