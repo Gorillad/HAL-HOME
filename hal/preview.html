@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogicXO catalog header/footer preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="data/css/header.css?v1" type="text/css">
+    <link rel="stylesheet" href="data/css/footer.css?v1" type="text/css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f8fb;
+            color: #2b2b2b;
+        }
+
+        .hal-preview-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 20px 0;
+        }
+
+        .hal-preview-main h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .hal-preview-main p {
+            max-width: 60ch;
+            line-height: 1.6;
+            color: #5c5c5c;
+        }
+
+        .hal-preview-placeholder {
+            margin-top: 32px;
+            min-height: 420px;
+            border: 2px dashed #d8e3ec;
+            border-radius: 12px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7e8e9c;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-nav" aria-label="Site navigation">
+        <div class="site-nav-inner">
+            <a href="https://www.logicxo.com/" class="site-nav-logo" aria-label="LogicXO home">
+                <img src="data/images/logicxo.png?v1" alt="LogicXO" width="168" height="52">
+            </a>
+            <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+            <div class="site-nav-panel" id="site-nav-panel">
+                <nav aria-label="Primary">
+                    <ul class="site-nav-links">
+                        <li><a href="https://www.logicxo.com/#templates">Templates</a></li>
+                        <li><a href="https://www.logicxo.com/#template-editor">Editor</a></li>
+                        <li><a href="https://www.logicxo.com/#pricing">Pricing</a></li>
+                        <li><a href="https://www.logicxo.com/#campaigns">Campaigns</a></li>
+                        <li><a href="https://www.logicxo.com/#design-services">Design</a></li>
+                        <li><a href="https://www.catalog.logicxo.com/lighting-fixtures" aria-current="page">Catalog</a></li>
+                        <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="site-nav-actions">
+                    <a href="https://www.logicxo.com/#contact" class="site-nav-cta">Request Demo</a>
+                </div>
+            </div>
+        </div>
+        <div class="site-nav-backdrop" hidden aria-hidden="true"></div>
+    </header>
+
+    <main class="hal-preview-main">
+        <h1>Catalog preview</h1>
+        <p>This page shows how the LogicXO header and footer look around the XOLogic product catalog. The dashed box stands in for catalog content.</p>
+        <div class="hal-preview-placeholder" role="presentation">XOLogic catalog content area</div>
+    </main>
+
+    <!-- Footer markup matches footer.html; logo paths use ../ for local preview -->
+    <footer class="site-footer" aria-label="Site footer">
+        <div class="site-footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="footer-logo">LogicXO</span>
+                    <p class="footer-tagline">Illuminate your presence. The knowledge hub for elegant lighting retail.</p>
+                </div>
+                <nav class="footer-col" aria-label="Quick links">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="https://www.logicxo.com/">Home</a></li>
+                        <li><a href="https://www.catalog.logicxo.com/lighting-fixtures">Product Catalog</a></li>
+                        <li><a href="https://www.logicxo.com/#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; <span id="footerYear">2026</span> LogicXO. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="data/js/header.js?v1" type="text/javascript"></script>
+    <script src="data/js/footer.js?v1" type="text/javascript"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Footer.load();
+        });
+    </script>
+</body>
+</html>

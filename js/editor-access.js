@@ -71,7 +71,7 @@ window.EditorAccess = (function initEditorAccessModule() {
                 body: JSON.stringify({
                     username: normalizedUser,
                     password: normalizedPass,
-                    next: nextPath || '/index.html#template-editor',
+                    next: nextPath || '/editor/knowledge-base.html',
                 }),
             });
 
@@ -89,7 +89,7 @@ window.EditorAccess = (function initEditorAccessModule() {
         if (credentialsMatch(normalizedUser, normalizedPass)) {
             authenticated = true;
             setClientSession();
-            return { ok: true, redirect: nextPath || '/index.html#template-editor' };
+            return { ok: true, redirect: nextPath || '/editor/knowledge-base.html' };
         }
 
         throw new Error('Invalid username or password.');

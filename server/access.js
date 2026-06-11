@@ -117,7 +117,7 @@ function handleLogin(req, res) {
     const token = createSessionToken(username);
     setSessionCookie(res, token);
 
-    const nextPath = isValidNextPath(req.body.next) ? req.body.next : '/index.html#template-editor';
+    const nextPath = isValidNextPath(req.body.next) ? req.body.next : '/editor/knowledge-base.html';
     return res.json({ ok: true, redirect: nextPath });
 }
 

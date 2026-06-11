@@ -18,22 +18,11 @@ function initSiteAccessGate() {
         if (requestMsg) requestMsg.hidden = true;
     }
 
-    function scrollToTemplateEditor() {
-        const section = document.getElementById('template-editor');
-        if (!section) return;
+    const POST_LOGIN_PATH = '/editor/knowledge-base.html';
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                section.scrollIntoView({ behavior: 'auto', block: 'start' });
-                history.replaceState(null, '', '#template-editor');
-            });
-        });
-    }
-
-    function unlockSite() {
+    function goToEditorGuide() {
         EditorAccess.markAuthenticated();
-        document.getElementById('siteAccessUsername')?.blur();
-        scrollToTemplateEditor();
+        window.location.replace(POST_LOGIN_PATH);
     }
 
     function lockSite() {
@@ -67,8 +56,8 @@ function initSiteAccessGate() {
         loginSubmit.disabled = true;
 
         try {
-            await EditorAccess.login(username, password, '/index.html#template-editor');
-            unlockSite();
+            await EditorAccess.login(username, password, POST_LOGIN_PATH);
+            goToEditorGuide();
         } catch (err) {
             EditorAccess.showMessage(loginMsg, err.message || 'Sign in failed. Check your credentials.', 'error');
         } finally {
@@ -118,7 +107,7 @@ function initSiteAccessGate() {
 
     EditorAccess.checkSession().then((ok) => {
         if (ok) {
-            unlockSite();
+            goToEditorGuide();
         } else {
             document.body.classList.add('site-locked');
             showView('login');

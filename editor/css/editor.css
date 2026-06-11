@@ -3200,6 +3200,666 @@
     }
 }
 
+/* ——— Spotlight template ——— */
+.editor-page--spotlight .editor-preview-frame {
+    --spotlight-content-w: 1479px;
+    --header-logo-w: 220px;
+    --header-logo-h: 68px;
+    background: #fff;
+}
+
+.showroom-spotlight-align {
+    width: 100%;
+    max-width: var(--spotlight-content-w);
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.showroom-header-spotlight {
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #dde4ea;
+}
+
+.showroom-header-spotlight .showroom-header-banner {
+    width: 100%;
+    max-width: none;
+    background: #254155;
+    color: #fff;
+    --header-banner-text: #fff;
+}
+
+.showroom-spotlight-banner.showroom-header-banner {
+    justify-content: stretch;
+}
+
+.showroom-spotlight-banner-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+.showroom-spotlight-banner-address {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--header-banner-text, #fff);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.showroom-spotlight-banner-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.showroom-spotlight-banner-links a {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--header-banner-text, #fff);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.showroom-spotlight-banner-links a:hover {
+    opacity: 0.82;
+    text-decoration: underline;
+}
+
+.showroom-spotlight-banner-phone {
+    font-weight: 600;
+}
+
+.showroom-spotlight-toolbar {
+    padding: 14px 24px 0;
+    background: #fff;
+}
+
+.showroom-spotlight-toolbar-row {
+    display: grid;
+    grid-template-columns: var(--header-logo-w) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 28px;
+    min-height: 80px;
+    padding-bottom: 10px;
+}
+
+.showroom-spotlight-logo {
+    justify-self: start;
+}
+
+.showroom-spotlight-search {
+    justify-self: stretch;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.showroom-spotlight-search.showroom-header-search-field {
+    border-bottom: 1px solid #2b2b2b;
+    padding-bottom: 8px;
+}
+
+.showroom-spotlight-search .showroom-header-search-icon {
+    font-size: 16px;
+    color: #1a2a3a;
+}
+
+.showroom-spotlight-search .showroom-header-search-input::placeholder {
+    color: #6b7a88;
+}
+
+.showroom-spotlight-toolbar-icons {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 18px;
+    justify-self: end;
+}
+
+.showroom-spotlight-header-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 52px;
+    color: #1a2a3a;
+    text-decoration: none;
+    cursor: default;
+}
+
+.showroom-spotlight-header-icon .headerIcon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.showroom-spotlight-header-icon-label {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-align: center;
+    white-space: nowrap;
+    color: #1a2a3a;
+}
+
+.showroom-spotlight-main-nav-wrap {
+    border-top: 1px solid #dde4ea;
+    background: #fff;
+}
+
+.showroom-spotlight-main-nav {
+    margin-top: 0;
+    border-top: none;
+    background: transparent;
+}
+
+.showroom-spotlight-main-nav .showroom-main-nav-trigger {
+    font-size: 14px;
+    padding: 12px 2px;
+    gap: 5px;
+}
+
+.showroom-spotlight-main-nav .showroom-main-nav-item:first-child .showroom-main-nav-trigger {
+    padding-left: 0;
+}
+
+.showroom-spotlight-main-nav .showroom-main-nav-item:last-child .showroom-main-nav-trigger,
+.showroom-spotlight-main-nav .showroom-main-nav-item:last-child .showroom-main-nav-direct-link {
+    padding-right: 0;
+}
+
+.showroom-main-nav-caret {
+    flex-shrink: 0;
+    font-size: 10px;
+    line-height: 1;
+    opacity: 0.85;
+}
+
+.showroom-main-nav-item--link .showroom-main-nav-direct-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 2px;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1a2a3a;
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.showroom-main-nav-item--link .showroom-main-nav-direct-link:hover {
+    color: #3d5a73;
+}
+
+.showroom-hero-spotlight {
+    width: 100%;
+    background: #0f1c28;
+}
+
+.showroom-spotlight-carousel-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.showroom-spotlight-carousel {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    background: #1a2a3a;
+}
+
+.showroom-spotlight-carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.55s ease;
+}
+
+.showroom-spotlight-carousel-slide.is-active {
+    opacity: 1;
+    z-index: 1;
+}
+
+.showroom-spotlight-carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.showroom-spotlight-carousel-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1a2a3a;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 2px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.showroom-spotlight-carousel-nav:hover {
+    background: #fff;
+    transform: translateY(-50%) scale(1.04);
+}
+
+.showroom-spotlight-carousel-nav--prev {
+    left: 20px;
+}
+
+.showroom-spotlight-carousel-nav--next {
+    right: 20px;
+}
+
+.showroom-spotlight-carousel-dots {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 8px;
+}
+
+.showroom-spotlight-carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.showroom-spotlight-carousel-dot.is-active {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.showroom-spotlight-section-inner,
+.showroom-spotlight-about-layout,
+.showroom-spotlight-newsletter-inner,
+.showroom-spotlight-footer-main {
+    max-width: var(--spotlight-content-w);
+    margin: 0 auto;
+    padding: 44px 24px;
+    box-sizing: border-box;
+}
+
+.showroom-spotlight-section-title {
+    font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 0 0 28px;
+    text-align: center;
+    color: #1a2a3a;
+}
+
+.showroom-spotlight-on-sale-section {
+    background: #fff;
+    padding-top: 16px;
+}
+
+.showroom-spotlight-on-sale-media,
+.showroom-spotlight-brands-media {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.showroom-spotlight-on-sale-media img,
+.showroom-spotlight-brands-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.showroom-spotlight-heading-band {
+    background: #254155;
+    margin: 0 16px;
+    padding: 32px 20px;
+    border-radius: 24px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.showroom-spotlight-heading {
+    margin: 0;
+    font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+    text-align: center;
+    color: #fff;
+}
+
+.showroom-spotlight-section-body {
+    padding-top: 36px;
+    padding-bottom: 44px;
+}
+
+.showroom-spotlight-room-section,
+.showroom-spotlight-category-section {
+    background: #f7f9fb;
+}
+
+.showroom-spotlight-room-grid,
+.showroom-spotlight-category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.showroom-spotlight-room-tile,
+.showroom-spotlight-category-tile {
+    position: relative;
+    display: block;
+    height: 300px;
+    overflow: hidden;
+    text-decoration: none;
+    background: #dce4ec;
+}
+
+
+.showroom-spotlight-room-tile img,
+.showroom-spotlight-category-tile img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.showroom-spotlight-room-tile-label,
+.showroom-spotlight-category-tile-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    display: inline-block;
+    max-width: calc(100% - 24px);
+    margin: 12px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.showroom-spotlight-room-tile.is-empty .showroom-spotlight-room-tile-label,
+.showroom-spotlight-category-tile.is-empty .showroom-spotlight-category-tile-label {
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+}
+
+.showroom-spotlight-about-section {
+    background: #fff;
+}
+
+.showroom-spotlight-about-layout {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.showroom-spotlight-about-media {
+    min-height: 360px;
+    background: #dce4ec;
+    overflow: hidden;
+}
+
+.showroom-spotlight-about-media img {
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    object-fit: cover;
+    display: block;
+}
+
+.showroom-spotlight-about-copy-heading {
+    margin: 0 0 18px;
+    font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1a2a3a;
+    text-align: left;
+}
+
+.showroom-spotlight-about-body p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #5c6b78;
+    margin: 0 0 18px;
+}
+
+.showroom-spotlight-about-body p:last-child {
+    margin-bottom: 24px;
+}
+
+.showroom-spotlight-brands-section {
+    background: #fff;
+}
+
+.showroom-spotlight-newsletter-section {
+    background: #f7f9fb;
+}
+
+.showroom-spotlight-newsletter-inner {
+    text-align: center;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+}
+
+.showroom-spotlight-newsletter-inner p {
+    color: #5c6b78;
+    margin: 0 0 22px;
+    line-height: 1.65;
+    font-size: 15px;
+}
+
+.showroom-spotlight-newsletter-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.showroom-spotlight-newsletter-form input {
+    flex: 1 1 240px;
+    max-width: 320px;
+    padding: 12px 14px;
+    border: 1px solid #c5d4e0;
+    border-radius: 2px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.showroom-spotlight-newsletter-form button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 2px;
+    background: #1a7bbd;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    cursor: default;
+}
+
+.showroom-spotlight-footer-section {
+    background: linear-gradient(180deg, #222f36 0%, #1a252b 100%);
+    color: #c7d2dd;
+    border-top: 3px solid #1a7bbd;
+}
+
+.showroom-spotlight-footer-main {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 36px;
+    align-items: start;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.showroom-spotlight-footer-logo {
+    margin-bottom: 18px;
+}
+
+.showroom-spotlight-footer-logo img {
+    display: block;
+    max-height: 56px;
+    width: auto;
+}
+
+.showroom-spotlight-footer-brand h3 {
+    margin: 0 0 14px;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.showroom-spotlight-footer-address {
+    margin: 0 0 12px;
+    line-height: 1.6;
+    color: #9fb0bf;
+    font-size: 14px;
+}
+
+.showroom-spotlight-footer-phone,
+.showroom-spotlight-footer-email {
+    display: block;
+    color: #c7d2dd;
+    text-decoration: none;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.showroom-spotlight-footer-phone:hover,
+.showroom-spotlight-footer-email:hover {
+    color: #fff;
+}
+
+.showroom-spotlight-footer-map {
+    min-height: 220px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.showroom-spotlight-footer-map img {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.showroom-spotlight-on-sale-media.is-empty,
+.showroom-spotlight-brands-media.is-empty,
+.showroom-spotlight-about-media.is-empty,
+.showroom-spotlight-footer-map.is-empty,
+.showroom-spotlight-logo.is-empty,
+.showroom-spotlight-footer-logo.is-empty {
+    background: #dce4ec;
+}
+
+.showroom-spotlight-logo.is-empty::after {
+    content: 'Company logo';
+}
+
+.editor-upload-preview--spotlight-slide {
+    height: 160px;
+}
+
+.editor-upload-preview--spotlight-about {
+    height: 180px;
+}
+
+.editor-upload-preview--spotlight-footer-logo {
+    height: 80px;
+}
+
+.editor-upload-preview--spotlight-footer-map {
+    height: 140px;
+}
+
+@media (max-width: 900px) {
+    .showroom-spotlight-toolbar-row {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .showroom-spotlight-search {
+        max-width: 100%;
+    }
+
+    .showroom-spotlight-room-grid,
+    .showroom-spotlight-category-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .showroom-spotlight-about-layout,
+    .showroom-spotlight-footer-main {
+        grid-template-columns: 1fr;
+    }
+
+    .showroom-spotlight-carousel {
+        height: 360px;
+    }
+}
+
 @media (max-width: 640px) {
     .editor-toolbar {
         flex-wrap: wrap;

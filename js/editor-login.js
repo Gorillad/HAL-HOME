@@ -1,6 +1,6 @@
 (function initEditorLoginPage() {
     const params = new URLSearchParams(window.location.search);
-    const nextPath = params.get('next') || '/index.html#template-editor';
+    const nextPath = params.get('next') || '/editor/knowledge-base.html';
 
     const loginView = document.getElementById('loginView');
     const requestView = document.getElementById('requestView');

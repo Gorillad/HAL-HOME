@@ -1105,6 +1105,18 @@ body.cart-open {
     gap: 12px;
 }
 
+.editor-spotlight-actions .btn-ghost {
+    background: #fff;
+    color: var(--xo-blue-dark);
+    border: 1px solid var(--xo-border);
+}
+
+.editor-spotlight-actions .btn-ghost:hover {
+    background: var(--xo-blue-light);
+    border-color: var(--xo-blue);
+    color: var(--xo-blue-dark);
+}
+
 .editor-spotlight-demo {
     min-width: 0;
 }
@@ -2164,30 +2176,113 @@ body:not(.site-locked) .site-access-gate {
 @media (max-width: 860px) {
     .site-access-gate-inner {
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(220px, 34vh) auto;
+        grid-template-rows: auto auto;
     }
 
     .site-access-hero {
-        min-height: 220px;
+        height: 240px;
+        min-height: 240px;
+        max-height: 240px;
+    }
+
+    .site-access-hero-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+    }
+
+    .site-access-hero-overlay {
+        background: linear-gradient(
+            to bottom,
+            rgba(8, 18, 28, 0.84) 0%,
+            rgba(8, 18, 28, 0.5) 40%,
+            rgba(8, 18, 28, 0.9) 100%
+        );
     }
 
     .site-access-brand {
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 12px 12px;
         text-align: center;
     }
 
     .site-access-brand img {
-        margin-left: auto;
-        margin-right: auto;
+        margin-top: auto;
+        margin-bottom: 4px;
+        height: 26px;
+        width: auto;
     }
 
     .site-access-tagline {
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0;
+        max-width: none;
+        font-size: 0.8125rem;
+        line-height: 1.25;
     }
 
     .site-access-quote {
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 8px 10px 7px;
+        border-radius: 8px;
         text-align: center;
+        flex-shrink: 0;
+    }
+
+    .site-access-quote p {
+        font-size: clamp(0.6875rem, 2.9vw, 0.8125rem);
+        line-height: 1.32;
+    }
+
+    .site-access-quote cite {
+        margin-top: 4px;
+        font-size: 0.625rem;
+        letter-spacing: 0.02em;
+    }
+
+    .site-access-panel {
+        padding: 24px 20px 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-access-hero {
+        height: 200px;
+        min-height: 200px;
+        max-height: 200px;
+    }
+
+    .site-access-brand {
+        padding: 8px 10px 10px;
+    }
+
+    .site-access-quote {
+        padding: 6px 8px 5px;
+        border-radius: 7px;
+    }
+
+    .site-access-quote p {
+        font-size: clamp(0.625rem, 3.1vw, 0.75rem);
+        line-height: 1.28;
+    }
+
+    .site-access-quote cite {
+        margin-top: 3px;
+        font-size: 0.5625rem;
+    }
+
+    .site-access-brand img {
+        height: 22px;
+    }
+
+    .site-access-tagline {
+        font-size: 0.75rem;
     }
 }

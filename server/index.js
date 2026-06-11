@@ -123,6 +123,14 @@ app.get('/editor/showroom.html', requireEditorAuth, (_req, res) => {
     res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
 });
 
+app.get('/editor/knowledge-base.html', requireEditorAuth, (_req, res) => {
+    res.sendFile(path.join(ROOT, 'editor', 'knowledge-base.html'));
+});
+
+app.get('/editor/login.html', (_req, res) => {
+    res.sendFile(path.join(ROOT, 'editor', 'login.html'));
+});
+
 app.use(express.static(ROOT));
 
 app.get('/api/config', (_req, res) => {

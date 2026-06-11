@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showroom Editor Guide — LogicXO Knowledge Base</title>
+    <meta name="description" content="How to use the LogicXO Homepage Template Editor: McQueen, Classic, and Spotlight layouts, live preview, autosave, and developer handoff export.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="css/knowledge-base.css" rel="stylesheet">
+</head>
+<body class="kb-page">
+    <header class="site-nav">
+        <div class="site-nav-inner">
+            <a href="../index.html" class="site-nav-logo" aria-label="LogicXO home">
+                <img src="../images/logicxo.png" alt="LogicXO">
+            </a>
+            <nav class="site-nav-links" aria-label="Guide navigation">
+                <a href="../index.html#template-editor">Back to homepage</a>
+                <a href="showroom.html?design=classic" class="btn btn-primary" style="padding:8px 16px;font-size:0.9rem;">Open editor</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="kb-main">
+        <header class="kb-hero">
+            <h1>Homepage Template Editor Guide</h1>
+            <p class="kb-hero-lead">Everything you need to customize your Showroom homepage in the live editor — pick a layout, edit copy and images section by section, preview changes instantly, and export a developer handoff when you are ready.</p>
+            <div class="kb-hero-actions">
+                <a href="showroom.html?design=classic" class="btn btn-primary">Open McQueen editor</a>
+                <a href="showroom.html?design=gallery" class="btn btn-secondary">Open Classic editor</a>
+                <a href="showroom.html?design=spotlight" class="btn btn-secondary">Open Spotlight editor</a>
+            </div>
+        </header>
+
+        <nav class="kb-toc" aria-label="On this page">
+            <h2>On this page</h2>
+            <ol>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#getting-started">Getting started</a></li>
+                <li><a href="#editor-layout">Editor layout</a></li>
+                <li><a href="#templates">Choose a template</a></li>
+                <li><a href="#editing">Editing sections</a></li>
+                <li><a href="#images">Images &amp; uploads</a></li>
+                <li><a href="#navigation">Header &amp; navigation</a></li>
+                <li><a href="#autosave">Autosave &amp; drafts</a></li>
+                <li><a href="#export">Export handoff</a></li>
+                <li><a href="#tips">Tips &amp; troubleshooting</a></li>
+            </ol>
+        </nav>
+
+        <section class="kb-section" id="overview">
+            <h2>Overview</h2>
+            <p>The Homepage Template Editor is built into every Showroom plan. It lets you configure your public homepage without writing code — headline copy, hero images, category tiles, footer content, and more — while watching a scaled live preview update as you type.</p>
+            <p>When your draft is ready, use <strong>Export handoff</strong> to download a ZIP package for your developer or LogicXO implementation team. The package includes a PDF brief, layout captures, a JSON specification, and only the images you uploaded (template defaults are documented but not duplicated in the bundle).</p>
+        </section>
+
+        <section class="kb-section" id="getting-started">
+            <h2>Getting started</h2>
+            <ol>
+                <li>From the <a href="../index.html#templates">Homepage templates</a> section on the marketing site, pick <strong>McQueen</strong>, <strong>Classic</strong>, or <strong>Spotlight</strong> and click <strong>Open in editor</strong>.</li>
+                <li>Or open a layout directly:
+                    <ul>
+                        <li><a href="showroom.html?design=classic">McQueen</a> — <code>?design=classic</code></li>
+                        <li><a href="showroom.html?design=gallery">Classic</a> — <code>?design=gallery</code></li>
+                        <li><a href="showroom.html?design=spotlight">Spotlight</a> — <code>?design=spotlight</code></li>
+                    </ul>
+                </li>
+                <li>Use the left sidebar to edit each homepage section. The preview on the right scrolls in sync when you jump between sections.</li>
+                <li>Your work saves automatically in the current browser. Return anytime to continue where you left off.</li>
+            </ol>
+            <div class="kb-template-links">
+                <a href="showroom.html?design=classic">McQueen editor</a>
+                <a href="showroom.html?design=gallery">Classic editor</a>
+                <a href="showroom.html?design=spotlight">Spotlight editor</a>
+            </div>
+        </section>
+
+        <section class="kb-section" id="editor-layout">
+            <h2>Editor layout</h2>
+            <p>The editor has three main areas:</p>
+            <ul>
+                <li><strong>Top toolbar</strong> — breadcrumb navigation, template name badge, autosave status, and the <strong>Export handoff</strong> button.</li>
+                <li><strong>Section jump bar</strong> — quick links to Header, Hero, and template-specific sections (Featured Categories, Catalog Highlights, Shop by Room, and so on).</li>
+                <li><strong>Left panel + live preview</strong> — form fields on the left; a full-width homepage preview on the right that scales to fit your screen.</li>
+            </ul>
+            <p>Click any section heading in the sidebar or use the jump bar to scroll both the editor and preview to that part of the page.</p>
+        </section>
+
+        <section class="kb-section" id="templates">
+            <h2>Choose a template</h2>
+            <p>Each template is a complete homepage layout with its own sections and styling. Pick the one that best matches your showroom brand.</p>
+            <div class="kb-table-wrap">
+                <table class="kb-table">
+                    <thead>
+                        <tr>
+                            <th>Editor name</th>
+                            <th>URL parameter</th>
+                            <th>Best for</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>McQueen</strong></td>
+                            <td><code>design=classic</code></td>
+                            <td>Catalog-first showrooms with featured categories, about block, feature cards, product carousels, and a rich footer.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Classic</strong></td>
+                            <td><code>design=gallery</code></td>
+                            <td>Gallery-style layout with centered nav, hero mosaic, four catalog highlight tiles, and a four-column footer.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Spotlight</strong></td>
+                            <td><code>design=spotlight</code></td>
+                            <td>Modern retail homepage with top banner, search toolbar, hero slideshow, shop-by-room tiles, newsletter, and map footer.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>McQueen sections</h3>
+            <p>Header (banner, logo, main nav) · Hero · Featured Categories · About Us · Feature Cards · Sketch Section · You May Like · Get Inspired · Footer</p>
+
+            <h3>Classic sections</h3>
+            <p>Header (logo bar, main nav) · Hero · Catalog Highlights · Footer · Copyright</p>
+
+            <h3>Spotlight sections</h3>
+            <p>Header (banner, logo, search, icons, main nav) · Hero slideshow · What's On Sale · Shop By Room · About Us · Shop By Category · Our Brands · Newsletter · Footer</p>
+        </section>
+
+        <section class="kb-section" id="editing">
+            <h2>Editing sections</h2>
+            <p>Most fields update the preview immediately as you type. Common field types:</p>
+            <ul>
+                <li><strong>Text &amp; textarea</strong> — headlines, body copy, button labels, URLs, and footer addresses.</li>
+                <li><strong>Color pickers</strong> — banner, button, footer, and section background colors where supported.</li>
+                <li><strong>Image uploads</strong> — click the upload area or file input; a thumbnail appears when the image is set.</li>
+                <li><strong>Checkboxes</strong> — show or hide sections (for example the sketch block) or individual nav subcategories.</li>
+                <li><strong>Repeating link editors</strong> — add, rename, reorder, or remove banner links, footer links, and nav items.</li>
+            </ul>
+            <div class="kb-callout">
+                <strong>Spotlight body copy with multiple paragraphs</strong>
+                In About Us and similar text areas, leave a blank line between paragraphs. The preview renders each block as its own paragraph.
+            </div>
+            <div class="kb-callout">
+                <strong>Fixed UI elements</strong>
+                Some layout chrome is intentional and not editable — for example Spotlight's search bar placeholder, header utility icons (Sign Up, Login, Wishlist, Cart), and certain McQueen header icon positions. Focus on copy, images, colors, and links you can change in the sidebar.
+            </div>
+        </section>
+
+        <section class="kb-section" id="images">
+            <h2>Images &amp; uploads</h2>
+            <ul>
+                <li>Upload PNG, JPG, or WebP files using each section's file control. Recommended dimensions are shown next to many fields (for example hero lifestyle images).</li>
+                <li>Compress large photos before uploading for faster previews and smaller handoff files. The editor toolbar links to <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Squoosh</a> for free compression.</li>
+                <li>Replacing an image updates the preview right away. Only images you upload are included in the export ZIP — bundled template defaults stay in the template folder on the server.</li>
+                <li>Logo uploads typically support PNG or SVG with a max display size noted in the field hint.</li>
+            </ul>
+        </section>
+
+        <section class="kb-section" id="navigation">
+            <h2>Header &amp; navigation</h2>
+            <h3>Top banner</h3>
+            <p>Edit background and text colors, link labels, and URLs. On Spotlight, set the left address line and right-side phone number in the dedicated banner fields.</p>
+            <h3>Company logo</h3>
+            <p>Upload once in the Header section. McQueen and Classic center the logo; Spotlight places it on the left of the toolbar.</p>
+            <h3>Main navigation</h3>
+            <p>Edit category names and URLs. Expand each category to manage dropdown subcategories — rename links, change URLs, or uncheck <strong>Show in dropdown</strong> to hide a subcategory without deleting it.</p>
+            <p>Spotlight ships with Shop by Room, Popular Categories, Chandeliers, Outdoors, Directional Lights, About Us, and Contact Us. Categories with dropdowns show a chevron; About Us and Contact Us are direct links.</p>
+        </section>
+
+        <section class="kb-section" id="autosave">
+            <h2>Autosave &amp; drafts</h2>
+            <p>Every change is saved automatically to your browser's local storage. You will see brief status messages such as <em>Draft restored</em> when you return to the editor.</p>
+            <ul>
+                <li>Each template layout has its own saved draft (McQueen, Classic, and Spotlight do not share state).</li>
+                <li>Drafts are per browser and per device — clearing site data or switching browsers starts fresh.</li>
+                <li>To reset a layout, clear site data for this domain or open the editor in a private window and re-enter your content.</li>
+            </ul>
+        </section>
+
+        <section class="kb-section" id="export">
+            <h2>Export handoff</h2>
+            <p>When your homepage draft is complete, click <strong>Export handoff</strong> in the top toolbar. The editor builds a ZIP file containing:</p>
+            <ul>
+                <li><strong>PDF brief</strong> — human-readable summary of copy, colors, links, and section notes.</li>
+                <li><strong>Layout captures</strong> — screenshots of major homepage sections for visual reference.</li>
+                <li><strong>JSON spec</strong> — structured data your developer can use to implement the page.</li>
+                <li><strong>Uploaded images only</strong> — files you added in the editor, named for easy placement.</li>
+            </ul>
+            <p>Share the ZIP with your web team or LogicXO onboarding contact. Template default images that you did not replace are listed in the PDF but not duplicated in the archive.</p>
+            <div class="kb-callout">
+                <strong>Before you export</strong>
+                Scroll through the full preview once, confirm all sections look correct, and verify links and phone numbers. Export captures the current draft state.
+            </div>
+        </section>
+
+        <section class="kb-section" id="tips">
+            <h2>Tips &amp; troubleshooting</h2>
+            <h3>Preview looks cut off or too small</h3>
+            <p>The preview scales to fit the workspace. Resize your browser window or zoom out — the layout reflows automatically.</p>
+            <h3>My changes disappeared</h3>
+            <p>Confirm you are opening the same template URL (<code>design=classic</code>, <code>gallery</code>, or <code>spotlight</code>) and the same browser where you edited. Drafts are not synced across devices.</p>
+            <h3>Export failed or ZIP is empty</h3>
+            <p>Wait for the status message to finish and try again. If the problem continues, refresh the page, confirm your draft restored, and export once more. Very large uploaded images can slow the process — compress them first.</p>
+            <h3>Need more help?</h3>
+            <p>Contact <a href="mailto:support@logicxo.com">support@logicxo.com</a> or visit the <a href="https://support.logicxo.com/">LogicXO Support Knowledge Base</a> for platform-wide guides.</p>
+        </section>
+    </main>
+</body>
+</html>
