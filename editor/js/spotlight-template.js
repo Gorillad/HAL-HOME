@@ -17,7 +17,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
     const DEFAULT_ABOUT_IMAGE = `${IMAGE_DIR}about-us/about-us.webp`;
     const DEFAULT_BRANDS_IMAGE = `${IMAGE_DIR}our-brands/our-brands.png`;
     const DEFAULT_FOOTER_LOGO = `${IMAGE_DIR}footer/xologic-logo-white.png`;
-    const DEFAULT_FOOTER_MAP = `${IMAGE_DIR}footer/map.png`;
+    const DEFAULT_FOOTER_MAP_REFERENCE = `${IMAGE_DIR}footer/map.png`;
 
     const HERO_SLIDE_DEFAULTS = [
         `${IMAGE_DIR}slide-show/slide1.webp`,
@@ -45,7 +45,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
 
     const DEFAULT_ON_SALE_HEADING = "What's On Sale";
     const DEFAULT_SHOP_BY_ROOM_HEADING = 'Shop By Room';
-    const DEFAULT_CATEGORY_HEADING = 'Shop By Category';
+    const DEFAULT_CATEGORY_HEADING = 'Light Up Your World By Category';
     const DEFAULT_BRANDS_HEADING = 'Our Brands';
     const DEFAULT_ABOUT_HEADING = 'About Us';
     const DEFAULT_ABOUT_COPY = [
@@ -53,13 +53,85 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         'At our company, we pride ourselves on our extensive range of lighting products. Whether you are looking for a stylish pendant light for your living room, a functional desk lamp for your home office, or industrial lighting for your commercial space, we have you covered. Our products are carefully selected from the best manufacturers, ensuring that you get the best quality and value for your money.',
     ].join('\n\n');
     const LEGACY_ABOUT_COPY = 'Visit our showroom to experience lighting in person. Our team helps you find fixtures that fit your space, style, and budget.';
-    const DEFAULT_NEWSLETTER_HEADING = 'Stay in the Loop';
-    const DEFAULT_NEWSLETTER_COPY = 'Product updates, vendor tips, and seasonal promos — straight to your inbox.';
-    const DEFAULT_NEWSLETTER_BUTTON = 'Subscribe';
-    const DEFAULT_FOOTER_COMPANY = 'Your Lighting Showroom';
-    const DEFAULT_FOOTER_ADDRESS = '123 Lighting Way\nSuite 400\nAnytown, USA';
-    const DEFAULT_FOOTER_PHONE = '(800) 555-1234';
-    const DEFAULT_FOOTER_EMAIL = 'hello@company.com';
+    const DEFAULT_NEWSLETTER_HEADING = 'Sign up for our newsletters';
+    const DEFAULT_NEWSLETTER_COPY = 'Are you looking to bring a new level of brightness and beauty to your home or office? Sign up for our lighting showroom newsletter today and be the first to receive exclusive updates on the latest lighting trends, new product launches, and special promotions. With our expert advice and curated selection of high-quality lighting fixtures, you can create the perfect ambiance and enhance any space. Don\'t miss out on this opportunity to elevate your lighting game - join our community today!';
+    const LEGACY_NEWSLETTER_COPY = 'Product updates, vendor tips, and seasonal promos — straight to your inbox.';
+    const DEFAULT_NEWSLETTER_BUTTON = 'Submit';
+    const LEGACY_NEWSLETTER_BUTTON = 'Subscribe';
+    const DEFAULT_NEWSLETTER_CTA_HEADING = 'Want To See More?';
+    const DEFAULT_NEWSLETTER_CTA_COPY = 'Visit our catalog today and explore our extensive selection of lighting options. Don\'t wait any longer to transform your space with beautiful and functional lighting.';
+    const DEFAULT_NEWSLETTER_CTA_SHOP_LABEL = 'Shop With Us Today';
+    const DEFAULT_NEWSLETTER_CTA_SHOP_URL = '/catalog';
+    const DEFAULT_NEWSLETTER_CTA_CONTACT_LABEL = 'Contact our store';
+    const DEFAULT_NEWSLETTER_CTA_CONTACT_URL = '/contact-us';
+    const DEFAULT_FOOTER_PHONE = '123-456-7890';
+    const DEFAULT_FOOTER_EMAIL = 'sells@exologic.com';
+    const DEFAULT_FOOTER_HOURS_WEEKDAY = 'Monday through Friday 9:00 AM to 5:00';
+    const DEFAULT_FOOTER_HOURS_SATURDAY = 'Closed on Saturday';
+    const DEFAULT_FOOTER_HOURS_SUNDAY = 'Closed on Sunday';
+    const LEGACY_FOOTER_EMAIL = 'hello@company.com';
+    const LEGACY_FOOTER_PHONE = '(800) 555-1234';
+    const LEGACY_FOOTER_PHONE_SPOTLIGHT = '12345 67809';
+
+    const SPOTLIGHT_FOOTER_QUICK_LINKS = [
+        { id: 'about-us', label: 'About Us', stateKey: 'spotlightFooterQuickAboutUrl', defaultUrl: '/about-us' },
+        { id: 'contact-us', label: 'Contact Us', stateKey: 'spotlightFooterQuickContactUrl', defaultUrl: '/contact-us' },
+        { id: 'call-us', label: 'Call Us', stateKey: 'spotlightFooterQuickCallUrl', defaultUrl: 'tel:1234567890' },
+        { id: 'shop-now', label: 'Shop Now', stateKey: 'spotlightFooterQuickShopUrl', defaultUrl: '/catalog' },
+        { id: 'brands', label: 'Brands', stateKey: 'spotlightFooterQuickBrandsUrl', defaultUrl: '/brands' },
+    ];
+
+    const SPOTLIGHT_FOOTER_POLICY_LINKS = [
+        { id: 'terms', label: 'Terms and Conditions', stateKey: 'spotlightFooterPolicyTermsUrl', defaultUrl: '/terms-and-conditions' },
+        { id: 'privacy', label: 'Privacy', stateKey: 'spotlightFooterPolicyPrivacyUrl', defaultUrl: '/privacy' },
+        { id: 'returns', label: 'Returns', stateKey: 'spotlightFooterPolicyReturnsUrl', defaultUrl: '/returns' },
+    ];
+
+    const SPOTLIGHT_FOOTER_PROFILE_LINKS = [
+        { id: 'login', label: 'Login', stateKey: 'spotlightFooterProfileLoginUrl', defaultUrl: '/login' },
+        { id: 'cart', label: 'Cart', stateKey: 'spotlightFooterProfileCartUrl', defaultUrl: '/cart' },
+    ];
+
+    const DEFAULT_FOOTER_COMPANY_NAME = 'XOLogic Software';
+    const FOOTER_ADA_POPUP = 'ada-compliance::ADA Compliance::600px';
+
+    const SPOTLIGHT_FOOTER_SOCIAL_LINKS = [
+        {
+            id: 'facebook',
+            label: 'Facebook',
+            urlKey: 'spotlightFooterFacebookUrl',
+            visibleKey: 'spotlightFooterFacebookVisible',
+            iconClass: 'fa-brands fa-facebook-f',
+        },
+        {
+            id: 'instagram',
+            label: 'Instagram',
+            urlKey: 'spotlightFooterInstagramUrl',
+            visibleKey: 'spotlightFooterInstagramVisible',
+            iconClass: 'fa-brands fa-instagram',
+        },
+        {
+            id: 'x',
+            label: 'X',
+            urlKey: 'spotlightFooterXUrl',
+            visibleKey: 'spotlightFooterXVisible',
+            iconClass: 'fa-brands fa-x-twitter',
+        },
+        {
+            id: 'linkedin',
+            label: 'LinkedIn',
+            urlKey: 'spotlightFooterLinkedinUrl',
+            visibleKey: 'spotlightFooterLinkedinVisible',
+            iconClass: 'fa-brands fa-linkedin-in',
+        },
+        {
+            id: 'youtube',
+            label: 'YouTube',
+            urlKey: 'spotlightFooterYoutubeUrl',
+            visibleKey: 'spotlightFooterYoutubeVisible',
+            iconClass: 'fa-brands fa-youtube',
+        },
+    ];
 
     const HEADER_TOOLBAR_ICONS = [
         { id: 'signup', label: 'Sign Up', iconClass: 'fas fa-user-plus headerIcon', url: '#' },
@@ -318,12 +390,40 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             spotlightNewsletterHeading: DEFAULT_NEWSLETTER_HEADING,
             spotlightNewsletterCopy: DEFAULT_NEWSLETTER_COPY,
             spotlightNewsletterButtonLabel: DEFAULT_NEWSLETTER_BUTTON,
+            spotlightNewsletterCtaHeading: DEFAULT_NEWSLETTER_CTA_HEADING,
+            spotlightNewsletterCtaCopy: DEFAULT_NEWSLETTER_CTA_COPY,
+            spotlightNewsletterCtaShopLabel: DEFAULT_NEWSLETTER_CTA_SHOP_LABEL,
+            spotlightNewsletterCtaShopUrl: DEFAULT_NEWSLETTER_CTA_SHOP_URL,
+            spotlightNewsletterCtaContactLabel: DEFAULT_NEWSLETTER_CTA_CONTACT_LABEL,
+            spotlightNewsletterCtaContactUrl: DEFAULT_NEWSLETTER_CTA_CONTACT_URL,
             spotlightFooterLogoImage: DEFAULT_FOOTER_LOGO,
-            spotlightFooterMapImage: DEFAULT_FOOTER_MAP,
-            spotlightFooterCompanyName: DEFAULT_FOOTER_COMPANY,
-            spotlightFooterAddress: DEFAULT_FOOTER_ADDRESS,
+            spotlightFooterQuickAboutUrl: SPOTLIGHT_FOOTER_QUICK_LINKS[0].defaultUrl,
+            spotlightFooterQuickContactUrl: SPOTLIGHT_FOOTER_QUICK_LINKS[1].defaultUrl,
+            spotlightFooterQuickCallUrl: SPOTLIGHT_FOOTER_QUICK_LINKS[2].defaultUrl,
+            spotlightFooterQuickShopUrl: SPOTLIGHT_FOOTER_QUICK_LINKS[3].defaultUrl,
+            spotlightFooterQuickBrandsUrl: SPOTLIGHT_FOOTER_QUICK_LINKS[4].defaultUrl,
+            spotlightFooterPolicyTermsUrl: SPOTLIGHT_FOOTER_POLICY_LINKS[0].defaultUrl,
+            spotlightFooterPolicyPrivacyUrl: SPOTLIGHT_FOOTER_POLICY_LINKS[1].defaultUrl,
+            spotlightFooterPolicyReturnsUrl: SPOTLIGHT_FOOTER_POLICY_LINKS[2].defaultUrl,
+            spotlightFooterProfileLoginUrl: SPOTLIGHT_FOOTER_PROFILE_LINKS[0].defaultUrl,
+            spotlightFooterProfileCartUrl: SPOTLIGHT_FOOTER_PROFILE_LINKS[1].defaultUrl,
+            spotlightFooterHoursWeekday: DEFAULT_FOOTER_HOURS_WEEKDAY,
+            spotlightFooterHoursSaturday: DEFAULT_FOOTER_HOURS_SATURDAY,
+            spotlightFooterHoursSunday: DEFAULT_FOOTER_HOURS_SUNDAY,
             spotlightFooterPhone: DEFAULT_FOOTER_PHONE,
             spotlightFooterEmail: DEFAULT_FOOTER_EMAIL,
+            spotlightFooterCompanyName: DEFAULT_FOOTER_COMPANY_NAME,
+            spotlightFooterCopyrightName: '',
+            spotlightFooterFacebookUrl: '',
+            spotlightFooterFacebookVisible: true,
+            spotlightFooterInstagramUrl: '',
+            spotlightFooterInstagramVisible: true,
+            spotlightFooterXUrl: '',
+            spotlightFooterXVisible: true,
+            spotlightFooterLinkedinUrl: '',
+            spotlightFooterLinkedinVisible: true,
+            spotlightFooterYoutubeUrl: '',
+            spotlightFooterYoutubeVisible: true,
         };
     }
 
@@ -380,19 +480,58 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             ? defaults.spotlightAboutCopy
             : savedAboutCopy;
         state.spotlightAboutImage = resolveImage(data.spotlightAboutImage, defaults.spotlightAboutImage);
-        state.spotlightCategoryHeading = data.spotlightCategoryHeading || defaults.spotlightCategoryHeading;
+        const savedCategoryHeading = data.spotlightCategoryHeading || '';
+        state.spotlightCategoryHeading = savedCategoryHeading === 'Shop By Category'
+            ? defaults.spotlightCategoryHeading
+            : (savedCategoryHeading || defaults.spotlightCategoryHeading);
         state.spotlightCategoryTiles = migrateTiles(data.spotlightCategoryTiles, CATEGORY_DEFAULTS);
         state.spotlightBrandsHeading = data.spotlightBrandsHeading || defaults.spotlightBrandsHeading;
         state.spotlightBrandsImage = resolveImage(data.spotlightBrandsImage, defaults.spotlightBrandsImage);
-        state.spotlightNewsletterHeading = data.spotlightNewsletterHeading || defaults.spotlightNewsletterHeading;
-        state.spotlightNewsletterCopy = data.spotlightNewsletterCopy || defaults.spotlightNewsletterCopy;
-        state.spotlightNewsletterButtonLabel = data.spotlightNewsletterButtonLabel || defaults.spotlightNewsletterButtonLabel;
+        const savedNewsletterHeading = data.spotlightNewsletterHeading || '';
+        state.spotlightNewsletterHeading = savedNewsletterHeading === 'Stay in the Loop'
+            ? defaults.spotlightNewsletterHeading
+            : (savedNewsletterHeading || defaults.spotlightNewsletterHeading);
+        const savedNewsletterCopy = data.spotlightNewsletterCopy || '';
+        state.spotlightNewsletterCopy = (!savedNewsletterCopy || savedNewsletterCopy === LEGACY_NEWSLETTER_COPY)
+            ? defaults.spotlightNewsletterCopy
+            : savedNewsletterCopy;
+        const savedNewsletterButton = data.spotlightNewsletterButtonLabel || '';
+        state.spotlightNewsletterButtonLabel = savedNewsletterButton === LEGACY_NEWSLETTER_BUTTON
+            ? defaults.spotlightNewsletterButtonLabel
+            : (savedNewsletterButton || defaults.spotlightNewsletterButtonLabel);
+        state.spotlightNewsletterCtaHeading = data.spotlightNewsletterCtaHeading || defaults.spotlightNewsletterCtaHeading;
+        state.spotlightNewsletterCtaCopy = data.spotlightNewsletterCtaCopy || defaults.spotlightNewsletterCtaCopy;
+        state.spotlightNewsletterCtaShopLabel = data.spotlightNewsletterCtaShopLabel || defaults.spotlightNewsletterCtaShopLabel;
+        state.spotlightNewsletterCtaShopUrl = data.spotlightNewsletterCtaShopUrl || defaults.spotlightNewsletterCtaShopUrl;
+        state.spotlightNewsletterCtaContactLabel = data.spotlightNewsletterCtaContactLabel || defaults.spotlightNewsletterCtaContactLabel;
+        state.spotlightNewsletterCtaContactUrl = data.spotlightNewsletterCtaContactUrl || defaults.spotlightNewsletterCtaContactUrl;
         state.spotlightFooterLogoImage = resolveImage(data.spotlightFooterLogoImage, defaults.spotlightFooterLogoImage);
-        state.spotlightFooterMapImage = resolveImage(data.spotlightFooterMapImage, defaults.spotlightFooterMapImage);
+        SPOTLIGHT_FOOTER_QUICK_LINKS.forEach((link) => {
+            state[link.stateKey] = data[link.stateKey] || defaults[link.stateKey];
+        });
+        SPOTLIGHT_FOOTER_POLICY_LINKS.forEach((link) => {
+            state[link.stateKey] = data[link.stateKey] || defaults[link.stateKey];
+        });
+        SPOTLIGHT_FOOTER_PROFILE_LINKS.forEach((link) => {
+            state[link.stateKey] = data[link.stateKey] || defaults[link.stateKey];
+        });
+        state.spotlightFooterHoursWeekday = data.spotlightFooterHoursWeekday || defaults.spotlightFooterHoursWeekday;
+        state.spotlightFooterHoursSaturday = data.spotlightFooterHoursSaturday || defaults.spotlightFooterHoursSaturday;
+        state.spotlightFooterHoursSunday = data.spotlightFooterHoursSunday || defaults.spotlightFooterHoursSunday;
+        const savedFooterPhone = data.spotlightFooterPhone || '';
+        state.spotlightFooterPhone = (savedFooterPhone === LEGACY_FOOTER_PHONE || savedFooterPhone === LEGACY_FOOTER_PHONE_SPOTLIGHT)
+            ? defaults.spotlightFooterPhone
+            : (savedFooterPhone || defaults.spotlightFooterPhone);
+        const savedFooterEmail = data.spotlightFooterEmail || '';
+        state.spotlightFooterEmail = savedFooterEmail === LEGACY_FOOTER_EMAIL
+            ? defaults.spotlightFooterEmail
+            : (savedFooterEmail || defaults.spotlightFooterEmail);
         state.spotlightFooterCompanyName = data.spotlightFooterCompanyName || defaults.spotlightFooterCompanyName;
-        state.spotlightFooterAddress = data.spotlightFooterAddress || defaults.spotlightFooterAddress;
-        state.spotlightFooterPhone = data.spotlightFooterPhone || defaults.spotlightFooterPhone;
-        state.spotlightFooterEmail = data.spotlightFooterEmail || defaults.spotlightFooterEmail;
+        state.spotlightFooterCopyrightName = data.spotlightFooterCopyrightName ?? defaults.spotlightFooterCopyrightName;
+        SPOTLIGHT_FOOTER_SOCIAL_LINKS.forEach((social) => {
+            state[social.urlKey] = data[social.urlKey] || '';
+            state[social.visibleKey] = data[social.visibleKey] !== false;
+        });
 
         const savedBannerBg = String(data.headerBannerBackgroundColor || '').trim().toLowerCase();
         state.headerBannerBackgroundColor = savedBannerBg && savedBannerBg !== '#000000' && savedBannerBg !== '#000'
@@ -444,7 +583,6 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             previewSpotlightShopByRoomHeading: document.getElementById('previewSpotlightShopByRoomHeading'),
             previewSpotlightShopByRoomGrid: document.getElementById('previewSpotlightShopByRoomGrid'),
             previewSpotlightAboutHeading: document.getElementById('previewSpotlightAboutHeading'),
-            previewSpotlightAboutCopyHeading: document.getElementById('previewSpotlightAboutCopyHeading'),
             previewSpotlightAboutCopy: document.getElementById('previewSpotlightAboutCopy'),
             previewSpotlightAboutImage: document.getElementById('previewSpotlightAboutImage'),
             previewSpotlightAboutImageWrap: document.getElementById('previewSpotlightAboutImageWrap'),
@@ -456,14 +594,24 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             previewSpotlightNewsletterHeading: document.getElementById('previewSpotlightNewsletterHeading'),
             previewSpotlightNewsletterCopy: document.getElementById('previewSpotlightNewsletterCopy'),
             previewSpotlightNewsletterButton: document.getElementById('previewSpotlightNewsletterButton'),
+            previewSpotlightNewsletterCtaHeading: document.getElementById('previewSpotlightNewsletterCtaHeading'),
+            previewSpotlightNewsletterCtaCopy: document.getElementById('previewSpotlightNewsletterCtaCopy'),
+            previewSpotlightNewsletterCtaShop: document.getElementById('previewSpotlightNewsletterCtaShop'),
+            previewSpotlightNewsletterCtaContact: document.getElementById('previewSpotlightNewsletterCtaContact'),
             previewSpotlightFooterLogo: document.getElementById('previewSpotlightFooterLogo'),
             previewSpotlightFooterLogoWrap: document.getElementById('previewSpotlightFooterLogoWrap'),
             previewSpotlightFooterMap: document.getElementById('previewSpotlightFooterMap'),
             previewSpotlightFooterMapWrap: document.getElementById('previewSpotlightFooterMapWrap'),
-            previewSpotlightFooterCompany: document.getElementById('previewSpotlightFooterCompany'),
-            previewSpotlightFooterAddress: document.getElementById('previewSpotlightFooterAddress'),
+            previewSpotlightFooterQuickLinks: document.getElementById('previewSpotlightFooterQuickLinks'),
+            previewSpotlightFooterPolicyLinks: document.getElementById('previewSpotlightFooterPolicyLinks'),
+            previewSpotlightFooterProfileLinks: document.getElementById('previewSpotlightFooterProfileLinks'),
+            previewSpotlightFooterHoursWeekday: document.getElementById('previewSpotlightFooterHoursWeekday'),
+            previewSpotlightFooterHoursSaturday: document.getElementById('previewSpotlightFooterHoursSaturday'),
+            previewSpotlightFooterHoursSunday: document.getElementById('previewSpotlightFooterHoursSunday'),
             previewSpotlightFooterPhone: document.getElementById('previewSpotlightFooterPhone'),
             previewSpotlightFooterEmail: document.getElementById('previewSpotlightFooterEmail'),
+            previewSpotlightFooterCopyright: document.getElementById('previewSpotlightFooterCopyright'),
+            previewSpotlightFooterSocial: document.getElementById('previewSpotlightFooterSocial'),
             spotlightHeroSlidesEditor: document.getElementById('spotlightHeroSlidesEditor'),
             spotlightShopByRoomEditor: document.getElementById('spotlightShopByRoomEditor'),
             spotlightCategoryEditor: document.getElementById('spotlightCategoryEditor'),
@@ -476,16 +624,44 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             fieldSpotlightNewsletterHeading: document.getElementById('fieldSpotlightNewsletterHeading'),
             fieldSpotlightNewsletterCopy: document.getElementById('fieldSpotlightNewsletterCopy'),
             fieldSpotlightNewsletterButtonLabel: document.getElementById('fieldSpotlightNewsletterButtonLabel'),
-            fieldSpotlightFooterCompanyName: document.getElementById('fieldSpotlightFooterCompanyName'),
-            fieldSpotlightFooterAddress: document.getElementById('fieldSpotlightFooterAddress'),
+            fieldSpotlightNewsletterCtaHeading: document.getElementById('fieldSpotlightNewsletterCtaHeading'),
+            fieldSpotlightNewsletterCtaCopy: document.getElementById('fieldSpotlightNewsletterCtaCopy'),
+            fieldSpotlightNewsletterCtaShopLabel: document.getElementById('fieldSpotlightNewsletterCtaShopLabel'),
+            fieldSpotlightNewsletterCtaShopUrl: document.getElementById('fieldSpotlightNewsletterCtaShopUrl'),
+            fieldSpotlightNewsletterCtaContactLabel: document.getElementById('fieldSpotlightNewsletterCtaContactLabel'),
+            fieldSpotlightNewsletterCtaContactUrl: document.getElementById('fieldSpotlightNewsletterCtaContactUrl'),
+            fieldSpotlightFooterLogo: document.getElementById('fieldSpotlightFooterLogo'),
+            fieldSpotlightFooterQuickAboutUrl: document.getElementById('fieldSpotlightFooterQuickAboutUrl'),
+            fieldSpotlightFooterQuickContactUrl: document.getElementById('fieldSpotlightFooterQuickContactUrl'),
+            fieldSpotlightFooterQuickCallUrl: document.getElementById('fieldSpotlightFooterQuickCallUrl'),
+            fieldSpotlightFooterQuickShopUrl: document.getElementById('fieldSpotlightFooterQuickShopUrl'),
+            fieldSpotlightFooterQuickBrandsUrl: document.getElementById('fieldSpotlightFooterQuickBrandsUrl'),
+            fieldSpotlightFooterPolicyTermsUrl: document.getElementById('fieldSpotlightFooterPolicyTermsUrl'),
+            fieldSpotlightFooterPolicyPrivacyUrl: document.getElementById('fieldSpotlightFooterPolicyPrivacyUrl'),
+            fieldSpotlightFooterPolicyReturnsUrl: document.getElementById('fieldSpotlightFooterPolicyReturnsUrl'),
+            fieldSpotlightFooterProfileLoginUrl: document.getElementById('fieldSpotlightFooterProfileLoginUrl'),
+            fieldSpotlightFooterProfileCartUrl: document.getElementById('fieldSpotlightFooterProfileCartUrl'),
+            fieldSpotlightFooterHoursWeekday: document.getElementById('fieldSpotlightFooterHoursWeekday'),
+            fieldSpotlightFooterHoursSaturday: document.getElementById('fieldSpotlightFooterHoursSaturday'),
+            fieldSpotlightFooterHoursSunday: document.getElementById('fieldSpotlightFooterHoursSunday'),
             fieldSpotlightFooterPhone: document.getElementById('fieldSpotlightFooterPhone'),
             fieldSpotlightFooterEmail: document.getElementById('fieldSpotlightFooterEmail'),
+            fieldSpotlightFooterCompanyName: document.getElementById('fieldSpotlightFooterCompanyName'),
+            fieldSpotlightFooterCopyrightName: document.getElementById('fieldSpotlightFooterCopyrightName'),
+            fieldSpotlightFooterFacebookUrl: document.getElementById('fieldSpotlightFooterFacebookUrl'),
+            fieldSpotlightFooterFacebookVisible: document.getElementById('fieldSpotlightFooterFacebookVisible'),
+            fieldSpotlightFooterInstagramUrl: document.getElementById('fieldSpotlightFooterInstagramUrl'),
+            fieldSpotlightFooterInstagramVisible: document.getElementById('fieldSpotlightFooterInstagramVisible'),
+            fieldSpotlightFooterXUrl: document.getElementById('fieldSpotlightFooterXUrl'),
+            fieldSpotlightFooterXVisible: document.getElementById('fieldSpotlightFooterXVisible'),
+            fieldSpotlightFooterLinkedinUrl: document.getElementById('fieldSpotlightFooterLinkedinUrl'),
+            fieldSpotlightFooterLinkedinVisible: document.getElementById('fieldSpotlightFooterLinkedinVisible'),
+            fieldSpotlightFooterYoutubeUrl: document.getElementById('fieldSpotlightFooterYoutubeUrl'),
+            fieldSpotlightFooterYoutubeVisible: document.getElementById('fieldSpotlightFooterYoutubeVisible'),
             fieldSpotlightBannerAddress: document.getElementById('fieldSpotlightBannerAddress'),
             fieldSpotlightBannerPhone: document.getElementById('fieldSpotlightBannerPhone'),
             editorSpotlightBannerFields: document.getElementById('editorSpotlightBannerFields'),
             fieldSpotlightAboutImage: document.getElementById('fieldSpotlightAboutImage'),
-            fieldSpotlightFooterLogo: document.getElementById('fieldSpotlightFooterLogo'),
-            fieldSpotlightFooterMap: document.getElementById('fieldSpotlightFooterMap'),
             editorHeaderSpotlightHint: document.getElementById('editorHeaderSpotlightHint'),
             editorHeaderClassicHint: document.getElementById('editorHeaderClassicHint'),
         };
@@ -502,14 +678,6 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
 
         if (refs.editorHeaderSpotlightHint) refs.editorHeaderSpotlightHint.hidden = false;
         if (refs.editorHeaderClassicHint) refs.editorHeaderClassicHint.hidden = true;
-
-        document.querySelectorAll('.editor-section-nav-link--spotlight').forEach((link) => {
-            link.hidden = false;
-        });
-        document.querySelectorAll('.editor-section-nav-link--mcqueen, .editor-section-nav-link--gallery').forEach((link) => {
-            if (link.classList.contains('editor-section-nav-link--shared')) return;
-            link.hidden = true;
-        });
 
         ctx.hideMcQueenGalleryUI();
     }
@@ -596,6 +764,47 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         });
     }
 
+    function renderFooterLinks(listEl, links, state) {
+        if (!listEl) return;
+        const { escapeHtml } = ctx;
+        listEl.innerHTML = links.map((link) => {
+            const href = escapeHtml(state[link.stateKey] || link.defaultUrl || '#');
+            const label = escapeHtml(link.label);
+            return `<li><a href="${href}">${label}</a></li>`;
+        }).join('');
+    }
+
+    function getSpotlightFooterCopyrightCompanyName(state) {
+        return state.spotlightFooterCopyrightName
+            || state.spotlightFooterCompanyName
+            || DEFAULT_FOOTER_COMPANY_NAME;
+    }
+
+    function buildSpotlightCopyrightText(state) {
+        const { escapeHtml } = ctx;
+        const name = escapeHtml(getSpotlightFooterCopyrightCompanyName(state));
+        const year = new Date().getFullYear();
+        return (
+            `<div id="rightCol"> &copy; ${year} ${name} | All Rights Reserved `
+            + `<a href="#" ajax-popup="${FOOTER_ADA_POPUP}">ADA Compliant</a></div>`
+        );
+    }
+
+    function renderFooterSocial(state) {
+        if (!refs.previewSpotlightFooterSocial) return;
+        const { escapeHtml } = ctx;
+        refs.previewSpotlightFooterSocial.innerHTML = SPOTLIGHT_FOOTER_SOCIAL_LINKS
+            .filter((social) => state[social.visibleKey] !== false)
+            .map((social) => {
+                const rawUrl = String(state[social.urlKey] || '').trim();
+                const url = escapeHtml(rawUrl || '#');
+                return (
+                    `<a href="${url}" class="showroom-spotlight-footer-social-link" aria-label="${escapeHtml(social.label)}" target="_blank" rel="noopener noreferrer"><i class="${social.iconClass}" aria-hidden="true"></i></a>`
+                );
+            })
+            .join('');
+    }
+
     function populateFormFields() {
         const state = ctx.getState();
         const set = (el, val) => { if (el) el.value = val || ''; };
@@ -609,10 +818,39 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         set(refs.fieldSpotlightNewsletterHeading, state.spotlightNewsletterHeading);
         set(refs.fieldSpotlightNewsletterCopy, state.spotlightNewsletterCopy);
         set(refs.fieldSpotlightNewsletterButtonLabel, state.spotlightNewsletterButtonLabel);
-        set(refs.fieldSpotlightFooterCompanyName, state.spotlightFooterCompanyName);
-        set(refs.fieldSpotlightFooterAddress, state.spotlightFooterAddress);
+        set(refs.fieldSpotlightNewsletterCtaHeading, state.spotlightNewsletterCtaHeading);
+        set(refs.fieldSpotlightNewsletterCtaCopy, state.spotlightNewsletterCtaCopy);
+        set(refs.fieldSpotlightNewsletterCtaShopLabel, state.spotlightNewsletterCtaShopLabel);
+        set(refs.fieldSpotlightNewsletterCtaShopUrl, state.spotlightNewsletterCtaShopUrl);
+        set(refs.fieldSpotlightNewsletterCtaContactLabel, state.spotlightNewsletterCtaContactLabel);
+        set(refs.fieldSpotlightNewsletterCtaContactUrl, state.spotlightNewsletterCtaContactUrl);
+        set(refs.fieldSpotlightFooterQuickAboutUrl, state.spotlightFooterQuickAboutUrl);
+        set(refs.fieldSpotlightFooterQuickContactUrl, state.spotlightFooterQuickContactUrl);
+        set(refs.fieldSpotlightFooterQuickCallUrl, state.spotlightFooterQuickCallUrl);
+        set(refs.fieldSpotlightFooterQuickShopUrl, state.spotlightFooterQuickShopUrl);
+        set(refs.fieldSpotlightFooterQuickBrandsUrl, state.spotlightFooterQuickBrandsUrl);
+        set(refs.fieldSpotlightFooterPolicyTermsUrl, state.spotlightFooterPolicyTermsUrl);
+        set(refs.fieldSpotlightFooterPolicyPrivacyUrl, state.spotlightFooterPolicyPrivacyUrl);
+        set(refs.fieldSpotlightFooterPolicyReturnsUrl, state.spotlightFooterPolicyReturnsUrl);
+        set(refs.fieldSpotlightFooterProfileLoginUrl, state.spotlightFooterProfileLoginUrl);
+        set(refs.fieldSpotlightFooterProfileCartUrl, state.spotlightFooterProfileCartUrl);
+        set(refs.fieldSpotlightFooterHoursWeekday, state.spotlightFooterHoursWeekday);
+        set(refs.fieldSpotlightFooterHoursSaturday, state.spotlightFooterHoursSaturday);
+        set(refs.fieldSpotlightFooterHoursSunday, state.spotlightFooterHoursSunday);
         set(refs.fieldSpotlightFooterPhone, state.spotlightFooterPhone);
         set(refs.fieldSpotlightFooterEmail, state.spotlightFooterEmail);
+        set(refs.fieldSpotlightFooterCompanyName, state.spotlightFooterCompanyName);
+        set(refs.fieldSpotlightFooterCopyrightName, state.spotlightFooterCopyrightName);
+        set(refs.fieldSpotlightFooterFacebookUrl, state.spotlightFooterFacebookUrl);
+        set(refs.fieldSpotlightFooterInstagramUrl, state.spotlightFooterInstagramUrl);
+        set(refs.fieldSpotlightFooterXUrl, state.spotlightFooterXUrl);
+        set(refs.fieldSpotlightFooterLinkedinUrl, state.spotlightFooterLinkedinUrl);
+        set(refs.fieldSpotlightFooterYoutubeUrl, state.spotlightFooterYoutubeUrl);
+        if (refs.fieldSpotlightFooterFacebookVisible) refs.fieldSpotlightFooterFacebookVisible.checked = state.spotlightFooterFacebookVisible !== false;
+        if (refs.fieldSpotlightFooterInstagramVisible) refs.fieldSpotlightFooterInstagramVisible.checked = state.spotlightFooterInstagramVisible !== false;
+        if (refs.fieldSpotlightFooterXVisible) refs.fieldSpotlightFooterXVisible.checked = state.spotlightFooterXVisible !== false;
+        if (refs.fieldSpotlightFooterLinkedinVisible) refs.fieldSpotlightFooterLinkedinVisible.checked = state.spotlightFooterLinkedinVisible !== false;
+        if (refs.fieldSpotlightFooterYoutubeVisible) refs.fieldSpotlightFooterYoutubeVisible.checked = state.spotlightFooterYoutubeVisible !== false;
         set(refs.fieldSpotlightBannerAddress, state.spotlightBannerAddress);
         set(refs.fieldSpotlightBannerPhone, state.spotlightBannerPhone);
 
@@ -623,10 +861,6 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         ctx.setUploadPreviewImage(
             document.getElementById('uploadPreviewSpotlightFooterLogo'),
             state.spotlightFooterLogoImage,
-        );
-        ctx.setUploadPreviewImage(
-            document.getElementById('uploadPreviewSpotlightFooterMap'),
-            state.spotlightFooterMapImage,
         );
     }
 
@@ -643,10 +877,39 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         state.spotlightNewsletterHeading = val(refs.fieldSpotlightNewsletterHeading) || DEFAULT_NEWSLETTER_HEADING;
         state.spotlightNewsletterCopy = val(refs.fieldSpotlightNewsletterCopy) || DEFAULT_NEWSLETTER_COPY;
         state.spotlightNewsletterButtonLabel = val(refs.fieldSpotlightNewsletterButtonLabel) || DEFAULT_NEWSLETTER_BUTTON;
-        state.spotlightFooterCompanyName = val(refs.fieldSpotlightFooterCompanyName) || DEFAULT_FOOTER_COMPANY;
-        state.spotlightFooterAddress = val(refs.fieldSpotlightFooterAddress) || DEFAULT_FOOTER_ADDRESS;
+        state.spotlightNewsletterCtaHeading = val(refs.fieldSpotlightNewsletterCtaHeading) || DEFAULT_NEWSLETTER_CTA_HEADING;
+        state.spotlightNewsletterCtaCopy = val(refs.fieldSpotlightNewsletterCtaCopy) || DEFAULT_NEWSLETTER_CTA_COPY;
+        state.spotlightNewsletterCtaShopLabel = val(refs.fieldSpotlightNewsletterCtaShopLabel) || DEFAULT_NEWSLETTER_CTA_SHOP_LABEL;
+        state.spotlightNewsletterCtaShopUrl = val(refs.fieldSpotlightNewsletterCtaShopUrl) || DEFAULT_NEWSLETTER_CTA_SHOP_URL;
+        state.spotlightNewsletterCtaContactLabel = val(refs.fieldSpotlightNewsletterCtaContactLabel) || DEFAULT_NEWSLETTER_CTA_CONTACT_LABEL;
+        state.spotlightNewsletterCtaContactUrl = val(refs.fieldSpotlightNewsletterCtaContactUrl) || DEFAULT_NEWSLETTER_CTA_CONTACT_URL;
+        state.spotlightFooterQuickAboutUrl = val(refs.fieldSpotlightFooterQuickAboutUrl) || SPOTLIGHT_FOOTER_QUICK_LINKS[0].defaultUrl;
+        state.spotlightFooterQuickContactUrl = val(refs.fieldSpotlightFooterQuickContactUrl) || SPOTLIGHT_FOOTER_QUICK_LINKS[1].defaultUrl;
+        state.spotlightFooterQuickCallUrl = val(refs.fieldSpotlightFooterQuickCallUrl) || SPOTLIGHT_FOOTER_QUICK_LINKS[2].defaultUrl;
+        state.spotlightFooterQuickShopUrl = val(refs.fieldSpotlightFooterQuickShopUrl) || SPOTLIGHT_FOOTER_QUICK_LINKS[3].defaultUrl;
+        state.spotlightFooterQuickBrandsUrl = val(refs.fieldSpotlightFooterQuickBrandsUrl) || SPOTLIGHT_FOOTER_QUICK_LINKS[4].defaultUrl;
+        state.spotlightFooterPolicyTermsUrl = val(refs.fieldSpotlightFooterPolicyTermsUrl) || SPOTLIGHT_FOOTER_POLICY_LINKS[0].defaultUrl;
+        state.spotlightFooterPolicyPrivacyUrl = val(refs.fieldSpotlightFooterPolicyPrivacyUrl) || SPOTLIGHT_FOOTER_POLICY_LINKS[1].defaultUrl;
+        state.spotlightFooterPolicyReturnsUrl = val(refs.fieldSpotlightFooterPolicyReturnsUrl) || SPOTLIGHT_FOOTER_POLICY_LINKS[2].defaultUrl;
+        state.spotlightFooterProfileLoginUrl = val(refs.fieldSpotlightFooterProfileLoginUrl) || SPOTLIGHT_FOOTER_PROFILE_LINKS[0].defaultUrl;
+        state.spotlightFooterProfileCartUrl = val(refs.fieldSpotlightFooterProfileCartUrl) || SPOTLIGHT_FOOTER_PROFILE_LINKS[1].defaultUrl;
+        state.spotlightFooterHoursWeekday = val(refs.fieldSpotlightFooterHoursWeekday) || DEFAULT_FOOTER_HOURS_WEEKDAY;
+        state.spotlightFooterHoursSaturday = val(refs.fieldSpotlightFooterHoursSaturday) || DEFAULT_FOOTER_HOURS_SATURDAY;
+        state.spotlightFooterHoursSunday = val(refs.fieldSpotlightFooterHoursSunday) || DEFAULT_FOOTER_HOURS_SUNDAY;
         state.spotlightFooterPhone = val(refs.fieldSpotlightFooterPhone) || DEFAULT_FOOTER_PHONE;
         state.spotlightFooterEmail = val(refs.fieldSpotlightFooterEmail) || DEFAULT_FOOTER_EMAIL;
+        state.spotlightFooterCompanyName = val(refs.fieldSpotlightFooterCompanyName) || DEFAULT_FOOTER_COMPANY_NAME;
+        state.spotlightFooterCopyrightName = val(refs.fieldSpotlightFooterCopyrightName);
+        state.spotlightFooterFacebookUrl = val(refs.fieldSpotlightFooterFacebookUrl);
+        state.spotlightFooterInstagramUrl = val(refs.fieldSpotlightFooterInstagramUrl);
+        state.spotlightFooterXUrl = val(refs.fieldSpotlightFooterXUrl);
+        state.spotlightFooterLinkedinUrl = val(refs.fieldSpotlightFooterLinkedinUrl);
+        state.spotlightFooterYoutubeUrl = val(refs.fieldSpotlightFooterYoutubeUrl);
+        if (refs.fieldSpotlightFooterFacebookVisible) state.spotlightFooterFacebookVisible = refs.fieldSpotlightFooterFacebookVisible.checked;
+        if (refs.fieldSpotlightFooterInstagramVisible) state.spotlightFooterInstagramVisible = refs.fieldSpotlightFooterInstagramVisible.checked;
+        if (refs.fieldSpotlightFooterXVisible) state.spotlightFooterXVisible = refs.fieldSpotlightFooterXVisible.checked;
+        if (refs.fieldSpotlightFooterLinkedinVisible) state.spotlightFooterLinkedinVisible = refs.fieldSpotlightFooterLinkedinVisible.checked;
+        if (refs.fieldSpotlightFooterYoutubeVisible) state.spotlightFooterYoutubeVisible = refs.fieldSpotlightFooterYoutubeVisible.checked;
         state.spotlightBannerAddress = val(refs.fieldSpotlightBannerAddress) || DEFAULT_BANNER_ADDRESS;
         state.spotlightBannerPhone = val(refs.fieldSpotlightBannerPhone) || DEFAULT_BANNER_PHONE;
 
@@ -768,9 +1031,6 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         renderTileGrid(refs.previewSpotlightShopByRoomGrid, state.spotlightShopByRoomTiles, 'showroom-spotlight-room');
 
         if (refs.previewSpotlightAboutHeading) refs.previewSpotlightAboutHeading.textContent = state.spotlightAboutHeading;
-        if (refs.previewSpotlightAboutCopyHeading) {
-            refs.previewSpotlightAboutCopyHeading.textContent = state.spotlightAboutHeading || DEFAULT_ABOUT_HEADING;
-        }
         if (refs.previewSpotlightAboutCopy) {
             const copy = state.spotlightAboutCopy || DEFAULT_ABOUT_COPY;
             const paragraphs = copy.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
@@ -793,21 +1053,48 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         if (refs.previewSpotlightNewsletterHeading) refs.previewSpotlightNewsletterHeading.textContent = state.spotlightNewsletterHeading;
         if (refs.previewSpotlightNewsletterCopy) refs.previewSpotlightNewsletterCopy.textContent = state.spotlightNewsletterCopy;
         if (refs.previewSpotlightNewsletterButton) refs.previewSpotlightNewsletterButton.textContent = state.spotlightNewsletterButtonLabel;
+        if (refs.previewSpotlightNewsletterCtaHeading) {
+            refs.previewSpotlightNewsletterCtaHeading.textContent = state.spotlightNewsletterCtaHeading || DEFAULT_NEWSLETTER_CTA_HEADING;
+        }
+        if (refs.previewSpotlightNewsletterCtaCopy) {
+            refs.previewSpotlightNewsletterCtaCopy.textContent = state.spotlightNewsletterCtaCopy || DEFAULT_NEWSLETTER_CTA_COPY;
+        }
+        if (refs.previewSpotlightNewsletterCtaShop) {
+            refs.previewSpotlightNewsletterCtaShop.textContent = state.spotlightNewsletterCtaShopLabel || DEFAULT_NEWSLETTER_CTA_SHOP_LABEL;
+            refs.previewSpotlightNewsletterCtaShop.href = state.spotlightNewsletterCtaShopUrl || DEFAULT_NEWSLETTER_CTA_SHOP_URL;
+        }
+        if (refs.previewSpotlightNewsletterCtaContact) {
+            refs.previewSpotlightNewsletterCtaContact.textContent = state.spotlightNewsletterCtaContactLabel || DEFAULT_NEWSLETTER_CTA_CONTACT_LABEL;
+            refs.previewSpotlightNewsletterCtaContact.href = state.spotlightNewsletterCtaContactUrl || DEFAULT_NEWSLETTER_CTA_CONTACT_URL;
+        }
 
         applyImage(refs.previewSpotlightFooterLogo, refs.previewSpotlightFooterLogoWrap, state.spotlightFooterLogoImage);
-        applyImage(refs.previewSpotlightFooterMap, refs.previewSpotlightFooterMapWrap, state.spotlightFooterMapImage);
-        if (refs.previewSpotlightFooterCompany) refs.previewSpotlightFooterCompany.textContent = state.spotlightFooterCompanyName;
-        if (refs.previewSpotlightFooterAddress) {
-            refs.previewSpotlightFooterAddress.innerHTML = escapeHtml(state.spotlightFooterAddress || '').replace(/\n/g, '<br>');
+        applyImage(refs.previewSpotlightFooterMap, refs.previewSpotlightFooterMapWrap, DEFAULT_FOOTER_MAP_REFERENCE);
+        renderFooterLinks(refs.previewSpotlightFooterQuickLinks, SPOTLIGHT_FOOTER_QUICK_LINKS, state);
+        renderFooterLinks(refs.previewSpotlightFooterPolicyLinks, SPOTLIGHT_FOOTER_POLICY_LINKS, state);
+        renderFooterLinks(refs.previewSpotlightFooterProfileLinks, SPOTLIGHT_FOOTER_PROFILE_LINKS, state);
+        if (refs.previewSpotlightFooterHoursWeekday) {
+            refs.previewSpotlightFooterHoursWeekday.textContent = state.spotlightFooterHoursWeekday || DEFAULT_FOOTER_HOURS_WEEKDAY;
+        }
+        if (refs.previewSpotlightFooterHoursSaturday) {
+            refs.previewSpotlightFooterHoursSaturday.textContent = state.spotlightFooterHoursSaturday || DEFAULT_FOOTER_HOURS_SATURDAY;
+        }
+        if (refs.previewSpotlightFooterHoursSunday) {
+            refs.previewSpotlightFooterHoursSunday.textContent = state.spotlightFooterHoursSunday || DEFAULT_FOOTER_HOURS_SUNDAY;
         }
         if (refs.previewSpotlightFooterPhone) {
-            refs.previewSpotlightFooterPhone.textContent = state.spotlightFooterPhone;
-            refs.previewSpotlightFooterPhone.href = `tel:${String(state.spotlightFooterPhone).replace(/\D/g, '')}`;
+            const phone = state.spotlightFooterPhone || DEFAULT_FOOTER_PHONE;
+            refs.previewSpotlightFooterPhone.textContent = `Phone Number: ${phone}`;
+            refs.previewSpotlightFooterPhone.href = `tel:${String(phone).replace(/\D/g, '')}`;
         }
         if (refs.previewSpotlightFooterEmail) {
-            refs.previewSpotlightFooterEmail.textContent = state.spotlightFooterEmail;
-            refs.previewSpotlightFooterEmail.href = `mailto:${state.spotlightFooterEmail}`;
+            refs.previewSpotlightFooterEmail.textContent = state.spotlightFooterEmail || DEFAULT_FOOTER_EMAIL;
+            refs.previewSpotlightFooterEmail.href = `mailto:${state.spotlightFooterEmail || DEFAULT_FOOTER_EMAIL}`;
         }
+        if (refs.previewSpotlightFooterCopyright) {
+            refs.previewSpotlightFooterCopyright.innerHTML = buildSpotlightCopyrightText(state);
+        }
+        renderFooterSocial(state);
 
         ctx.scheduleFitPreviewScale();
     }
@@ -815,6 +1102,14 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
     function bindEvents() {
         document.querySelectorAll('[data-spotlight-field]').forEach((input) => {
             input.addEventListener('input', () => {
+                readFormFields();
+                syncPreview();
+                ctx.saveState({ silent: true });
+            });
+        });
+
+        document.querySelectorAll('[data-spotlight-social-toggle]').forEach((input) => {
+            input.addEventListener('change', () => {
                 readFormFields();
                 syncPreview();
                 ctx.saveState({ silent: true });
@@ -909,16 +1204,6 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
                 footerLogoInput.value = '';
                 return;
             }
-
-            const footerMapInput = e.target.closest('#fieldSpotlightFooterMap');
-            if (footerMapInput && footerMapInput.files && footerMapInput.files[0]) {
-                const dataUrl = await ctx.readFileAsDataUrl(footerMapInput.files[0]);
-                ctx.getState().spotlightFooterMapImage = dataUrl;
-                ctx.setUploadPreviewImage(document.getElementById('uploadPreviewSpotlightFooterMap'), dataUrl);
-                syncPreview();
-                ctx.saveState({ silent: true });
-                footerMapInput.value = '';
-            }
         });
     }
 
@@ -969,6 +1254,250 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         mergeSpotlightState(ctx.getState(), data);
     }
 
+    function isSpotlightClientImage(src, defaultPath) {
+        const trimmed = String(src || '').trim();
+        if (!trimmed) return false;
+        if (trimmed.startsWith('data:')) return true;
+        return trimmed !== String(defaultPath || '').trim();
+    }
+
+    function buildHandoffSpec() {
+        const state = ctx.getState();
+        const copyrightName = getSpotlightFooterCopyrightCompanyName(state);
+        const year = new Date().getFullYear();
+        const { normalizeHex, normalizeHexColor } = ctx;
+        const bannerLinks = (state.headerBannerLinks || []).map((link) => ({
+            label: link.label,
+            url: link.url,
+        }));
+        const mainNavItems = (state.mainNavItems || []).map((item) => ({
+            id: item.id,
+            label: item.label,
+            url: item.url || '',
+            subcategories: (item.subcategories || []).map((sub) => ({
+                id: sub.id,
+                label: sub.label,
+                url: sub.url,
+                visible: sub.visible !== false,
+            })),
+        }));
+
+        return {
+            template: 'Showroom — Spotlight',
+            design: 'spotlight',
+            contentColumnWidth: '1479 px',
+            header: {
+                layout: 'spotlight',
+                logoFilename: 'header-logo.png',
+                logoDimensions: 'max 220 × 68 px',
+                contentColumnWidth: '1479 px',
+                topBar: {
+                    backgroundColor: normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG),
+                    textColor: normalizeHexColor(state.headerBannerTextColor, DEFAULT_HEADER_BANNER_TEXT),
+                    address: state.spotlightBannerAddress || DEFAULT_BANNER_ADDRESS,
+                    phone: state.spotlightBannerPhone || DEFAULT_BANNER_PHONE,
+                    links: bannerLinks,
+                },
+                toolbar: {
+                    searchBarHardcoded: true,
+                    searchPlaceholder: 'what can we find for you?',
+                    iconsHardcoded: true,
+                },
+                mainNav: {
+                    editable: true,
+                    hasDropdowns: true,
+                    items: mainNavItems,
+                },
+            },
+            hero: {
+                layout: 'carousel',
+                slideCount: (state.spotlightHeroSlides || []).length,
+                slides: (state.spotlightHeroSlides || []).map((slide, index) => ({
+                    index: index + 1,
+                    imageFilename: `spotlight-hero-slide-${index + 1}.jpg`,
+                })),
+            },
+            onSale: {
+                heading: state.spotlightOnSaleHeading || DEFAULT_ON_SALE_HEADING,
+                imageFilename: 'spotlight-on-sale.png',
+            },
+            shopByRoom: {
+                heading: state.spotlightShopByRoomHeading || DEFAULT_SHOP_BY_ROOM_HEADING,
+                tiles: (state.spotlightShopByRoomTiles || []).map((tile, index) => ({
+                    index: index + 1,
+                    label: tile.label,
+                    url: tile.url,
+                    imageFilename: `spotlight-shop-by-room-${index + 1}.jpg`,
+                })),
+            },
+            aboutUs: {
+                heading: state.spotlightAboutHeading || DEFAULT_ABOUT_HEADING,
+                copy: state.spotlightAboutCopy || DEFAULT_ABOUT_COPY,
+                imageFilename: 'spotlight-about.jpg',
+            },
+            categories: {
+                heading: state.spotlightCategoryHeading || DEFAULT_CATEGORY_HEADING,
+                tiles: (state.spotlightCategoryTiles || []).map((tile, index) => ({
+                    index: index + 1,
+                    label: tile.label,
+                    url: tile.url,
+                    imageFilename: `spotlight-category-${index + 1}.jpg`,
+                })),
+            },
+            brands: {
+                heading: state.spotlightBrandsHeading || DEFAULT_BRANDS_HEADING,
+                imageFilename: 'spotlight-brands.png',
+            },
+            newsletter: {
+                heading: state.spotlightNewsletterHeading || DEFAULT_NEWSLETTER_HEADING,
+                copy: state.spotlightNewsletterCopy || DEFAULT_NEWSLETTER_COPY,
+                buttonLabel: state.spotlightNewsletterButtonLabel || DEFAULT_NEWSLETTER_BUTTON,
+                ctaHeading: state.spotlightNewsletterCtaHeading || DEFAULT_NEWSLETTER_CTA_HEADING,
+                ctaCopy: state.spotlightNewsletterCtaCopy || DEFAULT_NEWSLETTER_CTA_COPY,
+                ctaShopLabel: state.spotlightNewsletterCtaShopLabel || DEFAULT_NEWSLETTER_CTA_SHOP_LABEL,
+                ctaShopUrl: state.spotlightNewsletterCtaShopUrl || DEFAULT_NEWSLETTER_CTA_SHOP_URL,
+                ctaContactLabel: state.spotlightNewsletterCtaContactLabel || DEFAULT_NEWSLETTER_CTA_CONTACT_LABEL,
+                ctaContactUrl: state.spotlightNewsletterCtaContactUrl || DEFAULT_NEWSLETTER_CTA_CONTACT_URL,
+            },
+            footer: {
+                layout: 'five-column',
+                backgroundColor: '#254155',
+                copyrightBarBackgroundColor: '#1a3347',
+                logoFilename: 'spotlight-footer-logo.png',
+                mapNote: 'Live Google Maps embed added from business address at handoff',
+                quickLinks: SPOTLIGHT_FOOTER_QUICK_LINKS.map((link) => ({
+                    label: link.label,
+                    url: state[link.stateKey] || link.defaultUrl,
+                })),
+                policies: SPOTLIGHT_FOOTER_POLICY_LINKS.map((link) => ({
+                    label: link.label,
+                    url: state[link.stateKey] || link.defaultUrl,
+                })),
+                profileLinks: SPOTLIGHT_FOOTER_PROFILE_LINKS.map((link) => ({
+                    label: link.label,
+                    url: state[link.stateKey] || link.defaultUrl,
+                })),
+                companyInfo: {
+                    hoursWeekday: state.spotlightFooterHoursWeekday || DEFAULT_FOOTER_HOURS_WEEKDAY,
+                    hoursSaturday: state.spotlightFooterHoursSaturday || DEFAULT_FOOTER_HOURS_SATURDAY,
+                    hoursSunday: state.spotlightFooterHoursSunday || DEFAULT_FOOTER_HOURS_SUNDAY,
+                    phone: state.spotlightFooterPhone || DEFAULT_FOOTER_PHONE,
+                    email: state.spotlightFooterEmail || DEFAULT_FOOTER_EMAIL,
+                },
+                companyName: state.spotlightFooterCompanyName || DEFAULT_FOOTER_COMPANY_NAME,
+                copyrightName,
+                copyrightSpec: `© ${year} ${copyrightName} | All Rights Reserved · ADA Compliant (${FOOTER_ADA_POPUP})`,
+                copyrightMarkup: buildSpotlightCopyrightText(state),
+                copyrightPasteMarkup: (
+                    `<div id="rightCol"> &copy; ${year} ${copyrightName} | All Rights Reserved `
+                    + `<a ajax-popup="${FOOTER_ADA_POPUP}">ADA Compliant</a></div>`
+                ),
+                adaCompliancePopup: FOOTER_ADA_POPUP,
+                social: Object.fromEntries(
+                    SPOTLIGHT_FOOTER_SOCIAL_LINKS.map((social) => [
+                        social.id,
+                        {
+                            url: state[social.urlKey] || '',
+                            visible: state[social.visibleKey] !== false,
+                        },
+                    ]),
+                ),
+            },
+        };
+    }
+
+    function buildHandoffAssetsList() {
+        const state = ctx.getState();
+        const assets = [];
+
+        const pushIfClient = (filename, label, dimensions, src, defaultPath) => {
+            if (!isSpotlightClientImage(src, defaultPath)) return;
+            assets.push({ filename, label, dimensions, dataUrl: src });
+        };
+
+        pushIfClient(
+            'header-logo.png',
+            'Header logo',
+            'max 220 × 68 px',
+            state.headerLogoImage,
+            DEFAULT_HEADER_LOGO,
+        );
+
+        (state.spotlightHeroSlides || []).forEach((slide, index) => {
+            pushIfClient(
+                `spotlight-hero-slide-${index + 1}.jpg`,
+                `Hero slide ${index + 1}`,
+                'Hero carousel slide',
+                slide.image,
+                HERO_SLIDE_DEFAULTS[index] || '',
+            );
+        });
+
+        pushIfClient(
+            'spotlight-on-sale.png',
+            "What's On Sale image",
+            'Section banner image',
+            state.spotlightOnSaleImage,
+            DEFAULT_ON_SALE_IMAGE,
+        );
+
+        pushIfClient(
+            'spotlight-about.jpg',
+            'About Us image',
+            'About section photo',
+            state.spotlightAboutImage,
+            DEFAULT_ABOUT_IMAGE,
+        );
+
+        pushIfClient(
+            'spotlight-brands.png',
+            'Our Brands image',
+            'Brands section image',
+            state.spotlightBrandsImage,
+            DEFAULT_BRANDS_IMAGE,
+        );
+
+        (state.spotlightShopByRoomTiles || []).forEach((tile, index) => {
+            const defaultTile = SHOP_BY_ROOM_DEFAULTS[index];
+            pushIfClient(
+                `spotlight-shop-by-room-${index + 1}.jpg`,
+                `Shop by Room — ${tile.label || `tile ${index + 1}`}`,
+                'Room tile',
+                tile.image,
+                defaultTile?.defaultImage || '',
+            );
+        });
+
+        (state.spotlightCategoryTiles || []).forEach((tile, index) => {
+            const defaultTile = CATEGORY_DEFAULTS[index];
+            pushIfClient(
+                `spotlight-category-${index + 1}.jpg`,
+                `Category — ${tile.label || `tile ${index + 1}`}`,
+                'Category tile',
+                tile.image,
+                defaultTile?.defaultImage || '',
+            );
+        });
+
+        pushIfClient(
+            'spotlight-footer-logo.png',
+            'Footer logo',
+            'max 220 × 68 px',
+            state.spotlightFooterLogoImage,
+            DEFAULT_FOOTER_LOGO,
+        );
+
+        return assets;
+    }
+
+    async function buildHandoffAssets(resolveImageDataUrlForExport) {
+        const assets = buildHandoffAssetsList();
+        return Promise.all(assets.map(async (asset) => ({
+            ...asset,
+            dataUrl: await resolveImageDataUrlForExport(asset.dataUrl),
+        })));
+    }
+
     return {
         integrate,
         migrateLoaded,
@@ -986,5 +1515,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         isLegacyMcQueenBannerLinks,
         defaultMainNavItems: defaultSpotlightMainNavItems,
         migrateMainNavItems: migrateSpotlightMainNavItems,
+        buildHandoffSpec,
+        buildHandoffAssets,
     };
 })();

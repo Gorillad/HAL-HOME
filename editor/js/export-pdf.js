@@ -14,6 +14,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         footerEl,
         copyrightEl,
         galleryCatalogEl,
+        spotlightSections = [],
         spec,
         assets = [],
         pdfFilename = 'showroom-homepage-brief.pdf',
@@ -21,6 +22,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     } = options;
 
     const isGallery = spec?.design === 'gallery';
+    const isSpotlight = spec?.design === 'spotlight';
     const resolvedHandoffAssets = assets.filter(
         (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
     );
@@ -43,6 +45,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             return 'No — template defaults (source separately)';
         }
         return `Yes — ${matches.join(', ')}`;
+    }
+
+    function spotlightHandoffImageLine(filename, defaultLabel) {
+        return galleryHandoffImageLine(filename, defaultLabel);
+    }
+
+    function spotlightHandoffAssetListLine(prefix) {
+        return galleryHandoffAssetListLine(prefix);
     }
 
     const JsPDF = window.jspdf?.jsPDF || window.jsPDF;
@@ -316,6 +326,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         clonedDoc.querySelectorAll('.showroom-hero-copy, .showroom-feature-card-overlay').forEach((panel) => {
             panel.style.overflow = 'hidden';
         });
+        clonedDoc.querySelectorAll(
+            '.showroom-spotlight-carousel-nav, .showroom-spotlight-carousel-dots',
+        ).forEach((control) => {
+            control.style.display = 'none';
+        });
     }
 
     async function waitForImagesInElement(el) {
@@ -447,7 +462,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ? (resolvedHandoffAssets.length
                 ? 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. Client-replaced images are included in the ZIP and on dedicated PDF pages after the layout previews. Template default images are not bundled.'
                 : 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. No client-replaced images are bundled — template defaults are shown in the layout previews only.')
-            : 'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
+            : isSpotlight
+                ? (resolvedHandoffAssets.length
+                    ? 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Client-replaced images are included in the ZIP and on dedicated PDF pages after the layout previews.'
+                    : 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Template default images are shown in layout previews only — source separately on the live site.')
+                : 'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
         { size: 9, color: [90, 90, 90], gap: 16 },
     );
 
@@ -511,6 +530,43 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             writeItemList(
                 galleryNavLinks,
                 (item) => `${item.label || '—'}: ${item.url || '—'}`,
+            );
+        }
+    } else if (isSpotlight) {
+        const spotlightTopBar = header.topBar || {};
+        const spotlightNavLinks = Array.isArray(header.mainNav?.items) ? header.mainNav.items : [];
+        writeSpecRows([
+            ['Layout', header.layout || 'spotlight'],
+            ['Content column width', header.contentColumnWidth || '1479 px'],
+            ['Top bar background', spotlightTopBar.backgroundColor || '—'],
+            ['Top bar text', spotlightTopBar.textColor || '—'],
+            ['Address line', spotlightTopBar.address || '—'],
+            ['Phone line', spotlightTopBar.phone || '—'],
+            ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
+            ['Header logo in handoff', spotlightHandoffImageLine('header-logo.png', 'hardcoded in template')],
+            ['Search bar', header.toolbar?.searchBarHardcoded !== false
+                ? `Hardcoded — placeholder “${header.toolbar?.searchPlaceholder || 'what can we find for you?'}”`
+                : '—'],
+            ['Toolbar icons', header.toolbar?.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
+            ['Main navigation', header.mainNav?.editable !== false ? 'Editable in template editor' : '—'],
+            ['Category count', spotlightNavLinks.length ? String(spotlightNavLinks.length) : '0'],
+        ]);
+        const spotlightBannerLinks = normalizeFooterLinksForExport(spotlightTopBar.links);
+        if (spotlightBannerLinks.length) {
+            writeLines('Top banner links', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                spotlightBannerLinks,
+                (item) => `${item.label}: ${item.url || '—'}`,
+            );
+        }
+        if (spotlightNavLinks.length) {
+            writeLines('Main navigation categories', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                spotlightNavLinks,
+                (item) => {
+                    const categoryUrl = String(item.url || '').trim();
+                    return categoryUrl ? `${item.label || '—'} (${categoryUrl})` : (item.label || '—');
+                },
             );
         }
     } else {
@@ -613,6 +669,21 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Bottom right image link', galleryHeroSecondaryBottomOverlay.url || '—'],
             ['Hero images in handoff', galleryHandoffAssetListLine('gallery-hero-')],
         ]);
+    } else if (isSpotlight) {
+        const spotlightHero = spec.hero || {};
+        const spotlightSlides = Array.isArray(spotlightHero.slides) ? spotlightHero.slides : [];
+        writeSpecRows([
+            ['Layout', spotlightHero.layout || 'carousel'],
+            ['Slide count', String(spotlightHero.slideCount || spotlightSlides.length || 0)],
+            ['Hero images in handoff', spotlightHandoffAssetListLine('spotlight-hero-slide-')],
+        ]);
+        if (spotlightSlides.length) {
+            writeLines('Carousel slides', { bold: true, size: 10, gap: 4 });
+            writeItemList(
+                spotlightSlides,
+                (slide) => `${slide.index || '—'}. ${slide.imageFilename || '—'}`,
+            );
+        }
     } else {
         writeSpecRows([
             ['Collection title', spec.title],
@@ -659,6 +730,62 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 (tile) => `${tile.index || '—'}. ${tile.label || '—'}: ${tile.url || '—'}`,
             );
         }
+    } else if (isSpotlight) {
+        const onSale = spec.onSale || {};
+        writeSectionTitle('On Sale');
+        writeSpecRows([
+            ['Heading', onSale.heading || '—'],
+            ['Image in handoff', spotlightHandoffImageLine('spotlight-on-sale.png', 'template default')],
+        ]);
+
+        const shopByRoom = spec.shopByRoom || {};
+        const roomTiles = Array.isArray(shopByRoom.tiles) ? shopByRoom.tiles : [];
+        writeSectionTitle('Shop by Room');
+        writeSpecRows([
+            ['Heading', shopByRoom.heading || '—'],
+            ['Tile images in handoff', spotlightHandoffAssetListLine('spotlight-shop-by-room-')],
+        ]);
+        if (roomTiles.length) {
+            writeItemList(roomTiles, (tile) => `${tile.index || '—'}. ${tile.label || '—'}: ${tile.url || '—'}`);
+        }
+
+        const spotlightAbout = spec.aboutUs || {};
+        writeSectionTitle('About Us');
+        writeSpecRows([
+            ['Heading', spotlightAbout.heading || '—'],
+            ['Copy', spotlightAbout.copy || '—'],
+            ['Image in handoff', spotlightHandoffImageLine('spotlight-about.jpg', 'template default')],
+        ]);
+
+        const spotlightCategories = spec.categories || {};
+        const categoryTiles = Array.isArray(spotlightCategories.tiles) ? spotlightCategories.tiles : [];
+        writeSectionTitle('Categories');
+        writeSpecRows([
+            ['Heading', spotlightCategories.heading || '—'],
+            ['Tile images in handoff', spotlightHandoffAssetListLine('spotlight-category-')],
+        ]);
+        if (categoryTiles.length) {
+            writeItemList(categoryTiles, (tile) => `${tile.index || '—'}. ${tile.label || '—'}: ${tile.url || '—'}`);
+        }
+
+        const spotlightBrands = spec.brands || {};
+        writeSectionTitle('Brands');
+        writeSpecRows([
+            ['Heading', spotlightBrands.heading || '—'],
+            ['Image in handoff', spotlightHandoffImageLine('spotlight-brands.png', 'template default')],
+        ]);
+
+        const newsletter = spec.newsletter || {};
+        writeSectionTitle('Newsletter');
+        writeSpecRows([
+            ['Heading', newsletter.heading || '—'],
+            ['Copy', newsletter.copy || '—'],
+            ['Submit button', newsletter.buttonLabel || 'Submit'],
+            ['CTA box heading', newsletter.ctaHeading || '—'],
+            ['CTA copy', newsletter.ctaCopy || '—'],
+            ['Shop button', pdfLinkLine(newsletter.ctaShopLabel, newsletter.ctaShopUrl)],
+            ['Contact button', pdfLinkLine(newsletter.ctaContactLabel, newsletter.ctaContactUrl)],
+        ]);
     } else {
         writeSectionTitle('Featured Categories');
         const featuredCategoryList = Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [];
@@ -744,7 +871,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     };
     const copyrightSection = spec.copyright || null;
     const isClassicFooter = footer.layout === 'four-column';
-    const footerSpecRows = isClassicFooter ? [] : [
+    const isSpotlightFooter = footer.layout === 'five-column';
+    const footerSpecRows = isClassicFooter || isSpotlightFooter ? [] : [
         ['Footer logo', footer.logoUseHeader !== false ? 'Same as header logo' : (footer.logoFilename || 'footer-logo.png')],
         ['Footer logo size', footer.logoDimensions || 'max 280 × 94 px'],
         ['Footer logo in handoff', footer.logoUseHeader !== false
@@ -760,7 +888,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ['YouTube', formatFooterSocial(footerSocial.youtube)],
         ['LinkedIn', formatFooterSocial(footerSocial.linkedin)],
     ];
-    if (!copyrightSection && !isClassicFooter) {
+    if (!copyrightSection && !isClassicFooter && !isSpotlightFooter) {
         footerSpecRows.push(
             ['Copyright', footer.copyrightSpec
                 || `© ${new Date().getFullYear()} ${footer.copyrightName || footer.companyName || '—'} | All Rights Reserved · ADA Compliant (ada-compliance::ADA Compliance::600px)`],
@@ -793,6 +921,43 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             writeItemList(links, (item) => `${item.label}: ${item.url || '—'}`);
         });
     }
+    if (isSpotlightFooter) {
+        const companyInfo = footer.companyInfo || {};
+        const profileLinks = normalizeFooterLinksForExport(footer.profileLinks);
+        writeSpecRows([
+            ['Layout', 'Five-column footer with copyright bar'],
+            ['Background color', footer.backgroundColor || '#254155'],
+            ['Copyright bar background', footer.copyrightBarBackgroundColor || '#1a3347'],
+            ['Footer logo in handoff', spotlightHandoffImageLine('spotlight-footer-logo.png', 'template default')],
+            ['Map embed', footer.mapNote || 'Live Google Maps from business address'],
+            ['Company name', footer.companyName || '—'],
+            ['Weekday hours', companyInfo.hoursWeekday || '—'],
+            ['Saturday hours', companyInfo.hoursSaturday || '—'],
+            ['Sunday hours', companyInfo.hoursSunday || '—'],
+            ['Phone', companyInfo.phone || '—'],
+            ['Email', companyInfo.email || '—'],
+            ['Copyright company name', footer.copyrightName || footer.companyName || '—'],
+            ['Copyright', footer.copyrightSpec || '—'],
+            ['Copyright markup', footer.copyrightPasteMarkup || footer.copyrightMarkup || '—'],
+            ['Facebook', formatFooterSocial(footerSocial.facebook)],
+            ['Instagram', formatFooterSocial(footerSocial.instagram)],
+            ['X', formatFooterSocial(footerSocial.x)],
+            ['LinkedIn', formatFooterSocial(footerSocial.linkedin)],
+            ['YouTube', formatFooterSocial(footerSocial.youtube)],
+        ]);
+        if (footerQuickLinks.length) {
+            writeLines('Quick links', { bold: true, size: 10, gap: 4 });
+            writeItemList(footerQuickLinks, (item) => `${item.label}: ${item.url || '—'}`);
+        }
+        if (footerPolicies.length) {
+            writeLines('Policies', { bold: true, size: 10, gap: 4 });
+            writeItemList(footerPolicies, (item) => `${item.label}: ${item.url || '—'}`);
+        }
+        if (profileLinks.length) {
+            writeLines('Your profile', { bold: true, size: 10, gap: 4 });
+            writeItemList(profileLinks, (item) => `${item.label}: ${item.url || '—'}`);
+        }
+    }
     if (copyrightSection) {
         writeSectionTitle('Copyright');
         writeLines(
@@ -808,14 +973,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Copyright markup', copyrightSection.copyrightPasteMarkup || copyrightSection.copyrightMarkup || '—'],
         ]);
     }
-    if (!isClassicFooter && footerQuickLinks.length) {
+    if (!isClassicFooter && !isSpotlightFooter && footerQuickLinks.length) {
         writeLines('Quick Links', { bold: true, size: 10, gap: 4 });
         writeItemList(
             footerQuickLinks,
             (item) => `${item.label}: ${item.url || '—'}`,
         );
     }
-    if (!isClassicFooter && footerPolicies.length) {
+    if (!isClassicFooter && !isSpotlightFooter && footerPolicies.length) {
         writeLines('Policies', { bold: true, size: 10, gap: 4 });
         writeItemList(
             footerPolicies,
@@ -845,29 +1010,36 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     await appendCanvasPreview(await captureElement(heroTarget), 'Preview — Hero');
 
-    if (isGallery && isCapturable(galleryCatalogEl)) {
-        await appendCanvasPreview(await captureElement(galleryCatalogEl), 'Preview — Catalog Highlights');
-    }
-    if (!isGallery && isCapturable(categoriesEl)) {
-        await appendCanvasPreview(await captureElement(categoriesEl), 'Preview — Featured Categories');
-    }
-    if (!isGallery && isCapturable(aboutEl)) {
-        await appendCanvasPreview(await captureElement(aboutEl), 'Preview — About Us');
-    }
-    if (!isGallery && isCapturable(featureTilesEl)) {
-        await appendCanvasPreview(await captureElement(featureTilesEl), 'Preview — Feature Cards');
-    }
-    if (!isGallery && isCapturable(youMayLikeEl)) {
-        await appendCanvasPreview(await captureElement(youMayLikeEl), 'Preview — You May Like');
-    }
-    if (!isGallery && isCapturable(getInspiredEl)) {
-        await appendCanvasPreview(await captureElement(getInspiredEl), 'Preview — Get Inspired');
-    }
-    if (isCapturable(footerEl)) {
-        await appendCanvasPreview(await captureElement(footerEl), 'Preview — Footer');
-    }
-    if (isCapturable(copyrightEl)) {
-        await appendCanvasPreview(await captureElement(copyrightEl), 'Preview — Copyright');
+    if (isSpotlight) {
+        for (const section of spotlightSections) {
+            if (!isCapturable(section.el)) continue;
+            await appendCanvasPreview(await captureElement(section.el), section.label);
+        }
+    } else {
+        if (isGallery && isCapturable(galleryCatalogEl)) {
+            await appendCanvasPreview(await captureElement(galleryCatalogEl), 'Preview — Catalog Highlights');
+        }
+        if (!isGallery && isCapturable(categoriesEl)) {
+            await appendCanvasPreview(await captureElement(categoriesEl), 'Preview — Featured Categories');
+        }
+        if (!isGallery && isCapturable(aboutEl)) {
+            await appendCanvasPreview(await captureElement(aboutEl), 'Preview — About Us');
+        }
+        if (!isGallery && isCapturable(featureTilesEl)) {
+            await appendCanvasPreview(await captureElement(featureTilesEl), 'Preview — Feature Cards');
+        }
+        if (!isGallery && isCapturable(youMayLikeEl)) {
+            await appendCanvasPreview(await captureElement(youMayLikeEl), 'Preview — You May Like');
+        }
+        if (!isGallery && isCapturable(getInspiredEl)) {
+            await appendCanvasPreview(await captureElement(getInspiredEl), 'Preview — Get Inspired');
+        }
+        if (isCapturable(footerEl)) {
+            await appendCanvasPreview(await captureElement(footerEl), 'Preview — Footer');
+        }
+        if (isCapturable(copyrightEl)) {
+            await appendCanvasPreview(await captureElement(copyrightEl), 'Preview — Copyright');
+        }
     }
 
     // ——— Uploaded asset pages ———
@@ -883,7 +1055,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         design: spec.design || 'classic',
         sections: isGallery
             ? ['header', 'homepage-hero', 'catalog-highlights', 'footer', 'copyright']
-            : ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
+            : isSpotlight
+                ? ['header', 'homepage-hero', 'on-sale', 'shop-by-room', 'about-us', 'categories', 'brands', 'newsletter', 'footer']
+                : ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
         generatedAt: new Date().toISOString(),
         adaCompliance: {
             required: true,
@@ -943,7 +1117,30 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 templateDefaultsExcluded: true,
             },
         }
-        : {
+        : isSpotlight
+            ? {
+                ...specJsonShared,
+                header: spec.header || {},
+                hero: spec.hero || {},
+                onSale: spec.onSale || {},
+                shopByRoom: spec.shopByRoom || {},
+                aboutUs: spec.aboutUs || {},
+                categories: spec.categories || {},
+                brands: spec.brands || {},
+                newsletter: spec.newsletter || {},
+                footer: spec.footer || {},
+                imageHandoffPolicy: {
+                    headerLogo: assetIncludedInHandoff('header-logo.png'),
+                    heroSlides: resolvedHandoffAssets.some((asset) => (
+                        String(asset.filename || '').startsWith('spotlight-hero-slide-')
+                    )),
+                    sectionImages: resolvedHandoffAssets.some((asset) => (
+                        String(asset.filename || '').startsWith('spotlight-')
+                    )),
+                    templateDefaultsExcluded: true,
+                },
+            }
+            : {
             ...specJsonShared,
             copy: {
                 title: spec.title || '',
@@ -1176,7 +1373,26 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 ? 'Handoff image files are listed in the PDF under “Handoff images”.'
                 : 'Template default images are shown in layout previews only — source those separately on the live site.',
         ].join('\n')
-        : [
+        : isSpotlight
+            ? [
+                'Showroom Spotlight — Developer Handoff',
+                '======================================',
+                '',
+                'REQUIRED — ADA compliance footer (all websites)',
+                'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
+                '',
+                `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
+                resolvedHandoffAssets.length
+                    ? '2. images/ — Client-replaced images only (template defaults are not bundled)'
+                    : '2. images/ — Omitted (no client-replaced images in this export)',
+                '3. spec/homepage-spec.json — Machine-readable spec (Header, Hero, sections, Footer)',
+                '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+                '',
+                resolvedHandoffAssets.length
+                    ? 'Handoff image files are listed in the PDF under “Handoff images”.'
+                    : 'Template default images are shown in layout previews only — source those separately on the live site.',
+            ].join('\n')
+            : [
             'Showroom Homepage — Developer Handoff',
             '=====================================',
             '',

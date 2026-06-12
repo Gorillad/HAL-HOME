@@ -622,6 +622,15 @@
     const previewGetInspiredLifestyleImage = document.getElementById('previewGetInspiredLifestyleImage');
     const previewGetInspiredLifestylePlaceholder = document.getElementById('previewGetInspiredLifestylePlaceholder');
     const footerRoot = document.getElementById('showroomFooterSection');
+    const showroomHeaderSpotlight = document.getElementById('showroomHeaderSpotlight');
+    const showroomHeroSpotlight = document.getElementById('showroomHeroSpotlight');
+    const spotlightOnSaleRoot = document.getElementById('showroomSpotlightOnSaleSection');
+    const spotlightShopByRoomRoot = document.getElementById('showroomSpotlightShopByRoomSection');
+    const spotlightAboutRoot = document.getElementById('showroomSpotlightAboutSection');
+    const spotlightCategoryRoot = document.getElementById('showroomSpotlightCategorySection');
+    const spotlightBrandsRoot = document.getElementById('showroomSpotlightBrandsSection');
+    const spotlightNewsletterRoot = document.getElementById('showroomSpotlightNewsletterSection');
+    const spotlightFooterRoot = document.getElementById('showroomSpotlightFooterSection');
     const classicFooterRoot = document.getElementById('showroomFooterClassicSection');
     const classicCopyrightRoot = document.getElementById('showroomCopyrightClassicSection');
     const editorFooterClassic = document.getElementById('editorFooterClassic');
@@ -661,6 +670,7 @@
     const previewWrap = document.querySelector('.editor-preview-wrap');
     const editorPanel = document.getElementById('editorPanel');
     const editorSectionNav = document.getElementById('editorSectionNav');
+    let refreshEditorSectionNavSpy = null;
     const TEMPLATE_FRAME_WIDTH = 1572;
 
     let state = {
@@ -1052,6 +1062,41 @@
             editorSectionId: 'editor-section-copyright-classic',
             template: 'gallery',
         },
+        {
+            previewId: 'showroomSpotlightOnSaleSection',
+            editorSectionId: 'editor-section-spotlight-on-sale',
+            template: 'spotlight',
+        },
+        {
+            previewId: 'showroomSpotlightShopByRoomSection',
+            editorSectionId: 'editor-section-spotlight-shop-by-room',
+            template: 'spotlight',
+        },
+        {
+            previewId: 'showroomSpotlightAboutSection',
+            editorSectionId: 'editor-section-spotlight-about',
+            template: 'spotlight',
+        },
+        {
+            previewId: 'showroomSpotlightCategorySection',
+            editorSectionId: 'editor-section-spotlight-category',
+            template: 'spotlight',
+        },
+        {
+            previewId: 'showroomSpotlightBrandsSection',
+            editorSectionId: 'editor-section-spotlight-brands',
+            template: 'spotlight',
+        },
+        {
+            previewId: 'showroomSpotlightNewsletterSection',
+            editorSectionId: 'editor-section-spotlight-newsletter',
+            template: 'spotlight',
+        },
+        {
+            previewId: 'showroomSpotlightFooterSection',
+            editorSectionId: 'editor-section-spotlight-footer',
+            template: 'spotlight',
+        },
     ];
 
     function isPreviewJumpTargetActive(mapping) {
@@ -1164,6 +1209,7 @@
             block.classList.toggle('is-active', block.dataset.sectionId === sectionId);
         });
         editorSectionNav.querySelectorAll('.editor-section-nav-link').forEach((link) => {
+            if (link.hidden || link.offsetParent === null) return;
             link.classList.toggle('is-active', link.getAttribute('href') === `#${sectionId}`);
         });
     }
@@ -1171,10 +1217,10 @@
     function bindSectionScrollSpy() {
         if (!editorSectionNav || !editorPanel) return;
 
-        const blocks = [...editorPanel.querySelectorAll('.editor-panel-block')];
-        if (!blocks.length) return;
-
         const updateActiveSection = () => {
+            const blocks = [...editorPanel.querySelectorAll('.editor-panel-block')].filter((block) => !block.hidden);
+            if (!blocks.length) return;
+
             const scrollTop = editorPanel.scrollTop;
             const offset = 48;
             let activeBlock = blocks[0];
@@ -1189,6 +1235,7 @@
         };
 
         editorPanel.addEventListener('scroll', updateActiveSection, { passive: true });
+        refreshEditorSectionNavSpy = updateActiveSection;
         updateActiveSection();
     }
 
@@ -4772,9 +4819,52 @@
         return resolveAssetsForExport(assets);
     }
 
+    function readSpotlightExportForm() {
+        if (!window.SpotlightEditor) return;
+
+        SpotlightEditor.readFormFields();
+        readHeaderBannerLinksFromEditor();
+        readMainNavFromEditor();
+
+        if (fields.headerBannerBackgroundColor) {
+            state.headerBannerBackgroundColor = normalizeHex(
+                fields.headerBannerBackgroundColor.value || DEFAULT_HEADER_BANNER_BG,
+            );
+            fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
+            if (fields.headerBannerBackgroundColorValue) {
+                fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+            }
+        }
+        if (fields.headerBannerTextColor) {
+            state.headerBannerTextColor = normalizeHexColor(
+                fields.headerBannerTextColor.value,
+                DEFAULT_HEADER_BANNER_TEXT,
+            );
+            fields.headerBannerTextColor.value = state.headerBannerTextColor;
+            if (fields.headerBannerTextColorValue) {
+                fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
+            }
+        }
+    }
+
+    function buildSpotlightHandoffSpec() {
+        if (window.SpotlightEditor?.buildHandoffSpec) {
+            return SpotlightEditor.buildHandoffSpec();
+        }
+        return { template: `Showroom — ${TEMPLATE_DESIGNS.spotlight}`, design: 'spotlight' };
+    }
+
+    async function buildSpotlightHandoffAssetsForExport() {
+        if (!window.SpotlightEditor?.buildHandoffAssets) return [];
+        return SpotlightEditor.buildHandoffAssets(resolveImageDataUrlForExport);
+    }
+
     async function buildHandoffAssetsForExport() {
         if (templateDesign === 'gallery') {
             return buildGalleryHandoffAssetsForExport();
+        }
+        if (templateDesign === 'spotlight') {
+            return buildSpotlightHandoffAssetsForExport();
         }
 
         const assets = [
@@ -4830,12 +4920,15 @@
         if (templateDesign === 'gallery') {
             ensureGalleryImageDefaults();
             readClassicFooterLinksFromEditor();
+            readForm();
+        } else if (templateDesign === 'spotlight') {
+            readSpotlightExportForm();
         } else {
             readYouMayLikeFieldsFromEditor();
             readGetInspiredFieldsFromEditor();
             readMainNavFromEditor();
+            readForm();
         }
-        readForm();
         syncPreview();
         const prevTransform = previewRoot.style.transform;
         const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
@@ -4852,7 +4945,9 @@
             const handoffAssets = await buildHandoffAssetsForExport();
             const handoffSpec = templateDesign === 'gallery'
                 ? buildGalleryHandoffSpec()
-                : {
+                : templateDesign === 'spotlight'
+                    ? buildSpotlightHandoffSpec()
+                    : {
                     template: `Showroom — ${TEMPLATE_DESIGNS.classic}`,
                     design: 'classic',
                     title: state.title,
@@ -4978,17 +5073,38 @@
                     },
                 };
 
+            const spotlightSectionPreviews = templateDesign === 'spotlight'
+                ? [
+                    { el: spotlightOnSaleRoot, label: 'Preview — On Sale' },
+                    { el: spotlightShopByRoomRoot, label: 'Preview — Shop by Room' },
+                    { el: spotlightAboutRoot, label: 'Preview — About Us' },
+                    { el: spotlightCategoryRoot, label: 'Preview — Categories' },
+                    { el: spotlightBrandsRoot, label: 'Preview — Brands' },
+                    { el: spotlightNewsletterRoot, label: 'Preview — Newsletter' },
+                    { el: spotlightFooterRoot, label: 'Preview — Footer' },
+                ]
+                : [];
+
             await window.exportShowroomHandoff({
-                headerEl: headerRoot,
-                heroEl: templateDesign === 'gallery' ? galleryHeroLayoutRoot : heroRoot,
+                headerEl: templateDesign === 'spotlight' ? showroomHeaderSpotlight : headerRoot,
+                heroEl: templateDesign === 'gallery'
+                    ? galleryHeroLayoutRoot
+                    : templateDesign === 'spotlight'
+                        ? showroomHeroSpotlight
+                        : heroRoot,
                 galleryCatalogEl: templateDesign === 'gallery' ? galleryCatalogRoot : null,
-                categoriesEl: templateDesign === 'gallery' ? null : categoriesRoot,
-                aboutEl: templateDesign === 'gallery' ? null : aboutRoot,
-                featureTilesEl: templateDesign === 'gallery' ? null : featureTilesRoot,
-                youMayLikeEl: templateDesign === 'gallery' ? null : youMayLikeRoot,
-                getInspiredEl: templateDesign === 'gallery' ? null : getInspiredRoot,
-                footerEl: templateDesign === 'gallery' ? classicFooterRoot : footerRoot,
+                categoriesEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : categoriesRoot,
+                aboutEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : aboutRoot,
+                featureTilesEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : featureTilesRoot,
+                youMayLikeEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : youMayLikeRoot,
+                getInspiredEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : getInspiredRoot,
+                footerEl: templateDesign === 'gallery'
+                    ? classicFooterRoot
+                    : templateDesign === 'spotlight'
+                        ? null
+                        : footerRoot,
                 copyrightEl: templateDesign === 'gallery' ? classicCopyrightRoot : null,
+                spotlightSections: spotlightSectionPreviews,
                 previewEl: previewRoot,
                 spec: handoffSpec,
                 assets: handoffAssets,
@@ -5117,6 +5233,10 @@
         });
 
         applyGalleryEditorPanelVisibility(isGallery);
+
+        if (refreshEditorSectionNavSpy) {
+            refreshEditorSectionNavSpy();
+        }
     }
 
     function applyTemplateDesignUI() {

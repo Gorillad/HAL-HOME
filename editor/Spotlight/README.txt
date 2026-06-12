@@ -37,5 +37,5 @@ Our brands
   our-brands/our-brands.png
 
 Footer
-  footer/xologic-logo-white.png
-  footer/map.png
+  footer/xologic-logo-white.png   Footer logo
+  footer/map.png                  Reference map preview only (live Google Maps embed added from business address at handoff)
