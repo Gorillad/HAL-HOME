@@ -119,13 +119,22 @@ app.post('/api/editor/request-access', (req, res) => {
     });
 });
 
-app.get('/editor/showroom.html', requireEditorAuth, (_req, res) => {
+// DEV: editor auth bypass — restore requireEditorAuth on these routes for production
+app.get('/editor/showroom.html', (_req, res) => {
     res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
 });
 
-app.get('/editor/knowledge-base.html', requireEditorAuth, (_req, res) => {
+app.get('/editor/knowledge-base.html', (_req, res) => {
     res.sendFile(path.join(ROOT, 'editor', 'knowledge-base.html'));
 });
+
+// app.get('/editor/showroom.html', requireEditorAuth, (_req, res) => {
+//     res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
+// });
+//
+// app.get('/editor/knowledge-base.html', requireEditorAuth, (_req, res) => {
+//     res.sendFile(path.join(ROOT, 'editor', 'knowledge-base.html'));
+// });
 
 app.get('/editor/login.html', (_req, res) => {
     res.sendFile(path.join(ROOT, 'editor', 'login.html'));

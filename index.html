@@ -13,9 +13,11 @@
     <link href="css/style.css" rel="stylesheet">
     <link href="css/login.css" rel="stylesheet">
     <link href="shared/footer/footer.css" rel="stylesheet">
-    <style>body.site-locked #siteContent{display:none!important}</style>
+    <!-- DEV: site login gate disabled — restore style + gate block below for production -->
+    <!-- <style>body.site-locked #siteContent{display:none!important}</style> -->
 </head>
-<body class="site-locked">
+<body>
+    <!-- DEV: homepage sign-in gate commented out
     <div class="site-access-gate" id="siteAccessGate" role="dialog" aria-modal="true" aria-labelledby="siteAccessTitle">
         <div class="site-access-gate-inner">
             <div class="site-access-hero">
@@ -99,6 +101,7 @@
             </div>
         </div>
     </div>
+    -->
 
     <div id="siteContent">
     <header class="site-nav" aria-label="Site navigation">
@@ -173,7 +176,7 @@
                     <div class="editor-spotlight-actions">
                         <a href="#templates" class="btn btn-primary">Homepage templates</a>
                         <a href="editor/login.html" class="btn btn-secondary">Sign in to editor</a>
-                        <a href="editor/login.html" class="btn btn-ghost">Editor guide</a>
+                        <a href="editor/knowledge-base.html" class="btn btn-ghost">Editor guide</a>
                     </div>
                 </div>
                 <div class="editor-spotlight-demo">
@@ -671,7 +674,7 @@
     <script src="shared/footer/footer.js" defer></script>
     <script src="js/cart.js" defer></script>
     <script src="js/editor-access.js" defer></script>
-    <script src="js/site-access-gate.js" defer></script>
+    <!-- DEV: <script src="js/site-access-gate.js" defer></script> -->
     <script src="js/main.js" defer></script>
 </body>
 </html>

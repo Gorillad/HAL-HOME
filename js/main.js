@@ -6,7 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initPricingToggle();
     initHeroRays();
     initShowroomDesignTabs();
-    initSiteAccessGate();
+    // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
+    // initSiteAccessGate();
+    if (window.EditorAccess) {
+        EditorAccess.markAuthenticated();
+    }
     Cart.initUI();
 });
 
