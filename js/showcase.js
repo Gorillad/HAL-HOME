@@ -4,28 +4,39 @@ const SHOWCASE_PROJECTS = [
         name: 'Modern Lighting Co.',
         tag: 'Contemporary showroom',
         accent: '#C9A96E',
-        heroGrad: 'linear-gradient(135deg, #3a3a3a, #1f1f1f)',
-        cols: 3,
+        desktopImg: 'images/built-for-showrooms/modern_desktop_2.png',
+        mobileImg: 'images/built-for-showrooms/modern_mobile.png',
     },
     {
         id: 'coastal',
         name: 'Coastal Illumination',
         tag: 'Coastal & natural',
         accent: '#8FB4C4',
-        heroGrad: 'linear-gradient(135deg, #2c3e44, #1a2529)',
-        cols: 2,
+        desktopImg: 'images/built-for-showrooms/coastal_desktop.png',
+        mobileImg: 'images/built-for-showrooms/coastal_mobile.png',
     },
     {
         id: 'heritage',
         name: 'Heritage Fixtures',
         tag: 'Traditional & timeless',
         accent: '#B08D57',
-        heroGrad: 'linear-gradient(135deg, #3a3228, #1f1b16)',
-        cols: 4,
+        desktopImg: 'images/built-for-showrooms/heritage_desktop_1.png',
+        mobileImg: 'images/built-for-showrooms/heritage_mobile_1.png',
     },
 ];
 
 function renderShowcaseScreen(project, isPhone) {
+    const imgSrc = isPhone ? project.mobileImg : project.desktopImg;
+
+    if (imgSrc) {
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = `${project.name} ${isPhone ? 'mobile' : 'homepage'} view`;
+        img.className = 'showcase-screen-image';
+        img.loading = 'lazy';
+        return img;
+    }
+
     const cellCount = isPhone ? 4 : project.cols;
     const screen = document.createElement('div');
     screen.className = `showcase-screen${isPhone ? ' showcase-screen--phone' : ''}`;

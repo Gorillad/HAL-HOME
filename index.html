@@ -20,7 +20,7 @@
     <!-- DEV: site login gate disabled — restore style + gate block below for production -->
     <!-- <style>body.site-locked #siteContent{display:none!important}</style> -->
 </head>
-<body>
+<body class="home-page">
     <!-- DEV: homepage sign-in gate commented out
     <div class="site-access-gate" id="siteAccessGate" role="dialog" aria-modal="true" aria-labelledby="siteAccessTitle">
         <div class="site-access-gate-inner">
@@ -227,7 +227,7 @@
                     <span class="home-story-figure-bracket" aria-hidden="true"></span>
                     <img
                         class="home-story-figure-image"
-                        src="images/body/story-section.png"
+                        src="images/body/lightroom-portrait.webp"
                         alt=""
                         width="640"
                         height="800"
@@ -384,6 +384,189 @@
         </div>
     </section>
 
+    <div class="container home-page-templates">
+        <section id="templates" class="section" aria-labelledby="templates-title">
+            <h2 id="templates-title">Homepage templates</h2>
+            <p class="section-lead">Three tiers designed for lighting retail — from boutique showrooms to high-end designer experiences.</p>
+            <div class="template-grid">
+                <article class="template-card template-card--showroom">
+                    <span class="template-badge">The Premier Tier</span>
+                    <div class="template-preview template-preview--showroom">
+                        <div class="showroom-design-views">
+                            <div class="showroom-design-view is-active" id="showroom-design-classic" role="tabpanel" aria-labelledby="showroom-design-tab-classic" data-showroom-design="classic">
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-hero mock-hero--compact">
+                                            <div class="mock-hero-left">
+                                                <span class="mock-hero-product"></span>
+                                                <span class="mock-hero-copy"></span>
+                                            </div>
+                                            <span class="mock-hero-feature"></span>
+                                        </div>
+                                        <div class="mock-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="showroom-design-view" id="showroom-design-gallery" role="tabpanel" aria-labelledby="showroom-design-tab-gallery" data-showroom-design="gallery" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-showroom mock-showroom--gallery">
+                                            <span class="mock-gallery-nav" aria-hidden="true"></span>
+                                            <span class="mock-gallery-hero" aria-hidden="true"></span>
+                                            <div class="mock-gallery-row" aria-hidden="true"><span></span><span></span><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="showroom-design-view" id="showroom-design-spotlight" role="tabpanel" aria-labelledby="showroom-design-tab-spotlight" data-showroom-design="spotlight" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-showroom mock-showroom--spotlight">
+                                            <span class="mock-spotlight-banner" aria-hidden="true"></span>
+                                            <div class="mock-spotlight-hero" aria-hidden="true">
+                                                <span class="mock-spotlight-copy"></span>
+                                            </div>
+                                            <div class="mock-spotlight-strip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Showroom</h3>
+                    <p class="template-tagline">Small shops &amp; boutique showrooms</p>
+                    <p class="template-desc">Built for modern showrooms. Product-first layouts, bold displays, and the most current design trends baked in.</p>
+                    <div class="template-card-actions">
+                        <p class="template-tier-note showroom-design-note" id="showroomDesignNote">McQueen selected — open the editor to customize this layout.</p>
+                        <a href="editor/showroom.html?design=classic" class="btn btn-sheen btn-block" id="showroomEditorBtn" aria-label="Open McQueen template in Showroom editor">Open McQueen editor</a>
+                        <div class="showroom-design-tabs showroom-design-tabs--bottom" role="tablist" aria-label="Showroom design options">
+                            <button type="button" class="showroom-design-tab is-active" role="tab" id="showroom-design-tab-classic" aria-selected="true" aria-controls="showroom-design-classic" data-showroom-design="classic">McQueen</button>
+                            <button type="button" class="showroom-design-tab" role="tab" id="showroom-design-tab-gallery" aria-selected="false" aria-controls="showroom-design-gallery" data-showroom-design="gallery">Classic</button>
+                            <button type="button" class="showroom-design-tab" role="tab" id="showroom-design-tab-spotlight" aria-selected="false" aria-controls="showroom-design-spotlight" data-showroom-design="spotlight">Spotlight</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="template-card template-card--featured">
+                    <span class="template-badge">The Creative Tier</span>
+                    <div class="template-preview template-preview--designer">
+                        <div class="designer-design-views">
+                            <div class="designer-design-view is-active" id="designer-design-gallery" role="tabpanel" aria-labelledby="designer-design-tab-gallery" data-designer-design="gallery">
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-hero mock-hero--editorial"></div>
+                                        <div class="mock-collections" aria-hidden="true"><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="designer-design-view" id="designer-design-curator" role="tabpanel" aria-labelledby="designer-design-tab-curator" data-designer-design="curator" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-hero mock-hero--curator"></div>
+                                        <div class="mock-collections mock-collections--triple" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="designer-design-view" id="designer-design-canvas" role="tabpanel" aria-labelledby="designer-design-tab-canvas" data-designer-design="canvas" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-hero mock-hero--canvas"></div>
+                                        <div class="mock-designer-canvas" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Designer</h3>
+                    <p class="template-tagline">Mid-size showrooms &amp; design studios</p>
+                    <p class="template-desc">Made for designers who lead with story. Project showcases, curated collections, and trend features front and center.</p>
+                    <div class="template-card-actions">
+                        <p class="template-tier-note" id="designerDesignNote">Gallery selected — request a demo to see it in action.</p>
+                        <a href="request-a-quote.html?interest=demo" class="btn btn-sheen btn-block">Request Demo</a>
+                        <div class="showroom-design-tabs showroom-design-tabs--bottom designer-design-tabs" role="tablist" aria-label="Designer template options">
+                            <button type="button" class="showroom-design-tab is-active" role="tab" id="designer-design-tab-gallery" aria-selected="true" aria-controls="designer-design-gallery" data-designer-design="gallery">Gallery</button>
+                            <button type="button" class="showroom-design-tab" role="tab" id="designer-design-tab-curator" aria-selected="false" aria-controls="designer-design-curator" data-designer-design="curator">Curator</button>
+                            <button type="button" class="showroom-design-tab" role="tab" id="designer-design-tab-canvas" aria-selected="false" aria-controls="designer-design-canvas" data-designer-design="canvas">Canvas</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="template-card template-card--signature">
+                    <span class="template-badge">The Luxury Tier</span>
+                    <div class="template-preview template-preview--signature">
+                        <div class="template-browser">
+                            <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                            <a href="request-a-quote.html?interest=demo" class="template-browser-body template-browser-body--link" aria-label="Contact sales about Signature template">
+                                <div class="mock-hero mock-hero--luxury"></div>
+                                <div class="mock-story" aria-hidden="true"><span></span><span></span></div>
+                            </a>
+                        </div>
+                    </div>
+                    <h3>Signature</h3>
+                    <p class="template-tagline">Luxury designers &amp; high-end studios</p>
+                    <p class="template-desc">For those who want something no one else has. Fully bespoke, deeply authentic, and unlike anything in the market.</p>
+                    <div class="template-card-actions">
+                        <p class="template-tier-note">No templates. No limits. Designed entirely around your brand.</p>
+                        <a href="request-a-quote.html?interest=demo" class="btn btn-fill btn-block">Talk to Sales</a>
+                        <div class="template-toggle-spacer" aria-hidden="true"></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+
+    <section id="contact" class="home-cta-closer" aria-labelledby="home-cta-title">
+        <div class="home-cta-closer-inner">
+            <header class="home-cta-closer-header">
+                <p class="home-cta-closer-eyebrow">
+                    <span class="home-cta-closer-eyebrow-line" aria-hidden="true"></span>
+                    Get Started
+                </p>
+                <h2 id="home-cta-title">Let's build your showroom's site.</h2>
+                <p class="home-cta-closer-lead">Whether you're ready to start or just exploring, there's a path that fits where you are.</p>
+            </header>
+
+            <div class="home-cta-grid">
+                <a href="request-a-quote.html" class="home-cta-card home-cta-card--featured">
+                    <span class="home-cta-card-accent" aria-hidden="true"></span>
+                    <span class="home-cta-card-badge">Recommended</span>
+                    <span class="home-cta-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+                    </span>
+                    <h3 class="home-cta-card-title">Request a quote</h3>
+                    <p class="home-cta-card-desc">Tell us about your showroom and goals. We'll put together a custom proposal with timeline and pricing.</p>
+                    <span class="home-cta-card-action">Get your quote <span class="home-cta-card-arrow" aria-hidden="true">→</span></span>
+                </a>
+
+                <a href="#templates" class="home-cta-card">
+                    <span class="home-cta-card-accent" aria-hidden="true"></span>
+                    <span class="home-cta-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+                    </span>
+                    <h3 class="home-cta-card-title">Browse templates</h3>
+                    <p class="home-cta-card-desc">Explore our McQueen, Classic, and Spotlight layouts — each tuned for lighting and design retail.</p>
+                    <span class="home-cta-card-action">View templates <span class="home-cta-card-arrow" aria-hidden="true">→</span></span>
+                </a>
+
+                <a href="request-a-quote.html?interest=demo" class="home-cta-card">
+                    <span class="home-cta-card-accent" aria-hidden="true"></span>
+                    <span class="home-cta-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><rect x="8" y="15" width="2" height="2" rx="0.5"/></svg>
+                    </span>
+                    <h3 class="home-cta-card-title">Book a demo</h3>
+                    <p class="home-cta-card-desc">See the editor in action. We'll walk you through how logicXO works and answer your questions live.</p>
+                    <span class="home-cta-card-action">Schedule a call <span class="home-cta-card-arrow" aria-hidden="true">→</span></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <div class="container">
 
         <section id="template-editor" class="section editor-spotlight" aria-labelledby="editor-spotlight-title">
@@ -439,105 +622,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section id="templates" class="section" aria-labelledby="templates-title">
-            <h2 id="templates-title">Homepage templates</h2>
-            <p class="section-lead">Three tiers designed for lighting retail — from catalog-first showrooms to high-end designer experiences.</p>
-            <div class="template-grid">
-                <article class="template-card template-card--showroom">
-                    <span class="template-badge">The Premier Tier</span>
-                    <div class="template-preview template-preview--showroom">
-                        <div class="showroom-design-tabs" role="tablist" aria-label="Showroom design options">
-                            <button type="button" class="showroom-design-tab is-active" role="tab" id="showroom-design-tab-classic" aria-selected="true" aria-controls="showroom-design-classic" data-showroom-design="classic">McQueen</button>
-                            <button type="button" class="showroom-design-tab" role="tab" id="showroom-design-tab-gallery" aria-selected="false" aria-controls="showroom-design-gallery" data-showroom-design="gallery">Classic</button>
-                            <button type="button" class="showroom-design-tab" role="tab" id="showroom-design-tab-spotlight" aria-selected="false" aria-controls="showroom-design-spotlight" data-showroom-design="spotlight">Spotlight</button>
-                        </div>
-                        <div class="showroom-design-views">
-                            <div class="showroom-design-view is-active" id="showroom-design-classic" role="tabpanel" aria-labelledby="showroom-design-tab-classic" data-showroom-design="classic">
-                                <div class="template-browser">
-                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                                    <div class="template-browser-body" aria-hidden="true">
-                                        <div class="mock-hero mock-hero--compact">
-                                            <div class="mock-hero-left">
-                                                <span class="mock-hero-product"></span>
-                                                <span class="mock-hero-copy"></span>
-                                            </div>
-                                            <span class="mock-hero-feature"></span>
-                                        </div>
-                                        <div class="mock-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="showroom-design-view" id="showroom-design-gallery" role="tabpanel" aria-labelledby="showroom-design-tab-gallery" data-showroom-design="gallery" hidden>
-                                <div class="template-browser">
-                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                                    <div class="template-browser-body" aria-hidden="true">
-                                        <div class="mock-showroom mock-showroom--gallery">
-                                            <span class="mock-gallery-nav" aria-hidden="true"></span>
-                                            <span class="mock-gallery-hero" aria-hidden="true"></span>
-                                            <div class="mock-gallery-row" aria-hidden="true"><span></span><span></span><span></span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="showroom-design-view" id="showroom-design-spotlight" role="tabpanel" aria-labelledby="showroom-design-tab-spotlight" data-showroom-design="spotlight" hidden>
-                                <div class="template-browser">
-                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                                    <div class="template-browser-body" aria-hidden="true">
-                                        <div class="mock-showroom mock-showroom--spotlight">
-                                            <span class="mock-spotlight-banner" aria-hidden="true"></span>
-                                            <div class="mock-spotlight-hero" aria-hidden="true">
-                                                <span class="mock-spotlight-copy"></span>
-                                            </div>
-                                            <div class="mock-spotlight-strip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h3>Showroom</h3>
-                    <p class="template-tagline">Small shops &amp; boutique showrooms</p>
-                    <p class="template-desc">Built for modern showrooms. Catalog-first layouts, bold product displays, and the most current design trends baked in.</p>
-                    <p class="showroom-design-note" id="showroomDesignNote">McQueen selected — open the editor below to customize this layout.</p>
-                    <a href="editor/showroom.html?design=classic" class="btn btn-primary btn-block" id="showroomEditorBtn" aria-label="Open McQueen template in Showroom editor">Open McQueen editor</a>
-                </article>
-
-                <article class="template-card template-card--featured">
-                    <span class="template-badge">The Creative Tier</span>
-                    <div class="template-preview template-preview--designer">
-                        <div class="template-browser">
-                            <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                            <div class="template-browser-body" aria-hidden="true">
-                                <div class="mock-hero mock-hero--editorial"></div>
-                                <div class="mock-collections" aria-hidden="true"><span></span><span></span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <h3>Designer</h3>
-                    <p class="template-tagline">Mid-size showrooms &amp; design studios</p>
-                    <p class="template-desc">Made for designers who lead with story. Project showcases, curated collections, and latest trend features front and center.</p>
-                    <a href="request-a-quote.html?interest=demo" class="btn btn-primary btn-block">Request Demo</a>
-                </article>
-
-                <article class="template-card template-card--signature">
-                    <span class="template-badge">The Luxury Tier</span>
-                    <div class="template-preview template-preview--signature">
-                        <div class="template-browser">
-                            <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                            <a href="request-a-quote.html?interest=demo" class="template-browser-body template-browser-body--link" aria-label="Contact sales about Signature template">
-                                <div class="mock-hero mock-hero--luxury"></div>
-                                <div class="mock-story" aria-hidden="true"><span></span><span></span></div>
-                            </a>
-                        </div>
-                    </div>
-                    <h3>Signature</h3>
-                    <p class="template-tagline">Luxury designers &amp; high-end studios</p>
-                    <p class="template-desc">For those who want something no one else has. Fully bespoke, deeply authentic, and unlike anything in the market.</p>
-                    <a href="request-a-quote.html?interest=demo" class="btn btn-secondary btn-block">Talk to Sales</a>
-                </article>
             </div>
         </section>
 
@@ -673,52 +757,6 @@
         </section>
 
     </div><!-- /.container -->
-
-    <section id="contact" class="home-cta-closer" aria-labelledby="home-cta-title">
-        <div class="home-cta-closer-inner">
-            <header class="home-cta-closer-header">
-                <p class="home-cta-closer-eyebrow">
-                    <span class="home-cta-closer-eyebrow-line" aria-hidden="true"></span>
-                    Get Started
-                </p>
-                <h2 id="home-cta-title">Let's build your showroom's site.</h2>
-                <p class="home-cta-closer-lead">Whether you're ready to start or just exploring, there's a path that fits where you are.</p>
-            </header>
-
-            <div class="home-cta-grid">
-                <a href="request-a-quote.html" class="home-cta-card home-cta-card--featured">
-                    <span class="home-cta-card-accent" aria-hidden="true"></span>
-                    <span class="home-cta-card-badge">Recommended</span>
-                    <span class="home-cta-card-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
-                    </span>
-                    <h3 class="home-cta-card-title">Request a quote</h3>
-                    <p class="home-cta-card-desc">Tell us about your showroom and goals. We'll put together a custom proposal with timeline and pricing.</p>
-                    <span class="home-cta-card-action">Get your quote <span class="home-cta-card-arrow" aria-hidden="true">→</span></span>
-                </a>
-
-                <a href="#templates" class="home-cta-card">
-                    <span class="home-cta-card-accent" aria-hidden="true"></span>
-                    <span class="home-cta-card-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
-                    </span>
-                    <h3 class="home-cta-card-title">Browse templates</h3>
-                    <p class="home-cta-card-desc">Explore our McQueen, Classic, and Spotlight layouts — each tuned for lighting and design retail.</p>
-                    <span class="home-cta-card-action">View templates <span class="home-cta-card-arrow" aria-hidden="true">→</span></span>
-                </a>
-
-                <a href="request-a-quote.html?interest=demo" class="home-cta-card">
-                    <span class="home-cta-card-accent" aria-hidden="true"></span>
-                    <span class="home-cta-card-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><rect x="8" y="15" width="2" height="2" rx="0.5"/></svg>
-                    </span>
-                    <h3 class="home-cta-card-title">Book a demo</h3>
-                    <p class="home-cta-card-desc">See the editor in action. We'll walk you through how logicXO works and answer your questions live.</p>
-                    <span class="home-cta-card-action">Schedule a call <span class="home-cta-card-arrow" aria-hidden="true">→</span></span>
-                </a>
-            </div>
-        </div>
-    </section>
 
     <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
         <div class="cart-drawer-header">

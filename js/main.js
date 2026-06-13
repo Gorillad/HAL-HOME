@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initPricingToggle();
     initShowroomDesignTabs();
+    initDesignerDesignTabs();
     initEasterEggLinks();
     initWhatWeDoRange();
     initShowcase();
@@ -341,11 +342,14 @@ function showContactMsg(el, text, type) {
 }
 
 function initShowroomDesignTabs() {
-    const tablist = document.querySelector('.showroom-design-tabs');
+    const card = document.querySelector('.template-card--showroom');
+    if (!card) return;
+
+    const tablist = card.querySelector('.showroom-design-tabs');
     if (!tablist) return;
 
     const tabs = [...tablist.querySelectorAll('.showroom-design-tab')];
-    const views = [...document.querySelectorAll('.showroom-design-view')];
+    const views = [...card.querySelectorAll('.showroom-design-view')];
     const editorBtn = document.getElementById('showroomEditorBtn');
     const designNote = document.getElementById('showroomDesignNote');
 
@@ -377,7 +381,7 @@ function initShowroomDesignTabs() {
         }
 
         if (designNote) {
-            designNote.textContent = `${label} selected — open the editor below to customize this layout.`;
+            designNote.textContent = `${label} selected — open the editor to customize this layout.`;
         }
     }
 
@@ -394,6 +398,59 @@ function initShowroomDesignTabs() {
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
     if (activeTab?.dataset.showroomDesign) {
         setActiveDesign(activeTab.dataset.showroomDesign);
+    }
+}
+
+function initDesignerDesignTabs() {
+    const card = document.querySelector('.template-card--featured');
+    if (!card) return;
+
+    const tablist = card.querySelector('.designer-design-tabs');
+    if (!tablist) return;
+
+    const tabs = [...tablist.querySelectorAll('.showroom-design-tab')];
+    const views = [...card.querySelectorAll('.designer-design-view')];
+    const designNote = document.getElementById('designerDesignNote');
+
+    const designLabels = {
+        gallery: 'Gallery',
+        curator: 'Curator',
+        canvas: 'Canvas',
+    };
+
+    function setActiveDesign(design) {
+        const label = designLabels[design] || 'Gallery';
+
+        tabs.forEach((item) => {
+            const isActive = item.dataset.designerDesign === design;
+            item.classList.toggle('is-active', isActive);
+            item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        views.forEach((view) => {
+            const isActive = view.dataset.designerDesign === design;
+            view.classList.toggle('is-active', isActive);
+            view.hidden = !isActive;
+        });
+
+        if (designNote) {
+            designNote.textContent = `${label} selected — request a demo to see it in action.`;
+        }
+    }
+
+    tablist.addEventListener('click', (e) => {
+        const tab = e.target.closest('.showroom-design-tab');
+        if (!tab || !tablist.contains(tab)) return;
+
+        const design = tab.dataset.designerDesign;
+        if (!design) return;
+
+        setActiveDesign(design);
+    });
+
+    const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
+    if (activeTab?.dataset.designerDesign) {
+        setActiveDesign(activeTab.dataset.designerDesign);
     }
 }
 
