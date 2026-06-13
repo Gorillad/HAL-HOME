@@ -104,7 +104,7 @@
     -->
 
     <div id="siteContent">
-    <header class="site-nav" aria-label="Site navigation">
+    <header class="site-nav site-nav--dark" aria-label="Site navigation">
         <div class="site-nav-inner">
             <a href="index.html" class="site-nav-logo" aria-label="LogicXO home">
                 <img src="images/logicxo.png" alt="LogicXO">
@@ -131,29 +131,44 @@
                         <span class="site-nav-cart-count" id="cartCount" hidden>0</span>
                     </button>
                     <button type="button" class="site-nav-logout" id="siteNavLogout" hidden>Log out</button>
-                    <a href="#contact" class="site-nav-cta">Request Demo</a>
+                    <a href="#contact" class="site-nav-cta">Request a Quote</a>
                 </div>
             </div>
         </div>
         <div class="site-nav-backdrop" hidden aria-hidden="true"></div>
     </header>
 
-    <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-media" aria-hidden="true">
-            <img src="images/home-hero/hero-06-08.png" alt="" width="1920" height="1080" fetchpriority="high">
-            <div class="hero-overlay"></div>
-            <div class="hero-rays" aria-hidden="true">
-                <div class="hero-rays-source"></div>
-                <div class="hero-rays-beams"></div>
+    <section class="hero hero--split" aria-labelledby="hero-title">
+        <div class="hero-grid">
+            <div class="hero-grid-cell hero-grid-cell--large">
+                <img src="images/home-hero/hero-09.png" alt="" width="800" height="1200" fetchpriority="high">
+                <div class="hero-inner">
+                    <p class="hero-eyebrow">Ceiling fans · Bath · Chandeliers &amp; more</p>
+                    <h1 id="hero-title">Lighting for every room in the home.</h1>
+                    <p class="hero-lead">Showcase fans, bath vanity fixtures, chandeliers, and thousands of products from top brands — in a custom website built for your showroom.</p>
+                    <div class="hero-actions">
+                        <a href="#templates" class="btn btn-hero-primary">View Templates</a>
+                        <a href="#contact" class="btn btn-hero-ghost">Request a Quote</a>
+                    </div>
+                    <dl class="hero-stats">
+                        <div class="hero-stat">
+                            <dt class="hero-stat-value">50+</dt>
+                            <dd class="hero-stat-label">Brands</dd>
+                        </div>
+                        <div class="hero-stat">
+                            <dt class="hero-stat-value">142,000</dt>
+                            <dd class="hero-stat-label">Products</dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
-        </div>
-        <div class="hero-inner">
-            <p class="hero-eyebrow">Premium websites for specialty Showrooms and Designers</p>
-            <h1 id="hero-title">Illuminate your presence.</h1>
-            <p class="hero-lead">Custom-built websites for the businesses that demand more from their digital presence.</p>
-            <div class="hero-actions">
-                <a href="#templates" class="btn btn-primary">View Templates</a>
-                <a href="#contact" class="btn btn-ghost">Request Demo</a>
+            <div class="hero-grid-stack">
+                <div class="hero-grid-cell">
+                    <img src="images/home-hero/hero-15.png" alt="" width="600" height="600" loading="eager">
+                </div>
+                <div class="hero-grid-cell">
+                    <img src="images/home-hero/hero-13.png" alt="" width="600" height="600" loading="eager">
+                </div>
             </div>
         </div>
     </section>

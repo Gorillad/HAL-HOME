@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initContactForm();
     initPricingToggle();
-    initHeroRays();
     initShowroomDesignTabs();
     // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
     // initSiteAccessGate();
