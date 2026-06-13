@@ -301,11 +301,65 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         });
     }
 
+    const CAPTURE_COLOR_PROPS = [
+        'color',
+        'background-color',
+        'border-color',
+        'border-top-color',
+        'border-right-color',
+        'border-bottom-color',
+        'border-left-color',
+        'outline-color',
+    ];
+
+    function sanitizeCloneStylesheets(clonedDoc) {
+        [...clonedDoc.styleSheets].forEach((sheet) => {
+            let rules;
+            try {
+                rules = sheet.cssRules;
+            } catch {
+                return;
+            }
+
+            [...rules].forEach((rule) => {
+                if (!rule.style) return;
+                for (let index = rule.style.length - 1; index >= 0; index -= 1) {
+                    const prop = rule.style[index];
+                    const value = rule.style.getPropertyValue(prop);
+                    if (value && value.includes('color-mix(')) {
+                        rule.style.removeProperty(prop);
+                    }
+                }
+            });
+        });
+    }
+
+    function inlineComputedColors(sourceNode, cloneNode) {
+        if (!sourceNode || !cloneNode) return;
+
+        const computed = window.getComputedStyle(sourceNode);
+        CAPTURE_COLOR_PROPS.forEach((prop) => {
+            const value = computed.getPropertyValue(prop);
+            if (!value || value.includes('color-mix(')) return;
+            if (value === 'rgba(0, 0, 0, 0)' && prop !== 'background-color') return;
+            cloneNode.style.setProperty(prop, value);
+        });
+
+        const sourceChildren = [...sourceNode.children];
+        const cloneChildren = [...cloneNode.children];
+        sourceChildren.forEach((sourceChild, index) => {
+            inlineComputedColors(sourceChild, cloneChildren[index]);
+        });
+    }
+
     function prepareCloneForCapture(clonedDoc, clonedEl, sourceEl) {
+        sanitizeCloneStylesheets(clonedDoc);
+
         if (clonedEl) {
             clonedEl.classList.add('is-pdf-export-capture');
             clonedEl.style.transform = 'none';
             clonedEl.style.boxShadow = 'none';
+            inlineComputedColors(sourceEl, clonedEl);
             inlineLoadedImagesForClone(sourceEl, clonedEl);
         }
 
@@ -464,8 +518,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 : 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. No client-replaced images are bundled — template defaults are shown in the layout previews only.')
             : isSpotlight
                 ? (resolvedHandoffAssets.length
-                    ? 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Client-replaced images are included in the ZIP and on dedicated PDF pages after the layout previews.'
-                    : 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Template default images are shown in layout previews only — source separately on the live site.')
+                    ? 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). All handoff images are included in the ZIP and on dedicated PDF pages after the layout previews.'
+                    : 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Image files could not be resolved for export — check that spotlight/ assets are available.')
                 : 'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
         { size: 9, color: [90, 90, 90], gap: 16 },
     );
@@ -922,20 +976,26 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         });
     }
     if (isSpotlightFooter) {
-        const companyInfo = footer.companyInfo || {};
         const profileLinks = normalizeFooterLinksForExport(footer.profileLinks);
+        const companyInfoItems = Array.isArray(footer.companyInfoItems) && footer.companyInfoItems.length
+            ? normalizeFooterLinksForExport(footer.companyInfoItems)
+            : normalizeFooterLinksForExport([
+                { label: footer.companyInfo?.hoursWeekday, url: '', visible: true },
+                { label: footer.companyInfo?.hoursSaturday, url: '', visible: true },
+                { label: footer.companyInfo?.hoursSunday, url: '', visible: true },
+                { label: footer.companyInfo?.phone ? `Phone Number: ${footer.companyInfo.phone}` : '', url: footer.companyInfo?.phone ? `tel:${String(footer.companyInfo.phone).replace(/\D/g, '')}` : '', visible: true },
+                { label: footer.companyInfo?.email, url: footer.companyInfo?.email ? `mailto:${footer.companyInfo.email}` : '', visible: true },
+            ]);
         writeSpecRows([
             ['Layout', 'Five-column footer with copyright bar'],
             ['Background color', footer.backgroundColor || '#254155'],
+            ['Text color', footer.textColor || '#c7d2dd'],
             ['Copyright bar background', footer.copyrightBarBackgroundColor || '#1a3347'],
+            ['Copyright bar text color', footer.copyrightBarTextColor || '#a8b8c6'],
             ['Footer logo in handoff', spotlightHandoffImageLine('spotlight-footer-logo.png', 'template default')],
+            ['Footer logo link', footer.logoUrl || '/'],
             ['Map embed', footer.mapNote || 'Live Google Maps from business address'],
             ['Company name', footer.companyName || '—'],
-            ['Weekday hours', companyInfo.hoursWeekday || '—'],
-            ['Saturday hours', companyInfo.hoursSaturday || '—'],
-            ['Sunday hours', companyInfo.hoursSunday || '—'],
-            ['Phone', companyInfo.phone || '—'],
-            ['Email', companyInfo.email || '—'],
             ['Copyright company name', footer.copyrightName || footer.companyName || '—'],
             ['Copyright', footer.copyrightSpec || '—'],
             ['Copyright markup', footer.copyrightPasteMarkup || footer.copyrightMarkup || '—'],
@@ -946,16 +1006,22 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['YouTube', formatFooterSocial(footerSocial.youtube)],
         ]);
         if (footerQuickLinks.length) {
-            writeLines('Quick links', { bold: true, size: 10, gap: 4 });
+            writeLines(footer.quickLinksHeading || 'Quick links', { bold: true, size: 10, gap: 4 });
             writeItemList(footerQuickLinks, (item) => `${item.label}: ${item.url || '—'}`);
         }
         if (footerPolicies.length) {
-            writeLines('Policies', { bold: true, size: 10, gap: 4 });
+            writeLines(footer.policiesHeading || 'Policies', { bold: true, size: 10, gap: 4 });
             writeItemList(footerPolicies, (item) => `${item.label}: ${item.url || '—'}`);
         }
         if (profileLinks.length) {
-            writeLines('Your profile', { bold: true, size: 10, gap: 4 });
+            writeLines(footer.profileLinksHeading || 'Your profile', { bold: true, size: 10, gap: 4 });
             writeItemList(profileLinks, (item) => `${item.label}: ${item.url || '—'}`);
+        }
+        if (companyInfoItems.length) {
+            writeLines(footer.companyInfoHeading || 'Company info', { bold: true, size: 10, gap: 4 });
+            writeItemList(companyInfoItems, (item) => (
+                item.url ? `${item.label}: ${item.url}` : item.label
+            ));
         }
     }
     if (copyrightSection) {
@@ -990,7 +1056,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     writeSectionTitle('Handoff images');
     if (!resolvedHandoffAssets.length) {
-        writeLines('No client images are included in this handoff.', { size: 9, color: [90, 90, 90], gap: 8 });
+        writeLines(
+            isSpotlight
+                ? 'No image files could be resolved for this handoff. Check that editor/Spotlight assets are available and try exporting again.'
+                : 'No client images are included in this handoff.',
+            { size: 9, color: [90, 90, 90], gap: 8 },
+        );
     } else {
         writeLines('These files are included in the ZIP and shown on the following pages.', { size: 9, color: [90, 90, 90], gap: 6 });
         writeItemList(resolvedHandoffAssets, (asset, index) => (
@@ -1137,7 +1208,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                     sectionImages: resolvedHandoffAssets.some((asset) => (
                         String(asset.filename || '').startsWith('spotlight-')
                     )),
-                    templateDefaultsExcluded: true,
+                    templateDefaultsExcluded: false,
                 },
             }
             : {
@@ -1383,14 +1454,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '',
                 `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
                 resolvedHandoffAssets.length
-                    ? '2. images/ — Client-replaced images only (template defaults are not bundled)'
-                    : '2. images/ — Omitted (no client-replaced images in this export)',
+                    ? '2. images/ — All handoff image files (header logo, hero slides, section images, footer logo)'
+                    : '2. images/ — Omitted (image files could not be resolved for export)',
                 '3. spec/homepage-spec.json — Machine-readable spec (Header, Hero, sections, Footer)',
                 '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
                 '',
                 resolvedHandoffAssets.length
                     ? 'Handoff image files are listed in the PDF under “Handoff images”.'
-                    : 'Template default images are shown in layout previews only — source those separately on the live site.',
+                    : 'Check that editor/Spotlight assets are present and reload the editor before exporting again.',
             ].join('\n')
             : [
             'Showroom Homepage — Developer Handoff',
@@ -1431,6 +1502,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 function normalizeFooterLinksForExport(links) {
     if (Array.isArray(links)) {
         return links
+            .filter((link) => link?.visible !== false)
             .map((link) => ({
                 label: String(link?.label || '').trim(),
                 url: String(link?.url || '').trim(),

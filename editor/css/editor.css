@@ -2277,6 +2277,25 @@
     box-shadow: inset 0 0 0 2px rgba(26, 123, 189, 0.42);
 }
 
+.editor-preview-image-jump-target {
+    cursor: pointer;
+}
+
+.editor-preview-image-jump-target:hover {
+    box-shadow: inset 0 0 0 2px rgba(26, 123, 189, 0.55);
+}
+
+.showroom-spotlight-carousel-slide-link.editor-preview-image-jump-target:hover {
+    box-shadow: none;
+}
+
+.showroom-spotlight-carousel-slide-link.editor-preview-image-jump-target:hover img,
+.showroom-spotlight-room-tile.editor-preview-image-jump-target:hover img,
+.showroom-spotlight-category-tile.editor-preview-image-jump-target:hover img {
+    outline: 2px solid rgba(26, 123, 189, 0.65);
+    outline-offset: -2px;
+}
+
 .editor-panel-block {
     scroll-margin-top: 12px;
 }
@@ -3506,6 +3525,22 @@
     display: block;
 }
 
+.showroom-spotlight-carousel-slide-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+a.showroom-spotlight-on-sale-media,
+a.showroom-spotlight-brands-media,
+a.showroom-spotlight-footer-logo {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
 .showroom-spotlight-carousel-nav {
     position: absolute;
     top: 50%;
@@ -3703,15 +3738,18 @@
 }
 
 .showroom-spotlight-about-media {
-    min-height: 360px;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 508 / 412;
     background: #dce4ec;
     overflow: hidden;
 }
 
 .showroom-spotlight-about-media img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    min-height: 360px;
     object-fit: cover;
     display: block;
 }
@@ -3876,8 +3914,8 @@
 }
 
 .showroom-spotlight-footer-section {
-    background: #254155;
-    color: #e8eef3;
+    background: var(--spotlight-footer-bg, #254155);
+    color: var(--spotlight-footer-text, #e8eef3);
 }
 
 .showroom-spotlight-footer-main {
@@ -3915,7 +3953,7 @@
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--spotlight-footer-text, #fff);
 }
 
 .showroom-spotlight-footer-links,
@@ -3931,26 +3969,41 @@
 }
 
 .showroom-spotlight-footer-links a {
-    color: #c7d2dd;
+    color: var(--spotlight-footer-text, #c7d2dd);
     text-decoration: none;
     font-size: 14px;
     line-height: 1.45;
 }
 
 .showroom-spotlight-footer-links a:hover {
-    color: #fff;
+    filter: brightness(1.2);
 }
 
 .showroom-spotlight-footer-hours li {
-    color: #c7d2dd;
+    color: var(--spotlight-footer-text, #c7d2dd);
     font-size: 14px;
     line-height: 1.55;
+}
+
+.showroom-spotlight-footer-hours a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.showroom-spotlight-footer-hours a:hover {
+    text-decoration: underline;
+}
+
+.showroom-spotlight-footer-hours .showroom-spotlight-footer-phone,
+.showroom-spotlight-footer-hours .showroom-spotlight-footer-email {
+    display: inline;
+    margin-top: 0;
 }
 
 .showroom-spotlight-footer-phone,
 .showroom-spotlight-footer-email {
     display: block;
-    color: #c7d2dd;
+    color: var(--spotlight-footer-text, #c7d2dd);
     text-decoration: none;
     margin-top: 14px;
     font-size: 14px;
@@ -3959,7 +4012,7 @@
 
 .showroom-spotlight-footer-phone:hover,
 .showroom-spotlight-footer-email:hover {
-    color: #fff;
+    filter: brightness(1.2);
 }
 
 .showroom-spotlight-footer-map {
@@ -3978,7 +4031,7 @@
 }
 
 .showroom-spotlight-footer-bottom {
-    background: #1a3347;
+    background: var(--spotlight-footer-copyright-bg, #1a3347);
     border-top: 1px solid rgba(0, 0, 0, 0.22);
     padding: 16px 24px 18px;
 }
@@ -3997,13 +4050,13 @@
     margin: 0;
     font-size: 13px;
     line-height: 1.45;
-    color: #a8b8c6;
+    color: var(--spotlight-footer-copyright-text, #a8b8c6);
     text-align: left;
 }
 
 .showroom-spotlight-footer-copyright #rightCol,
 .showroom-spotlight-footer-copyright a {
-    color: #a8b8c6;
+    color: var(--spotlight-footer-copyright-text, #a8b8c6);
 }
 
 .showroom-spotlight-footer-copyright a {
@@ -4012,7 +4065,7 @@
 }
 
 .showroom-spotlight-footer-copyright a:hover {
-    color: #fff;
+    filter: brightness(1.2);
 }
 
 .showroom-spotlight-footer-social {
@@ -4033,7 +4086,7 @@
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.22);
     background: rgba(255, 255, 255, 0.06);
-    color: #e8eef3;
+    color: var(--spotlight-footer-copyright-text, #e8eef3);
     text-decoration: none;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
@@ -4067,7 +4120,8 @@
 }
 
 .editor-upload-preview--spotlight-about {
-    height: 180px;
+    aspect-ratio: 508 / 412;
+    height: auto;
 }
 
 .editor-upload-preview--spotlight-footer-logo {

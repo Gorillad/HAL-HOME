@@ -183,9 +183,34 @@
                 </div>
             </fieldset>
 
+            <fieldset class="editor-fieldset editor-spotlight-header-links editor-header-jump-target" id="editorSpotlightHeaderLinks" hidden>
+                <legend>Header links</legend>
+                <p class="editor-field-hint editor-field-hint--fieldset">Logo and toolbar icon destinations. Search bar action is fixed in this template.</p>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightHeaderLogoUrl">Logo link</label>
+                    <input type="text" id="fieldSpotlightHeaderLogoUrl" data-spotlight-field="headerLogoUrl" autocomplete="off" placeholder="/">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightHeaderSignUpUrl">Sign Up link</label>
+                    <input type="text" id="fieldSpotlightHeaderSignUpUrl" data-spotlight-field="headerSignUpUrl" autocomplete="off" placeholder="/signup">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightHeaderLoginUrl">Login link</label>
+                    <input type="text" id="fieldSpotlightHeaderLoginUrl" data-spotlight-field="headerLoginUrl" autocomplete="off" placeholder="/login">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightHeaderWishlistUrl">Wishlist link</label>
+                    <input type="text" id="fieldSpotlightHeaderWishlistUrl" data-spotlight-field="headerWishlistUrl" autocomplete="off" placeholder="/wishlist">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightHeaderCartUrl">Cart link</label>
+                    <input type="text" id="fieldSpotlightHeaderCartUrl" data-spotlight-field="headerCartUrl" autocomplete="off" placeholder="/cart">
+                </div>
+            </fieldset>
+
             <p class="editor-panel-lead editor-panel-lead--compact" id="editorHeaderClassicHint">Below the banner, the main header row is fixed: search bar on the left, centered logo, and location · wish list · account · cart icons on the right. Search and icon links are not editable in this template.</p>
 
-            <p class="editor-panel-lead editor-panel-lead--compact" id="editorHeaderSpotlightHint" hidden>Below the banner, the header row is fixed: logo on the left, search bar with magnifying glass, and Sign Up · Login · Wishlist · Cart icons on the right. Search and icon links are not editable in this template.</p>
+            <p class="editor-panel-lead editor-panel-lead--compact" id="editorHeaderSpotlightHint" hidden>Below the banner, the header row includes logo, search bar, and Sign Up · Login · Wishlist · Cart icons. Edit all link destinations in Header links above; search bar action is fixed.</p>
 
             <p class="editor-panel-lead editor-panel-lead--compact">The main navigation bar below that has dropdown menus. Edit each category name, subcategory names, and URLs. Uncheck any subcategory to hide it from the dropdown.</p>
 
@@ -347,7 +372,7 @@
             </div>
 
             <div class="editor-hero-spotlight" id="editorHeroSpotlight" hidden>
-                <p class="editor-panel-lead editor-panel-lead--compact">Large hero image carousel with three slides. Upload lifestyle images below.</p>
+                <p class="editor-panel-lead editor-panel-lead--compact">Large hero image carousel with three slides. Upload lifestyle images and set a link for each slide below.</p>
                 <div id="spotlightHeroSlidesEditor"></div>
             </div>
 
@@ -355,6 +380,10 @@
                 <div class="editor-field">
                     <label for="fieldSpotlightOnSaleHeading">Section heading</label>
                     <input type="text" id="fieldSpotlightOnSaleHeading" data-spotlight-field="onSaleHeading" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightOnSaleUrl">Promo image link</label>
+                    <input type="text" id="fieldSpotlightOnSaleUrl" data-spotlight-field="onSaleUrl" autocomplete="off" placeholder="/clearance">
                 </div>
                 <p class="editor-field-hint editor-field-hint--fieldset">Promo image is fixed in this template.</p>
 
@@ -396,6 +425,10 @@
                 <div class="editor-field">
                     <label for="fieldSpotlightBrandsHeading">Section heading</label>
                     <input type="text" id="fieldSpotlightBrandsHeading" data-spotlight-field="brandsHeading" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightBrandsUrl">Brands image link</label>
+                    <input type="text" id="fieldSpotlightBrandsUrl" data-spotlight-field="brandsUrl" autocomplete="off" placeholder="/brands">
                 </div>
                 <p class="editor-field-hint editor-field-hint--fieldset">Brands image is fixed in this template.</p>
 
@@ -441,6 +474,24 @@
 
                 <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-footer">Footer</h3>
                 <p class="editor-panel-lead editor-panel-lead--compact">Five-column footer: logo and map, quick links, policies, profile links, and company info.</p>
+                <fieldset class="editor-fieldset">
+                    <legend>Footer colors</legend>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightFooterBg">Background color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldSpotlightFooterBg" name="spotlightFooterBackgroundColor" value="#254155">
+                            <span class="editor-color-value" id="fieldSpotlightFooterBgValue">#254155</span>
+                        </div>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightFooterText">Text color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldSpotlightFooterText" name="spotlightFooterTextColor" value="#c7d2dd">
+                            <span class="editor-color-value" id="fieldSpotlightFooterTextValue">#c7d2dd</span>
+                        </div>
+                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Applies to column headings, links, hours, phone, and email.</p>
+                </fieldset>
                 <div class="editor-field">
                     <label for="fieldSpotlightFooterLogo">Footer logo</label>
                     <div class="editor-upload editor-upload--logo">
@@ -448,83 +499,63 @@
                         <input type="file" id="fieldSpotlightFooterLogo" accept="image/*">
                     </div>
                 </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSpotlightFooterLogoUrl">Footer logo link</label>
+                    <input type="text" id="fieldSpotlightFooterLogoUrl" data-spotlight-field="footerLogoUrl" autocomplete="off" placeholder="/">
+                </div>
                 <p class="editor-field-hint editor-field-hint--fieldset">The map in the preview is for reference only. A live Google Maps embed will be added to your site based on your business address when the template is transferred.</p>
                 <fieldset class="editor-fieldset">
                     <legend>Quick links</legend>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Link labels are fixed. Edit each URL below.</p>
                     <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterQuickAboutUrl">About Us</label>
-                        <input type="text" id="fieldSpotlightFooterQuickAboutUrl" data-spotlight-field="footerQuickAboutUrl" autocomplete="off">
+                        <label for="fieldSpotlightFooterQuickLinksHeading">Column heading</label>
+                        <input type="text" id="fieldSpotlightFooterQuickLinksHeading" data-spotlight-field="footerQuickLinksHeading" autocomplete="off">
                     </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterQuickContactUrl">Contact Us</label>
-                        <input type="text" id="fieldSpotlightFooterQuickContactUrl" data-spotlight-field="footerQuickContactUrl" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterQuickCallUrl">Call Us</label>
-                        <input type="text" id="fieldSpotlightFooterQuickCallUrl" data-spotlight-field="footerQuickCallUrl" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterQuickShopUrl">Shop Now</label>
-                        <input type="text" id="fieldSpotlightFooterQuickShopUrl" data-spotlight-field="footerQuickShopUrl" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterQuickBrandsUrl">Brands</label>
-                        <input type="text" id="fieldSpotlightFooterQuickBrandsUrl" data-spotlight-field="footerQuickBrandsUrl" autocomplete="off">
-                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Edit each link name and URL. Uncheck any you do not want in the footer.</p>
+                    <div id="spotlightFooterQuickLinksEditor"></div>
                 </fieldset>
                 <fieldset class="editor-fieldset">
                     <legend>Policies</legend>
                     <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterPolicyTermsUrl">Terms and Conditions</label>
-                        <input type="text" id="fieldSpotlightFooterPolicyTermsUrl" data-spotlight-field="footerPolicyTermsUrl" autocomplete="off">
+                        <label for="fieldSpotlightFooterPolicyLinksHeading">Column heading</label>
+                        <input type="text" id="fieldSpotlightFooterPolicyLinksHeading" data-spotlight-field="footerPolicyLinksHeading" autocomplete="off">
                     </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterPolicyPrivacyUrl">Privacy</label>
-                        <input type="text" id="fieldSpotlightFooterPolicyPrivacyUrl" data-spotlight-field="footerPolicyPrivacyUrl" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterPolicyReturnsUrl">Returns</label>
-                        <input type="text" id="fieldSpotlightFooterPolicyReturnsUrl" data-spotlight-field="footerPolicyReturnsUrl" autocomplete="off">
-                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Edit each policy link name and URL. Uncheck any you do not want in the footer.</p>
+                    <div id="spotlightFooterPolicyLinksEditor"></div>
                 </fieldset>
                 <fieldset class="editor-fieldset">
                     <legend>Your profile</legend>
                     <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterProfileLoginUrl">Login</label>
-                        <input type="text" id="fieldSpotlightFooterProfileLoginUrl" data-spotlight-field="footerProfileLoginUrl" autocomplete="off">
+                        <label for="fieldSpotlightFooterProfileLinksHeading">Column heading</label>
+                        <input type="text" id="fieldSpotlightFooterProfileLinksHeading" data-spotlight-field="footerProfileLinksHeading" autocomplete="off">
                     </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterProfileCartUrl">Cart</label>
-                        <input type="text" id="fieldSpotlightFooterProfileCartUrl" data-spotlight-field="footerProfileCartUrl" autocomplete="off">
-                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Edit each profile link name and URL. Uncheck any you do not want in the footer.</p>
+                    <div id="spotlightFooterProfileLinksEditor"></div>
                 </fieldset>
                 <fieldset class="editor-fieldset">
                     <legend>Company info</legend>
                     <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterHoursWeekday">Weekday hours</label>
-                        <input type="text" id="fieldSpotlightFooterHoursWeekday" data-spotlight-field="footerHoursWeekday" autocomplete="off">
+                        <label for="fieldSpotlightFooterCompanyInfoHeading">Column heading</label>
+                        <input type="text" id="fieldSpotlightFooterCompanyInfoHeading" data-spotlight-field="footerCompanyInfoHeading" autocomplete="off">
                     </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterHoursSaturday">Saturday</label>
-                        <input type="text" id="fieldSpotlightFooterHoursSaturday" data-spotlight-field="footerHoursSaturday" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterHoursSunday">Sunday</label>
-                        <input type="text" id="fieldSpotlightFooterHoursSunday" data-spotlight-field="footerHoursSunday" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterPhone">Phone number</label>
-                        <input type="text" id="fieldSpotlightFooterPhone" data-spotlight-field="footerPhone" autocomplete="off" placeholder="123-456-7890">
-                        <span class="editor-field-hint">Preview shows as Phone Number: followed by your entry.</span>
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldSpotlightFooterEmail">Email</label>
-                        <input type="email" id="fieldSpotlightFooterEmail" data-spotlight-field="footerEmail" autocomplete="off">
-                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Edit hours lines, phone, and email. Leave URL blank for plain text lines. Uncheck any line you do not want in the footer.</p>
+                    <div id="spotlightFooterCompanyInfoEditor"></div>
                 </fieldset>
                 <fieldset class="editor-fieldset">
                     <legend>Copyright bar</legend>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightFooterCopyrightBg">Background color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldSpotlightFooterCopyrightBg" name="spotlightFooterCopyrightBackgroundColor" value="#1a3347">
+                            <span class="editor-color-value" id="fieldSpotlightFooterCopyrightBgValue">#1a3347</span>
+                        </div>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightFooterCopyrightText">Text color</label>
+                        <div class="editor-color">
+                            <input type="color" id="fieldSpotlightFooterCopyrightText" name="spotlightFooterCopyrightTextColor" value="#a8b8c6">
+                            <span class="editor-color-value" id="fieldSpotlightFooterCopyrightTextValue">#a8b8c6</span>
+                        </div>
+                    </div>
                     <div class="editor-field editor-field--compact">
                         <label for="fieldSpotlightFooterCompanyName">Company name</label>
                         <input type="text" id="fieldSpotlightFooterCompanyName" data-spotlight-field="footerCompanyName" autocomplete="off">
@@ -533,6 +564,11 @@
                         <label for="fieldSpotlightFooterCopyrightName">Copyright company name</label>
                         <input type="text" id="fieldSpotlightFooterCopyrightName" data-spotlight-field="footerCopyrightName" autocomplete="off">
                         <span class="editor-field-hint">Used in the required copyright + ADA compliance line. Leave blank to use the footer company name.</span>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightFooterAdaUrl">ADA Compliant link</label>
+                        <input type="text" id="fieldSpotlightFooterAdaUrl" data-spotlight-field="footerAdaUrl" autocomplete="off" placeholder="#">
+                        <span class="editor-field-hint">Use <code>#</code> for the default ADA popup.</span>
                     </div>
                 </fieldset>
                 <fieldset class="editor-fieldset">
@@ -1033,7 +1069,7 @@
                         </div>
                         <div class="showroom-spotlight-toolbar">
                             <div class="showroom-spotlight-toolbar-row showroom-spotlight-align">
-                                <a href="/" class="showroom-spotlight-logo showroom-header-logo is-empty" id="previewSpotlightHeaderLogoWrap">
+                                <a href="/" class="showroom-spotlight-logo showroom-header-logo is-empty editor-preview-image-jump-target" id="previewSpotlightHeaderLogoWrap" data-editor-jump-target="#uploadPreviewHeaderLogo">
                                     <img id="previewSpotlightHeaderLogo" alt="" hidden>
                                 </a>
                                 <label class="showroom-spotlight-search showroom-header-search-field">
@@ -1121,9 +1157,9 @@
                             <h2 class="showroom-spotlight-heading" id="previewSpotlightOnSaleHeading">What's On Sale</h2>
                         </div>
                         <div class="showroom-spotlight-section-inner showroom-spotlight-section-body">
-                            <div class="showroom-spotlight-on-sale-media is-empty" id="previewSpotlightOnSaleWrap">
+                            <a href="/clearance" class="showroom-spotlight-on-sale-media is-empty editor-preview-image-jump-target" id="previewSpotlightOnSaleWrap" data-editor-jump-target="#editor-section-spotlight-on-sale">
                                 <img id="previewSpotlightOnSaleImage" alt="" hidden>
-                            </div>
+                            </a>
                         </div>
                     </section>
                     <section class="showroom-spotlight-room-section" id="showroomSpotlightShopByRoomSection" aria-label="Shop by room preview">
@@ -1142,7 +1178,7 @@
                             <div class="showroom-spotlight-about-copy">
                                 <div class="showroom-spotlight-about-body" id="previewSpotlightAboutCopy"></div>
                             </div>
-                            <div class="showroom-spotlight-about-media is-empty" id="previewSpotlightAboutImageWrap">
+                            <div class="showroom-spotlight-about-media is-empty editor-preview-image-jump-target" id="previewSpotlightAboutImageWrap" data-editor-jump-target="#uploadPreviewSpotlightAbout">
                                 <img id="previewSpotlightAboutImage" alt="" hidden>
                             </div>
                         </div>
@@ -1160,9 +1196,9 @@
                             <h2 class="showroom-spotlight-heading" id="previewSpotlightBrandsHeading">Our Brands</h2>
                         </div>
                         <div class="showroom-spotlight-section-inner showroom-spotlight-section-body">
-                            <div class="showroom-spotlight-brands-media is-empty" id="previewSpotlightBrandsWrap">
+                            <a href="/brands" class="showroom-spotlight-brands-media is-empty editor-preview-image-jump-target" id="previewSpotlightBrandsWrap" data-editor-jump-target="#editor-section-spotlight-brands">
                                 <img id="previewSpotlightBrandsImage" alt="" hidden>
-                            </div>
+                            </a>
                         </div>
                     </section>
                     <section class="showroom-spotlight-newsletter-section" id="showroomSpotlightNewsletterSection" aria-label="Newsletter preview">
@@ -1198,37 +1234,31 @@
                     <footer class="showroom-spotlight-footer-section" id="showroomSpotlightFooterSection" aria-label="Footer preview">
                         <div class="showroom-spotlight-footer-main">
                             <div class="showroom-spotlight-footer-col showroom-spotlight-footer-col--brand">
-                                <div class="showroom-spotlight-footer-logo is-empty" id="previewSpotlightFooterLogoWrap">
+                                <a href="/" class="showroom-spotlight-footer-logo is-empty editor-preview-image-jump-target" id="previewSpotlightFooterLogoWrap" data-editor-jump-target="#uploadPreviewSpotlightFooterLogo">
                                     <img id="previewSpotlightFooterLogo" alt="" hidden>
-                                </div>
+                                </a>
                                 <div class="showroom-spotlight-footer-map is-empty" id="previewSpotlightFooterMapWrap" aria-label="Google Maps reference preview">
                                     <img id="previewSpotlightFooterMap" alt="" hidden>
                                 </div>
                             </div>
-                            <nav class="showroom-spotlight-footer-col showroom-spotlight-footer-col--links" aria-label="Quick links">
-                                <h3 class="showroom-spotlight-footer-heading">Quick links</h3>
+                            <nav class="showroom-spotlight-footer-col showroom-spotlight-footer-col--links" id="previewSpotlightFooterQuickLinksCol" aria-label="Quick links">
+                                <h3 class="showroom-spotlight-footer-heading" id="previewSpotlightFooterQuickLinksHeading">Quick links</h3>
                                 <ul class="showroom-spotlight-footer-links" id="previewSpotlightFooterQuickLinks"></ul>
                             </nav>
-                            <nav class="showroom-spotlight-footer-col showroom-spotlight-footer-col--links" aria-label="Policies">
-                                <h3 class="showroom-spotlight-footer-heading">Policies</h3>
+                            <nav class="showroom-spotlight-footer-col showroom-spotlight-footer-col--links" id="previewSpotlightFooterPolicyLinksCol" aria-label="Policies">
+                                <h3 class="showroom-spotlight-footer-heading" id="previewSpotlightFooterPolicyLinksHeading">Policies</h3>
                                 <ul class="showroom-spotlight-footer-links" id="previewSpotlightFooterPolicyLinks"></ul>
                             </nav>
-                            <nav class="showroom-spotlight-footer-col showroom-spotlight-footer-col--links" aria-label="Your profile">
-                                <h3 class="showroom-spotlight-footer-heading">Your profile</h3>
+                            <nav class="showroom-spotlight-footer-col showroom-spotlight-footer-col--links" id="previewSpotlightFooterProfileLinksCol" aria-label="Your profile">
+                                <h3 class="showroom-spotlight-footer-heading" id="previewSpotlightFooterProfileLinksHeading">Your profile</h3>
                                 <ul class="showroom-spotlight-footer-links" id="previewSpotlightFooterProfileLinks"></ul>
                             </nav>
-                            <div class="showroom-spotlight-footer-col showroom-spotlight-footer-col--info">
-                                <h3 class="showroom-spotlight-footer-heading">Company info</h3>
-                                <ul class="showroom-spotlight-footer-hours">
-                                    <li id="previewSpotlightFooterHoursWeekday">Monday through Friday 9:00 AM to 5:00</li>
-                                    <li id="previewSpotlightFooterHoursSaturday">Closed on Saturday</li>
-                                    <li id="previewSpotlightFooterHoursSunday">Closed on Sunday</li>
-                                </ul>
-                                <a href="tel:1234567890" class="showroom-spotlight-footer-phone" id="previewSpotlightFooterPhone">Phone Number: 123-456-7890</a>
-                                <a href="mailto:sells@exologic.com" class="showroom-spotlight-footer-email" id="previewSpotlightFooterEmail">sells@exologic.com</a>
+                            <div class="showroom-spotlight-footer-col showroom-spotlight-footer-col--info" id="previewSpotlightFooterCompanyInfoCol">
+                                <h3 class="showroom-spotlight-footer-heading" id="previewSpotlightFooterCompanyInfoHeading">Company info</h3>
+                                <div id="previewSpotlightFooterCompanyInfo"></div>
                             </div>
                         </div>
-                        <div class="showroom-spotlight-footer-bottom">
+                        <div class="showroom-spotlight-footer-bottom" id="previewSpotlightFooterBottom">
                             <div class="showroom-spotlight-footer-bottom-inner showroom-spotlight-align">
                                 <p class="showroom-spotlight-footer-copyright" id="previewSpotlightFooterCopyright"></p>
                                 <div class="showroom-spotlight-footer-social" id="previewSpotlightFooterSocial" aria-label="Social media"></div>

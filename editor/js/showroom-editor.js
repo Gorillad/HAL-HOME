@@ -1155,11 +1155,52 @@
         return true;
     }
 
+    function jumpToEditorTarget(selector) {
+        if (!selector || !editorPanel) return false;
+
+        const target = document.querySelector(selector);
+        if (!target) return false;
+
+        const highlightTarget = target.closest('.editor-gallery-catalog-tile-group')
+            || target.closest('.editor-field')
+            || target.closest('.editor-fieldset')
+            || target;
+        const block = target.closest('.editor-panel-block');
+        const sectionId = block?.dataset?.sectionId
+            || target.closest('.editor-panel-section')?.id;
+
+        scrollEditorPanelTo(selector);
+        if (sectionId) setActiveEditorSection(sectionId);
+        flashJumpTarget(highlightTarget);
+        return true;
+    }
+
+    function resolvePreviewImageEditorJump(clickTarget) {
+        if (!clickTarget) return null;
+        const jumpEl = clickTarget.closest('[data-editor-jump-target]');
+        if (!jumpEl) return null;
+        const selector = jumpEl.getAttribute('data-editor-jump-target');
+        return selector || null;
+    }
+
+    function markPreviewImageJumpTargets() {
+        if (!previewRoot) return;
+        previewRoot.querySelectorAll('[data-editor-jump-target]').forEach((el) => {
+            el.classList.add('editor-preview-image-jump-target');
+        });
+    }
+
     function bindPreviewSectionJump() {
         if (!previewRoot) return;
 
         previewRoot.addEventListener('click', (event) => {
             if (shouldIgnorePreviewJumpClick(event.target)) return;
+
+            const imageJumpSelector = resolvePreviewImageEditorJump(event.target);
+            if (imageJumpSelector && jumpToEditorTarget(imageJumpSelector)) {
+                event.preventDefault();
+                return;
+            }
 
             const sectionId = resolvePreviewEditorSection(event.target);
             if (!sectionId) return;
@@ -1762,6 +1803,8 @@
     function syncPreview() {
         if (templateDesign === 'spotlight' && window.SpotlightEditor) {
             SpotlightEditor.syncPreview();
+            markPreviewJumpTargets();
+            markPreviewImageJumpTargets();
             return;
         }
 
@@ -4721,20 +4764,37 @@
         });
     }
 
-    async function fetchAssetAsDataUrl(path) {
-        try {
-            const res = await fetch(path);
-            if (!res.ok) return '';
-            const blob = await res.blob();
-            return await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-        } catch {
-            return '';
+    function assetPathCandidates(path) {
+        const trimmed = String(path || '').trim();
+        if (!trimmed || trimmed.startsWith('data:')) return [trimmed];
+
+        const candidates = [trimmed];
+        if (trimmed.startsWith('spotlight/')) {
+            candidates.push(`Spotlight/${trimmed.slice('spotlight/'.length)}`);
+        } else if (trimmed.startsWith('Spotlight/')) {
+            candidates.push(`spotlight/${trimmed.slice('Spotlight/'.length)}`);
         }
+        return [...new Set(candidates)];
+    }
+
+    async function fetchAssetAsDataUrl(path) {
+        for (const candidate of assetPathCandidates(path)) {
+            try {
+                const res = await fetch(candidate);
+                if (!res.ok) continue;
+                const blob = await res.blob();
+                const dataUrl = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+                if (dataUrl) return dataUrl;
+            } catch {
+                // Try the next path variant.
+            }
+        }
+        return '';
     }
 
     async function resolveImageDataUrlForExport(src) {
@@ -5216,8 +5276,10 @@
         }
 
         const editorSpotlightBannerFields = document.getElementById('editorSpotlightBannerFields');
+        const editorSpotlightHeaderLinks = document.getElementById('editorSpotlightHeaderLinks');
         const editorHeaderBannerLinksHint = document.getElementById('editorHeaderBannerLinksHint');
         if (editorSpotlightBannerFields) editorSpotlightBannerFields.hidden = !isSpotlight;
+        if (editorSpotlightHeaderLinks) editorSpotlightHeaderLinks.hidden = !isSpotlight;
         if (editorHeaderBannerLinksHint) {
             editorHeaderBannerLinksHint.hidden = isSpotlight;
         }
@@ -5273,6 +5335,7 @@
         }
 
         markPreviewJumpTargets();
+        markPreviewImageJumpTargets();
     }
 
     function finishGalleryEditorInit(options = {}) {
