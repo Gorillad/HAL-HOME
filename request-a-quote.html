@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request a Quote — LogicXO</title>
+    <meta name="description" content="Tell us about your lighting showroom and we'll put together a custom proposal with timeline and pricing.">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="site-nav site-nav--dark" aria-label="Site navigation">
+        <div class="site-nav-inner">
+            <a href="index.html" class="site-nav-logo" aria-label="LogicXO home">
+                <img src="images/logicxo.png" alt="LogicXO">
+            </a>
+            <a href="index.html" class="site-nav-back-link">← Back to home</a>
+        </div>
+    </header>
+
+    <main class="quote-page">
+        <div class="quote-page-inner">
+            <header class="quote-page-header">
+                <p class="quote-page-eyebrow">
+                    <span class="quote-page-eyebrow-line" aria-hidden="true"></span>
+                    Get Started
+                </p>
+                <h1>Request a quote</h1>
+                <p class="quote-page-lead">Tell us about your showroom and goals. We'll put together a custom proposal with timeline and pricing.</p>
+            </header>
+
+            <form id="contactForm" class="contact-form contact-form--quote" novalidate>
+                <div class="contact-form-row">
+                    <div class="contact-field">
+                        <label for="contactName">Your name</label>
+                        <input type="text" id="contactName" name="name" placeholder="Your name" autocomplete="name" required>
+                    </div>
+                    <div class="contact-field">
+                        <label for="contactEmail">Work email</label>
+                        <input type="email" id="contactEmail" name="email" placeholder="Work email" autocomplete="email" required>
+                    </div>
+                </div>
+                <div class="contact-field">
+                    <label for="contactCompany">Company / showroom</label>
+                    <input type="text" id="contactCompany" name="company" placeholder="Company / showroom name" autocomplete="organization">
+                </div>
+                <div class="contact-field">
+                    <label for="contactInterest">Interested in</label>
+                    <select id="contactInterest" name="interest">
+                        <option value="">Interested in…</option>
+                        <option value="quote">Custom website quote</option>
+                        <option value="demo">Book a demo</option>
+                        <option value="showroom">Showroom plan</option>
+                        <option value="designer">Designer plan</option>
+                        <option value="signature">Signature plan</option>
+                        <option value="design">Design services</option>
+                    </select>
+                </div>
+                <div class="contact-field">
+                    <label for="contactMessage">Message</label>
+                    <textarea id="contactMessage" name="message" rows="4" placeholder="Tell us about your team and goals"></textarea>
+                </div>
+                <button type="submit" class="btn btn-hero-primary contact-submit">Submit request</button>
+                <p id="contactFormMsg" class="contact-form-msg" role="status" hidden></p>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>

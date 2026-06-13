@@ -1,17 +1,147 @@
 document.addEventListener('DOMContentLoaded', () => {
-    Footer.load();
+    if (window.Footer) Footer.load();
     initMobileNav();
     initSmoothScroll();
     initContactForm();
     initPricingToggle();
     initShowroomDesignTabs();
+    initEasterEggLinks();
+    initWhatWeDoRange();
+    initShowcase();
     // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
     // initSiteAccessGate();
     if (window.EditorAccess) {
         EditorAccess.markAuthenticated();
     }
-    Cart.initUI();
+    if (window.Cart) Cart.initUI();
 });
+
+function initEasterEggLinks() {
+    const modal = document.getElementById('easterEggVideoModal');
+    const iframe = document.getElementById('easterEggVideoFrame');
+    if (!modal || !iframe) return;
+
+    const panel = modal.querySelector('.easter-egg-video-modal-panel');
+
+    let closeTimer = null;
+
+    function closeEasterEggVideo() {
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+        iframe.onload = null;
+        iframe.removeAttribute('src');
+        panel?.classList.remove('is-pending');
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function openEasterEggVideo(videoId, startSeconds, durationMs) {
+        closeEasterEggVideo();
+
+        const embed = new URL(`https://www.youtube.com/embed/${encodeURIComponent(videoId)}`);
+        embed.searchParams.set('start', String(startSeconds));
+        embed.searchParams.set('autoplay', '1');
+        embed.searchParams.set('rel', '0');
+        embed.searchParams.set('playsinline', '1');
+        embed.searchParams.set('modestbranding', '1');
+        embed.searchParams.set('controls', '0');
+        embed.searchParams.set('disablekb', '1');
+        embed.searchParams.set('fs', '0');
+        embed.searchParams.set('iv_load_policy', '3');
+        embed.searchParams.set('cc_load_policy', '0');
+        if (window.location.origin && window.location.origin !== 'null') {
+            embed.searchParams.set('origin', window.location.origin);
+        }
+
+        panel?.classList.add('is-pending');
+        iframe.onload = () => {
+            window.setTimeout(() => panel?.classList.remove('is-pending'), 300);
+        };
+
+        iframe.src = embed.toString();
+        modal.hidden = false;
+        modal.setAttribute('aria-hidden', 'false');
+        closeTimer = window.setTimeout(closeEasterEggVideo, durationMs);
+    }
+
+    modal.querySelector('.easter-egg-video-modal-backdrop')?.addEventListener('click', closeEasterEggVideo);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.hidden) {
+            closeEasterEggVideo();
+        }
+    });
+
+    document.querySelectorAll('.site-easter-egg-link[data-yt-video][data-yt-start]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const videoId = link.dataset.ytVideo;
+            const startSeconds = Number.parseInt(link.dataset.ytStart, 10);
+            const durationMs = Number.parseInt(link.dataset.ytDuration || '10000', 10);
+            if (!videoId || Number.isNaN(startSeconds)) return;
+            openEasterEggVideo(videoId, startSeconds, Number.isNaN(durationMs) ? 10000 : durationMs);
+        });
+    });
+}
+
+function initWhatWeDoRange() {
+    const bar = document.getElementById('homeRangeBar');
+    if (!bar) return;
+
+    const steps = [...bar.querySelectorAll('.home-range-step')];
+    if (steps.length === 0) return;
+
+    let index = 0;
+    let timer = null;
+
+    function setActive(nextIndex) {
+        index = nextIndex;
+        steps.forEach((step, i) => {
+            const isActive = i === index;
+            step.classList.toggle('is-active', isActive);
+            if (isActive) {
+                step.setAttribute('aria-current', 'step');
+            } else {
+                step.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    function tick() {
+        setActive((index + 1) % steps.length);
+    }
+
+    function start() {
+        if (timer) return;
+        timer = window.setInterval(tick, 1800);
+    }
+
+    function stop() {
+        if (!timer) return;
+        window.clearInterval(timer);
+        timer = null;
+    }
+
+    setActive(0);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
+    bar.addEventListener('mouseenter', stop);
+    bar.addEventListener('mouseleave', start);
+
+    steps.forEach((step, i) => {
+        step.addEventListener('click', () => {
+            stop();
+            setActive(i);
+        });
+    });
+
+    start();
+}
 
 function initMobileNav() {
     const nav = document.querySelector('.site-nav');
@@ -167,6 +297,16 @@ function initContactForm() {
     const emailInput = document.getElementById('contactEmail');
     const msg = document.getElementById('contactFormMsg');
     if (!form || !nameInput || !emailInput || !msg) return;
+
+    const interestSelect = document.getElementById('contactInterest');
+    const params = new URLSearchParams(window.location.search);
+    const interest = params.get('interest');
+    if (interestSelect && interest) {
+        const option = interestSelect.querySelector(`option[value="${CSS.escape(interest)}"]`);
+        if (option) interestSelect.value = interest;
+    } else if (interestSelect && /request-a-quote/i.test(window.location.pathname)) {
+        interestSelect.value = 'quote';
+    }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

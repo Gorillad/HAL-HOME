@@ -3,8 +3,11 @@ Homepage hero images
 
 Split hero grid (index.html):
   hero-09.png   — ceiling fan (large left column, full height)
+    alt: Large modern ceiling fan with wood blades
   hero-15.png   — bath vanity (stacked right, top)
-  hero-13.png   — chandelier (stacked right, bottom)
+    alt: Modern black bath vanity light fixture
+  hero-14.png   — chandelier (stacked right, bottom)
+    alt: Natural rattan chandelier
 
 Legacy full-bleed hero:
   hero-06-08.png   — previous single-image hero background
