@@ -4831,6 +4831,49 @@ body.home-page .template-badge::after {
     line-height: 1;
 }
 
+body.home-page .template-badge--pick {
+    position: absolute;
+    top: clamp(10px, 1.2vw, 14px);
+    right: clamp(14px, 1.8vw, 20px);
+    z-index: 2;
+    display: inline-flex;
+    width: auto;
+    margin: 0;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 999px;
+    background: var(--hero-gold);
+    color: #1a1a1a;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-align: right;
+    box-shadow: 0 4px 14px rgba(201, 169, 110, 0.45);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+body.home-page .template-badge--pick::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: none;
+    transition: left 0.55s ease;
+    pointer-events: none;
+}
+
+body.home-page .home-page-templates .template-card--featured:hover .template-badge--pick::before {
+    left: 130%;
+}
+
+body.home-page .template-badge--pick::after {
+    content: none;
+}
+
 body.home-page .template-card--showroom {
     padding-top: 22px;
 }
@@ -5014,6 +5057,7 @@ body.home-page .home-page-templates .template-card:hover {
 }
 
 body.home-page .home-page-templates .template-card--featured {
+    position: relative;
     border: 1.5px solid var(--hero-gold);
     box-shadow: 0 16px 40px rgba(201, 169, 110, 0.14);
 }
@@ -5240,6 +5284,10 @@ body.home-page .home-page-templates .template-preview--signature .template-brows
     body.home-page .home-page-templates .showroom-design-views,
     body.home-page .home-page-templates .designer-design-views {
         transition: none;
+    }
+
+    body.home-page .template-badge--pick::before {
+        display: none;
     }
 }
 
