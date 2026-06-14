@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initShowroomDesignTabs();
     initDesignerDesignTabs();
     initEasterEggLinks();
-    initWhatWeDoRange();
     initShowcase();
     initAboutVideo();
     // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
@@ -86,63 +85,6 @@ function initEasterEggLinks() {
             openEasterEggVideo(videoId, startSeconds, Number.isNaN(durationMs) ? 10000 : durationMs);
         });
     });
-}
-
-function initWhatWeDoRange() {
-    const bar = document.getElementById('homeRangeBar');
-    if (!bar) return;
-
-    const steps = [...bar.querySelectorAll('.home-range-step')];
-    if (steps.length === 0) return;
-
-    let index = 0;
-    let timer = null;
-
-    function setActive(nextIndex) {
-        index = nextIndex;
-        steps.forEach((step, i) => {
-            const isActive = i === index;
-            step.classList.toggle('is-active', isActive);
-            if (isActive) {
-                step.setAttribute('aria-current', 'step');
-            } else {
-                step.removeAttribute('aria-current');
-            }
-        });
-    }
-
-    function tick() {
-        setActive((index + 1) % steps.length);
-    }
-
-    function start() {
-        if (timer) return;
-        timer = window.setInterval(tick, 1800);
-    }
-
-    function stop() {
-        if (!timer) return;
-        window.clearInterval(timer);
-        timer = null;
-    }
-
-    setActive(0);
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        return;
-    }
-
-    bar.addEventListener('mouseenter', stop);
-    bar.addEventListener('mouseleave', start);
-
-    steps.forEach((step, i) => {
-        step.addEventListener('click', () => {
-            stop();
-            setActive(i);
-        });
-    });
-
-    start();
 }
 
 function initMobileNav() {

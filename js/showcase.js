@@ -25,6 +25,8 @@ const SHOWCASE_PROJECTS = [
     },
 ];
 
+const SHOWCASE_SWITCH_MS = 320;
+
 function renderShowcaseScreen(project, isPhone) {
     const imgSrc = isPhone ? project.mobileImg : project.desktopImg;
 
@@ -69,21 +71,15 @@ function initShowcase() {
     const laptopScreen = document.getElementById('showcaseLaptopScreen');
     const phoneScreen = document.getElementById('showcasePhoneScreen');
     const tagEl = document.getElementById('showcaseTag');
+    const nameEl = document.getElementById('showcaseName');
     const tabs = document.getElementById('showcaseTabs');
-    if (!section || !laptopScreen || !phoneScreen || !tagEl || !tabs) return;
+    if (!section || !laptopScreen || !phoneScreen || !tagEl || !nameEl || !tabs) return;
 
     let active = 0;
+    let switchTimer = null;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function setProject(index) {
-        active = index;
-        const project = SHOWCASE_PROJECTS[index];
-
-        laptopScreen.replaceChildren(renderShowcaseScreen(project, false));
-        phoneScreen.replaceChildren(renderShowcaseScreen(project, true));
-
-        tagEl.textContent = project.tag;
-        tagEl.style.color = project.accent;
-
+    function updateTabs(index, project) {
         tabs.querySelectorAll('[role="tab"]').forEach((tab, i) => {
             const isActive = i === index;
             tab.classList.toggle('is-active', isActive);
@@ -98,6 +94,46 @@ function initShowcase() {
                 tab.style.color = '';
             }
         });
+    }
+
+    function applyProjectContent(project) {
+        laptopScreen.replaceChildren(renderShowcaseScreen(project, false));
+        phoneScreen.replaceChildren(renderShowcaseScreen(project, true));
+        tagEl.textContent = project.tag;
+        tagEl.style.color = project.accent;
+        nameEl.textContent = project.name;
+    }
+
+    function setProject(index) {
+        if (index === active && laptopScreen.childElementCount > 0) return;
+
+        active = index;
+        const project = SHOWCASE_PROJECTS[index];
+        updateTabs(index, project);
+
+        if (prefersReducedMotion) {
+            applyProjectContent(project);
+            return;
+        }
+
+        if (switchTimer) {
+            window.clearTimeout(switchTimer);
+            switchTimer = null;
+        }
+
+        laptopScreen.classList.add('is-switching');
+        phoneScreen.classList.add('is-switching');
+        nameEl.classList.add('is-switching');
+
+        switchTimer = window.setTimeout(() => {
+            applyProjectContent(project);
+            requestAnimationFrame(() => {
+                laptopScreen.classList.remove('is-switching');
+                phoneScreen.classList.remove('is-switching');
+                nameEl.classList.remove('is-switching');
+            });
+            switchTimer = null;
+        }, SHOWCASE_SWITCH_MS / 2);
     }
 
     SHOWCASE_PROJECTS.forEach((project, i) => {
