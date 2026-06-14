@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEggLinks();
     initShowcase();
     initAboutVideo();
+    initProblemReveal();
     // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
     // initSiteAccessGate();
     if (window.EditorAccess) {
@@ -293,8 +294,10 @@ function initShowroomDesignTabs() {
 
     const tabs = [...tablist.querySelectorAll('.showroom-design-tab')];
     const views = [...card.querySelectorAll('.showroom-design-view')];
+    const viewsContainer = card.querySelector('.showroom-design-views');
     const editorBtn = document.getElementById('showroomEditorBtn');
     const designNote = document.getElementById('showroomDesignNote');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const designLabels = {
         classic: 'McQueen',
@@ -302,7 +305,7 @@ function initShowroomDesignTabs() {
         spotlight: 'Spotlight',
     };
 
-    function setActiveDesign(design) {
+    function applyDesign(design) {
         const label = designLabels[design] || 'McQueen';
 
         tabs.forEach((item) => {
@@ -328,6 +331,24 @@ function initShowroomDesignTabs() {
         }
     }
 
+    function setActiveDesign(design) {
+        const activeView = views.find((view) => view.dataset.showroomDesign === design);
+        if (!activeView || (activeView.classList.contains('is-active') && !activeView.hidden)) return;
+
+        if (prefersReducedMotion || !viewsContainer) {
+            applyDesign(design);
+            return;
+        }
+
+        viewsContainer.classList.add('is-switching');
+        window.setTimeout(() => {
+            applyDesign(design);
+            requestAnimationFrame(() => {
+                viewsContainer.classList.remove('is-switching');
+            });
+        }, 140);
+    }
+
     tablist.addEventListener('click', (e) => {
         const tab = e.target.closest('.showroom-design-tab');
         if (!tab || !tablist.contains(tab)) return;
@@ -340,7 +361,7 @@ function initShowroomDesignTabs() {
 
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
     if (activeTab?.dataset.showroomDesign) {
-        setActiveDesign(activeTab.dataset.showroomDesign);
+        applyDesign(activeTab.dataset.showroomDesign);
     }
 }
 
@@ -353,7 +374,9 @@ function initDesignerDesignTabs() {
 
     const tabs = [...tablist.querySelectorAll('.showroom-design-tab')];
     const views = [...card.querySelectorAll('.designer-design-view')];
+    const viewsContainer = card.querySelector('.designer-design-views');
     const designNote = document.getElementById('designerDesignNote');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const designLabels = {
         gallery: 'Gallery',
@@ -361,7 +384,7 @@ function initDesignerDesignTabs() {
         canvas: 'Canvas',
     };
 
-    function setActiveDesign(design) {
+    function applyDesign(design) {
         const label = designLabels[design] || 'Gallery';
 
         tabs.forEach((item) => {
@@ -381,6 +404,24 @@ function initDesignerDesignTabs() {
         }
     }
 
+    function setActiveDesign(design) {
+        const activeView = views.find((view) => view.dataset.designerDesign === design);
+        if (!activeView || (activeView.classList.contains('is-active') && !activeView.hidden)) return;
+
+        if (prefersReducedMotion || !viewsContainer) {
+            applyDesign(design);
+            return;
+        }
+
+        viewsContainer.classList.add('is-switching');
+        window.setTimeout(() => {
+            applyDesign(design);
+            requestAnimationFrame(() => {
+                viewsContainer.classList.remove('is-switching');
+            });
+        }, 140);
+    }
+
     tablist.addEventListener('click', (e) => {
         const tab = e.target.closest('.showroom-design-tab');
         if (!tab || !tablist.contains(tab)) return;
@@ -393,8 +434,43 @@ function initDesignerDesignTabs() {
 
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
     if (activeTab?.dataset.designerDesign) {
-        setActiveDesign(activeTab.dataset.designerDesign);
+        applyDesign(activeTab.dataset.designerDesign);
     }
+}
+
+function initProblemReveal() {
+    const section = document.getElementById('the-problem');
+    const pains = document.getElementById('problemPains');
+    if (!section || !pains) return;
+
+    const cards = [...pains.querySelectorAll('.home-problem-pain-card')];
+    if (cards.length === 0) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        cards.forEach((card) => card.classList.add('is-visible'));
+        return;
+    }
+
+    cards.forEach((card) => {
+        card.style.opacity = '0';
+    });
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+
+                cards.forEach((card) => {
+                    card.style.opacity = '';
+                    card.classList.add('is-visible');
+                });
+                observer.disconnect();
+            });
+        },
+        { threshold: 0.25, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    observer.observe(section);
 }
 
 function initAboutVideo() {
