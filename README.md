@@ -1,6 +1,6 @@
 # LogicXO Marketing Site
 
-Marketing site for [logicxo.com](https://logicxo.com): homepage templates, design services, showroom homepage editor, and Stripe checkout (test mode locally; live when Stripe is activated).
+Marketing site for [logicxo.com](https://logicxo.com): homepage templates, design services, Showroom and Designer homepage editors, and Stripe checkout (test mode locally; live when Stripe is activated).
 
 > **Repo note:** GitHub repo may still be named `HAL-HOME`. The local folder name does not affect deployment.
 
@@ -33,15 +33,23 @@ Use `npm start` (not a static file server) — cart checkout requires the Node A
 │   ├── products.json          # Catalog (cart + checkout line items)
 │   ├── contacts.json          # Email addresses (canonical list)
 │   └── template-defaults.json # Default showroom editor content
-├── editor/                    # Showroom homepage template editor
-│   ├── showroom.html
+├── editor/                    # In-browser homepage editors
+│   ├── showroom.html          # Showroom plan — McQueen, Classic, Spotlight
+│   ├── designer.html          # Designer plan — Gallery, Curator, Canvas (scaffold)
+│   ├── knowledge-base.html
 │   ├── css/editor.css
-│   ├── js/showroom-editor.js
-│   ├── js/export-pdf.js
-│   ├── gallery/               # Classic template default images
-│   ├── classic/               # McQueen template images (categories, get-inspired, etc.)
-│   ├── assets/                # Shared editor assets (e.g. rubber-duck.svg)
-│   └── vendor/                # html2canvas, jsPDF, JSZip (PDF export)
+│   ├── js/
+│   │   ├── showroom-editor.js
+│   │   ├── designer-editor.js
+│   │   ├── export-pdf.js      # Showroom handoff export
+│   │   ├── editor-progress-dock.js
+│   │   └── spotlight-template.js
+│   ├── gallery/               # Showroom Classic template images
+│   ├── classic/               # Showroom McQueen template images
+│   ├── Spotlight/             # Showroom Spotlight template images
+│   ├── assets/
+│   └── vendor/                # html2canvas, jsPDF, JSZip
+├── hal/                       # XOLogic catalog header/footer paste package
 ├── server/
 │   ├── index.js               # Express: static files + Stripe API
 │   └── email.js               # Order confirmation email rendering
@@ -74,7 +82,29 @@ Copy the signing secret to `.env` as `STRIPE_WEBHOOK_SECRET`.
 
 ## Showroom editor
 
-Open http://localhost:4242/editor/showroom.html — customize the showroom homepage template, export PDF/ZIP.
+Open http://localhost:4242/editor/showroom.html — customize Showroom homepage templates and export a PDF/ZIP handoff.
+
+| Template | URL |
+|----------|-----|
+| McQueen | `?design=classic` |
+| Classic | `?design=gallery` |
+| Spotlight | `?design=spotlight` |
+
+Features: live preview, autosave, section progress dock, and developer handoff export.
+
+## Designer editor
+
+Open http://localhost:4242/editor/designer.html — Designer plan templates with XOLogic paste-slot handoff (in progress).
+
+| Template | URL |
+|----------|-----|
+| Gallery | `?design=gallery` |
+| Curator | `?design=curator` |
+| Canvas | `?design=canvas` |
+
+Linked from the **Designer** column on the homepage. Not the same as Showroom Classic (`showroom.html?design=gallery`).
+
+Handoff will target seven XOLogic dashboard slots (Meta data JavaScript, Header, Footer, Section 1–3, Slideshow) with assets under `/data/` on client FTP. See `hal/README.md` for the catalog embed pattern.
 
 ## Email template
 

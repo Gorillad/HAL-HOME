@@ -128,6 +128,10 @@ app.get('/editor/knowledge-base.html', (_req, res) => {
     res.sendFile(path.join(ROOT, 'editor', 'knowledge-base.html'));
 });
 
+app.get('/editor/designer.html', (_req, res) => {
+    res.sendFile(path.join(ROOT, 'editor', 'designer.html'));
+});
+
 // app.get('/editor/showroom.html', requireEditorAuth, (_req, res) => {
 //     res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
 // });

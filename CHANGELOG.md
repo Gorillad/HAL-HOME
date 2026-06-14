@@ -22,3 +22,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/). Version tags use
 - Homepage hero image naming normalized (`hero-03.png`)
 
 [1.0.0]: https://github.com/Gorillad/HAL-HOME/releases/tag/v1.0.0
+
+## [Unreleased]
+
+### Added
+
+- Designer homepage editor scaffold (`/editor/designer.html`) — Gallery, Curator, Canvas with three-design URL guard
+- Showroom editor progress dock — section completion checklist (collapsed by default) with support@logicxo.com
+- Homepage Designer column links to Designer editor (`#designerEditorBtn`) with tab-synced template URLs
+
+### Changed
+
+- Showroom editor: two-tier header (site nav + editor chrome), black/gold theme, progress dock integration
+- Homepage Designer card copy and CTA mirror Showroom editor pattern

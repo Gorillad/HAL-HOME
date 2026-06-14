@@ -375,6 +375,7 @@ function initDesignerDesignTabs() {
     const tabs = [...tablist.querySelectorAll('.showroom-design-tab')];
     const views = [...card.querySelectorAll('.designer-design-view')];
     const viewsContainer = card.querySelector('.designer-design-views');
+    const editorBtn = document.getElementById('designerEditorBtn');
     const designNote = document.getElementById('designerDesignNote');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -399,8 +400,14 @@ function initDesignerDesignTabs() {
             view.hidden = !isActive;
         });
 
+        if (editorBtn && design) {
+            editorBtn.href = `editor/designer.html?design=${encodeURIComponent(design)}`;
+            editorBtn.textContent = `Open ${label} editor`;
+            editorBtn.setAttribute('aria-label', `Open ${label} template in Designer editor`);
+        }
+
         if (designNote) {
-            designNote.textContent = `${label} selected — request a demo to see it in action.`;
+            designNote.textContent = `${label} selected — open the editor to customize this layout.`;
         }
     }
 

@@ -12,6 +12,8 @@
 
     const templateDesign = getTemplateDesign();
     const STORAGE_KEY = `logicxo-editor-showroom-${templateDesign}`;
+    const BASELINE_STORAGE_KEY = `logicxo-editor-baseline-${templateDesign}`;
+    let baselineState = null;
     const DEFAULT_COPY_BG = '#5a3d2b';
     const DEFAULT_HERO_CTA_BG = '#44301f';
     const DEFAULT_HERO_CTA_TEXT = '#ffffff';
@@ -775,6 +777,7 @@
         footerAddress: DEFAULT_FOOTER_ADDRESS,
         footerPhone: DEFAULT_FOOTER_PHONE,
         footerCopyrightName: '',
+        reviewedSections: [],
     };
 
     function createGetInspiredItem(data = {}, index = 0) {
@@ -1345,12 +1348,52 @@
     function saveState(options = {}) {
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            if (window.EditorProgressDock) {
+                EditorProgressDock.update();
+            }
             if (!options.silent) {
                 setStatus('Draft saved');
             }
         } catch {
             setStatus('Could not save draft (storage full?)');
         }
+    }
+
+    function loadBaselineState() {
+        try {
+            const raw = localStorage.getItem(BASELINE_STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch { /* ignore */ }
+        return null;
+    }
+
+    function persistBaselineState(baseline) {
+        baselineState = baseline;
+        try {
+            localStorage.setItem(BASELINE_STORAGE_KEY, JSON.stringify(baseline));
+        } catch { /* ignore */ }
+    }
+
+    async function loadTemplateDefaultsPayload() {
+        try {
+            const res = await fetch('../data/template-defaults.json');
+            if (res.ok) {
+                const data = await res.json();
+                return data.showroom || {};
+            }
+        } catch { /* ignore */ }
+        return {};
+    }
+
+    async function captureBaselineFromFactoryDefaults() {
+        const defaultsPayload = await loadTemplateDefaultsPayload();
+        populateForm(defaultsPayload);
+        if (templateDesign === 'gallery') {
+            ensureGalleryImageDefaults();
+        } else if (templateDesign === 'classic') {
+            ensureClassicImageDefaults();
+        }
+        persistBaselineState(JSON.parse(JSON.stringify(state)));
     }
 
     function loadState() {
@@ -5435,7 +5478,15 @@
 
         applyTemplateDesignUI();
 
+        baselineState = loadBaselineState();
+        const baselineWasStored = Boolean(baselineState);
         const saved = loadState();
+        const defaultsPayload = await loadTemplateDefaultsPayload();
+
+        if (!baselineState) {
+            await captureBaselineFromFactoryDefaults();
+        }
+
         if (saved) {
             let restored = saved;
             if (templateDesign === 'gallery') {
@@ -5446,6 +5497,9 @@
                 restored = migrateLoadedClassicState(saved);
             }
             populateForm(restored);
+            if (Array.isArray(restored.reviewedSections)) {
+                state.reviewedSections = restored.reviewedSections;
+            }
             if (templateDesign === 'gallery') {
                 finishGalleryEditorInit({ restoredDraft: true });
             } else if (templateDesign === 'spotlight') {
@@ -5453,29 +5507,36 @@
             } else {
                 finishClassicEditorInit({ restoredDraft: true });
             }
-            return;
-        }
-
-        try {
-            const res = await fetch('../data/template-defaults.json');
-            if (res.ok) {
-                const data = await res.json();
-                populateForm(data.showroom || {});
+        } else if (baselineWasStored) {
+            populateForm(defaultsPayload);
+            if (templateDesign === 'gallery') {
+                finishGalleryEditorInit();
+            } else if (templateDesign === 'spotlight') {
+                finishSpotlightEditorInit();
             } else {
-                populateForm({});
+                finishClassicEditorInit();
             }
-        } catch {
-            populateForm({});
+            saveState({ silent: true });
+        } else {
+            if (templateDesign === 'gallery') {
+                finishGalleryEditorInit();
+            } else if (templateDesign === 'spotlight') {
+                finishSpotlightEditorInit();
+            } else {
+                finishClassicEditorInit();
+            }
+            saveState({ silent: true });
         }
 
-        if (templateDesign === 'gallery') {
-            finishGalleryEditorInit();
-        } else if (templateDesign === 'spotlight') {
-            finishSpotlightEditorInit();
-        } else {
-            finishClassicEditorInit();
+        if (window.EditorProgressDock) {
+            EditorProgressDock.init({
+                getState: () => state,
+                getBaselineState: () => baselineState || state,
+                getDesign: () => templateDesign,
+                onJump: (sectionId) => jumpToEditorSection(sectionId),
+                saveState,
+            });
         }
-        saveState({ silent: true });
     }
 
     init();

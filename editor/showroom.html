@@ -19,38 +19,77 @@
             document.body.classList.add(`editor-page--${slug}`);
         }());
     </script>
-    <header class="editor-toolbar">
-        <div class="editor-toolbar-left">
-            <nav class="editor-breadcrumb" aria-label="Breadcrumb">
-                <ol class="editor-breadcrumb-list">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../index.html#templates">Homepage templates</a></li>
-                    <li><span aria-current="page">Showroom editor</span></li>
-                </ol>
-            </nav>
-            <div class="editor-toolbar-intro">
-                <a href="../index.html" class="editor-home" aria-label="Home">
-                    <img src="../images/logicxo.png" alt="LogicXO" width="152" height="48">
+    <!-- Tier 1: site chrome — keep in sync with index.html announcement + site-nav--dark -->
+    <div class="editor-site-header">
+        <div class="site-announcement" role="region" aria-label="Announcement">
+            <div class="site-announcement-inner">
+                <p class="site-announcement-copy">
+                    <span class="site-announcement-message">
+                        <strong>Custom website design</strong> for lighting showrooms &amp; designers
+                    </span>
+                    <span class="site-announcement-sep" aria-hidden="true">·</span>
+                    <a href="../index.html#contact">Request a quote →</a>
+                </p>
+            </div>
+        </div>
+        <header class="site-nav site-nav--dark site-nav--editor" aria-label="Site navigation">
+            <div class="site-nav-inner">
+                <a href="../index.html" class="site-nav-logo" aria-label="LogicXO home">
+                    <img src="../images/logos/logicxo-gold.png" alt="LogicXO">
                 </a>
-                <div class="editor-toolbar-title">
-                    <div class="editor-toolbar-heading">
+                <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
+                    <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                    <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                </button>
+                <div class="site-nav-panel" id="site-nav-panel">
+                    <nav aria-label="Primary">
+                        <ul class="site-nav-links">
+                            <li><a href="../index.html#templates">Templates</a></li>
+                            <li><a href="showroom.html" aria-current="page">Editor</a></li>
+                            <li><a href="../index.html#campaigns">Campaigns</a></li>
+                            <li><a href="../index.html#design-services">Design</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures" target="_blank" rel="noopener noreferrer">Catalog</a></li>
+                            <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
+                        </ul>
+                    </nav>
+                    <div class="site-nav-actions">
+                        <a href="knowledge-base.html" class="site-nav-link-btn">Editor guide</a>
+                        <a href="../index.html#contact" class="site-nav-cta">Request a Quote</a>
+                    </div>
+                </div>
+            </div>
+            <div class="site-nav-backdrop" hidden aria-hidden="true"></div>
+        </header>
+
+        <!-- Tier 2: editor chrome -->
+        <div class="editor-chrome">
+            <div class="editor-chrome-main">
+                <nav class="editor-breadcrumb" aria-label="Breadcrumb">
+                    <ol class="editor-breadcrumb-list">
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../index.html#templates">Homepage templates</a></li>
+                        <li><span aria-current="page">Showroom editor</span></li>
+                    </ol>
+                </nav>
+                <div class="editor-chrome-title">
+                    <div class="editor-chrome-heading">
                         <h1>Showroom editor</h1>
                         <span class="editor-template-name" id="editorTemplateName">McQueen</span>
                     </div>
-                    <p class="editor-toolbar-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
+                    <p class="editor-chrome-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
                 </div>
             </div>
+            <div class="editor-chrome-actions">
+                <span class="editor-status" id="editorStatus" aria-live="polite"></span>
+                <button type="button" class="btn btn-primary" id="exportPdfBtn">Export handoff</button>
+                <span class="editor-evolved-toast" id="evolvedToast" hidden>
+                    <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                    <span class="editor-evolved-label">Evolved</span>
+                    <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                </span>
+            </div>
         </div>
-        <div class="editor-toolbar-actions">
-            <span class="editor-status" id="editorStatus" aria-live="polite"></span>
-            <button type="button" class="btn btn-primary" id="exportPdfBtn">Export handoff</button>
-            <span class="editor-evolved-toast" id="evolvedToast" hidden>
-                <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
-                <span class="editor-evolved-label">Evolved</span>
-                <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
-            </span>
-        </div>
-    </header>
 
     <nav class="editor-section-nav" id="editorSectionNav" aria-label="Jump to editor section">
         <a href="#editor-section-header" class="editor-section-nav-link editor-section-nav-link--shared">Header</a>
@@ -73,6 +112,7 @@
         <a href="#editor-section-spotlight-newsletter" class="editor-section-nav-link editor-section-nav-link--spotlight">Newsletter</a>
         <a href="#editor-section-spotlight-footer" class="editor-section-nav-link editor-section-nav-link--spotlight">Footer</a>
     </nav>
+    </div><!-- /.editor-site-header -->
 
     <div class="editor-layout">
         <aside class="editor-panel" id="editorPanel" aria-label="Editor controls">
@@ -1406,11 +1446,37 @@
         </div>
     </div>
 
+    <aside class="editor-progress-dock is-collapsed" id="editorProgressDock" aria-label="Section progress">
+        <button type="button" class="editor-progress-dock-toggle" id="editorProgressDockToggle" aria-expanded="false" aria-controls="editorProgressDockInner">
+            <span class="editor-progress-dock-toggle-label">Progress</span>
+            <span class="editor-progress-dock-toggle-summary" aria-hidden="true"></span>
+            <i class="fa-solid fa-chevron-up editor-progress-dock-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="editor-progress-dock-inner" id="editorProgressDockInner">
+            <div class="editor-progress-summary">
+                <div class="editor-progress-summary-top">
+                    <span class="editor-progress-count" id="editorProgressCount">0 of 0 customized</span>
+                    <span class="editor-progress-summary-note">Export anytime</span>
+                </div>
+                <div class="editor-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="editorProgressBar">
+                    <span class="editor-progress-bar-fill" id="editorProgressBarFill"></span>
+                </div>
+                <p class="editor-progress-hint" id="editorProgressHint">Sections still on template defaults are listed below.</p>
+            </div>
+            <ul class="editor-progress-list" id="editorProgressList"></ul>
+        </div>
+        <div class="editor-progress-dock-footer">
+            <a href="mailto:support@logicxo.com" class="editor-progress-support">support@logicxo.com</a>
+        </div>
+    </aside>
+
+    <script src="js/editor-site-nav.js"></script>
     <script src="vendor/html2canvas.min.js"></script>
     <script src="vendor/jspdf.umd.min.js"></script>
     <script src="vendor/jszip.min.js"></script>
     <script src="js/export-pdf.js"></script>
     <script src="js/spotlight-template.js"></script>
+    <script src="js/editor-progress-dock.js"></script>
     <script src="js/showroom-editor.js"></script>
 </body>
 </html>
