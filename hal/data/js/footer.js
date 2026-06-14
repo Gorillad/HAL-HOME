@@ -2,6 +2,8 @@
  * LogicXO catalog footer — auto year, newsletter feedback, back-to-top.
  */
 const Footer = (() => {
+    let didInit = false;
+
     function initYear() {
         const yearEl = document.getElementById('footerYear');
         if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -40,11 +42,18 @@ const Footer = (() => {
         const btn = document.getElementById('footerBackToTop');
         if (!btn) return;
         btn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: reduceMotion ? 'auto' : 'smooth',
+            });
         });
     }
 
     function load() {
+        if (didInit) return;
+        didInit = true;
         initYear();
         initNewsletter();
         initBackToTop();
@@ -52,3 +61,5 @@ const Footer = (() => {
 
     return { load };
 })();
+
+window.Footer = Footer;

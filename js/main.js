@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEggLinks();
     initWhatWeDoRange();
     initShowcase();
+    initAboutVideo();
     // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
     // initSiteAccessGate();
     if (window.EditorAccess) {
@@ -452,6 +453,72 @@ function initDesignerDesignTabs() {
     if (activeTab?.dataset.designerDesign) {
         setActiveDesign(activeTab.dataset.designerDesign);
     }
+}
+
+function initAboutVideo() {
+    const section = document.getElementById('who-we-are');
+    const video = document.querySelector('.home-story-about-video');
+    const overlay = document.getElementById('aboutVideoOverlay');
+    const frame = video?.closest('.home-story-about-video-frame');
+    if (!section || !video) return;
+
+    function showOverlay() {
+        if (!overlay || overlay.classList.contains('is-visible')) return;
+        overlay.hidden = false;
+        frame?.classList.add('is-replayable');
+        requestAnimationFrame(() => overlay.classList.add('is-visible'));
+    }
+
+    function hideOverlay() {
+        if (!overlay) return;
+        overlay.classList.remove('is-visible');
+        overlay.hidden = true;
+        frame?.classList.remove('is-replayable');
+    }
+
+    function replayVideo() {
+        hideOverlay();
+        video.currentTime = 0;
+        const playPromise = video.play();
+        if (playPromise?.catch) {
+            playPromise.catch(() => {});
+        }
+    }
+
+    video.addEventListener('ended', showOverlay);
+
+    frame?.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return;
+        if (!video.ended) return;
+        replayVideo();
+    });
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.pause();
+        return;
+    }
+
+    video.muted = true;
+    let hasPlayed = false;
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting || hasPlayed) return;
+
+                hasPlayed = true;
+                observer.disconnect();
+
+                const playPromise = video.play();
+                if (playPromise?.catch) {
+                    playPromise.catch(() => {});
+                }
+            });
+        },
+        { threshold: 0.35 }
+    );
+
+    observer.observe(section);
 }
 
 function initHeroRays() {
