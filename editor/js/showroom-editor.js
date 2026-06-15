@@ -778,6 +778,7 @@
         footerPhone: DEFAULT_FOOTER_PHONE,
         footerCopyrightName: '',
         reviewedSections: [],
+        previewTheme: 'light',
     };
 
     function createGetInspiredItem(data = {}, index = 0) {
@@ -1541,8 +1542,13 @@
         if (previewGalleryHeroCta) {
             previewGalleryHeroCta.textContent = buttonLabel;
             previewGalleryHeroCta.href = buttonUrl || '#';
-            previewGalleryHeroCta.style.backgroundColor = buttonBg;
-            previewGalleryHeroCta.style.color = buttonText;
+            if (isGalleryDarkPreview()) {
+                previewGalleryHeroCta.style.backgroundColor = '';
+                previewGalleryHeroCta.style.color = '';
+            } else {
+                previewGalleryHeroCta.style.backgroundColor = buttonBg;
+                previewGalleryHeroCta.style.color = buttonText;
+            }
         }
 
         if (fields.galleryHeroButtonBackgroundColor) {
@@ -1707,7 +1713,50 @@
                 DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
             ),
             youMayLikeItems: normalizeYouMayLikeItems(saved.youMayLikeItems),
+            previewTheme: saved.previewTheme === 'dark' ? 'dark' : 'light',
         };
+    }
+
+    function applyPreviewTheme() {
+        const theme = state.previewTheme === 'dark' ? 'dark' : 'light';
+        state.previewTheme = theme;
+
+        if (previewRoot) {
+            previewRoot.setAttribute('data-preview-theme', theme);
+        }
+
+        const themeBar = document.getElementById('editorPreviewTheme');
+        if (themeBar) {
+            themeBar.querySelectorAll('input[name="previewTheme"]').forEach((radio) => {
+                radio.checked = radio.value === theme;
+            });
+        }
+
+        if (templateDesign === 'spotlight' && window.SpotlightEditor) {
+            SpotlightEditor.syncPreview();
+        } else if (templateDesign === 'gallery') {
+            syncGalleryPreview();
+        } else if (templateDesign === 'classic') {
+            syncPreview();
+        }
+    }
+
+    function isGalleryDarkPreview() {
+        return state.previewTheme === 'dark' && templateDesign === 'gallery';
+    }
+
+    function bindPreviewTheme() {
+        const themeBar = document.getElementById('editorPreviewTheme');
+        if (!themeBar || themeBar.dataset.bound === 'true') return;
+        themeBar.dataset.bound = 'true';
+
+        themeBar.addEventListener('change', (event) => {
+            const input = event.target;
+            if (!input.matches('input[name="previewTheme"]')) return;
+            state.previewTheme = input.value === 'dark' ? 'dark' : 'light';
+            applyPreviewTheme();
+            saveState({ silent: true });
+        });
     }
 
     function resolveGalleryHeroImage(saved, fallback) {
@@ -1859,12 +1908,21 @@
             preview.cta.textContent = state.cta || 'Explore collection';
 
             const copyBg = normalizeHex(state.copyBackgroundColor);
-            preview.copy.style.backgroundColor = copyBg;
-            preview.cta.style.backgroundColor = normalizeHexColor(
-                state.heroCtaBackgroundColor,
-                darkenHex(copyBg),
-            );
-            preview.cta.style.color = normalizeHexColor(state.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
+            const isCrystalPreview = state.previewTheme === 'dark' && templateDesign === 'classic';
+            if (isCrystalPreview) {
+                preview.copy.style.background = '';
+                preview.copy.style.backgroundColor = '';
+                preview.cta.style.background = '';
+                preview.cta.style.backgroundColor = '';
+                preview.cta.style.color = '';
+            } else {
+                preview.copy.style.backgroundColor = copyBg;
+                preview.cta.style.backgroundColor = normalizeHexColor(
+                    state.heroCtaBackgroundColor,
+                    darkenHex(copyBg),
+                );
+                preview.cta.style.color = normalizeHexColor(state.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
+            }
             const showHeroCta = state.heroCtaVisible !== false;
             preview.cta.classList.toggle('is-hidden', !showHeroCta);
             preview.cta.hidden = !showHeroCta;
@@ -2630,7 +2688,11 @@
 
         const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
         if (previewGalleryTopBar) {
-            previewGalleryTopBar.style.backgroundColor = barBg;
+            if (isGalleryDarkPreview()) {
+                previewGalleryTopBar.style.backgroundColor = '';
+            } else {
+                previewGalleryTopBar.style.backgroundColor = barBg;
+            }
         }
 
         if (previewGalleryTopBarCopy) {
@@ -2674,9 +2736,18 @@
 
         const bannerBg = normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
         const bannerText = normalizeHexColor(state.headerBannerTextColor, DEFAULT_HEADER_BANNER_TEXT);
+        const isCrystalPreview = state.previewTheme === 'dark' && templateDesign === 'classic';
         if (previewHeaderBanner) {
-            previewHeaderBanner.style.backgroundColor = bannerBg;
-            previewHeaderBanner.style.setProperty('--header-banner-text', bannerText);
+            if (isCrystalPreview) {
+                previewHeaderBanner.style.backgroundColor = '';
+                previewHeaderBanner.style.background = '';
+            } else {
+                previewHeaderBanner.style.backgroundColor = bannerBg;
+            }
+            previewHeaderBanner.style.setProperty(
+                '--header-banner-text',
+                isCrystalPreview ? '#e8ecf2' : bannerText,
+            );
         }
 
         if (previewHeaderBannerLinks) {
@@ -3070,8 +3141,13 @@
         state.classicFooterTextColor = text;
 
         if (classicFooterRoot) {
-            classicFooterRoot.style.setProperty('--classic-footer-bg', bg);
-            classicFooterRoot.style.setProperty('--classic-footer-text', text);
+            if (isGalleryDarkPreview()) {
+                classicFooterRoot.style.removeProperty('--classic-footer-bg');
+                classicFooterRoot.style.removeProperty('--classic-footer-text');
+            } else {
+                classicFooterRoot.style.setProperty('--classic-footer-bg', bg);
+                classicFooterRoot.style.setProperty('--classic-footer-text', text);
+            }
         }
 
         if (fields.classicFooterBackgroundColor) {
@@ -3101,8 +3177,13 @@
         state.classicFooterCopyrightBackgroundColor = copyrightBg;
 
         if (classicCopyrightRoot) {
-            classicCopyrightRoot.style.setProperty('--classic-copyright-text', copyrightText);
-            classicCopyrightRoot.style.setProperty('--classic-copyright-bg', copyrightBg);
+            if (isGalleryDarkPreview()) {
+                classicCopyrightRoot.style.removeProperty('--classic-copyright-text');
+                classicCopyrightRoot.style.removeProperty('--classic-copyright-bg');
+            } else {
+                classicCopyrightRoot.style.setProperty('--classic-copyright-text', copyrightText);
+                classicCopyrightRoot.style.setProperty('--classic-copyright-bg', copyrightBg);
+            }
         }
 
         if (fields.classicFooterCopyrightTextColor) {
@@ -3524,10 +3605,17 @@
 
         const btnBg = normalizeHexColor(state.featureButtonBackgroundColor, DEFAULT_FEATURE_BTN_BG);
         const btnText = normalizeHexColor(state.featureButtonTextColor, DEFAULT_FEATURE_BTN_TEXT);
+        const isCrystalPreview = state.previewTheme === 'dark' && templateDesign === 'classic';
         if (buttonEl) {
-            buttonEl.style.backgroundColor = btnBg;
-            buttonEl.style.borderColor = btnBg;
-            buttonEl.style.color = btnText;
+            if (isCrystalPreview) {
+                buttonEl.style.backgroundColor = '';
+                buttonEl.style.borderColor = '';
+                buttonEl.style.color = '';
+            } else {
+                buttonEl.style.backgroundColor = btnBg;
+                buttonEl.style.borderColor = btnBg;
+                buttonEl.style.color = btnText;
+            }
             const showButton = state[isLeft ? 'featureLeftButtonVisible' : 'featureRightButtonVisible'] !== false;
             buttonEl.classList.toggle('is-hidden', !showButton);
             buttonEl.hidden = !showButton;
@@ -3972,11 +4060,18 @@
 
         const btnBg = normalizeHexColor(state.aboutButtonBackgroundColor, DEFAULT_ABOUT_BTN_BG);
         const btnText = normalizeHexColor(state.aboutButtonTextColor, DEFAULT_ABOUT_BTN_TEXT);
+        const isCrystalPreview = state.previewTheme === 'dark' && templateDesign === 'classic';
         [preview.aboutPrimary, preview.aboutSecondary].forEach((button) => {
             if (!button) return;
-            button.style.backgroundColor = btnBg;
-            button.style.color = btnText;
-            button.style.borderColor = btnBg;
+            if (isCrystalPreview) {
+                button.style.backgroundColor = '';
+                button.style.color = '';
+                button.style.borderColor = '';
+            } else {
+                button.style.backgroundColor = btnBg;
+                button.style.color = btnText;
+                button.style.borderColor = btnBg;
+            }
         });
 
         applyImage(preview.aboutPhoto, preview.aboutPhotoPlaceholder, state.aboutEmployeeImage);
@@ -5339,6 +5434,14 @@
 
         applyGalleryEditorPanelVisibility(isGallery);
 
+        const editorPreviewTheme = document.getElementById('editorPreviewTheme');
+        if (editorPreviewTheme) {
+            editorPreviewTheme.hidden = !isSpotlight && !isMcQueen && !isGallery;
+        }
+        if (previewRoot && !isSpotlight && !isMcQueen && !isGallery) {
+            previewRoot.setAttribute('data-preview-theme', 'light');
+        }
+
         if (refreshEditorSectionNavSpy) {
             refreshEditorSectionNavSpy();
         }
@@ -5396,6 +5499,8 @@
         if (options.restoredDraft) {
             setStatus('Draft restored');
         }
+
+        applyPreviewTheme();
     }
 
     function buildSpotlightEditorContext() {
@@ -5419,6 +5524,7 @@
             renderHeaderJumpNav,
             syncLogoUploadPreviews,
             hideMcQueenGalleryUI: hideMcQueenGalleryEditorUI,
+            applyPreviewTheme,
             DEFAULT_HEADER_BANNER_BG,
             DEFAULT_HEADER_BANNER_TEXT,
         };
@@ -5450,6 +5556,8 @@
         if (options.restoredDraft) {
             setStatus('Draft restored');
         }
+
+        applyPreviewTheme();
     }
 
     async function init() {
@@ -5463,6 +5571,7 @@
         bindSectionScrollSpy();
         bindHeaderJumpNav();
         bindPreviewScroll();
+        bindPreviewTheme();
         bindPreviewSectionJump();
         bindYouMayLikeEditorEvents();
         bindGetInspiredEditorEvents();
@@ -5499,6 +5608,9 @@
             populateForm(restored);
             if (Array.isArray(restored.reviewedSections)) {
                 state.reviewedSections = restored.reviewedSections;
+            }
+            if (restored.previewTheme === 'dark') {
+                state.previewTheme = 'dark';
             }
             if (templateDesign === 'gallery') {
                 finishGalleryEditorInit({ restoredDraft: true });

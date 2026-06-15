@@ -454,6 +454,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             spotlightFooterLinkedinVisible: true,
             spotlightFooterYoutubeUrl: '',
             spotlightFooterYoutubeVisible: true,
+            previewTheme: 'light',
         };
     }
 
@@ -694,6 +695,14 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         } else if (!state.headerLogoImage) {
             state.headerLogoImage = DEFAULT_HEADER_LOGO;
         }
+
+        state.previewTheme = data.previewTheme === 'dark' ? 'dark' : 'light';
+    }
+
+    function applyPreviewTheme() {
+        if (ctx.applyPreviewTheme) {
+            ctx.applyPreviewTheme();
+        }
     }
 
     function cacheRefs() {
@@ -832,6 +841,9 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         if (refs.editorHeaderSpotlightHint) refs.editorHeaderSpotlightHint.hidden = false;
         if (refs.editorHeaderClassicHint) refs.editorHeaderClassicHint.hidden = true;
         hide(refs.editorSpotlightHeaderLinks, false);
+
+        const themeBar = document.getElementById('editorPreviewTheme');
+        if (themeBar) themeBar.hidden = false;
 
         ctx.hideMcQueenGalleryUI();
     }
@@ -1333,9 +1345,17 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
 
         const bannerBg = normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
         const bannerText = normalizeHexColor(state.headerBannerTextColor, DEFAULT_HEADER_BANNER_TEXT);
+        const isDarkPreview = state.previewTheme === 'dark';
         if (refs.previewSpotlightHeaderBanner) {
-            refs.previewSpotlightHeaderBanner.style.backgroundColor = bannerBg;
-            refs.previewSpotlightHeaderBanner.style.setProperty('--header-banner-text', bannerText);
+            if (isDarkPreview) {
+                refs.previewSpotlightHeaderBanner.style.backgroundColor = '';
+            } else {
+                refs.previewSpotlightHeaderBanner.style.backgroundColor = bannerBg;
+            }
+            refs.previewSpotlightHeaderBanner.style.setProperty(
+                '--header-banner-text',
+                isDarkPreview ? '#f5f5f7' : bannerText,
+            );
         }
 
         if (refs.previewSpotlightBannerAddress) {
@@ -1627,6 +1647,8 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         syncPreview();
         startCarousel();
         bindEvents();
+
+        applyPreviewTheme();
 
         if (options.restoredDraft) {
             ctx.setStatus('Draft restored');

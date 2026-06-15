@@ -1049,9 +1049,24 @@
         </aside>
 
         <div class="editor-preview-wrap">
-            <p class="editor-preview-label">Live preview</p>
+            <div class="editor-preview-toolbar">
+                <p class="editor-preview-label">Live preview</p>
+                <div class="editor-preview-theme" id="editorPreviewTheme" hidden>
+                    <span class="editor-preview-theme-label" id="editorPreviewThemeLabel">Appearance</span>
+                    <div class="editor-preview-theme-switch" role="radiogroup" aria-labelledby="editorPreviewThemeLabel">
+                        <label class="editor-preview-theme-option">
+                            <input type="radio" name="previewTheme" value="light" checked>
+                            <span>Light</span>
+                        </label>
+                        <label class="editor-preview-theme-option">
+                            <input type="radio" name="previewTheme" value="dark">
+                            <span>Dark</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="editor-preview-scaler" id="previewScaler">
-                <div class="editor-preview-frame" id="showroomPreview">
+                <div class="editor-preview-frame" id="showroomPreview" data-preview-theme="light">
                 <header class="showroom-header-section" id="showroomHeaderSection" aria-label="Site header preview">
                     <div class="showroom-header-classic" id="showroomHeaderClassic">
                         <div class="showroom-header-banner" id="previewHeaderBanner">
