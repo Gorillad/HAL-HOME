@@ -2687,6 +2687,7 @@ body.cart-open {
 .mock-hero--editorial { height: 48px; background: linear-gradient(135deg, #2b3a42 30%, #7a9eb5 100%); }
 .mock-hero--curator { height: 44px; background: linear-gradient(120deg, #3d4a3e 25%, #8fa888 100%); }
 .mock-hero--canvas { height: 52px; background: linear-gradient(160deg, #4a3d52 20%, #b8a0c4 90%); }
+.mock-hero--woolf { height: 50px; background: linear-gradient(135deg, #2a2420 10%, #6b5a48 55%, #d4c4a8 100%); }
 .mock-hero--luxury { height: 56px; background: linear-gradient(135deg, #1a252b 20%, #c9a962 80%); }
 
 .mock-grid {
@@ -2803,6 +2804,26 @@ body.cart-open {
 .mock-designer-canvas span:nth-child(1) { width: 100%; }
 .mock-designer-canvas span:nth-child(2) { width: 85%; }
 .mock-designer-canvas span:nth-child(3) { width: 60%; height: 22px; }
+
+.mock-woolf-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 4px;
+}
+
+.mock-woolf-layout span {
+    display: block;
+    height: 38px;
+    border-radius: 3px;
+}
+
+.mock-woolf-prose {
+    background: linear-gradient(180deg, #ebe4d8 0%, #ddd4c4 100%);
+}
+
+.mock-woolf-aside {
+    background: linear-gradient(180deg, #3d3428 0%, #524636 100%);
+}
 
 .mock-story span {
     display: block;
@@ -5157,11 +5178,16 @@ body.home-page .home-page-templates .mock-showroom--spotlight .mock-spotlight-st
 
 body.home-page .home-page-templates .mock-hero--editorial,
 body.home-page .home-page-templates .mock-hero--curator,
-body.home-page .home-page-templates .mock-hero--canvas {
+body.home-page .home-page-templates .mock-hero--canvas,
+body.home-page .home-page-templates .mock-hero--woolf {
     height: clamp(72px, 9vw, 100px);
 }
 
 body.home-page .home-page-templates .mock-collections span {
+    height: clamp(52px, 6.5vw, 72px);
+}
+
+body.home-page .home-page-templates .mock-woolf-layout span {
     height: clamp(52px, 6.5vw, 72px);
 }
 
@@ -5187,10 +5213,11 @@ body.home-page .showroom-design-tabs--overlay {
 }
 
 body.home-page .showroom-design-tabs--overlay .showroom-design-tab {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     max-width: none;
-    padding: clamp(8px, 1vw, 10px) clamp(12px, 1.4vw, 16px);
-    font-size: clamp(11px, 1.1vw, 13px);
+    padding: clamp(8px, 1vw, 10px) clamp(8px, 1.2vw, 14px);
+    font-size: clamp(10px, 1vw, 13px);
     border: 1px solid #e8e5df;
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(6px);

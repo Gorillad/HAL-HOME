@@ -153,9 +153,9 @@
                 <nav aria-label="Primary">
                     <ul class="site-nav-links">
                         <li><a href="#templates">Templates</a></li>
-                        <li><a href="#template-editor">Editor</a></li>
-                        <li><a href="#campaigns">Campaigns</a></li>
-                        <li><a href="#design-services">Design</a></li>
+                        <li><a href="#showcase">Our Work</a></li>
+                        <li><a href="#what-we-do">What We Do</a></li>
+                        <li><a href="editor/showroom.html">Editor</a></li>
                         <li><a href="https://www.catalog.logicxo.com/lighting-fixtures" target="_blank" rel="noopener noreferrer">Catalog</a></li>
                         <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
                     </ul>
@@ -501,11 +501,21 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="designer-design-view" id="designer-design-woolf" role="tabpanel" aria-labelledby="designer-design-tab-woolf" data-designer-design="woolf" hidden>
+                                <div class="template-browser">
+                                    <div class="template-browser-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                                    <div class="template-browser-body" aria-hidden="true">
+                                        <div class="mock-hero mock-hero--woolf"></div>
+                                        <div class="mock-woolf-layout" aria-hidden="true"><span class="mock-woolf-prose"></span><span class="mock-woolf-aside"></span></div>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                             <div class="showroom-design-tabs showroom-design-tabs--overlay designer-design-tabs" role="tablist" aria-label="Designer template options">
                                 <button type="button" class="showroom-design-tab is-active" role="tab" id="designer-design-tab-gallery" aria-selected="true" aria-controls="designer-design-gallery" data-designer-design="gallery">Gallery</button>
                                 <button type="button" class="showroom-design-tab" role="tab" id="designer-design-tab-curator" aria-selected="false" aria-controls="designer-design-curator" data-designer-design="curator">Curator</button>
                                 <button type="button" class="showroom-design-tab" role="tab" id="designer-design-tab-canvas" aria-selected="false" aria-controls="designer-design-canvas" data-designer-design="canvas">Canvas</button>
+                                <button type="button" class="showroom-design-tab" role="tab" id="designer-design-tab-woolf" aria-selected="false" aria-controls="designer-design-woolf" data-designer-design="woolf">The Woolf</button>
                             </div>
                         </div>
                     </div>
@@ -593,197 +603,6 @@
         </div>
     </section>
 
-    <div class="container">
-
-        <section id="template-editor" class="section editor-spotlight" aria-labelledby="editor-spotlight-title">
-            <div class="editor-spotlight-grid">
-                <div class="editor-spotlight-copy">
-                    <span class="editor-spotlight-badge">Built into Showroom</span>
-                    <h2 id="editor-spotlight-title">Homepage Template Editor</h2>
-                    <p class="section-lead section-lead--flush editor-spotlight-lead">Customize your showroom homepage in a live preview — copy, images, navigation, catalog highlights, and footer — then export a developer handoff your team can ship with confidence.</p>
-                    <ul class="check-list editor-spotlight-list">
-                        <li>Section-by-section editing with instant preview</li>
-                        <li>McQueen, Classic &amp; Spotlight layouts tuned for lighting retail</li>
-                        <li>PDF brief, layout captures, and JSON spec in one ZIP</li>
-                        <li>Only your uploaded images are bundled — defaults stay in the template</li>
-                    </ul>
-                    <div class="editor-spotlight-actions">
-                        <a href="#templates" class="btn btn-primary">Homepage templates</a>
-                        <a href="editor/login.html" class="btn btn-secondary">Sign in to editor</a>
-                        <a href="editor/knowledge-base.html" class="btn btn-ghost">Editor guide</a>
-                    </div>
-                </div>
-                <div class="editor-spotlight-demo">
-                    <div class="showroom-editor-quicklinks showroom-editor-quicklinks--spotlight" aria-label="Open Showroom layouts in the template editor">
-                        <span class="showroom-editor-quicklinks-label">Open in editor</span>
-                        <div class="showroom-editor-quicklinks-row">
-                            <a href="editor/showroom.html?design=classic" class="showroom-editor-quicklink">McQueen</a>
-                            <a href="editor/showroom.html?design=gallery" class="showroom-editor-quicklink">Classic</a>
-                            <a href="editor/showroom.html?design=spotlight" class="showroom-editor-quicklink">Spotlight</a>
-                        </div>
-                    </div>
-                    <div class="editor-mock" aria-hidden="true">
-                        <div class="editor-mock-sidebar">
-                            <span class="editor-mock-sidebar-title">Homepage content</span>
-                            <span class="editor-mock-nav-item is-active">Header</span>
-                            <span class="editor-mock-nav-item">Hero</span>
-                            <span class="editor-mock-nav-item">Catalog Highlights</span>
-                            <span class="editor-mock-nav-item">Footer</span>
-                            <span class="editor-mock-nav-item">Copyright</span>
-                            <span class="editor-mock-export">Export handoff</span>
-                        </div>
-                        <div class="editor-mock-workspace">
-                            <div class="template-browser editor-mock-browser">
-                                <div class="template-browser-bar"><span></span><span></span><span></span></div>
-                                <div class="template-browser-body">
-                                    <div class="editor-mock-preview-header"></div>
-                                    <div class="editor-mock-preview-hero">
-                                        <span class="editor-mock-preview-copy"></span>
-                                        <span class="editor-mock-preview-image"></span>
-                                    </div>
-                                    <div class="editor-mock-preview-tiles"><span></span><span></span><span></span><span></span></div>
-                                </div>
-                            </div>
-                            <span class="editor-mock-caption">Live preview · autosave · handoff export</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="campaigns" class="section" aria-labelledby="campaigns-title">
-            <div class="split-section">
-                <div class="split-content">
-                    <h2 id="campaigns-title">Campaign Manager</h2>
-                    <p class="section-lead section-lead--flush">Schedule pop-ups and responsive banners on your site — pre-sized and ready to launch. Included with Designer and Signature plans.</p>
-                    <ul class="check-list">
-                        <li>Homepage pop-ups — 300 × 600px</li>
-                        <li>Laptop banners — 1800 × 180px</li>
-                        <li>Tablet banners — 1200 × 300px</li>
-                        <li>Mobile banners — 450 × 225px</li>
-                    </ul>
-                    <a href="#design-services" class="btn btn-primary">Need creative? See design services</a>
-                </div>
-                <div class="campaign-demo" aria-hidden="true">
-                    <div class="campaign-demo-site">
-                        <div class="campaign-demo-header"></div>
-                        <div class="campaign-demo-hero"></div>
-                        <div class="campaign-popup">
-                            <span class="campaign-popup-label">Pop-up</span>
-                            <span class="campaign-popup-size">300 × 600</span>
-                        </div>
-                        <div class="campaign-banner">
-                            <span class="campaign-banner-label">Banner</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="design-services" class="section" aria-labelledby="design-title">
-            <h2 id="design-title">Creative design services</h2>
-            <p class="section-lead">Professional pop-ups, banners, and email templates — designed for your showroom brand. One round of revisions included.</p>
-            <div class="design-grid">
-                <article class="design-card">
-                    <h3>Pop-up Design</h3>
-                    <p>Single homepage pop-up, 300 × 600px.</p>
-                    <p class="design-price">$179</p>
-                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-popup">Add to Cart</button>
-                </article>
-                <article class="design-card">
-                    <h3>Banner Set</h3>
-                    <p>Matched laptop, tablet, and mobile banners.</p>
-                    <p class="design-price">$299</p>
-                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-banner-set">Add to Cart</button>
-                </article>
-                <article class="design-card">
-                    <h3>Email Template</h3>
-                    <p>Promo or newsletter layout for your ESP.</p>
-                    <p class="design-price">$249</p>
-                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-email">Add to Cart</button>
-                </article>
-                <article class="design-card design-card--featured">
-                    <span class="template-badge">Most Booked</span>
-                    <h3>Full Campaign Kit</h3>
-                    <p>Pop-up + banner set + email — one cohesive promo.</p>
-                    <p class="design-price">$599</p>
-                    <button type="button" class="btn btn-primary btn-block" data-add-to-cart="design-campaign-kit">Add to Cart</button>
-                </article>
-                <article class="design-card">
-                    <h3>Seasonal Refresh</h3>
-                    <p>Swap creative on an existing campaign kit.</p>
-                    <p class="design-price">$129</p>
-                    <button type="button" class="btn btn-secondary btn-block" data-add-to-cart="design-seasonal-refresh">Add to Cart</button>
-                </article>
-            </div>
-            <p class="design-note">After checkout, you'll receive a creative brief to share brand colors, copy, and promo details. Typical turnaround: 5 business days.</p>
-        </section>
-
-        <section id="catalog" class="section section-catalog" aria-labelledby="catalog-title">
-            <h2 id="catalog-title">Your catalog, always current</h2>
-            <p class="section-lead">LogicXO templates connect to your vendor data through our catalog partner — so your site stays in sync without manual product entry.</p>
-            <div class="catalog-grid">
-                <article class="catalog-step">
-                    <span class="step-num">1</span>
-                    <h3>Choose a template</h3>
-                    <p>Showroom, Designer, or Signature — each built to showcase lighting products beautifully.</p>
-                </article>
-                <article class="catalog-step">
-                    <span class="step-num">2</span>
-                    <h3>Connect your catalog</h3>
-                    <p>Your vendor feed powers product grids, filters, and detail views on your homepage.</p>
-                </article>
-                <article class="catalog-step">
-                    <span class="step-num">3</span>
-                    <h3>Launch &amp; promote</h3>
-                    <p>Go live with Campaign Manager tools and optional design services for every season.</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="features" class="section" aria-labelledby="features-title">
-            <h2 id="features-title">Platform tools included</h2>
-            <p class="section-lead">Beyond the homepage — everything your showroom team needs day to day.</p>
-            <div class="feature-grid">
-                <article class="feature-card">
-                    <h3>Vendor catalog &amp; pricing</h3>
-                    <p>Centralize vendor updates, markups, and quote workflows so your team prices with confidence.</p>
-                </article>
-                <article class="feature-card">
-                    <h3>Campaign manager</h3>
-                    <p>Launch seasonal promos with ready-made banner sizes and templates tuned for lighting retail.</p>
-                </article>
-                <article class="feature-card">
-                    <h3>Support knowledge base</h3>
-                    <p>Searchable how-tos for policies, DNS, calculators, and day-to-day showroom operations.</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="how-it-works" class="section" aria-labelledby="steps-title">
-            <h2 id="steps-title">How it works</h2>
-            <p class="section-lead">From template selection to live campaigns in three steps.</p>
-            <div class="steps">
-                <article class="step">
-                    <span class="step-num">1</span>
-                    <h3>Pick your template tier</h3>
-                    <p>Showroom, Designer, or Signature — add a plan to cart or request a demo for Signature.</p>
-                </article>
-                <article class="step">
-                    <span class="step-num">2</span>
-                    <h3>Connect your catalog</h3>
-                    <p>We integrate your vendor feed so products, filters, and pricing stay current automatically.</p>
-                </article>
-                <article class="step">
-                    <span class="step-num">3</span>
-                    <h3>Run your first campaign</h3>
-                    <p>Upload your own creative or add design services — then schedule pop-ups and banners from Campaign Manager.</p>
-                </article>
-            </div>
-        </section>
-
-    </div><!-- /.container -->
-
     <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
         <div class="cart-drawer-header">
             <h2>Your Cart</h2>
@@ -828,9 +647,9 @@
                     <ul class="footer-links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="#templates">Templates</a></li>
-                        <li><a href="#template-editor">Template Editor</a></li>
-                        <li><a href="#campaigns">Campaigns</a></li>
-                        <li><a href="#design-services">Design Services</a></li>
+                        <li><a href="#showcase">Our Work</a></li>
+                        <li><a href="#what-we-do">What We Do</a></li>
+                        <li><a href="editor/showroom.html">Editor</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </nav>
@@ -838,9 +657,8 @@
                     <h3 class="footer-heading">Resources</h3>
                     <ul class="footer-links">
                         <li><a href="https://support.logicxo.com/">Knowledge Base</a></li>
-                        <li><a href="#catalog">Catalog Integration</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="https://support.logicxo.com/">System Status</a></li>
+                        <li><a href="editor/knowledge-base.html">Editor Guide</a></li>
+                        <li><a href="request-a-quote.html">Request a Quote</a></li>
                     </ul>
                 </nav>
                 <div class="footer-col footer-contact">

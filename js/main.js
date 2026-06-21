@@ -383,6 +383,7 @@ function initDesignerDesignTabs() {
         gallery: 'Gallery',
         curator: 'Curator',
         canvas: 'Canvas',
+        woolf: 'The Woolf',
     };
 
     function applyDesign(design) {

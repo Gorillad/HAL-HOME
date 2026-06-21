@@ -14,7 +14,7 @@
 <body class="editor-page">
     <script>
         (function () {
-            const allowed = { gallery: true, curator: true, canvas: true };
+            const allowed = { gallery: true, curator: true, canvas: true, woolf: true };
             const param = new URLSearchParams(window.location.search).get('design');
             const slug = allowed[param] ? param : 'gallery';
             document.body.classList.add('editor-page--designer', `editor-page--${slug}`);
@@ -46,10 +46,10 @@
                     <nav aria-label="Primary">
                         <ul class="site-nav-links">
                             <li><a href="../index.html#templates">Templates</a></li>
+                            <li><a href="../index.html#showcase">Our Work</a></li>
+                            <li><a href="../index.html#what-we-do">What We Do</a></li>
                             <li><a href="showroom.html">Showroom editor</a></li>
                             <li><a href="designer.html" aria-current="page">Designer editor</a></li>
-                            <li><a href="../index.html#campaigns">Campaigns</a></li>
-                            <li><a href="../index.html#design-services">Design</a></li>
                             <li><a href="https://www.catalog.logicxo.com/lighting-fixtures" target="_blank" rel="noopener noreferrer">Catalog</a></li>
                             <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
                         </ul>
@@ -90,6 +90,7 @@
             <a href="designer.html?design=gallery" class="editor-section-nav-link designer-template-nav-link" data-designer-design="gallery">Gallery</a>
             <a href="designer.html?design=curator" class="editor-section-nav-link designer-template-nav-link" data-designer-design="curator">Curator</a>
             <a href="designer.html?design=canvas" class="editor-section-nav-link designer-template-nav-link" data-designer-design="canvas">Canvas</a>
+            <a href="designer.html?design=woolf" class="editor-section-nav-link designer-template-nav-link" data-designer-design="woolf">The Woolf</a>
         </nav>
     </div>
 
@@ -105,6 +106,7 @@
                     <li><strong>Gallery</strong> — editorial hero and dual collection highlights</li>
                     <li><strong>Curator</strong> — curated project showcase grid</li>
                     <li><strong>Canvas</strong> — mosaic hero and studio story blocks</li>
+                    <li><strong>The Woolf</strong> — literary editorial layout with prose-led storytelling</li>
                 </ul>
                 <p class="editor-field-hint">Not Showroom Classic: Designer Gallery uses <code>designer.html?design=gallery</code>. Showroom Classic uses <code>showroom.html?design=gallery</code>.</p>
             </div>

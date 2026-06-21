@@ -3,6 +3,7 @@
         gallery: 'Gallery',
         curator: 'Curator',
         canvas: 'Canvas',
+        woolf: 'The Woolf',
     };
 
     const DEFAULT_DESIGN = 'gallery';
