@@ -1,5 +1,5 @@
 /**
- * LogicXO cart — localStorage + Stripe Checkout (test mode).
+ * LogicX cart — localStorage + Stripe Checkout (test mode).
  */
 const Cart = (() => {
     const STORAGE_KEY = 'logicxo-cart';

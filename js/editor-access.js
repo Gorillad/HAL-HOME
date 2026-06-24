@@ -1,6 +1,7 @@
 window.EditorAccess = (function initEditorAccessModule() {
-    const CLIENT_USERNAME = 'admin';
-    const CLIENT_PASSWORD = '12345';
+    const DEV_USERNAME = 'hello@logicxo.com';
+    const DEV_PASSWORD = 'Logicx12345';
+    const DEV_SERVER_PORT = '4242';
     const CLIENT_SESSION_KEY = 'lx-site-session';
 
     let authenticated = false;
@@ -13,20 +14,40 @@ window.EditorAccess = (function initEditorAccessModule() {
         el.classList.toggle('is-error', type === 'error');
     }
 
-    function setClientSession() {
+    function normalizeUsername(value) {
+        return String(value || '').trim().toLowerCase();
+    }
+
+    function normalizePassword(value) {
+        return String(value || '').trim();
+    }
+
+    function normalizeEditorPath(href) {
+        if (!href) return null;
         try {
-            sessionStorage.setItem(CLIENT_SESSION_KEY, '1');
+            const url = new URL(href, window.location.origin);
+            if (!url.pathname.startsWith('/editor/')) return null;
+            return `${url.pathname}${url.search}`;
         } catch {
-            // sessionStorage unavailable — in-memory only
+            return null;
+        }
+    }
+
+    function setClientSession(user) {
+        try {
+            sessionStorage.setItem(CLIENT_SESSION_KEY, user || '1');
+        } catch {
+            // sessionStorage unavailable
         }
         authenticated = true;
     }
 
-    function hasClientSession() {
+    function getClientSessionUser() {
         try {
-            return sessionStorage.getItem(CLIENT_SESSION_KEY) === '1';
+            const value = sessionStorage.getItem(CLIENT_SESSION_KEY);
+            return value && value !== '1' ? value : null;
         } catch {
-            return false;
+            return null;
         }
     }
 
@@ -36,130 +57,197 @@ window.EditorAccess = (function initEditorAccessModule() {
         } catch {
             // ignore
         }
+        authenticated = false;
     }
 
-    function credentialsMatch(username, password) {
-        return username === CLIENT_USERNAME && password === CLIENT_PASSWORD;
+    function isLocalDevHost() {
+        const host = window.location.hostname;
+        return !host
+            || host === 'localhost'
+            || host === '127.0.0.1'
+            || host === '[::1]';
+    }
+
+    function getDevServerUrl() {
+        const host = window.location.hostname || 'localhost';
+        return `http://${host}:${DEV_SERVER_PORT}`;
+    }
+
+    function getApiBases() {
+        const bases = [''];
+        if (isLocalDevHost() && window.location.port !== DEV_SERVER_PORT) {
+            bases.push(getDevServerUrl());
+        }
+        return bases;
+    }
+
+    function isNetworkError(err) {
+        if (!err) return false;
+        const message = String(err.message || err);
+        return message.includes('Failed to fetch') || message.includes('NetworkError');
+    }
+
+    function isApiUnavailableStatus(status) {
+        return status === 404 || status === 405 || status === 502 || status === 503;
+    }
+
+    function devCredentialsMatch(username, password) {
+        if (!isLocalDevHost()) return false;
+        return (
+            normalizeUsername(username) === normalizeUsername(DEV_USERNAME)
+            && normalizePassword(password) === DEV_PASSWORD
+        );
+    }
+
+    function offlineLogin(user) {
+        authenticated = true;
+        setClientSession(user);
+        return {
+            ok: true,
+            user,
+            offline: true,
+        };
+    }
+
+    function serverNotFoundMessage() {
+        const port = window.location.port || '80';
+        if (isLocalDevHost() && port !== DEV_SERVER_PORT) {
+            return `You're on port ${port}, but sign-in runs on port ${DEV_SERVER_PORT}. Open http://localhost:${DEV_SERVER_PORT} (run npm start first).`;
+        }
+        return `Sign-in server not found. Run npm start, then open http://localhost:${DEV_SERVER_PORT}.`;
+    }
+
+    async function apiFetch(path, options = {}) {
+        const { retryUnavailable = false, ...fetchOptions } = options;
+        let lastUnavailable = null;
+        let lastError = null;
+
+        for (const base of getApiBases()) {
+            try {
+                const res = await fetch(`${base}${path}`, {
+                    credentials: 'include',
+                    ...fetchOptions,
+                });
+                if (retryUnavailable && isApiUnavailableStatus(res.status)) {
+                    lastUnavailable = { res, base };
+                    continue;
+                }
+                return { res, base };
+            } catch (err) {
+                lastError = err;
+            }
+        }
+
+        if (lastUnavailable) return lastUnavailable;
+        throw lastError || new Error('Failed to fetch');
     }
 
     async function checkSession() {
         try {
-            const res = await fetch('/api/editor/session', { credentials: 'same-origin' });
-            if (res.ok) {
-                const data = await res.json();
-                authenticated = Boolean(data.authenticated);
-                if (authenticated) setClientSession();
-                return authenticated;
+            const { res } = await apiFetch('/api/editor/session', { retryUnavailable: true });
+            const data = await res.json().catch(() => ({}));
+
+            if (res.ok && data.authenticated) {
+                authenticated = true;
+                setClientSession(data.user || getClientSessionUser());
+                return { ok: true, user: data.user || getClientSessionUser(), source: 'server' };
+            }
+
+            if (res.status === 401) {
+                clearClientSession();
+                return { ok: false, user: null, source: 'server' };
             }
         } catch {
-            // Server unavailable — fall back to client session
+            // Server unreachable below
         }
 
-        authenticated = hasClientSession();
-        return authenticated;
+        clearClientSession();
+        return { ok: false, user: null, source: 'none' };
     }
 
-    async function login(username, password, nextPath) {
-        const normalizedUser = String(username || '').trim();
-        const normalizedPass = String(password || '');
+    async function login(username, password) {
+        const normalizedUser = normalizeUsername(username);
+        const normalizedPass = normalizePassword(password);
+
+        if (!normalizedUser || !normalizedPass) {
+            throw new Error('Please enter your email and password.');
+        }
+
+        const payload = JSON.stringify({ username: normalizedUser, password: normalizedPass });
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+        };
 
         try {
-            const res = await fetch('/api/editor/login', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: normalizedUser,
-                    password: normalizedPass,
-                    next: nextPath || '/editor/knowledge-base.html',
-                }),
-            });
-
+            const { res } = await apiFetch('/api/editor/login', { ...requestOptions, retryUnavailable: true });
             const data = await res.json().catch(() => ({}));
 
             if (res.ok) {
                 authenticated = true;
-                setClientSession();
-                return data;
+                setClientSession(normalizedUser);
+                return { ...data, user: normalizedUser };
             }
-        } catch {
-            // Network error — fall through to client-side credentials
-        }
 
-        if (credentialsMatch(normalizedUser, normalizedPass)) {
-            authenticated = true;
-            setClientSession();
-            return { ok: true, redirect: nextPath || '/editor/knowledge-base.html' };
-        }
-
-        throw new Error('Invalid username or password.');
-    }
-
-    async function requestAccess(payload) {
-        try {
-            const res = await fetch('/api/editor/request-access', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                throw new Error(data.error || 'Could not submit your request.');
+            if (res.status === 401 || res.status === 400) {
+                throw new Error(data.error || 'Invalid email or password.');
             }
-            return data;
+
+            if (isLocalDevHost() && isApiUnavailableStatus(res.status) && devCredentialsMatch(normalizedUser, normalizedPass)) {
+                return offlineLogin(normalizedUser);
+            }
+
+            if (isApiUnavailableStatus(res.status)) {
+                throw new Error(serverNotFoundMessage());
+            }
+
+            throw new Error('Could not sign in right now. Please try again.');
         } catch (err) {
-            if (err.message && !err.message.includes('fetch')) {
-                throw err;
+            if (!isNetworkError(err)) throw err;
+
+            if (devCredentialsMatch(normalizedUser, normalizedPass)) {
+                return offlineLogin(normalizedUser);
             }
-            console.info('[access] Request captured locally — server unavailable.');
-            return { ok: true, offline: true };
+
+            throw new Error(serverNotFoundMessage());
         }
-    }
-
-    function isAuthenticated() {
-        return authenticated;
-    }
-
-    function markUnauthenticated() {
-        authenticated = false;
-        clearClientSession();
-        document.body.classList.add('site-locked');
-        updateLogoutNav(false);
     }
 
     async function logout() {
         try {
-            await fetch('/api/editor/logout', {
-                method: 'POST',
-                credentials: 'same-origin',
-            });
+            await apiFetch('/api/editor/logout', { method: 'POST' });
         } catch {
-            // Server unavailable — client session cleared below
+            // ignore
         }
-        markUnauthenticated();
+        clearClientSession();
     }
 
-    function updateLogoutNav(isAuthed) {
-        const logoutBtn = document.getElementById('siteNavLogout');
-        if (logoutBtn) logoutBtn.hidden = !isAuthed;
+    function redirectToTemplatesLogin(editorPath, reason) {
+        const params = new URLSearchParams();
+        if (editorPath) params.set('editor_next', editorPath);
+        if (reason) params.set('session', reason);
+        const query = params.toString();
+        window.location.assign(`/index.html${query ? `?${query}` : ''}#templates`);
     }
 
-    function markAuthenticated() {
-        authenticated = true;
-        setClientSession();
-        document.body.classList.remove('site-locked');
-        updateLogoutNav(true);
+    function bindEditorNavigation() {
+        const useDevServer = isLocalDevHost() && window.location.port !== DEV_SERVER_PORT;
+
+        document.querySelectorAll('a[href*="/editor/"], a[href^="editor/"]').forEach((link) => {
+            const editorPath = normalizeEditorPath(link.getAttribute('href'));
+            if (!editorPath) return;
+            link.setAttribute('href', useDevServer ? `${getDevServerUrl()}${editorPath}` : editorPath);
+        });
     }
 
     return {
         checkSession,
         login,
         logout,
-        requestAccess,
-        isAuthenticated,
-        markAuthenticated,
-        markUnauthenticated,
         showMessage,
+        bindEditorNavigation,
+        normalizeEditorPath,
+        redirectToTemplatesLogin,
     };
 })();

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the LogicXO marketing site are documented here.
+All notable changes to the LogicX marketing site are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/). Version tags use [Semantic Versioning](https://semver.org/).
 

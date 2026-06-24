@@ -10,11 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initShowcase();
     initAboutVideo();
     initProblemReveal();
-    // DEV: homepage login gate disabled — restore initSiteAccessGate() for production
-    // initSiteAccessGate();
-    if (window.EditorAccess) {
-        EditorAccess.markAuthenticated();
-    }
+    initTemplatesAccessGate();
+    if (window.EditorAccess) EditorAccess.bindEditorNavigation();
     if (window.Cart) Cart.initUI();
 });
 
@@ -321,7 +318,7 @@ function initShowroomDesignTabs() {
         });
 
         if (editorBtn && design) {
-            editorBtn.href = `editor/showroom.html?design=${encodeURIComponent(design)}`;
+            editorBtn.href = `/editor/showroom.html?design=${encodeURIComponent(design)}`;
             editorBtn.textContent = `Open ${label} editor`;
             editorBtn.setAttribute('aria-label', `Open ${label} template in Showroom editor`);
         }
@@ -402,7 +399,7 @@ function initDesignerDesignTabs() {
         });
 
         if (editorBtn && design) {
-            editorBtn.href = `editor/designer.html?design=${encodeURIComponent(design)}`;
+            editorBtn.href = `/editor/designer.html?design=${encodeURIComponent(design)}`;
             editorBtn.textContent = `Open ${label} editor`;
             editorBtn.setAttribute('aria-label', `Open ${label} template in Designer editor`);
         }

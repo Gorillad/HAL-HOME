@@ -13,8 +13,8 @@ function getSessionSecret() {
 
 function getCredentials() {
     return {
-        username: process.env.EDITOR_USERNAME || 'admin',
-        password: process.env.EDITOR_PASSWORD || '12345',
+        username: process.env.EDITOR_USERNAME || 'hello@logicxo.com',
+        password: process.env.EDITOR_PASSWORD || 'Logicx12345',
     };
 }
 
@@ -107,14 +107,15 @@ function handleLogin(req, res) {
         return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    const userOk = username === creds.username;
-    const passOk = password === creds.password;
+    const normalizedUser = String(username).trim().toLowerCase();
+    const userOk = normalizedUser === String(creds.username).trim().toLowerCase();
+    const passOk = String(password).trim() === creds.password;
 
     if (!userOk || !passOk) {
-        return res.status(401).json({ error: 'Invalid username or password.' });
+        return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
-    const token = createSessionToken(username);
+    const token = createSessionToken(normalizedUser);
     setSessionCookie(res, token);
 
     const nextPath = isValidNextPath(req.body.next) ? req.body.next : '/editor/knowledge-base.html';
@@ -174,7 +175,8 @@ function requireEditorAuth(req, res, next) {
     }
 
     const nextPath = encodeURIComponent(req.originalUrl);
-    return res.redirect(`/editor/login.html?next=${nextPath}`);
+    const sessionState = token ? 'expired' : 'required';
+    return res.redirect(`/index.html?editor_next=${nextPath}&session=${sessionState}#templates`);
 }
 
 module.exports = {

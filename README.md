@@ -1,4 +1,4 @@
-# LogicXO Marketing Site
+# LogicX Marketing Site
 
 Marketing site for [logicxo.com](https://logicxo.com): homepage templates, design services, Showroom and Designer homepage editors, and Stripe checkout (test mode locally; live when Stripe is activated).
 
@@ -28,7 +28,7 @@ Use `npm start` (not a static file server) — cart checkout requires the Node A
 │   ├── main.js                # Nav, pricing toggle, contact form
 │   ├── cart.js                # Cart + Stripe Checkout redirect
 │   └── thank-you.js           # Order summary after checkout
-├── images/                    # Logo, favicons, homepage hero
+├── images/                    # Logo, favicon/, homepage hero
 ├── data/
 │   ├── products.json          # Catalog (cart + checkout line items)
 │   ├── contacts.json          # Email addresses (canonical list)

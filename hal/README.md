@@ -1,6 +1,6 @@
-# LogicXO catalog embed (`hal/`)
+# LogicX catalog embed (`hal/`)
 
-Copy-paste header and footer for the **XOLogic** product catalog, matching the LogicXO marketing site.
+Copy-paste header and footer for the **XOLogic** product catalog, matching the LogicX marketing site.
 
 Asset paths follow the XOLogic server convention:
 
@@ -23,7 +23,8 @@ hal/
       header.js     →  /data/js/header.js
       footer.js     →  /data/js/footer.js
     images/
-      logicxo.png   →  /data/images/logicxo.png
+      logicxo-gold.png   →  /data/images/logicxo-gold.png
+      favicon/           →  /data/images/favicon/
   header.html       →  paste into XOLogic custom header
   footer.html       →  paste into XOLogic custom footer
   head-snippet.html →  paste into global <head> / CSS

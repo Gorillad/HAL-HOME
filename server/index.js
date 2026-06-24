@@ -72,6 +72,22 @@ async function getTaxRateId() {
 
 const app = express();
 
+function devLocalhostCors(req, res, next) {
+    const origin = req.headers.origin;
+    if (origin && /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i.test(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204);
+    }
+    next();
+}
+
+app.use('/api/editor', devLocalhostCors);
+
 app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     if (!stripe) {
         return res.status(503).send('Stripe not configured');
@@ -119,29 +135,8 @@ app.post('/api/editor/request-access', (req, res) => {
     });
 });
 
-// DEV: editor auth bypass — restore requireEditorAuth on these routes for production
-app.get('/editor/showroom.html', (_req, res) => {
-    res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
-});
-
-app.get('/editor/knowledge-base.html', (_req, res) => {
-    res.sendFile(path.join(ROOT, 'editor', 'knowledge-base.html'));
-});
-
-app.get('/editor/designer.html', (_req, res) => {
-    res.sendFile(path.join(ROOT, 'editor', 'designer.html'));
-});
-
-// app.get('/editor/showroom.html', requireEditorAuth, (_req, res) => {
-//     res.sendFile(path.join(ROOT, 'editor', 'showroom.html'));
-// });
-//
-// app.get('/editor/knowledge-base.html', requireEditorAuth, (_req, res) => {
-//     res.sendFile(path.join(ROOT, 'editor', 'knowledge-base.html'));
-// });
-
-app.get('/editor/login.html', (_req, res) => {
-    res.sendFile(path.join(ROOT, 'editor', 'login.html'));
+app.get(/^\/editor\/[^/]+\.html$/i, requireEditorAuth, (req, res) => {
+    res.sendFile(path.join(ROOT, req.path.slice(1)));
 });
 
 app.use(express.static(ROOT));
@@ -331,7 +326,7 @@ async function generateConfirmationEmail(sessionId) {
 }
 
 app.listen(PORT, () => {
-    console.log(`LogicXO server running at ${BASE_URL}`);
+    console.log(`LogicX server running at ${BASE_URL}`);
     if (!stripe) {
         console.warn('⚠  Stripe not configured — copy .env.example to .env and add sk_test_ / pk_test_ keys');
     } else {

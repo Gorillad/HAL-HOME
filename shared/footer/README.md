@@ -1,4 +1,4 @@
-# LogicXO shared footer
+# LogicX shared footer
 
 Portable footer for every page on the site (homepage, support, etc.). Copy this **entire folder** into a new repo or site.
 

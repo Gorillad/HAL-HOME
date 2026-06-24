@@ -1,5 +1,5 @@
 /**
- * LogicXO shared footer — auto year, newsletter feedback, back-to-top.
+ * LogicX shared footer — auto year, newsletter feedback, back-to-top.
  */
 const Footer = (() => {
     let didInit = false;

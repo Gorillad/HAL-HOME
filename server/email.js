@@ -122,7 +122,7 @@ function renderAccessRequestEmail(entry) {
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #d8e3ec;border-radius:10px;overflow:hidden;">
     <tr>
       <td style="padding:24px 24px 12px;background:#1a7bbd;color:#ffffff;">
-        <p style="margin:0 0 6px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.85;">LogicXO</p>
+        <p style="margin:0 0 6px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.85;">LogicX</p>
         <h1 style="margin:0;font-size:22px;font-weight:700;">New homepage access request</h1>
       </td>
     </tr>
@@ -140,7 +140,7 @@ function renderAccessRequestEmail(entry) {
 
 function renderAccessRequestText(entry) {
     return [
-        'New LogicXO homepage access request',
+        'New LogicX homepage access request',
         '',
         `Name: ${entry.name}`,
         `Email: ${entry.email}`,
@@ -209,7 +209,7 @@ async function sendAccessRequestEmail(entry) {
         from,
         to,
         replyTo: entry.email,
-        subject: `LogicXO access request — ${entry.name}`,
+        subject: `LogicX access request — ${entry.name}`,
         text,
         html,
     });

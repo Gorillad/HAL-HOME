@@ -1,5 +1,5 @@
 /**
- * LogicXO catalog header — mobile navigation.
+ * LogicX catalog header — mobile navigation.
  */
 (function initHalHeaderNav() {
     function boot() {

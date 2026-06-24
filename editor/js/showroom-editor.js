@@ -5452,7 +5452,7 @@
         const nameEl = document.getElementById('editorTemplateName');
         if (nameEl) nameEl.textContent = label;
 
-        document.title = `Showroom Editor — ${label} — LogicXO`;
+        document.title = `Showroom Editor — ${label} — LogicX`;
         document.body.classList.add(`editor-page--${templateDesign}`);
         document.body.dataset.templateDesign = templateDesign;
 

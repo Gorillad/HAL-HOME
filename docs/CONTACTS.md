@@ -1,4 +1,4 @@
-# LogicXO contact emails
+# LogicX contact emails
 
 Canonical list: `data/contacts.json` (keep in sync with the [HALXO support repo](https://github.com/Gorillad/HALXO)).
 
