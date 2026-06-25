@@ -51,12 +51,12 @@
       </div>
 
       <div class="main-nav__center">
-        <div class="search-wrap" role="search">
-          <input type="search" class="search-input" placeholder="Enter keyword, item, model, or part #" aria-label="Search catalog" name="q">
-          <button type="button" class="search-btn" aria-label="Search">
+        <form class="search-wrap" id="site-search-form" role="search" action="/search" method="get" autocomplete="off">
+          <input type="search" class="search-input" id="search-input" name="q" placeholder="Enter keyword, item, model, or part #" aria-label="Search catalog" autocomplete="off">
+          <button type="submit" class="search-btn" aria-label="Search">
             <img src="data/images/icons/search.svg" alt="" width="20" height="20">
           </button>
-        </div>
+        </form>
       </div>
 
       <div class="main-nav__end">

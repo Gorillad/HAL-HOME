@@ -414,6 +414,24 @@
                             <input type="text" id="df-logo-url" data-field="logoUrl" class="editor-field-input" placeholder="/">
                         </div>
                         <div class="editor-field">
+                            <label class="editor-field-label">Favicon</label>
+                            <div class="editor-logo-widget">
+                                <div class="editor-logo-preview" id="faviconPreviewThumb" style="width:52px;height:52px;flex-shrink:0;align-self:flex-start;border-radius:6px;">
+                                    <img id="faviconThumbImg" src="" alt="Favicon preview" hidden style="max-width:32px;max-height:32px;image-rendering:pixelated;">
+                                    <span class="editor-logo-preview-empty" id="faviconThumbEmpty" style="font-size:0.58rem;">ico</span>
+                                </div>
+                                <div class="editor-logo-upload-actions" style="flex:1">
+                                    <label class="editor-logo-file-label" for="df-favicon-file" style="justify-content:center;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Upload favicon
+                                        <input type="file" id="df-favicon-file" accept="image/*,.ico" style="display:none">
+                                    </label>
+                                    <button type="button" class="editor-logo-remove-btn" id="faviconRemoveBtn" hidden>✕ Remove</button>
+                                </div>
+                            </div>
+                            <p class="editor-field-hint">ICO, PNG (32×32 or 16×16), or SVG. Appears in browser tab.</p>
+                        </div>
+                        <div class="editor-field">
                             <label class="editor-field-label">Logo</label>
                             <div class="editor-logo-widget">
                                 <!-- Preview bar — mimics the dark top bar of the template -->

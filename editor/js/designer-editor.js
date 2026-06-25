@@ -25,6 +25,7 @@
         companyName:   'IBC Master',
         logoUrl:       '/',
         logoSrc:       'data/images/ibc-logo-reverse.svg',
+        faviconSrc:    '',
         footerTagline: 'Your source for industrial supplies, tooling, safety, and MRO products — shipped nationwide.',
         colorBlue:        '#004fa3',
         colorNavy:        '#0d2137',
@@ -163,6 +164,10 @@
     var logoThumbEmpty     = document.getElementById('logoThumbEmpty');
     var logoRemoveBtn      = document.getElementById('logoRemoveBtn');
     var logoUrlInput       = document.getElementById('df-logo-src');
+    var faviconFileInput   = document.getElementById('df-favicon-file');
+    var faviconThumbImg    = document.getElementById('faviconThumbImg');
+    var faviconThumbEmpty  = document.getElementById('faviconThumbEmpty');
+    var faviconRemoveBtn   = document.getElementById('faviconRemoveBtn');
 
     // ── Utility helpers ───────────────────────────────────────────────
 
@@ -554,6 +559,10 @@
             var colorInput = document.querySelector('[data-field="' + key + '"][type="color"]');
             if (colorInput) hexInput.value = colorInput.value;
         });
+        // Sync favicon thumbnail
+        var faviconVal = draft.faviconSrc !== undefined ? draft.faviconSrc : DEFAULTS.faviconSrc;
+        updateFaviconThumb(faviconVal || '');
+
         // Sync logo thumbnail
         var logoVal = draft.logoSrc !== undefined ? draft.logoSrc : DEFAULTS.logoSrc;
         // Only show thumb for uploaded data URLs; URL/path hints are shown via the text input
@@ -697,6 +706,57 @@
                 if (logoUrlInput) logoUrlInput.value = '';
                 updateLogoThumb('');
                 applyField('logoSrc', DEFAULTS.logoSrc);
+                scheduleSave();
+            });
+        }
+    }
+
+    // ── Favicon upload helper ─────────────────────────────────────────
+
+    function updateFaviconThumb(src) {
+        if (!faviconThumbImg || !faviconThumbEmpty || !faviconRemoveBtn) return;
+        if (src) {
+            faviconThumbImg.src = src;
+            faviconThumbImg.hidden = false;
+            faviconThumbEmpty.hidden = true;
+            faviconRemoveBtn.hidden = false;
+        } else {
+            faviconThumbImg.src = '';
+            faviconThumbImg.hidden = true;
+            faviconThumbEmpty.hidden = false;
+            faviconRemoveBtn.hidden = true;
+        }
+    }
+
+    function bindFaviconUpload() {
+        if (!faviconFileInput) return;
+        faviconFileInput.addEventListener('change', function () {
+            var file = faviconFileInput.files && faviconFileInput.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                var dataUrl = evt.target.result;
+                draft.faviconSrc = dataUrl;
+                updateFaviconThumb(dataUrl);
+                // Update the iframe's favicon link for live preview
+                if (iframeDoc) {
+                    var link = iframeDoc.querySelector('link[rel*="icon"]');
+                    if (!link) {
+                        link = iframeDoc.createElement('link');
+                        link.rel = 'icon';
+                        iframeDoc.head.appendChild(link);
+                    }
+                    link.href = dataUrl;
+                }
+                scheduleSave();
+            };
+            reader.readAsDataURL(file);
+            faviconFileInput.value = '';
+        });
+        if (faviconRemoveBtn) {
+            faviconRemoveBtn.addEventListener('click', function () {
+                draft.faviconSrc = '';
+                updateFaviconThumb('');
                 scheduleSave();
             });
         }
@@ -852,24 +912,28 @@
         '',
         'CONTENTS',
         '--------',
-        '  index.html          — Your customized homepage (deploy at root)',
-        '  header-block.html   — Header HTML snippet (paste into XO system)',
-        '  data/css/           — Stylesheet files (all required)',
-        '  data/js/            — JavaScript files (all required)',
+        '  WELCOME-GUIDE.html        — Premium install guide (open in browser)',
+        '  meta-data-snippet.html    — SEO/OG/Twitter meta tags (XO Meta Data field)',
+        '  global-head-snippet.html  — Favicon + CSS + JS links (XO Global section)',
+        '  header-block.html         — Header HTML (XO Header section)',
+        '  index.html                — Full homepage (standalone deployment)',
+        '  data/css/                 — Stylesheet files (upload to server)',
+        '  data/js/                  — JavaScript files (upload to server)',
         '',
-        'HEADER BLOCK (header-block.html)',
-        '--------------------------------',
-        'This file contains only the raw header HTML — no <html>, <head>,',
-        'or <body> tags. It is ready to paste directly into your platform.',
+        'XO SYSTEM INSTALL ORDER',
+        '-----------------------',
+        'Step 1: Paste meta-data-snippet.html into:',
+        '        Web Preferences → HTML → Meta Data, JavaScript & CSS (Global)',
+        '        (paste at the very top of this field)',
         '',
-        'HOW TO INSTALL IN THE XO SYSTEM:',
-        '  1. Log in to your dashboard as Admin',
-        '  2. In the left sidebar click: Settings → Web Settings',
-        '  3. Click Web Preferences',
-        '  4. Click HTML',
-        '  5. Open the Header section',
-        '  6. Copy and paste the contents of header-block.html into that field',
-        '  7. Save your changes',
+        'Step 2: Paste global-head-snippet.html into:',
+        '        Web Preferences → HTML → Meta Data, JavaScript & CSS (Global)',
+        '        (paste below the meta-data-snippet code)',
+        '',
+        'Step 3: Paste header-block.html into:',
+        '        Web Preferences → HTML → Header',
+        '',
+        'See WELCOME-GUIDE.html for full step-by-step instructions.',
         '',
         'IMAGES',
         '------',
@@ -992,10 +1056,11 @@
         '    <div class="steps">\n' +
         '      <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Log in as Admin</div><div class="step-desc">Sign in to your XO dashboard with your administrator credentials.</div></div></div>\n' +
         '      <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Open Web Settings</div><div class="step-desc">In the left sidebar, navigate to:<br><span class="step-path">Settings → Web Settings</span></div></div></div>\n' +
-        '      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Click Web Preferences</div><div class="step-desc">Select <strong>Web Preferences</strong> from the settings options.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Open the HTML Tab</div><div class="step-desc">Click on <strong>HTML</strong> to access the custom HTML fields.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Paste Your Header Code</div><div class="step-desc">Open <strong>header-block.html</strong> from this package, select all the code, and paste it into the Header section field.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Save &amp; Verify</div><div class="step-desc">Click Save, then visit your storefront to confirm the header is displaying correctly.</div></div></div>\n' +
+        '      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Click Web Preferences → HTML</div><div class="step-desc">Select <strong>Web Preferences</strong>, then click the <strong>HTML</strong> tab to access all custom HTML sections.</div></div></div>\n' +
+        '      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Install Meta Data Snippet <span style="font-size:0.75rem;font-weight:400;color:#c8a44a">(Do this first)</span></div><div class="step-desc">Open <strong>meta-data-snippet.html</strong> from this package. Copy all the code and paste it at the <strong>very top</strong> of the <strong>"Meta Data, JavaScript &amp; CSS (Global)"</strong> section. This installs your page title, SEO description, Open Graph, and Twitter Card tags. Update any values marked <em>← UPDATE THIS</em> with your real business info. Save your changes.</div></div></div>\n' +
+        '      <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Install Global Head Snippet</div><div class="step-desc">Open <strong>global-head-snippet.html</strong> from this package. Copy all the code and paste it <strong>below the meta data code</strong> (still in the same "Meta Data, JavaScript &amp; CSS (Global)" field). This installs the favicon, stylesheet links, and script dependencies. Save your changes.</div></div></div>\n' +
+        '      <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Install Header Block</div><div class="step-desc">Open <strong>header-block.html</strong> from this package. Copy all the code and paste it into the <strong>"Header"</strong> section. Save your changes.</div></div></div>\n' +
+        '      <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Verify Your Storefront</div><div class="step-desc">Visit your storefront to confirm the header displays correctly — logo, navigation, search bar, and mega menu should all be active.</div></div></div>\n' +
         '    </div>\n' +
         '  </div>\n' +
 
@@ -1004,10 +1069,12 @@
         '    <div class="section-label">Package Contents</div>\n' +
         '    <div class="section-title">What\'s in Your ZIP File</div>\n' +
         '    <div class="files">\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">header-block.html</div><div class="file-desc">Your customized header HTML — paste this directly into the XO system Header section. No &lt;html&gt; or &lt;body&gt; tags needed.</div></div></div>\n' +
+        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">meta-data-snippet.html</div><div class="file-desc"><strong>Install first (top of Global field).</strong> Paste into XO → Web Preferences → HTML → <em>Meta Data, JavaScript &amp; CSS (Global)</em>. Contains page title, SEO description, Open Graph, and Twitter Card tags.</div></div></div>\n' +
+        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">global-head-snippet.html</div><div class="file-desc"><strong>Install second (below meta data).</strong> Paste into XO → Web Preferences → HTML → <em>Meta Data, JavaScript &amp; CSS (Global)</em>. Contains favicon, stylesheet, and script links.</div></div></div>\n' +
+        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">header-block.html</div><div class="file-desc"><strong>Install third.</strong> Paste into XO → Web Preferences → HTML → <em>Header</em>. Contains the full navigation, search, mega menu, and top bar HTML.</div></div></div>\n' +
         '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">index.html</div><div class="file-desc">Full homepage HTML — for standalone deployment outside the XO system.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="file-name">data/css/header.css</div><div class="file-desc">Stylesheet for the header. Must be loaded in your platform\'s &lt;head&gt; before the header block renders.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="file-name">data/js/header.js</div><div class="file-desc">Powers the mega menu, mobile drawer, and interactive navigation. Load after your CSS.</div></div></div>\n' +
+        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="file-name">data/css/header.css</div><div class="file-desc">Header stylesheet — referenced in global-head-snippet.html, upload to your server.</div></div></div>\n' +
+        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="file-name">data/js/header.js</div><div class="file-desc">Navigation script — referenced in global-head-snippet.html, upload to your server.</div></div></div>\n' +
         '    </div>\n' +
         '  </div>\n' +
 
@@ -1016,8 +1083,11 @@
         '    <div class="section-label">Required</div>\n' +
         '    <div class="section-title">Assets to Load in Your &lt;head&gt;</div>\n' +
         '    <div class="assets">\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/css/header.css</div><div class="asset-note">Header stylesheet</div></div>\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/js/header.js</div><div class="asset-note">Navigation behavior</div></div>\n' +
+        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/css/header.css</div><div class="asset-note">Header stylesheet — include in &lt;head&gt;</div></div>\n' +
+        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/js/header.js</div><div class="asset-note">Navigation behavior — include in &lt;head&gt;</div></div>\n' +
+        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">enhanced-search.css</div><div class="asset-note">Search styles — already on your XO platform</div></div>\n' +
+        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">enhanced-search.js</div><div class="asset-note">Search functionality — already on your XO platform</div></div>\n' +
+        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">favicon</div><div class="asset-note">' + (draft.faviconSrc ? 'Uploaded — see favicon &lt;link&gt; tags at top of header-block.html' : 'Not uploaded — add your favicon path in header-block.html') + '</div></div>\n' +
         '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/images/</div><div class="asset-note">Icons, logo, images — upload to your server</div></div>\n' +
         '    </div>\n' +
         '  </div>\n' +
@@ -1031,14 +1101,144 @@
         '</div>\n</body>\n</html>';
     }
 
-    // ── Build the header-block.html snippet ──────────────────────────
+    // ── Build meta-data-snippet.html ─────────────────────────────────
+    // Paste this into XO: Meta Data field
+
+    function buildMetaDataSnippet() {
+        var date        = new Date().toLocaleDateString();
+        var companyName = draft.companyName || DEFAULTS.companyName;
+        var primaryBlue = draft.colorBlue   || DEFAULTS.colorBlue;
+        var faviconSrc  = draft.faviconSrc  || DEFAULTS.faviconSrc;
+        var siteUrl     = '<!-- https://www.yourwebsite.com -->';
+
+        return [
+            '<!-- ============================================================',
+            '     THE WOOLF — META DATA SNIPPET',
+            '     Generated by LogicX Designer Editor · ' + date,
+            '     ============================================================',
+            '',
+            '     WHERE TO PASTE THIS CODE (XO System)',
+            '     ─────────────────────────────────────',
+            '     1. Log in as Admin',
+            '     2. Left sidebar → Settings → Web Settings',
+            '     3. Click Web Preferences',
+            '     4. Click HTML',
+            '     5. Open "Meta Data, JavaScript & CSS (Global)"',
+            '     6. Paste this code at the TOP of that field (before the',
+            '        content from global-head-snippet.html)',
+            '     7. Save your changes',
+            '',
+            '     INSTRUCTIONS: Replace every value marked with',
+            '     ← UPDATE THIS with your actual business information.',
+            '     ============================================================ -->',
+            '',
+            '<!-- ── Character set & viewport (required — do not change) ── -->',
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            '<meta http-equiv="X-UA-Compatible" content="IE=edge">',
+            '',
+            '<!-- ── Page title (appears in browser tab & search results) ── -->',
+            '<title>' + companyName + ' | Industrial Supplies, Tooling &amp; Safety Products</title>',
+            '<!-- ↑ UPDATE THIS: Format — "Company Name | Short Description" -->',
+            '',
+            '<!-- ── SEO meta description (150–160 characters recommended) ── -->',
+            '<meta name="description" content="' + companyName + ' is your source for industrial supplies, cutting tools, safety equipment, and MRO products — shipped nationwide.">',
+            '<!-- ↑ UPDATE THIS with your actual business description -->',
+            '',
+            '<!-- ── SEO keywords ── -->',
+            '<meta name="keywords" content="industrial supplies, cutting tools, safety PPE, MRO products, tooling, fasteners, hydraulics, ' + companyName + '">',
+            '<!-- ↑ UPDATE THIS with your most important product/service keywords -->',
+            '',
+            '<!-- ── Author & robots ── -->',
+            '<meta name="author" content="' + companyName + '">',
+            '<meta name="robots" content="index, follow">',
+            '',
+            '<!-- ── Theme color (browser UI accent on mobile) ── -->',
+            '<meta name="theme-color" content="' + primaryBlue + '">',
+            '',
+            '<!-- ── Open Graph — controls how your site looks when shared on',
+            '     Facebook, LinkedIn, Slack, iMessage, etc. ── -->',
+            '<meta property="og:type"        content="website">',
+            '<meta property="og:site_name"   content="' + companyName + '">',
+            '<meta property="og:title"       content="' + companyName + ' | Industrial Supplies, Tooling &amp; Safety">',
+            '<meta property="og:description" content="' + companyName + ' — industrial supplies, cutting tools, safety equipment, and MRO products shipped nationwide.">',
+            '<meta property="og:url"         content="' + siteUrl + '">',
+            '<!-- ↑ UPDATE THIS: Replace with your actual website URL -->',
+            '<meta property="og:image"       content="' + (faviconSrc || '<!-- /path/to/social-share-image.jpg (1200x630px recommended) -->') + '">',
+            '<!-- ↑ UPDATE THIS: Use a 1200×630px image for best social sharing results -->',
+            '',
+            '<!-- ── Twitter / X Card ── -->',
+            '<meta name="twitter:card"        content="summary_large_image">',
+            '<meta name="twitter:title"       content="' + companyName + ' | Industrial Supplies">',
+            '<meta name="twitter:description" content="' + companyName + ' — your source for industrial supplies, tooling, safety, and MRO products.">',
+            '<meta name="twitter:image"       content="' + (faviconSrc || '<!-- /path/to/social-share-image.jpg -->') + '">',
+            '<!-- ↑ UPDATE THIS: Use the same 1200×630px image as og:image above -->',
+            '',
+            '<!-- ── Canonical URL (prevents duplicate content issues) ── -->',
+            '<link rel="canonical" href="' + siteUrl + '">',
+            '<!-- ↑ UPDATE THIS: Replace with your actual website URL -->',
+        ].join('\n');
+    }
+
+    // ── Build global-head-snippet.html ───────────────────────────────
+    // Paste this into XO: Meta Data, JavaScript & CSS (Global)
+
+    function buildGlobalHeadSnippet() {
+        var date       = new Date().toLocaleDateString();
+        var faviconSrc = draft.faviconSrc || DEFAULTS.faviconSrc;
+
+        return [
+            '<!-- ============================================================',
+            '     THE WOOLF — GLOBAL HEAD SNIPPET',
+            '     Generated by LogicX Designer Editor · ' + date,
+            '     ============================================================',
+            '',
+            '     WHERE TO PASTE THIS CODE (XO System)',
+            '     ─────────────────────────────────────',
+            '     1. Log in as Admin',
+            '     2. Left sidebar → Settings → Web Settings',
+            '     3. Click Web Preferences',
+            '     4. Click HTML',
+            '     5. Open "Meta Data, JavaScript & CSS (Global)"',
+            '     6. Paste all code below into that field',
+            '     7. Save your changes',
+            '',
+            '     NOTE: Complete this step BEFORE installing header-block.html.',
+            '     ============================================================ -->',
+            '',
+            '<!-- FAVICON: Sets the icon shown in the browser tab and bookmarks -->',
+            faviconSrc
+                ? '<link rel="icon" type="image/png" href="' + faviconSrc + '">'
+                : '<!-- Replace the path below with your actual favicon file path -->',
+            faviconSrc
+                ? '<link rel="apple-touch-icon" sizes="180x180" href="' + faviconSrc + '">'
+                : '<!-- <link rel="icon" type="image/png" href="/path/to/favicon.png"> -->',
+            faviconSrc
+                ? '<link rel="apple-touch-icon" href="' + faviconSrc + '">'
+                : '<!-- <link rel="apple-touch-icon" sizes="180x180" href="/path/to/apple-touch-icon.png"> -->',
+            '',
+            '<!-- HEADER STYLESHEET: Required for the navigation, mega menu, and top bar to display correctly -->',
+            '<link rel="stylesheet" href="/data/css/header.css">',
+            '',
+            '<!-- SEARCH STYLESHEET: Required for the search bar (already installed on your XO platform) -->',
+            '<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">',
+            '',
+            '<!-- SEARCH SCRIPT: Powers the site search functionality (already installed on your XO platform) -->',
+            '<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js"></script>',
+            '',
+            '<!-- HEADER SCRIPT: Powers the mega menu, mobile drawer, and interactive navigation -->',
+            '<script src="/data/js/header.js"></script>',
+        ].join('\n');
+    }
+
+    // ── Build header-block.html ───────────────────────────────────────
+    // Paste this into XO: Header (HTML section)
 
     function buildHeaderBlock() {
         if (!iframeDoc) return '';
         var date = new Date().toLocaleDateString();
 
-        // Grab the two header elements from the live (customized) iframe DOM
-        var topBar    = iframeDoc.querySelector('.top-bar');
+        var topBar     = iframeDoc.querySelector('.top-bar');
         var siteHeader = iframeDoc.querySelector('header.site-header');
         var overrides  = iframeDoc.getElementById('__designer-overrides__');
 
@@ -1049,40 +1249,37 @@
         return [
             '<!-- ============================================================',
             '     THE WOOLF — HEADER BLOCK',
-            '     Generated by LogicX Designer Editor',
-            '     Date: ' + date,
+            '     Generated by LogicX Designer Editor · ' + date,
             '     ============================================================',
             '',
-            '     HOW TO INSTALL THIS HEADER (XO System)',
-            '     ────────────────────────────────────────',
-            '     1. Log in to your dashboard as Admin',
-            '     2. In the left sidebar click:',
-            '        Settings → Web Settings',
+            '     WHERE TO PASTE THIS CODE (XO System)',
+            '     ─────────────────────────────────────',
+            '     1. Log in as Admin',
+            '     2. Left sidebar → Settings → Web Settings',
             '     3. Click Web Preferences',
             '     4. Click HTML',
-            '     5. Open the Header section',
-            '     6. Copy and paste the contents of this file',
-            '        into that field',
+            '     5. Open the "Header" section',
+            '     6. Paste all code below into that field',
             '     7. Save your changes',
             '',
-            '     WHAT THIS SECTION INCLUDES:',
-            '     Top bar, company logo, navigation, search bar,',
-            '     All Products mega menu, quick-link sub-nav,',
-            '     and Sign Up / Login buttons.',
+            '     IMPORTANT: Install global-head-snippet.html FIRST into',
+            '     "Meta Data, JavaScript & CSS (Global)" before this step.',
             '',
-            '     REQUIRED ASSETS (add to your platform\'s <head>):',
-            '     - data/css/header.css  — header styles',
-            '     - data/js/header.js    — mega menu & mobile nav behavior',
+            '     WHAT THIS SECTION INCLUDES:',
+            '     Top bar with logo, phone number, and nav links,',
+            '     main navigation with search bar, All Products mega menu,',
+            '     quick-link sub-nav, and Sign Up / Login buttons.',
             '     ============================================================ -->',
             '',
-            '<!-- Custom color and style overrides set in the designer editor -->',
+            '<!-- Custom color and style overrides configured in the designer editor -->',
             overridesHtml,
             '',
-            '<!-- TOP BAR: Logo, navigation links, phone number, Sign Up / Login -->',
+            '<!-- TOP BAR: Logo, navigation links (Catalog / About Us / Contact),',
+            '     phone number, and Sign Up / Login buttons -->',
             topBarHtml,
             '',
-            '<!-- SITE HEADER: Main nav bar, search, All Products mega menu,',
-            '     sub-nav quick links, account and cart icons -->',
+            '<!-- SITE HEADER: Main nav bar, search bar (form#site-search-form),',
+            '     All Products mega menu, quick-link sub-nav, account and cart icons -->',
             headerHtml,
         ].join('\n');
     }
@@ -1128,6 +1325,8 @@
         Promise.all(cssPromises.concat(jsPromises).concat([headerCssPromise, headerJsPromise]))
         .then(function (results) {
             zip.file('index.html', htmlContent);
+            zip.file('meta-data-snippet.html', buildMetaDataSnippet());
+            zip.file('global-head-snippet.html', buildGlobalHeadSnippet());
             zip.file('header-block.html', buildHeaderBlock());
             zip.file('WELCOME-GUIDE.html', buildWelcomeGuide());
             zip.file('HANDOFF-README.txt', HANDOFF_README);
@@ -1183,6 +1382,7 @@
 
         bindFieldPanel();
         bindLogoUpload();
+        bindFaviconUpload();
         initResetBtn();
 
         if (exportBtn) {
