@@ -913,36 +913,39 @@
         'CONTENTS',
         '--------',
         '  WELCOME-GUIDE.html        — Premium install guide (open in browser)',
-        '  meta-data-snippet.html    — SEO/OG/Twitter meta tags (XO Meta Data field)',
-        '  global-head-snippet.html  — Favicon + CSS + JS links (XO Global section)',
+        '  global-head-snippet.html  — Meta tags + favicon + CSS/JS (XO Global section)',
         '  header-block.html         — Header HTML (XO Header section)',
         '  index.html                — Full homepage (standalone deployment)',
         '  data/css/                 — Stylesheet files (upload to server)',
         '  data/js/                  — JavaScript files (upload to server)',
+        '  data/images/icons/        — Navigation icon SVGs (upload to server)',
+        '  data/images/header/       — Logo + favicon image files (upload to server)',
         '',
         'XO SYSTEM INSTALL ORDER',
         '-----------------------',
-        'Step 1: Paste meta-data-snippet.html into:',
+        'Step 1: Paste global-head-snippet.html into:',
         '        Web Preferences → HTML → Meta Data, JavaScript & CSS (Global)',
-        '        (paste at the very top of this field)',
         '',
-        'Step 2: Paste global-head-snippet.html into:',
-        '        Web Preferences → HTML → Meta Data, JavaScript & CSS (Global)',
-        '        (paste below the meta-data-snippet code)',
-        '',
-        'Step 3: Paste header-block.html into:',
+        'Step 2: Paste header-block.html into:',
         '        Web Preferences → HTML → Header',
         '',
         'See WELCOME-GUIDE.html for full step-by-step instructions.',
         '',
-        'IMAGES',
-        '------',
-        'Copy the data/images/ folder from the original template alongside',
-        'index.html. Image uploads and replacements will be added in a',
-        'future release of the designer editor.',
+        'SERVER FILE UPLOADS',
+        '-------------------',
+        'Upload these files to your XO server (via File Manager or FTP):',
         '',
-        'DEPLOYMENT',
-        '----------',
+        '  data/css/header.css          →  /data/css/header.css',
+        '  data/js/header.js            →  /data/js/header.js',
+        '  data/images/icons/           →  /data/images/icons/',
+        '  data/images/header/          →  /data/images/header/',
+        '  (logo/favicon folder only present if images were uploaded in the editor)',
+        '',
+        'NOTE: When you update header.css or header.js, increment the version',
+        'parameter in global-head-snippet.html (?v1 → ?v2) to bust browser cache.',
+        '',
+        'STANDALONE DEPLOYMENT (outside XO)',
+        '-----------------------------------',
         '1. Upload index.html to your web root.',
         '2. Upload the full data/ folder (css, js, and images) alongside it.',
         '3. Test locally with a static file server before going live.',
@@ -953,286 +956,367 @@
     // ── Build the premium welcome / install guide HTML ────────────────
 
     function buildWelcomeGuide() {
-        var companyName = draft.companyName || DEFAULTS.companyName;
-        var date        = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        var primaryBlue = draft.colorBlue  || DEFAULTS.colorBlue;
-        var navy        = draft.colorNavy  || DEFAULTS.colorNavy;
-        var navyDark    = draft.colorNavyDark || DEFAULTS.colorNavyDark;
+        var companyName  = draft.companyName  || DEFAULTS.companyName;
+        var phoneNumber  = draft.phone        || DEFAULTS.phone        || '';
+        var primaryBlue  = draft.colorBlue    || DEFAULTS.colorBlue;
+        var colorGold    = draft.colorGold    || DEFAULTS.colorGold    || '#c8a44a';
+        var navy         = draft.colorNavy    || DEFAULTS.colorNavy;
+        var navyDark     = draft.colorNavyDark|| DEFAULTS.colorNavyDark;
+        var colorTopBar  = draft.colorTopBarBg|| DEFAULTS.colorTopBarBg|| navyDark;
+        var colorSubnav  = draft.colorSubnavBg|| DEFAULTS.colorSubnavBg|| primaryBlue;
+        var hasLogo      = !!(draft.logoSrc   || DEFAULTS.logoSrc);
+        var hasFavicon   = !!(draft.faviconSrc|| DEFAULTS.faviconSrc);
+        var date         = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+        var pkgId        = 'WLF-' + Date.now().toString(36).toUpperCase().slice(-6);
 
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>The Woolf — Installation Guide</title>\n<style>\n' +
-        '@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");\n' +
-        '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}\n' +
-        'html{font-size:16px}\n' +
-        'body{font-family:"Inter",sans-serif;background:#f7f8fa;color:#1a2333;-webkit-print-color-adjust:exact;print-color-adjust:exact}\n' +
+        var swatches = [
+            { label: 'Top Bar',    color: colorTopBar },
+            { label: 'Primary',    color: primaryBlue },
+            { label: 'Sub-nav',    color: colorSubnav },
+            { label: 'Accent',     color: colorGold   },
+        ];
+        var swatchHtml = swatches.map(function(s) {
+            return '<div class="swatch"><div class="swatch-chip" style="background:' + s.color + '"></div>' +
+                   '<div class="swatch-label">' + s.label + '</div>' +
+                   '<div class="swatch-hex">' + s.color + '</div></div>';
+        }).join('');
 
-        /* Cover */
-        '.cover{background:' + navyDark + ';min-height:320px;display:flex;flex-direction:column;justify-content:flex-end;padding:56px 64px 48px;position:relative;overflow:hidden}\n' +
-        '.cover::before{content:"";position:absolute;top:-80px;right:-80px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,0.03)}\n' +
-        '.cover::after{content:"";position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,' + primaryBlue + ',#c8a44a,#e8c96a)}\n' +
-        '.cover-eyebrow{font-family:"Inter",sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:18px}\n' +
-        '.cover-title{font-family:"Cormorant Garamond",serif;font-size:4rem;font-weight:600;color:#fff;line-height:1.05;letter-spacing:-0.01em;margin-bottom:12px}\n' +
-        '.cover-subtitle{font-size:1rem;color:rgba(255,255,255,0.55);font-weight:400;margin-bottom:32px}\n' +
-        '.cover-meta{display:flex;gap:40px}\n' +
-        '.cover-meta-item{border-left:2px solid #c8a44a;padding-left:14px}\n' +
-        '.cover-meta-label{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:4px}\n' +
-        '.cover-meta-value{font-size:0.875rem;font-weight:600;color:#fff}\n' +
+        var configRows = [
+            ['Company Name',  companyName],
+            ['Phone Number',  phoneNumber || '—'],
+            ['Logo',          hasLogo   ? '✓ Uploaded' : '— Not uploaded'],
+            ['Favicon',       hasFavicon? '✓ Uploaded' : '— Not uploaded'],
+            ['Template',      'The Woolf — Industrial E-Commerce'],
+            ['Package ID',    pkgId],
+        ];
+        var configHtml = configRows.map(function(r) {
+            return '<div class="config-row"><div class="config-key">' + r[0] + '</div><div class="config-val">' + r[1] + '</div></div>';
+        }).join('');
 
-        /* Body */
-        '.body{max-width:780px;margin:0 auto;padding:56px 40px 80px}\n' +
-        '.welcome-box{background:#fff;border-radius:12px;padding:32px 36px;border-left:4px solid #c8a44a;margin-bottom:48px;box-shadow:0 2px 16px rgba(0,0,0,0.06)}\n' +
-        '.welcome-box h2{font-family:"Cormorant Garamond",serif;font-size:1.6rem;font-weight:600;color:' + navyDark + ';margin-bottom:10px}\n' +
-        '.welcome-box p{font-size:0.9375rem;line-height:1.7;color:#4a5568}\n' +
+        var css = [
+            '@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap");',
+            '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}',
+            'html{font-size:16px}',
+            'body{font-family:"Inter",sans-serif;background:#f4f5f7;color:#1a2333;-webkit-print-color-adjust:exact;print-color-adjust:exact}',
 
-        /* Section headings */
-        '.section{margin-bottom:48px}\n' +
-        '.section-label{font-size:0.65rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#c8a44a;margin-bottom:14px}\n' +
-        '.section-title{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:600;color:' + navyDark + ';margin-bottom:20px}\n' +
+            /* ── Cover ── */
+            '.cover{background:' + navyDark + ';min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding:0;position:relative;overflow:hidden;page-break-after:always}',
+            '.cover-bg-circle{position:absolute;border-radius:50%;background:rgba(255,255,255,0.025)}',
+            '.cover-bg-c1{width:700px;height:700px;top:-200px;right:-180px}',
+            '.cover-bg-c2{width:400px;height:400px;bottom:-100px;left:-80px}',
+            '.cover-bg-lines{position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,0.015) 0px,rgba(255,255,255,0.015) 1px,transparent 1px,transparent 60px);pointer-events:none}',
+            '.cover-top{padding:48px 64px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}',
+            '.cover-brand{font-size:0.7rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.4)}',
+            '.cover-badge{background:rgba(200,164,74,0.15);border:1px solid rgba(200,164,74,0.4);border-radius:4px;padding:6px 14px;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:' + colorGold + '}',
+            '.cover-center{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 64px;position:relative;z-index:1}',
+            '.cover-eyebrow{font-size:0.75rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:24px}',
+            '.cover-rule{width:56px;height:2px;background:linear-gradient(90deg,' + colorGold + ',transparent);margin-bottom:28px}',
+            '.cover-title{font-family:"Cormorant Garamond",serif;font-size:clamp(4rem,10vw,7rem);font-weight:600;color:#fff;line-height:0.95;letter-spacing:-0.02em;margin-bottom:20px}',
+            '.cover-subtitle{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:400;font-style:italic;color:rgba(255,255,255,0.5);margin-bottom:48px}',
+            '.cover-for{display:inline-flex;flex-direction:column;gap:4px;border-left:3px solid ' + colorGold + ';padding-left:20px}',
+            '.cover-for-label{font-size:0.6rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3)}',
+            '.cover-for-name{font-size:1.5rem;font-weight:600;color:#fff;letter-spacing:-0.01em}',
+            '.cover-bottom{padding:36px 64px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(255,255,255,0.06);position:relative;z-index:1}',
+            '.cover-meta-grid{display:flex;gap:40px}',
+            '.cover-meta-item{display:flex;flex-direction:column;gap:4px}',
+            '.cover-meta-label{font-size:0.58rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.28)}',
+            '.cover-meta-value{font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.75)}',
+            '.cover-stripe{position:absolute;bottom:0;left:0;right:0;height:5px;background:linear-gradient(90deg,' + navyDark + ' 0%,' + primaryBlue + ' 30%,' + colorGold + ' 60%,#e8c96a 100%)}',
 
-        /* Steps */
-        '.steps{display:flex;flex-direction:column;gap:0}\n' +
-        '.step{display:grid;grid-template-columns:44px 1fr;gap:0 20px;position:relative}\n' +
-        '.step:not(:last-child)::before{content:"";position:absolute;left:21px;top:44px;bottom:-12px;width:2px;background:#e2e8ee}\n' +
-        '.step-num{width:44px;height:44px;border-radius:50%;background:' + navy + ';color:#fff;font-size:0.875rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1}\n' +
-        '.step-body{padding-bottom:28px}\n' +
-        '.step-title{font-size:0.9375rem;font-weight:700;color:' + navyDark + ';margin-bottom:4px;padding-top:10px}\n' +
-        '.step-desc{font-size:0.875rem;line-height:1.65;color:#4a5568}\n' +
-        '.step-path{display:inline-block;margin-top:6px;background:#f0f4ff;border:1px solid #d0d9f0;border-radius:4px;padding:4px 10px;font-size:0.8rem;font-family:ui-monospace,monospace;color:' + primaryBlue + ';font-weight:600}\n' +
+            /* ── Page body ── */
+            '.page{max-width:820px;margin:0 auto;padding:72px 48px 96px}',
 
-        /* Files */
-        '.files{display:flex;flex-direction:column;gap:10px}\n' +
-        '.file-row{display:grid;grid-template-columns:auto 1fr;gap:12px 16px;align-items:start;background:#fff;border-radius:8px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}\n' +
-        '.file-icon{width:36px;height:36px;border-radius:6px;background:' + navy + ';display:flex;align-items:center;justify-content:center;flex-shrink:0}\n' +
-        '.file-icon svg{fill:none;stroke:#c8a44a;stroke-width:1.8}\n' +
-        '.file-name{font-size:0.85rem;font-weight:700;font-family:ui-monospace,monospace;color:' + navyDark + ';margin-bottom:2px}\n' +
-        '.file-desc{font-size:0.8125rem;color:#718096;line-height:1.5}\n' +
+            /* ── Welcome letter ── */
+            '.letter{background:#fff;border-radius:16px;padding:44px 48px;margin-bottom:56px;box-shadow:0 4px 32px rgba(0,0,0,0.07);position:relative;overflow:hidden}',
+            '.letter::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,' + primaryBlue + ',' + colorGold + ')}',
+            '.letter-greeting{font-family:"Cormorant Garamond",serif;font-size:2rem;font-weight:600;color:' + navyDark + ';margin-bottom:20px}',
+            '.letter p{font-size:0.9375rem;line-height:1.85;color:#4a5568;margin-bottom:12px}',
+            '.letter p:last-child{margin-bottom:0}',
+            '.letter-sig{margin-top:28px;padding-top:24px;border-top:1px solid #f0f4f8;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:1.1rem;color:#718096}',
 
-        /* Assets */
-        '.assets{background:#fff;border-radius:8px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}\n' +
-        '.asset-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f4f8}\n' +
-        '.asset-row:last-child{border-bottom:none}\n' +
-        '.asset-dot{width:8px;height:8px;border-radius:50%;background:' + primaryBlue + ';flex-shrink:0}\n' +
-        '.asset-name{font-size:0.8125rem;font-family:ui-monospace,monospace;font-weight:600;color:' + navyDark + ';flex:1}\n' +
-        '.asset-note{font-size:0.78rem;color:#718096}\n' +
+            /* ── Sections ── */
+            '.section{margin-bottom:56px}',
+            '.section-eyebrow{font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:' + colorGold + ';margin-bottom:8px}',
+            '.section-heading{font-family:"Cormorant Garamond",serif;font-size:2rem;font-weight:600;color:' + navyDark + ';margin-bottom:4px;line-height:1.1}',
+            '.section-rule{width:40px;height:2px;background:' + colorGold + ';margin:14px 0 28px}',
 
-        /* Footer */
-        '.footer{border-top:1px solid #e2e8ee;margin-top:64px;padding-top:28px;display:flex;justify-content:space-between;align-items:center}\n' +
-        '.footer-brand{font-size:0.8rem;font-weight:700;letter-spacing:0.06em;color:' + navyDark + '}\n' +
-        '.footer-note{font-size:0.75rem;color:#a0aec0}\n' +
+            /* ── Brand config ── */
+            '.config-table{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.06)}',
+            '.config-row{display:grid;grid-template-columns:180px 1fr;border-bottom:1px solid #f0f4f8}',
+            '.config-row:last-child{border-bottom:none}',
+            '.config-key{padding:14px 20px;font-size:0.8rem;font-weight:600;color:#718096;background:#fafbfc;text-transform:uppercase;letter-spacing:0.05em}',
+            '.config-val{padding:14px 20px;font-size:0.875rem;font-weight:500;color:' + navyDark + '}',
 
-        /* Print */
-        '@media print{\n' +
-        'body{background:#fff}\n' +
-        '.cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}\n' +
-        '.body{padding:40px 0}\n' +
-        '.welcome-box,.file-row,.assets{box-shadow:none;border:1px solid #e2e8ee}\n' +
-        '}\n' +
-        '</style>\n</head>\n<body>\n' +
+            /* ── Color swatches ── */
+            '.swatches{display:flex;gap:16px;flex-wrap:wrap;margin-top:24px}',
+            '.swatch{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.07);min-width:110px;flex:1}',
+            '.swatch-chip{height:64px;width:100%}',
+            '.swatch-label{padding:8px 12px 2px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#a0aec0}',
+            '.swatch-hex{padding:0 12px 10px;font-size:0.8rem;font-family:ui-monospace,monospace;font-weight:600;color:' + navyDark + '}',
 
-        /* Cover */
-        '<div class="cover">\n' +
-        '  <div class="cover-eyebrow">LogicX Designer — Premium Template Package</div>\n' +
-        '  <div class="cover-title">The Woolf</div>\n' +
-        '  <div class="cover-subtitle">Industrial E-Commerce Website — Installation &amp; Setup Guide</div>\n' +
-        '  <div class="cover-meta">\n' +
-        '    <div class="cover-meta-item"><div class="cover-meta-label">Prepared for</div><div class="cover-meta-value">' + companyName + '</div></div>\n' +
-        '    <div class="cover-meta-item"><div class="cover-meta-label">Date</div><div class="cover-meta-value">' + date + '</div></div>\n' +
-        '    <div class="cover-meta-item"><div class="cover-meta-label">Package</div><div class="cover-meta-value">Header Section</div></div>\n' +
-        '  </div>\n' +
-        '</div>\n' +
+            /* ── Steps ── */
+            '.steps{display:flex;flex-direction:column;gap:0}',
+            '.step{display:grid;grid-template-columns:52px 1fr;gap:0 20px;position:relative}',
+            '.step:not(:last-child)::after{content:"";position:absolute;left:25px;top:52px;bottom:0;width:2px;background:linear-gradient(to bottom,' + primaryBlue + '22,transparent)}',
+            '.step-num{width:52px;height:52px;border-radius:50%;background:' + primaryBlue + ';color:#fff;font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 4px 16px ' + primaryBlue + '44}',
+            '.step-body{padding-bottom:32px;padding-top:2px}',
+            '.step-title{font-size:1rem;font-weight:700;color:' + navyDark + ';margin-bottom:6px;padding-top:12px}',
+            '.step-desc{font-size:0.875rem;line-height:1.75;color:#4a5568}',
+            '.step-path{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:#f0f4ff;border:1px solid #d0d9f0;border-radius:6px;padding:6px 12px;font-size:0.8rem;font-family:ui-monospace,monospace;color:' + primaryBlue + ';font-weight:600}',
 
-        /* Body */
-        '<div class="body">\n' +
+            /* ── File cards ── */
+            '.files{display:flex;flex-direction:column;gap:12px}',
+            '.file-card{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:grid;grid-template-columns:44px 1fr;gap:0 16px;align-items:start;border-left:3px solid transparent}',
+            '.file-card.priority{border-left-color:' + colorGold + '}',
+            '.file-icon{width:44px;height:44px;border-radius:8px;background:' + navyDark + ';display:flex;align-items:center;justify-content:center;flex-shrink:0}',
+            '.file-icon svg{fill:none;stroke:' + colorGold + ';stroke-width:1.6}',
+            '.file-name{font-size:0.875rem;font-weight:700;font-family:ui-monospace,monospace;color:' + navyDark + ';margin-bottom:4px}',
+            '.file-desc{font-size:0.8125rem;color:#718096;line-height:1.6}',
+            'code{background:#f0f4f8;border-radius:3px;padding:1px 5px;font-size:0.8em;font-family:ui-monospace,monospace;color:' + primaryBlue + '}',
 
-        /* Welcome */
-        '  <div class="welcome-box">\n' +
-        '    <h2>Welcome, ' + companyName + '</h2>\n' +
-        '    <p>This package contains your custom-branded header for <strong>The Woolf</strong> template, configured specifically for your business. The header includes your company logo, navigation, phone number, product categories, and all links — ready to install in your XO system dashboard.</p>\n' +
-        '  </div>\n' +
+            /* ── Upload table ── */
+            '.upload-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)}',
+            '.upload-table th{padding:12px 18px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#a0aec0;background:#fafbfc;border-bottom:2px solid #f0f4f8}',
+            '.upload-table td{padding:13px 18px;font-size:0.8125rem;font-family:ui-monospace,monospace;border-bottom:1px solid #f0f4f8;color:' + navyDark + '}',
+            '.upload-table tr:last-child td{border-bottom:none}',
+            '.upload-arrow{color:#c8a44a;font-weight:700;padding:0 8px;font-family:sans-serif}',
+
+            /* ── Footer ── */
+            '.footer{margin-top:72px;padding-top:32px;border-top:2px solid #e2e8ee;display:flex;justify-content:space-between;align-items:center}',
+            '.footer-brand{font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-weight:600;color:' + navyDark + '}',
+            '.footer-right{text-align:right}',
+            '.footer-pkg{font-size:0.7rem;font-family:ui-monospace,monospace;color:#a0aec0;margin-bottom:2px}',
+            '.footer-date{font-size:0.75rem;color:#a0aec0}',
+
+            /* ── Print ── */
+            '@media print{',
+            'body{background:#fff}',
+            '.cover{min-height:100vh;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}',
+            '.letter,.file-card,.config-table,.upload-table{box-shadow:none}',
+            '.page{padding:48px 0}',
+            '}',
+        ].join('\n');
+
+        var html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n' +
+            '<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
+            '<title>The Woolf — ' + companyName + ' Installation Guide</title>\n' +
+            '<style>\n' + css + '\n</style>\n</head>\n<body>\n';
+
+        /* ════ COVER PAGE ════ */
+        html += '<div class="cover">\n';
+        html += '  <div class="cover-bg-circle cover-bg-c1"></div>\n';
+        html += '  <div class="cover-bg-circle cover-bg-c2"></div>\n';
+        html += '  <div class="cover-bg-lines"></div>\n';
+        html += '  <div class="cover-top">\n';
+        html += '    <div class="cover-brand">LogicX Designer &nbsp;·&nbsp; Premium Template Studio</div>\n';
+        html += '    <div class="cover-badge">Exclusive Package</div>\n';
+        html += '  </div>\n';
+        html += '  <div class="cover-center">\n';
+        html += '    <div class="cover-eyebrow">Premium E-Commerce Website Template</div>\n';
+        html += '    <div class="cover-rule"></div>\n';
+        html += '    <div class="cover-title">The Woolf</div>\n';
+        html += '    <div class="cover-subtitle">Industrial Supply &amp; Distribution</div>\n';
+        html += '    <div class="cover-for">\n';
+        html += '      <div class="cover-for-label">Exclusively Prepared For</div>\n';
+        html += '      <div class="cover-for-name">' + companyName + '</div>\n';
+        html += '    </div>\n';
+        html += '  </div>\n';
+        html += '  <div class="cover-bottom">\n';
+        html += '    <div class="cover-meta-grid">\n';
+        html += '      <div class="cover-meta-item"><div class="cover-meta-label">Package ID</div><div class="cover-meta-value">' + pkgId + '</div></div>\n';
+        html += '      <div class="cover-meta-item"><div class="cover-meta-label">Date Issued</div><div class="cover-meta-value">' + date + '</div></div>\n';
+        html += '      <div class="cover-meta-item"><div class="cover-meta-label">Platform</div><div class="cover-meta-value">XO System</div></div>\n';
+        html += '      <div class="cover-meta-item"><div class="cover-meta-label">Section</div><div class="cover-meta-value">Header &amp; Navigation</div></div>\n';
+        html += '    </div>\n';
+        html += '  </div>\n';
+        html += '  <div class="cover-stripe"></div>\n';
+        html += '</div>\n';
+
+        /* ════ BODY ════ */
+        html += '<div class="page">\n';
+
+        /* Welcome letter */
+        html += '<div class="letter">\n';
+        html += '  <div class="letter-greeting">Dear ' + companyName + ' Team,</div>\n';
+        html += '  <p>Congratulations on your new premium website. Inside this package you\'ll find everything needed to bring <strong>The Woolf</strong> to life on your XO storefront — custom-configured with your company name, brand colors, phone number, navigation links, mega menu categories, and logo.</p>\n';
+        html += '  <p>This guide walks your developer or onboarding team through installation step by step. The process takes about 15 minutes. Keep this document somewhere safe — it\'s your complete reference for the header section of your new site.</p>\n';
+        html += '  <div class="letter-sig">The LogicX Designer Team</div>\n';
+        html += '</div>\n';
+
+        /* Brand configuration */
+        html += '<div class="section">\n';
+        html += '  <div class="section-eyebrow">Your Configuration</div>\n';
+        html += '  <div class="section-heading">Brand Summary</div>\n';
+        html += '  <div class="section-rule"></div>\n';
+        html += '  <div class="config-table">' + configHtml + '</div>\n';
+        html += '  <div class="swatches">' + swatchHtml + '</div>\n';
+        html += '</div>\n';
 
         /* Install steps */
-        '  <div class="section">\n' +
-        '    <div class="section-label">Step-by-Step</div>\n' +
-        '    <div class="section-title">Installing Your Header in the XO System</div>\n' +
-        '    <div class="steps">\n' +
-        '      <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Log in as Admin</div><div class="step-desc">Sign in to your XO dashboard with your administrator credentials.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Open Web Settings</div><div class="step-desc">In the left sidebar, navigate to:<br><span class="step-path">Settings → Web Settings</span></div></div></div>\n' +
-        '      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Click Web Preferences → HTML</div><div class="step-desc">Select <strong>Web Preferences</strong>, then click the <strong>HTML</strong> tab to access all custom HTML sections.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Install Meta Data Snippet <span style="font-size:0.75rem;font-weight:400;color:#c8a44a">(Do this first)</span></div><div class="step-desc">Open <strong>meta-data-snippet.html</strong> from this package. Copy all the code and paste it at the <strong>very top</strong> of the <strong>"Meta Data, JavaScript &amp; CSS (Global)"</strong> section. This installs your page title, SEO description, Open Graph, and Twitter Card tags. Update any values marked <em>← UPDATE THIS</em> with your real business info. Save your changes.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Install Global Head Snippet</div><div class="step-desc">Open <strong>global-head-snippet.html</strong> from this package. Copy all the code and paste it <strong>below the meta data code</strong> (still in the same "Meta Data, JavaScript &amp; CSS (Global)" field). This installs the favicon, stylesheet links, and script dependencies. Save your changes.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Install Header Block</div><div class="step-desc">Open <strong>header-block.html</strong> from this package. Copy all the code and paste it into the <strong>"Header"</strong> section. Save your changes.</div></div></div>\n' +
-        '      <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Verify Your Storefront</div><div class="step-desc">Visit your storefront to confirm the header displays correctly — logo, navigation, search bar, and mega menu should all be active.</div></div></div>\n' +
-        '    </div>\n' +
-        '  </div>\n' +
+        html += '<div class="section">\n';
+        html += '  <div class="section-eyebrow">Step-by-Step</div>\n';
+        html += '  <div class="section-heading">Installing Your Header</div>\n';
+        html += '  <div class="section-rule"></div>\n';
+        html += '  <div class="steps">\n';
+        html += '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Upload Your Files to the Server</div><div class="step-desc">Using your XO File Manager or FTP, upload the contents of the <code>data/</code> folder from this ZIP to your server root. This places the stylesheet, script, icon, and image files at the correct paths before any HTML is installed.</div></div></div>\n';
+        html += '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Log In as Admin</div><div class="step-desc">Sign in to your XO dashboard with your administrator credentials.</div></div></div>\n';
+        html += '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Open Web Settings</div><div class="step-desc">In the left sidebar, navigate to: <span class="step-path">Settings → Web Settings</span></div></div></div>\n';
+        html += '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Click Web Preferences → HTML</div><div class="step-desc">Select <strong>Web Preferences</strong>, then click the <strong>HTML</strong> tab to access all custom HTML input sections.</div></div></div>\n';
+        html += '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Install Global Head Snippet</div><div class="step-desc">Open <strong>global-head-snippet.html</strong>, copy all of the code, and paste it into the <strong>"Meta Data, JavaScript &amp; CSS (Global)"</strong> section. Before saving, update the two <code>yourwebsite.com</code> placeholders with your real domain. This installs your page title, SEO tags, favicon, stylesheet links, and navigation scripts. Save your changes.</div></div></div>\n';
+        html += '    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Install Header Block</div><div class="step-desc">Open <strong>header-block.html</strong>, copy all of the code, and paste it into the <strong>"Header"</strong> section. Save your changes.</div></div></div>\n';
+        html += '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Verify Your Storefront</div><div class="step-desc">Visit your live storefront. Your custom logo, navigation, mega menu, search bar, and brand colors should all appear correctly. If icons are missing, confirm the <code>data/images/icons/</code> folder was uploaded in Step 1.</div></div></div>\n';
+        html += '  </div>\n';
+        html += '</div>\n';
 
-        /* Files */
-        '  <div class="section">\n' +
-        '    <div class="section-label">Package Contents</div>\n' +
-        '    <div class="section-title">What\'s in Your ZIP File</div>\n' +
-        '    <div class="files">\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">meta-data-snippet.html</div><div class="file-desc"><strong>Install first (top of Global field).</strong> Paste into XO → Web Preferences → HTML → <em>Meta Data, JavaScript &amp; CSS (Global)</em>. Contains page title, SEO description, Open Graph, and Twitter Card tags.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">global-head-snippet.html</div><div class="file-desc"><strong>Install second (below meta data).</strong> Paste into XO → Web Preferences → HTML → <em>Meta Data, JavaScript &amp; CSS (Global)</em>. Contains favicon, stylesheet, and script links.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">header-block.html</div><div class="file-desc"><strong>Install third.</strong> Paste into XO → Web Preferences → HTML → <em>Header</em>. Contains the full navigation, search, mega menu, and top bar HTML.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">index.html</div><div class="file-desc">Full homepage HTML — for standalone deployment outside the XO system.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="file-name">data/css/header.css</div><div class="file-desc">Header stylesheet — referenced in global-head-snippet.html, upload to your server.</div></div></div>\n' +
-        '      <div class="file-row"><div class="file-icon"><svg width="18" height="18" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div><div class="file-name">data/js/header.js</div><div class="file-desc">Navigation script — referenced in global-head-snippet.html, upload to your server.</div></div></div>\n' +
-        '    </div>\n' +
-        '  </div>\n' +
+        /* Package contents */
+        html += '<div class="section">\n';
+        html += '  <div class="section-eyebrow">What\'s Inside</div>\n';
+        html += '  <div class="section-heading">Package Contents</div>\n';
+        html += '  <div class="section-rule"></div>\n';
+        html += '  <div class="files">\n';
+        html += '    <div class="file-card priority"><div class="file-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">global-head-snippet.html</div><div class="file-desc"><strong>Install first</strong> — paste into <em>Meta Data, JavaScript &amp; CSS (Global)</em>. Contains page title, SEO tags, Open Graph, favicon, stylesheet link (<code>/data/css/header.css?v1</code>), and navigation scripts.</div></div></div>\n';
+        html += '    <div class="file-card priority"><div class="file-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">header-block.html</div><div class="file-desc"><strong>Install second</strong> — paste into the <em>Header</em> section. Contains your full navigation bar, top bar, mega menu, sub-nav, and search form.</div></div></div>\n';
+        html += '    <div class="file-card"><div class="file-icon"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name">index.html</div><div class="file-desc">Complete homepage HTML — for standalone deployment or preview outside the XO system.</div></div></div>\n';
+        html += '  </div>\n';
+        html += '</div>\n';
 
-        /* Required assets */
-        '  <div class="section">\n' +
-        '    <div class="section-label">Required</div>\n' +
-        '    <div class="section-title">Assets to Load in Your &lt;head&gt;</div>\n' +
-        '    <div class="assets">\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/css/header.css</div><div class="asset-note">Header stylesheet — include in &lt;head&gt;</div></div>\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/js/header.js</div><div class="asset-note">Navigation behavior — include in &lt;head&gt;</div></div>\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">enhanced-search.css</div><div class="asset-note">Search styles — already on your XO platform</div></div>\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">enhanced-search.js</div><div class="asset-note">Search functionality — already on your XO platform</div></div>\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">favicon</div><div class="asset-note">' + (draft.faviconSrc ? 'Uploaded — see favicon &lt;link&gt; tags at top of header-block.html' : 'Not uploaded — add your favicon path in header-block.html') + '</div></div>\n' +
-        '      <div class="asset-row"><div class="asset-dot"></div><div class="asset-name">data/images/</div><div class="asset-note">Icons, logo, images — upload to your server</div></div>\n' +
-        '    </div>\n' +
-        '  </div>\n' +
+        /* Server upload reference */
+        html += '<div class="section">\n';
+        html += '  <div class="section-eyebrow">File Manager / FTP</div>\n';
+        html += '  <div class="section-heading">Server Upload Reference</div>\n';
+        html += '  <div class="section-rule"></div>\n';
+        html += '  <table class="upload-table">\n';
+        html += '    <thead><tr><th>File in ZIP</th><th></th><th>Upload to Server Path</th></tr></thead>\n';
+        html += '    <tbody>\n';
+        html += '      <tr><td>data/css/header.css</td><td class="upload-arrow">→</td><td>/data/css/header.css</td></tr>\n';
+        html += '      <tr><td>data/js/header.js</td><td class="upload-arrow">→</td><td>/data/js/header.js</td></tr>\n';
+        html += '      <tr><td>data/images/icons/</td><td class="upload-arrow">→</td><td>/data/images/icons/</td></tr>\n';
+        html += '      <tr><td>data/images/header/</td><td class="upload-arrow">→</td><td>/data/images/header/</td></tr>\n';
+        html += '    </tbody>\n';
+        html += '  </table>\n';
+        html += '  <p style="margin-top:14px;font-size:0.8rem;color:#a0aec0"><strong>Cache busting:</strong> After updating <code>header.css</code> or <code>header.js</code>, increment the version parameter in <code>global-head-snippet.html</code> from <code>?v1</code> to <code>?v2</code> to force browsers to reload the latest file.</p>\n';
+        html += '</div>\n';
 
         /* Footer */
-        '  <div class="footer">\n' +
-        '    <div class="footer-brand">LogicX Designer</div>\n' +
-        '    <div class="footer-note">Generated ' + date + ' · The Woolf Premium Template · Prepared for ' + companyName + '</div>\n' +
-        '  </div>\n' +
+        html += '<div class="footer">\n';
+        html += '  <div class="footer-brand">LogicX Designer</div>\n';
+        html += '  <div class="footer-right">\n';
+        html += '    <div class="footer-pkg">Package ID: ' + pkgId + '</div>\n';
+        html += '    <div class="footer-date">Issued ' + date + ' &nbsp;·&nbsp; ' + companyName + ' &nbsp;·&nbsp; The Woolf</div>\n';
+        html += '  </div>\n';
+        html += '</div>\n';
 
-        '</div>\n</body>\n</html>';
+        html += '</div>\n</body>\n</html>';
+        return html;
     }
 
-    // ── Build meta-data-snippet.html ─────────────────────────────────
-    // Paste this into XO: Meta Data field
+    // ── Image export helpers ──────────────────────────────────────────
 
-    function buildMetaDataSnippet() {
+    function getExtFromMime(mime) {
+        var map = {
+            'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif',
+            'image/webp': 'webp', 'image/svg+xml': 'svg',
+            'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico'
+        };
+        return map[mime] || 'png';
+    }
+
+    // Writes a data URL into the ZIP as a binary file and returns the zip path.
+    function dataUrlToZip(zip, dataUrl, zipPath) {
+        var match = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+        if (!match) return null;
+        zip.file(zipPath, match[2], { base64: true });
+        return zipPath;
+    }
+
+    // ── Build global-head-snippet.html ───────────────────────────────
+    // XO system: Meta Data, JavaScript & CSS (Global)
+    // Contains everything that belongs in the site-wide <head>:
+    // meta tags, favicon, stylesheets, scripts, and analytics placeholder.
+
+    function buildGlobalHeadSnippet() {
         var date        = new Date().toLocaleDateString();
         var companyName = draft.companyName || DEFAULTS.companyName;
         var primaryBlue = draft.colorBlue   || DEFAULTS.colorBlue;
-        var faviconSrc  = draft.faviconSrc  || DEFAULTS.faviconSrc;
-        var siteUrl     = '<!-- https://www.yourwebsite.com -->';
+        var faviconHref = draft.faviconSrc  || DEFAULTS.faviconSrc || '/data/images/header/favicon.png';
 
         return [
-            '<!-- ============================================================',
-            '     THE WOOLF — META DATA SNIPPET',
-            '     Generated by LogicX Designer Editor · ' + date,
-            '     ============================================================',
+            '<!-- The Woolf — Meta Data, JavaScript & CSS (Global) | LogicX Designer Editor · ' + date + ' -->',
             '',
-            '     WHERE TO PASTE THIS CODE (XO System)',
-            '     ─────────────────────────────────────',
-            '     1. Log in as Admin',
-            '     2. Left sidebar → Settings → Web Settings',
-            '     3. Click Web Preferences',
-            '     4. Click HTML',
-            '     5. Open "Meta Data, JavaScript & CSS (Global)"',
-            '     6. Paste this code at the TOP of that field (before the',
-            '        content from global-head-snippet.html)',
-            '     7. Save your changes',
-            '',
-            '     INSTRUCTIONS: Replace every value marked with',
-            '     ← UPDATE THIS with your actual business information.',
-            '     ============================================================ -->',
-            '',
-            '<!-- ── Character set & viewport (required — do not change) ── -->',
+            '<!-- ── Page metadata ───────────────────────────────── -->',
             '<meta charset="UTF-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
             '<meta http-equiv="X-UA-Compatible" content="IE=edge">',
             '',
-            '<!-- ── Page title (appears in browser tab & search results) ── -->',
             '<title>' + companyName + ' | Industrial Supplies, Tooling &amp; Safety Products</title>',
-            '<!-- ↑ UPDATE THIS: Format — "Company Name | Short Description" -->',
-            '',
-            '<!-- ── SEO meta description (150–160 characters recommended) ── -->',
             '<meta name="description" content="' + companyName + ' is your source for industrial supplies, cutting tools, safety equipment, and MRO products — shipped nationwide.">',
-            '<!-- ↑ UPDATE THIS with your actual business description -->',
-            '',
-            '<!-- ── SEO keywords ── -->',
             '<meta name="keywords" content="industrial supplies, cutting tools, safety PPE, MRO products, tooling, fasteners, hydraulics, ' + companyName + '">',
-            '<!-- ↑ UPDATE THIS with your most important product/service keywords -->',
-            '',
-            '<!-- ── Author & robots ── -->',
-            '<meta name="author" content="' + companyName + '">',
-            '<meta name="robots" content="index, follow">',
-            '',
-            '<!-- ── Theme color (browser UI accent on mobile) ── -->',
+            '<meta name="author"      content="' + companyName + '">',
+            '<meta name="robots"      content="index, follow">',
             '<meta name="theme-color" content="' + primaryBlue + '">',
             '',
-            '<!-- ── Open Graph — controls how your site looks when shared on',
-            '     Facebook, LinkedIn, Slack, iMessage, etc. ── -->',
+            '<!-- ── Open Graph (Facebook, LinkedIn, Slack previews) ─ -->',
             '<meta property="og:type"        content="website">',
             '<meta property="og:site_name"   content="' + companyName + '">',
             '<meta property="og:title"       content="' + companyName + ' | Industrial Supplies, Tooling &amp; Safety">',
             '<meta property="og:description" content="' + companyName + ' — industrial supplies, cutting tools, safety equipment, and MRO products shipped nationwide.">',
-            '<meta property="og:url"         content="' + siteUrl + '">',
-            '<!-- ↑ UPDATE THIS: Replace with your actual website URL -->',
-            '<meta property="og:image"       content="' + (faviconSrc || '<!-- /path/to/social-share-image.jpg (1200x630px recommended) -->') + '">',
-            '<!-- ↑ UPDATE THIS: Use a 1200×630px image for best social sharing results -->',
+            '<meta property="og:url"         content="https://www.yourwebsite.com">',
+            '<meta property="og:image"       content="/data/images/header/social-share.jpg">',
             '',
-            '<!-- ── Twitter / X Card ── -->',
+            '<!-- ── Twitter / X Card ────────────────────────────── -->',
             '<meta name="twitter:card"        content="summary_large_image">',
             '<meta name="twitter:title"       content="' + companyName + ' | Industrial Supplies">',
             '<meta name="twitter:description" content="' + companyName + ' — your source for industrial supplies, tooling, safety, and MRO products.">',
-            '<meta name="twitter:image"       content="' + (faviconSrc || '<!-- /path/to/social-share-image.jpg -->') + '">',
-            '<!-- ↑ UPDATE THIS: Use the same 1200×630px image as og:image above -->',
+            '<meta name="twitter:image"       content="/data/images/header/social-share.jpg">',
             '',
-            '<!-- ── Canonical URL (prevents duplicate content issues) ── -->',
-            '<link rel="canonical" href="' + siteUrl + '">',
-            '<!-- ↑ UPDATE THIS: Replace with your actual website URL -->',
-        ].join('\n');
-    }
-
-    // ── Build global-head-snippet.html ───────────────────────────────
-    // Paste this into XO: Meta Data, JavaScript & CSS (Global)
-
-    function buildGlobalHeadSnippet() {
-        var date       = new Date().toLocaleDateString();
-        var faviconSrc = draft.faviconSrc || DEFAULTS.faviconSrc;
-
-        return [
-            '<!-- ============================================================',
-            '     THE WOOLF — GLOBAL HEAD SNIPPET',
-            '     Generated by LogicX Designer Editor · ' + date,
-            '     ============================================================',
+            '<link rel="canonical" href="https://www.yourwebsite.com">',
             '',
-            '     WHERE TO PASTE THIS CODE (XO System)',
-            '     ─────────────────────────────────────',
-            '     1. Log in as Admin',
-            '     2. Left sidebar → Settings → Web Settings',
-            '     3. Click Web Preferences',
-            '     4. Click HTML',
-            '     5. Open "Meta Data, JavaScript & CSS (Global)"',
-            '     6. Paste all code below into that field',
-            '     7. Save your changes',
+            '<!-- ── Favicon ─────────────────────────────────────── -->',
+            '<link rel="icon"             type="image/png"  href="' + faviconHref + '">',
+            '<link rel="apple-touch-icon" sizes="180x180"   href="' + faviconHref + '">',
             '',
-            '     NOTE: Complete this step BEFORE installing header-block.html.',
-            '     ============================================================ -->',
+            '<!-- ── Template stylesheets ────────────────────────── -->',
+            '<link rel="stylesheet" href="/data/css/header.css?v1" type="text/css">',
+            '<link rel="stylesheet" href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css?v1" type="text/css">',
             '',
-            '<!-- FAVICON: Sets the icon shown in the browser tab and bookmarks -->',
-            faviconSrc
-                ? '<link rel="icon" type="image/png" href="' + faviconSrc + '">'
-                : '<!-- Replace the path below with your actual favicon file path -->',
-            faviconSrc
-                ? '<link rel="apple-touch-icon" sizes="180x180" href="' + faviconSrc + '">'
-                : '<!-- <link rel="icon" type="image/png" href="/path/to/favicon.png"> -->',
-            faviconSrc
-                ? '<link rel="apple-touch-icon" href="' + faviconSrc + '">'
-                : '<!-- <link rel="apple-touch-icon" sizes="180x180" href="/path/to/apple-touch-icon.png"> -->',
+            '<!-- ── Template scripts ────────────────────────────── -->',
+            '<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js?v1"></script>',
+            '<script src="/data/js/header.js?v1"></script>',
             '',
-            '<!-- HEADER STYLESHEET: Required for the navigation, mega menu, and top bar to display correctly -->',
-            '<link rel="stylesheet" href="/data/css/header.css">',
+            '<!-- ── Analytics ───────────────────────────────────── -->',
+            '<!-- Paste your Google Analytics, Google Tag Manager,   -->',
+            '<!-- Mailchimp, Constant Contact, or other third-party  -->',
+            '<!-- tracking scripts below this line.                  -->',
             '',
-            '<!-- SEARCH STYLESHEET: Required for the search bar (already installed on your XO platform) -->',
-            '<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">',
-            '',
-            '<!-- SEARCH SCRIPT: Powers the site search functionality (already installed on your XO platform) -->',
-            '<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js"></script>',
-            '',
-            '<!-- HEADER SCRIPT: Powers the mega menu, mobile drawer, and interactive navigation -->',
-            '<script src="/data/js/header.js"></script>',
         ].join('\n');
     }
 
     // ── Build header-block.html ───────────────────────────────────────
     // Paste this into XO: Header (HTML section)
+
+    // Replace <img> icon references with inline SVGs so the exported HTML
+    // has zero external image dependencies.
+    var INLINE_ICONS = {
+        '/data/images/icons/search.svg':
+            '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+        '/data/images/icons/search-white.svg':
+            '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+        '/data/images/icons/account.svg':
+            '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+        '/data/images/icons/cart.svg':
+            '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+    };
+
+    function inlineIconSvgs(html) {
+        // Replace every <img src="PATH" ...> for known icons with the SVG markup.
+        // The regex matches the whole <img> tag regardless of attribute order.
+        Object.keys(INLINE_ICONS).forEach(function (path) {
+            var escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            var re = new RegExp('<img[^>]*src=["\']' + escaped + '["\'][^>]*>', 'gi');
+            html = html.replace(re, INLINE_ICONS[path]);
+        });
+        return html;
+    }
 
     function buildHeaderBlock() {
         if (!iframeDoc) return '';
@@ -1247,39 +1331,12 @@
         var overridesHtml = overrides  ? '<style id="__designer-overrides__">' + overrides.textContent + '</style>' : '';
 
         return [
-            '<!-- ============================================================',
-            '     THE WOOLF — HEADER BLOCK',
-            '     Generated by LogicX Designer Editor · ' + date,
-            '     ============================================================',
+            '<!-- The Woolf — Header Block | LogicX Designer Editor · ' + date + ' -->',
             '',
-            '     WHERE TO PASTE THIS CODE (XO System)',
-            '     ─────────────────────────────────────',
-            '     1. Log in as Admin',
-            '     2. Left sidebar → Settings → Web Settings',
-            '     3. Click Web Preferences',
-            '     4. Click HTML',
-            '     5. Open the "Header" section',
-            '     6. Paste all code below into that field',
-            '     7. Save your changes',
-            '',
-            '     IMPORTANT: Install global-head-snippet.html FIRST into',
-            '     "Meta Data, JavaScript & CSS (Global)" before this step.',
-            '',
-            '     WHAT THIS SECTION INCLUDES:',
-            '     Top bar with logo, phone number, and nav links,',
-            '     main navigation with search bar, All Products mega menu,',
-            '     quick-link sub-nav, and Sign Up / Login buttons.',
-            '     ============================================================ -->',
-            '',
-            '<!-- Custom color and style overrides configured in the designer editor -->',
             overridesHtml,
             '',
-            '<!-- TOP BAR: Logo, navigation links (Catalog / About Us / Contact),',
-            '     phone number, and Sign Up / Login buttons -->',
             topBarHtml,
             '',
-            '<!-- SITE HEADER: Main nav bar, search bar (form#site-search-form),',
-            '     All Products mega menu, quick-link sub-nav, account and cart icons -->',
             headerHtml,
         ].join('\n');
     }
@@ -1322,17 +1379,80 @@
         var headerJsPromise  = fetchText(cssBase + 'data/js/header.js')
             .catch(function () { return null; });
 
-        Promise.all(cssPromises.concat(jsPromises).concat([headerCssPromise, headerJsPromise]))
+        // Fetch all icon SVGs so they land in data/images/icons/ in the ZIP
+        var iconPaths = [
+            'data/images/icons/search.svg',
+            'data/images/icons/search-white.svg',
+            'data/images/icons/account.svg',
+            'data/images/icons/cart.svg',
+            'data/images/icons/pdf.svg',
+        ];
+        var iconPromises = iconPaths.map(function (p) {
+            return fetchText(cssBase + p)
+                .then(function (text) { return { path: p, text: text }; })
+                .catch(function () { return null; });
+        });
+
+        Promise.all(cssPromises.concat(jsPromises).concat([headerCssPromise, headerJsPromise]).concat(iconPromises))
         .then(function (results) {
+
+            // ── Extract uploaded logo + favicon into data/images/header/ ──────
+            var logoSrc    = draft.logoSrc    || '';
+            var faviconSrc = draft.faviconSrc || '';
+            var logoServerPath    = null;
+            var faviconServerPath = null;
+
+            if (logoSrc.indexOf('data:') === 0) {
+                var logoMime = (logoSrc.match(/^data:([^;]+)/) || [])[1] || 'image/png';
+                var logoZipPath = 'data/images/header/logo.' + getExtFromMime(logoMime);
+                if (dataUrlToZip(zip, logoSrc, logoZipPath)) {
+                    logoServerPath = '/' + logoZipPath;
+                }
+            }
+
+            if (faviconSrc.indexOf('data:') === 0) {
+                var favMime = (faviconSrc.match(/^data:([^;]+)/) || [])[1] || 'image/png';
+                var favZipPath = 'data/images/header/favicon.' + getExtFromMime(favMime);
+                if (dataUrlToZip(zip, faviconSrc, favZipPath)) {
+                    faviconServerPath = '/' + favZipPath;
+                }
+            }
+
+            // ── Build HTML snippets, then swap data URLs for file paths ───────
+            var globalHtml  = buildGlobalHeadSnippet();
+            var headerHtml  = buildHeaderBlock();
+            var welcomeHtml = buildWelcomeGuide();
+
+            if (logoServerPath && logoSrc) {
+                htmlContent = htmlContent.split(logoSrc).join(logoServerPath);
+                headerHtml  = headerHtml.split(logoSrc).join(logoServerPath);
+                welcomeHtml = welcomeHtml.split(logoSrc).join(logoServerPath);
+            }
+            if (faviconServerPath && faviconSrc) {
+                htmlContent = htmlContent.split(faviconSrc).join(faviconServerPath);
+                globalHtml  = globalHtml.split(faviconSrc).join(faviconServerPath);
+                welcomeHtml = welcomeHtml.split(faviconSrc).join(faviconServerPath);
+            }
+
             zip.file('index.html', htmlContent);
-            zip.file('meta-data-snippet.html', buildMetaDataSnippet());
-            zip.file('global-head-snippet.html', buildGlobalHeadSnippet());
-            zip.file('header-block.html', buildHeaderBlock());
-            zip.file('WELCOME-GUIDE.html', buildWelcomeGuide());
+            zip.file('global-head-snippet.html', globalHtml);
+            zip.file('header-block.html', headerHtml);
+            zip.file('WELCOME-GUIDE.html', welcomeHtml);
             zip.file('HANDOFF-README.txt', HANDOFF_README);
 
-            // Add all CSS/JS (drop the last two which were header-only fetches above)
+            // Add all page CSS/JS
             results.slice(0, cssPromises.length + jsPromises.length).forEach(function (item) {
+                if (item) zip.file(item.path, item.text);
+            });
+
+            // Add header CSS + JS
+            var headerCssResult = results[cssPromises.length + jsPromises.length];
+            var headerJsResult  = results[cssPromises.length + jsPromises.length + 1];
+            if (headerCssResult) zip.file('data/css/header.css', headerCssResult);
+            if (headerJsResult)  zip.file('data/js/header.js',  headerJsResult);
+
+            // Add icon SVGs into data/images/icons/
+            results.slice(cssPromises.length + jsPromises.length + 2).forEach(function (item) {
                 if (item) zip.file(item.path, item.text);
             });
 
