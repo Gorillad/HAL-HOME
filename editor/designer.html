@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Designer Homepage Editor — LogicX</title>
+    <title>Designer Editor — LogicX</title>
     <style>html.editor-auth-pending body { visibility: hidden; }</style>
     <script src="../js/editor-access.js"></script>
     <script src="../js/editor-auth-guard.js"></script>
@@ -17,22 +17,320 @@
     <link href="../css/style.css" rel="stylesheet">
     <link href="css/editor.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        /* ── Designer editor additions ─────────────────────────────── */
+
+        /* Field groups (collapsible sections) */
+        .designer-group {
+            border-bottom: 1px solid var(--editor-border, #2a2a2a);
+        }
+        .designer-group-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--editor-label, #888);
+            cursor: pointer;
+            user-select: none;
+            list-style: none;
+        }
+        .designer-group-head::-webkit-details-marker { display: none; }
+        .designer-group-head::after {
+            content: '›';
+            margin-left: auto;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+        details[open] > .designer-group-head::after { transform: rotate(90deg); }
+        .designer-group-body {
+            padding: 0 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Slide sub-sections within a group */
+        .designer-slide-group {
+            border: 1px solid var(--editor-border, #2a2a2a);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .designer-slide-group-head {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--editor-label, #888);
+            cursor: pointer;
+            user-select: none;
+            list-style: none;
+            background: rgba(255,255,255,0.03);
+        }
+        .designer-slide-group-head::-webkit-details-marker { display: none; }
+        .designer-slide-group-head::after {
+            content: '›';
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        details[open] > .designer-slide-group-head::after { transform: rotate(90deg); }
+        .designer-slide-group-body {
+            padding: 10px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid var(--editor-border, #2a2a2a);
+        }
+
+        /* Color pair input (swatch + hex) */
+        .editor-color-pair {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .editor-color-pair input[type="color"] {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--editor-border, #2a2a2a);
+            border-radius: 4px;
+            padding: 2px;
+            background: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .editor-color-pair .editor-field-input { flex: 1; font-family: monospace; }
+
+        /* Iframe preview */
+        .designer-iframe-wrap {
+            width: 100%;
+            background: #fff;
+        }
+        #woolPreviewFrame {
+            display: block;
+            width: 100%;
+            height: 700px;
+            border: none;
+        }
+
+        /* Loading state */
+        .designer-iframe-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            color: #666;
+            font-size: 0.85rem;
+            z-index: 2;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+        .designer-iframe-loading.is-hidden { opacity: 0; }
+
+        /* Field panel scrollbar */
+        .designer-field-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Override UA [hidden] since display:flex/flex-column beats it */
+        .designer-field-panel[hidden],
+        .designer-preview-scaffold[hidden],
+        .designer-iframe-wrap[hidden],
+        .designer-editor-scaffold[hidden] {
+            display: none !important;
+        }
+
+        /* Scaffold (non-Woolf designs) */
+        .designer-editor-scaffold { padding: 20px; }
+        .designer-scaffold-list { font-size: 0.85rem; color: #aaa; }
+        .designer-scaffold-list li { margin-bottom: 6px; }
+
+        /* Status toast */
+        .designer-save-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.78rem;
+            color: #aaa;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.25s, transform 0.25s;
+        }
+        .designer-save-toast.is-visible { opacity: 1; transform: translateY(0); }
+
+        /* Autosave indicator in status bar */
+        #editorStatus { font-size: 0.75rem; }
+
+        /* ── Logo upload widget ─────────────────────────────── */
+        .editor-logo-widget {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        /* Full-width preview bar — mimics the template's dark top bar */
+        .editor-logo-preview {
+            width: 100%;
+            height: 52px;
+            background: #0d2137;
+            border-radius: 6px;
+            border: 1px solid #1e3550;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 6px 12px;
+            box-sizing: border-box;
+        }
+        .editor-logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .editor-logo-preview-empty {
+            font-size: 0.65rem;
+            color: #445;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        /* Button row sits directly under the preview */
+        .editor-logo-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .editor-logo-file-label {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border: 1px solid var(--editor-border, #2a2a2a);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #ccc;
+            cursor: pointer;
+            background: rgba(255,255,255,0.04);
+            transition: background 0.15s, border-color 0.15s;
+            white-space: nowrap;
+        }
+        .editor-logo-file-label:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: #555;
+        }
+        .editor-logo-remove-btn {
+            padding: 6px 10px;
+            border: 1px solid var(--editor-border, #2a2a2a);
+            border-radius: 4px;
+            background: none;
+            font-size: 0.75rem;
+            color: #888;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .editor-logo-remove-btn:hover { color: #e66; border-color: #e66; }
+        /* URL input sits below, visually separated */
+        .editor-logo-url-row {
+            margin-top: 2px;
+        }
+
+        /* ── Mega menu editor ───────────────────────────────── */
+        .mega-col-toggle {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.74rem;
+            color: #aaa;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--editor-border, #2a2a2a);
+        }
+        .mega-col-toggle input[type="checkbox"] {
+            width: 14px; height: 14px;
+            cursor: pointer;
+            accent-color: #4a9eff;
+            flex-shrink: 0;
+        }
+        .mega-link-list { display: flex; flex-direction: column; gap: 8px; }
+        .mega-link-row-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            font-size: 0.62rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0 2px 3px;
+        }
+        .mega-link-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--editor-border, #1e1e1e);
+        }
+        .mega-link-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .mega-link-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            align-items: center;
+        }
+        .mega-link-row .editor-field-input {
+            padding: 5px 7px;
+            font-size: 0.74rem;
+        }
+        .mega-link-hide-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            color: #777;
+            cursor: pointer;
+            user-select: none;
+            width: fit-content;
+        }
+        .mega-link-hide-toggle input[type="checkbox"] {
+            width: 13px; height: 13px;
+            cursor: pointer;
+            accent-color: #e05555;
+        }
+        .mega-link-hide-toggle:hover { color: #e05555; }
+    </style>
 </head>
 <body class="editor-page">
     <script>
         (function () {
             const allowed = { gallery: true, curator: true, canvas: true, woolf: true };
             const param = new URLSearchParams(window.location.search).get('design');
-            const slug = allowed[param] ? param : 'gallery';
+            const slug = allowed[param] ? param : 'woolf';
             document.body.classList.add('editor-page--designer', `editor-page--${slug}`);
+            window.__designerSlug = slug;
         }());
     </script>
+
     <div class="editor-site-header">
         <div class="site-announcement" role="region" aria-label="Announcement">
             <div class="site-announcement-inner">
                 <p class="site-announcement-copy">
                     <span class="site-announcement-message">
-                        <strong>Custom website design</strong> for lighting showrooms &amp; designers
+                        <strong>Custom website design</strong> for industrial &amp; commercial accounts
                     </span>
                     <span class="site-announcement-sep" aria-hidden="true">·</span>
                     <a href="../index.html#contact">Request a quote →</a>
@@ -42,7 +340,7 @@
         <header class="site-nav site-nav--dark site-nav--editor" aria-label="Site navigation">
             <div class="site-nav-inner">
                 <a href="../index.html" class="site-nav-logo" aria-label="LogicX home">
-                    <img src="../images/logos/logicxo-gold.png" alt="LogicX">
+                    <img src="../images/logos/logo-wht-gld.png" alt="LogicX">
                 </a>
                 <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
                     <span class="site-nav-toggle-bar" aria-hidden="true"></span>
@@ -53,16 +351,12 @@
                     <nav aria-label="Primary">
                         <ul class="site-nav-links">
                             <li><a href="../index.html#templates">Templates</a></li>
-                            <li><a href="../index.html#showcase">Our Work</a></li>
-                            <li><a href="../index.html#what-we-do">What We Do</a></li>
                             <li><a href="showroom.html">Showroom editor</a></li>
                             <li><a href="designer.html" aria-current="page">Designer editor</a></li>
-                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures" target="_blank" rel="noopener noreferrer">Catalog</a></li>
-                            <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
+                            <li><a href="knowledge-base.html">Guide</a></li>
                         </ul>
                     </nav>
                     <div class="site-nav-actions">
-                        <a href="knowledge-base.html" class="site-nav-link-btn">Showroom guide</a>
                         <a href="../index.html#contact" class="site-nav-cta">Request a Quote</a>
                     </div>
                 </div>
@@ -75,77 +369,837 @@
                 <nav class="editor-breadcrumb" aria-label="Breadcrumb">
                     <ol class="editor-breadcrumb-list">
                         <li><a href="../index.html">Home</a></li>
-                        <li><a href="../index.html#templates">Homepage templates</a></li>
+                        <li><a href="../index.html#templates">Templates</a></li>
                         <li><span aria-current="page">Designer editor</span></li>
                     </ol>
                 </nav>
                 <div class="editor-chrome-title">
                     <div class="editor-chrome-heading">
                         <h1>Designer editor</h1>
-                        <span class="editor-template-name" id="editorTemplateName">Gallery</span>
+                        <span class="editor-template-name" id="editorTemplateName">The Woolf</span>
                     </div>
-                    <p class="editor-chrome-tip">Handoff exports paste-ready code for seven XOLogic dashboard slots. Assets upload to <code>/data/</code> on the client FTP.</p>
+                    <p class="editor-chrome-tip" id="editorChromeTip">Edit copy, colors, and links. Changes save automatically to your account. Export delivers ready-to-deploy HTML, CSS, and JS files.</p>
                 </div>
             </div>
             <div class="editor-chrome-actions">
                 <span class="editor-status" id="editorStatus" aria-live="polite"></span>
-                <button type="button" class="btn btn-primary" id="exportHandoffBtn" disabled>Export handoff</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="resetDraftBtn" style="display:none">Reset to defaults</button>
+                <button type="button" class="btn btn-primary" id="exportHandoffBtn">Export handoff</button>
             </div>
         </div>
 
-        <nav class="editor-section-nav designer-template-nav" aria-label="Designer template">
-            <a href="designer.html?design=gallery" class="editor-section-nav-link designer-template-nav-link" data-designer-design="gallery">Gallery</a>
-            <a href="designer.html?design=curator" class="editor-section-nav-link designer-template-nav-link" data-designer-design="curator">Curator</a>
-            <a href="designer.html?design=canvas" class="editor-section-nav-link designer-template-nav-link" data-designer-design="canvas">Canvas</a>
-            <a href="designer.html?design=woolf" class="editor-section-nav-link designer-template-nav-link" data-designer-design="woolf">The Woolf</a>
-        </nav>
-    </div>
+    </div><!-- /.editor-site-header -->
 
     <div class="editor-layout">
-        <aside class="editor-panel" id="editorPanel" aria-label="Editor controls">
-            <h2>Homepage content</h2>
-            <p class="editor-panel-lead">Configure the Designer homepage template. Your draft will save automatically in this browser. Export will include paste-ready HTML for Meta data JavaScript, Header, Footer, Section 1–3, and Slideshow, plus a ZIP of <code>/data/</code> assets.</p>
 
-            <div class="editor-panel-intro designer-editor-scaffold">
-                <h3 class="editor-panel-subhead">Editor in progress</h3>
-                <p class="editor-panel-lead">The <strong id="designerScaffoldTemplateName">Gallery</strong> layout editor is being built. For now, use this page to confirm the correct template is selected and share the URL with support.</p>
+        <!-- ── Left: field panel ──────────────────────────────────── -->
+        <aside class="editor-panel" id="editorPanel" aria-label="Editor controls">
+
+            <!-- Woolf field panel (shown only when design=woolf) -->
+            <div class="designer-field-panel" id="woolFieldPanel" hidden>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Branding</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-company-name">Company name</label>
+                            <input type="text" id="df-company-name" data-field="companyName" class="editor-field-input" placeholder="IBC Master">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-phone">Phone number <span class="editor-field-hint-inline">(appears in top bar)</span></label>
+                            <input type="text" id="df-phone" data-field="phone" class="editor-field-input" placeholder="1-800-555-1234">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-logo-url">Logo link URL <span class="editor-field-hint-inline">(where logo click goes)</span></label>
+                            <input type="text" id="df-logo-url" data-field="logoUrl" class="editor-field-input" placeholder="/">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Logo</label>
+                            <div class="editor-logo-widget">
+                                <!-- Preview bar — mimics the dark top bar of the template -->
+                                <div class="editor-logo-preview" id="logoPreviewThumb">
+                                    <img id="logoThumbImg" src="" alt="Logo preview" hidden>
+                                    <span class="editor-logo-preview-empty" id="logoThumbEmpty">Preview</span>
+                                </div>
+                                <!-- Upload / Remove buttons in a balanced row -->
+                                <div class="editor-logo-actions">
+                                    <label class="editor-logo-file-label" for="df-logo-file">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Upload image
+                                        <input type="file" id="df-logo-file" accept="image/*" style="display:none">
+                                    </label>
+                                    <button type="button" class="editor-logo-remove-btn" id="logoRemoveBtn" hidden>✕ Remove</button>
+                                </div>
+                            </div>
+                            <p class="editor-field-hint">SVG or PNG recommended. Logo is contained within the header bar.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Brand Colors</summary>
+                    <div class="designer-group-body">
+
+                        <p class="editor-field-hint" style="margin:0 0 8px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:#666;">Background colors</p>
+
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-blue">Primary blue (buttons &amp; links)</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-blue" data-field="colorBlue" value="#004fa3">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorBlue" value="#004fa3" maxlength="7" aria-label="Primary blue hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-navy">Main nav background</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-navy" data-field="colorNavy" value="#0d2137">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorNavy" value="#0d2137" maxlength="7" aria-label="Navy hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-navy-dark">Top bar background</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-navy-dark" data-field="colorNavyDark" value="#081525">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorNavyDark" value="#081525" maxlength="7" aria-label="Dark top bar hex">
+                            </div>
+                        </div>
+
+                        <p class="editor-field-hint" style="margin:10px 0 8px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:#666;">Font colors</p>
+
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-topbar-text">Top bar text</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-topbar-text" data-field="colorTopbarText" value="#ffffff">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorTopbarText" value="#ffffff" maxlength="7" aria-label="Top bar text hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-subnav-text">Sub-nav links</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-subnav-text" data-field="colorSubnavText" value="#0d2137">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorSubnavText" value="#0d2137" maxlength="7" aria-label="Sub-nav text hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-mega-head">Mega menu headings</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-mega-head" data-field="colorMegaHead" value="#0d2137">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorMegaHead" value="#0d2137" maxlength="7" aria-label="Mega menu heading hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-color-mega-link">Mega menu links</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-color-mega-link" data-field="colorMegaLink" value="#4a5568">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorMegaLink" value="#4a5568" maxlength="7" aria-label="Mega menu link hex">
+                            </div>
+                        </div>
+
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Header Links</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-catalog-url">Catalog URL</label>
+                            <input type="text" id="df-catalog-url" data-field="catalogUrl" class="editor-field-input" placeholder="/catalog">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-about-url">About Us URL</label>
+                            <input type="text" id="df-about-url" data-field="aboutUrl" class="editor-field-input" placeholder="/about-us">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-contact-url">Contact URL</label>
+                            <input type="text" id="df-contact-url" data-field="contactUrl" class="editor-field-input" placeholder="/contact-us">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-auth-url">Sign Up / Login URL</label>
+                            <input type="text" id="df-auth-url" data-field="authUrl" class="editor-field-input" placeholder="/login.php">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-cart-url">Cart URL</label>
+                            <input type="text" id="df-cart-url" data-field="cartUrl" class="editor-field-input" placeholder="/cart">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Sub-nav Links</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 10px">Quick-link bar below the main nav. Links are centered automatically.</p>
+                        <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                        <div class="mega-link-list">
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL1Label" class="editor-field-input" placeholder="Industrial Supplies">
+                                    <input type="text" data-field="subNavL1Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL1Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL2Label" class="editor-field-input" placeholder="Safety &amp; PPE">
+                                    <input type="text" data-field="subNavL2Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL2Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL3Label" class="editor-field-input" placeholder="Tools &amp; Equipment">
+                                    <input type="text" data-field="subNavL3Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL3Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL4Label" class="editor-field-input" placeholder="Electrical">
+                                    <input type="text" data-field="subNavL4Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL4Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL5Label" class="editor-field-input" placeholder="Hydraulics">
+                                    <input type="text" data-field="subNavL5Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL5Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL6Label" class="editor-field-input" placeholder="Fasteners">
+                                    <input type="text" data-field="subNavL6Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL6Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="subNavL7Label" class="editor-field-input" placeholder="Clearance">
+                                    <input type="text" data-field="subNavL7Url" class="editor-field-input" placeholder="/url">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="subNavL7Visible" checked> Show in sub-nav</label>
+                            </div>
+
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Mega Menu — All Products</summary>
+                    <div class="designer-group-body">
+
+                        <!-- Column 1 -->
+                        <details class="designer-slide-group" open>
+                            <summary class="designer-slide-group-head">Column 1 — Cutting &amp; Machining</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="megaC1Visible" checked> Show this column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label">Column heading</label>
+                                    <input type="text" data-field="megaC1Head" class="editor-field-input" placeholder="Cutting &amp; Machining">
+                                </div>
+                                <div class="editor-field-label" style="font-size:0.68rem;margin:0 0 4px;opacity:0.6">Categories</div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC1L1Label" class="editor-field-input" placeholder="Cutting Tools">
+                                            <input type="text" data-field="megaC1L1Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC1L1Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC1L2Label" class="editor-field-input" placeholder="Milling">
+                                            <input type="text" data-field="megaC1L2Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC1L2Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC1L3Label" class="editor-field-input" placeholder="Turning">
+                                            <input type="text" data-field="megaC1L3Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC1L3Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC1L4Label" class="editor-field-input" placeholder="Threading">
+                                            <input type="text" data-field="megaC1L4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC1L4Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC1L5Label" class="editor-field-input" placeholder="Holemaking">
+                                            <input type="text" data-field="megaC1L5Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC1L5Visible" checked> Show in menu</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Column 2 -->
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Column 2 — Tooling &amp; Workholding</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="megaC2Visible" checked> Show this column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label">Column heading</label>
+                                    <input type="text" data-field="megaC2Head" class="editor-field-input" placeholder="Tooling &amp; Workholding">
+                                </div>
+                                <div class="editor-field-label" style="font-size:0.68rem;margin:0 0 4px;opacity:0.6">Categories</div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC2L1Label" class="editor-field-input" placeholder="Tooling Systems">
+                                            <input type="text" data-field="megaC2L1Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC2L1Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC2L2Label" class="editor-field-input" placeholder="Tooling Components">
+                                            <input type="text" data-field="megaC2L2Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC2L2Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC2L3Label" class="editor-field-input" placeholder="Machine Tool Accessories">
+                                            <input type="text" data-field="megaC2L3Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC2L3Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC2L4Label" class="editor-field-input" placeholder="Workholding">
+                                            <input type="text" data-field="megaC2L4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC2L4Visible" checked> Show in menu</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Column 3 -->
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Column 3 — Hand &amp; Power Tools</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="megaC3Visible" checked> Show this column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label">Column heading</label>
+                                    <input type="text" data-field="megaC3Head" class="editor-field-input" placeholder="Hand &amp; Power Tools">
+                                </div>
+                                <div class="editor-field-label" style="font-size:0.68rem;margin:0 0 4px;opacity:0.6">Categories</div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC3L1Label" class="editor-field-input" placeholder="Hand Tools">
+                                            <input type="text" data-field="megaC3L1Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC3L1Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC3L2Label" class="editor-field-input" placeholder="Power Tools">
+                                            <input type="text" data-field="megaC3L2Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC3L2Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC3L3Label" class="editor-field-input" placeholder="Abrasives">
+                                            <input type="text" data-field="megaC3L3Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC3L3Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC3L4Label" class="editor-field-input" placeholder="Hardware">
+                                            <input type="text" data-field="megaC3L4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC3L4Visible" checked> Show in menu</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Column 4 -->
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Column 4 — Safety &amp; Facility</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="megaC4Visible" checked> Show this column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label">Column heading</label>
+                                    <input type="text" data-field="megaC4Head" class="editor-field-input" placeholder="Safety &amp; Facility">
+                                </div>
+                                <div class="editor-field-label" style="font-size:0.68rem;margin:0 0 4px;opacity:0.6">Categories</div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC4L1Label" class="editor-field-input" placeholder="Safety &amp; PPE">
+                                            <input type="text" data-field="megaC4L1Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC4L1Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC4L2Label" class="editor-field-input" placeholder="Cleaning &amp; Janitorial">
+                                            <input type="text" data-field="megaC4L2Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC4L2Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC4L3Label" class="editor-field-input" placeholder="Office Supplies">
+                                            <input type="text" data-field="megaC4L3Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC4L3Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC4L4Label" class="editor-field-input" placeholder="Outdoor Equipment">
+                                            <input type="text" data-field="megaC4L4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC4L4Visible" checked> Show in menu</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Column 5 -->
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Column 5 — Mechanical &amp; Fluid</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="megaC5Visible" checked> Show this column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label">Column heading</label>
+                                    <input type="text" data-field="megaC5Head" class="editor-field-input" placeholder="Mechanical &amp; Fluid">
+                                </div>
+                                <div class="editor-field-label" style="font-size:0.68rem;margin:0 0 4px;opacity:0.6">Categories</div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC5L1Label" class="editor-field-input" placeholder="Hydraulics">
+                                            <input type="text" data-field="megaC5L1Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC5L1Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC5L2Label" class="editor-field-input" placeholder="Pneumatics">
+                                            <input type="text" data-field="megaC5L2Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC5L2Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC5L3Label" class="editor-field-input" placeholder="Pumps">
+                                            <input type="text" data-field="megaC5L3Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC5L3Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC5L4Label" class="editor-field-input" placeholder="Power Transmission">
+                                            <input type="text" data-field="megaC5L4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC5L4Visible" checked> Show in menu</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Column 6 -->
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Column 6 — Electrical &amp; Other</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="megaC6Visible" checked> Show this column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label">Column heading</label>
+                                    <input type="text" data-field="megaC6Head" class="editor-field-input" placeholder="Electrical &amp; Other">
+                                </div>
+                                <div class="editor-field-label" style="font-size:0.68rem;margin:0 0 4px;opacity:0.6">Categories</div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC6L1Label" class="editor-field-input" placeholder="Electrical Supplies">
+                                            <input type="text" data-field="megaC6L1Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC6L1Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC6L2Label" class="editor-field-input" placeholder="Electronics">
+                                            <input type="text" data-field="megaC6L2Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC6L2Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC6L3Label" class="editor-field-input" placeholder="Welding">
+                                            <input type="text" data-field="megaC6L3Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC6L3Visible" checked> Show in menu</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="megaC6L4Label" class="editor-field-input" placeholder="Material Handling">
+                                            <input type="text" data-field="megaC6L4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="megaC6L4Visible" checked> Show in menu</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Hero Slides</summary>
+                    <div class="designer-group-body">
+
+                        <details class="designer-slide-group" open>
+                            <summary class="designer-slide-group-head">Slide 1 — Catalog</summary>
+                            <div class="designer-slide-group-body">
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h1-eyebrow">Eyebrow text</label>
+                                    <input type="text" id="df-h1-eyebrow" data-field="hero1Eyebrow" class="editor-field-input" placeholder="500,000+ SKUs">
+                                </div>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h1-title">Headline</label>
+                                    <input type="text" id="df-h1-title" data-field="hero1Title" class="editor-field-input" placeholder="Industrial supplies for every job site">
+                                </div>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h1-text">Body text</label>
+                                    <textarea id="df-h1-text" data-field="hero1Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div>
+                                        <label class="editor-field-label" for="df-h1-btn1-label">Button 1 label</label>
+                                        <input type="text" id="df-h1-btn1-label" data-field="hero1Btn1Label" class="editor-field-input" placeholder="Browse Catalog">
+                                    </div>
+                                    <div>
+                                        <label class="editor-field-label" for="df-h1-btn1-url">Button 1 URL</label>
+                                        <input type="text" id="df-h1-btn1-url" data-field="hero1Btn1Url" class="editor-field-input" placeholder="/catalog">
+                                    </div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div>
+                                        <label class="editor-field-label" for="df-h1-btn2-label">Button 2 label</label>
+                                        <input type="text" id="df-h1-btn2-label" data-field="hero1Btn2Label" class="editor-field-input" placeholder="Request a Quote">
+                                    </div>
+                                    <div>
+                                        <label class="editor-field-label" for="df-h1-btn2-url">Button 2 URL</label>
+                                        <input type="text" id="df-h1-btn2-url" data-field="hero1Btn2Url" class="editor-field-input" placeholder="/contact">
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Slide 2 — Safety</summary>
+                            <div class="designer-slide-group-body">
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h2-eyebrow">Eyebrow text</label>
+                                    <input type="text" id="df-h2-eyebrow" data-field="hero2Eyebrow" class="editor-field-input" placeholder="Safety &amp; PPE">
+                                </div>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h2-title">Headline</label>
+                                    <input type="text" id="df-h2-title" data-field="hero2Title" class="editor-field-input">
+                                </div>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h2-text">Body text</label>
+                                    <textarea id="df-h2-text" data-field="hero2Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div>
+                                        <label class="editor-field-label" for="df-h2-btn1-label">Button 1 label</label>
+                                        <input type="text" id="df-h2-btn1-label" data-field="hero2Btn1Label" class="editor-field-input">
+                                    </div>
+                                    <div>
+                                        <label class="editor-field-label" for="df-h2-btn1-url">Button 1 URL</label>
+                                        <input type="text" id="df-h2-btn1-url" data-field="hero2Btn1Url" class="editor-field-input">
+                                    </div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div>
+                                        <label class="editor-field-label" for="df-h2-btn2-label">Button 2 label</label>
+                                        <input type="text" id="df-h2-btn2-label" data-field="hero2Btn2Label" class="editor-field-input">
+                                    </div>
+                                    <div>
+                                        <label class="editor-field-label" for="df-h2-btn2-url">Button 2 URL</label>
+                                        <input type="text" id="df-h2-btn2-url" data-field="hero2Btn2Url" class="editor-field-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Slide 3 — Cutting Tools</summary>
+                            <div class="designer-slide-group-body">
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h3-eyebrow">Eyebrow text</label>
+                                    <input type="text" id="df-h3-eyebrow" data-field="hero3Eyebrow" class="editor-field-input">
+                                </div>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h3-title">Headline</label>
+                                    <input type="text" id="df-h3-title" data-field="hero3Title" class="editor-field-input">
+                                </div>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-h3-text">Body text</label>
+                                    <textarea id="df-h3-text" data-field="hero3Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div>
+                                        <label class="editor-field-label" for="df-h3-btn1-label">Button 1 label</label>
+                                        <input type="text" id="df-h3-btn1-label" data-field="hero3Btn1Label" class="editor-field-input">
+                                    </div>
+                                    <div>
+                                        <label class="editor-field-label" for="df-h3-btn1-url">Button 1 URL</label>
+                                        <input type="text" id="df-h3-btn1-url" data-field="hero3Btn1Url" class="editor-field-input">
+                                    </div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div>
+                                        <label class="editor-field-label" for="df-h3-btn2-label">Button 2 label</label>
+                                        <input type="text" id="df-h3-btn2-label" data-field="hero3Btn2Label" class="editor-field-input">
+                                    </div>
+                                    <div>
+                                        <label class="editor-field-label" for="df-h3-btn2-url">Button 2 URL</label>
+                                        <input type="text" id="df-h3-btn2-url" data-field="hero3Btn2Url" class="editor-field-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">About Us</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-about-eyebrow">Eyebrow</label>
+                            <input type="text" id="df-about-eyebrow" data-field="aboutEyebrow" class="editor-field-input" placeholder="About Us">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-about-title">Title</label>
+                            <textarea id="df-about-title" data-field="aboutTitle" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-about-p1">Paragraph 1</label>
+                            <textarea id="df-about-p1" data-field="aboutText1" class="editor-field-input editor-field-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-about-p2">Paragraph 2</label>
+                            <textarea id="df-about-p2" data-field="aboutText2" class="editor-field-input editor-field-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-about-btn1-label">Button 1 label</label>
+                                <input type="text" id="df-about-btn1-label" data-field="aboutBtn1Label" class="editor-field-input">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-about-btn1-url">Button 1 URL</label>
+                                <input type="text" id="df-about-btn1-url" data-field="aboutBtn1Url" class="editor-field-input">
+                            </div>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-about-btn2-label">Button 2 label</label>
+                                <input type="text" id="df-about-btn2-label" data-field="aboutBtn2Label" class="editor-field-input">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-about-btn2-url">Button 2 URL</label>
+                                <input type="text" id="df-about-btn2-url" data-field="aboutBtn2Url" class="editor-field-input">
+                            </div>
+                        </div>
+                        <p class="editor-field-label" style="margin:6px 0 4px">Stats</p>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-stat1-val">Stat 1 value</label>
+                                <input type="text" id="df-stat1-val" data-field="stat1Value" class="editor-field-input" placeholder="25+">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-stat1-label">Stat 1 label</label>
+                                <input type="text" id="df-stat1-label" data-field="stat1Label" class="editor-field-input" placeholder="Years in business">
+                            </div>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-stat2-val">Stat 2 value</label>
+                                <input type="text" id="df-stat2-val" data-field="stat2Value" class="editor-field-input" placeholder="500K+">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-stat2-label">Stat 2 label</label>
+                                <input type="text" id="df-stat2-label" data-field="stat2Label" class="editor-field-input" placeholder="Products in catalog">
+                            </div>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-stat3-val">Stat 3 value</label>
+                                <input type="text" id="df-stat3-val" data-field="stat3Value" class="editor-field-input" placeholder="Nationwide">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-stat3-label">Stat 3 label</label>
+                                <input type="text" id="df-stat3-label" data-field="stat3Label" class="editor-field-input" placeholder="Shipping &amp; support">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">CTA Section</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-cta-title">Title</label>
+                            <input type="text" id="df-cta-title" data-field="ctaTitle" class="editor-field-input" placeholder="Need help sourcing the right product?">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-cta-text">Body text</label>
+                            <textarea id="df-cta-text" data-field="ctaText" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-cta-btn1-label">Button 1 label</label>
+                                <input type="text" id="df-cta-btn1-label" data-field="ctaBtn1Label" class="editor-field-input" placeholder="Request a Quote">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-cta-btn1-url">Button 1 URL</label>
+                                <input type="text" id="df-cta-btn1-url" data-field="ctaBtn1Url" class="editor-field-input" placeholder="/contact">
+                            </div>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-cta-btn2-label">Button 2 label</label>
+                                <input type="text" id="df-cta-btn2-label" data-field="ctaBtn2Label" class="editor-field-input" placeholder="Open an Account">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-cta-btn2-url">Button 2 URL</label>
+                                <input type="text" id="df-cta-btn2-url" data-field="ctaBtn2Url" class="editor-field-input" placeholder="/sign-up">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Footer</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-tagline">Footer tagline</label>
+                            <textarea id="df-footer-tagline" data-field="footerTagline" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-email">Email</label>
+                            <input type="text" id="df-footer-email" data-field="footerEmail" class="editor-field-input" placeholder="sales@ibcmaster.com">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-address">Address</label>
+                            <textarea id="df-footer-address" data-field="footerAddress" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-hours">Hours</label>
+                            <input type="text" id="df-footer-hours" data-field="footerHours" class="editor-field-input" placeholder="Mon–Fri, 7:00 AM – 6:00 PM CT">
+                        </div>
+                        <p class="editor-field-label" style="margin:6px 0 4px">Social links</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-social-fb">Facebook URL</label>
+                            <input type="text" id="df-social-fb" data-field="footerSocialFb" class="editor-field-input" placeholder="https://www.facebook.com/company">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-social-li">LinkedIn URL</label>
+                            <input type="text" id="df-social-li" data-field="footerSocialLi" class="editor-field-input" placeholder="https://www.linkedin.com/company">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-social-yt">YouTube URL</label>
+                            <input type="text" id="df-social-yt" data-field="footerSocialYt" class="editor-field-input" placeholder="https://www.youtube.com/@company">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-social-x">X / Twitter URL</label>
+                            <input type="text" id="df-social-x" data-field="footerSocialX" class="editor-field-input" placeholder="https://x.com/company">
+                        </div>
+                    </div>
+                </details>
+
+            </div><!-- /#woolFieldPanel -->
+
+            <!-- Scaffold shown for non-Woolf designs -->
+            <div class="designer-editor-scaffold" id="designerScaffold" hidden>
+                <h3 class="editor-panel-subhead" id="scaffoldTemplateName" style="margin-top:0"></h3>
+                <p class="editor-panel-lead">This template editor is being built. The Woolf template is live now — select it from the nav above to start editing.</p>
                 <ul class="designer-scaffold-list">
-                    <li><strong>Gallery</strong> — editorial hero and dual collection highlights</li>
+                    <li><strong>The Woolf</strong> — full industrial e-commerce homepage (available now)</li>
+                    <li><strong>Gallery</strong> — editorial hero &amp; dual collection highlights</li>
                     <li><strong>Curator</strong> — curated project showcase grid</li>
                     <li><strong>Canvas</strong> — mosaic hero and studio story blocks</li>
-                    <li><strong>The Woolf</strong> — literary editorial layout with prose-led storytelling</li>
                 </ul>
-                <p class="editor-field-hint">Not Showroom Classic: Designer Gallery uses <code>designer.html?design=gallery</code>. Showroom Classic uses <code>showroom.html?design=gallery</code>.</p>
             </div>
-        </aside>
 
+        </aside><!-- /.editor-panel -->
+
+        <!-- ── Right: preview ─────────────────────────────────────── -->
         <div class="editor-preview-wrap">
-            <p class="editor-preview-label">Live preview — <span id="designerPreviewTemplateLabel">Gallery</span></p>
+            <p class="editor-preview-label">
+                Live preview —
+                <span id="designerPreviewLabel">The Woolf</span>
+                <span class="editor-preview-scale-hint" id="previewScaleHint" style="font-size:0.72em;opacity:0.5;margin-left:8px;"></span>
+            </p>
+
+            <!-- Woolf iframe preview -->
             <div class="editor-preview-scaler" id="previewScaler">
-                <div class="editor-preview-frame designer-preview-scaffold" id="designerPreview">
+                <div class="designer-iframe-wrap" id="woolPreviewWrap" hidden>
+                    <iframe
+                        id="woolPreviewFrame"
+                        src="/designer-templates/woolf/header-preview.html"
+                        title="The Woolf — live preview"
+                        scrolling="yes"
+                    ></iframe>
+                </div>
+
+                <!-- Scaffold preview for non-Woolf designs -->
+                <div class="editor-preview-frame designer-preview-scaffold" id="designerScaffoldPreview" hidden>
                     <div class="designer-preview-scaffold-inner">
                         <p class="designer-preview-scaffold-eyebrow">Designer template</p>
                         <h2 class="designer-preview-scaffold-title">Preview coming soon</h2>
-                        <p class="designer-preview-scaffold-copy">Section fields and live preview for this template will appear here.</p>
+                        <p class="designer-preview-scaffold-copy">Select <strong>The Woolf</strong> from the template nav above to try the live editor.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <aside class="editor-progress-dock is-collapsed" id="editorProgressDock" aria-label="Section progress" hidden>
-        <button type="button" class="editor-progress-dock-toggle" id="editorProgressDockToggle" aria-expanded="false" aria-controls="editorProgressDockInner">
-            <span class="editor-progress-dock-toggle-label">Progress</span>
-            <span class="editor-progress-dock-toggle-summary" aria-hidden="true"></span>
-            <i class="fa-solid fa-chevron-up editor-progress-dock-chevron" aria-hidden="true"></i>
-        </button>
-        <div class="editor-progress-dock-inner" id="editorProgressDockInner"></div>
-        <div class="editor-progress-dock-footer">
-            <a href="mailto:support@logicxo.com" class="editor-progress-support">support@logicxo.com</a>
-        </div>
-    </aside>
+    </div><!-- /.editor-layout -->
+
+    <div class="designer-save-toast" id="saveToast" aria-live="polite" aria-atomic="true"></div>
 
     <script src="js/editor-site-nav.js"></script>
+    <script src="vendor/jszip.min.js"></script>
     <script src="js/designer-editor.js"></script>
 </body>
 </html>

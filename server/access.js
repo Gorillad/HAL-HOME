@@ -179,10 +179,17 @@ function requireEditorAuth(req, res, next) {
     return res.redirect(`/index.html?editor_next=${nextPath}&session=${sessionState}#templates`);
 }
 
+function getSessionUser(req) {
+    const token = getCookie(req, SESSION_COOKIE);
+    const session = verifySession(token);
+    return session ? session.user : null;
+}
+
 module.exports = {
     SESSION_COOKIE,
     getCookie,
     verifySession,
+    getSessionUser,
     handleLogin,
     handleLogout,
     handleSessionCheck,

@@ -17,7 +17,9 @@ const {
     handleSessionCheck,
     handleRequestAccess,
     requireEditorAuth,
+    getSessionUser,
 } = require('./access');
+const { loadDraft, saveDraft } = require('./designer-drafts');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT || 4242;
@@ -137,6 +139,52 @@ app.post('/api/editor/request-access', (req, res) => {
 
 app.get(/^\/editor\/[^/]+\.html$/i, requireEditorAuth, (req, res) => {
     res.sendFile(path.join(ROOT, req.path.slice(1)));
+});
+
+// ── Designer template static files ────────────────────────────────────────────
+// DEV: Templates are open so the editor iframe loads without auth issues.
+// PRODUCTION: Uncomment `requireEditorAuth,` on the line below to gate access.
+const DESIGNER_TEMPLATES_ROOT = path.join(ROOT, 'designer_editor');
+const ALLOWED_DESIGNER_TEMPLATES = ['woolf'];
+
+ALLOWED_DESIGNER_TEMPLATES.forEach((tpl) => {
+    const tplRoot = path.join(DESIGNER_TEMPLATES_ROOT, tpl);
+    app.use(
+        `/designer-templates/${tpl}`,
+        // requireEditorAuth,   // ← uncomment before going live
+        express.static(tplRoot)
+    );
+});
+
+// ── Designer draft API ─────────────────────────────────────────────────────
+app.use('/api/designer', devLocalhostCors);
+
+app.get('/api/designer/draft', requireEditorAuth, (req, res) => {
+    const user     = getSessionUser(req);
+    const template = String(req.query.template || 'woolf');
+    if (!ALLOWED_DESIGNER_TEMPLATES.includes(template)) {
+        return res.status(400).json({ error: 'Unknown template' });
+    }
+    const draft = loadDraft(user, template);
+    res.json({ draft });
+});
+
+app.post('/api/designer/draft', requireEditorAuth, express.json({ limit: '256kb' }), (req, res) => {
+    const user     = getSessionUser(req);
+    const template = String(req.query.template || req.body?._template || 'woolf');
+    if (!ALLOWED_DESIGNER_TEMPLATES.includes(template)) {
+        return res.status(400).json({ error: 'Unknown template' });
+    }
+    if (!req.body || typeof req.body !== 'object') {
+        return res.status(400).json({ error: 'Invalid draft data' });
+    }
+    try {
+        saveDraft(user, template, req.body);
+        res.json({ ok: true, savedAt: new Date().toISOString() });
+    } catch (err) {
+        console.error('[designer] Draft save failed:', err);
+        res.status(500).json({ error: 'Could not save draft' });
+    }
 });
 
 app.use(express.static(ROOT));

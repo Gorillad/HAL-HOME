@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Preview — The Woolf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="data/css/header.css">
+    <style>
+        body { margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar__inner">
+    <a href="/" class="top-bar__logo" aria-label="IBC Master home">
+      <img src="data/images/ibc-logo-reverse.svg" alt="IBC Master Industrial Supplies" width="160" height="35">
+    </a>
+    <ul class="top-bar__links">
+      <li><a href="/catalog">Catalog</a></li>
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+    <div class="top-bar__actions">
+      <a class="top-bar__phone" href="tel:18005551234">1-800-555-1234</a>
+      <a class="top-bar__auth" href="/sign-up">Sign Up</a>
+      <a class="top-bar__auth" href="/login">Login</a>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" aria-label="Site header">
+  <nav class="main-nav" aria-label="Main navigation">
+    <div class="main-nav__inner">
+
+      <div class="main-nav__start">
+        <button type="button" class="hamburger-btn" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Open navigation menu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+        <button type="button" class="all-prod-btn" aria-expanded="false" aria-controls="mega-menu">
+          All Products
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="main-nav__center">
+        <div class="search-wrap" role="search">
+          <input type="search" class="search-input" placeholder="Enter keyword, item, model, or part #" aria-label="Search catalog" name="q">
+          <button type="button" class="search-btn" aria-label="Search">
+            <img src="data/images/icons/search.svg" alt="" width="20" height="20">
+          </button>
+        </div>
+      </div>
+
+      <div class="main-nav__end">
+        <div class="nav-actions">
+          <a href="/account" class="nav-action">
+            <img src="data/images/icons/account.svg" alt="" width="22" height="22">
+            Account
+          </a>
+          <a href="#" class="nav-action nav-cart" aria-label="Shopping cart">
+            <img src="data/images/icons/cart.svg" alt="" width="22" height="22">
+            Cart
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <div class="mega-menu" id="mega-menu" role="region" aria-label="All products menu" hidden>
+    <div class="mega-menu__inner">
+      <div class="mega-col">
+        <h3 class="mega-col__head">Cutting &amp; Machining</h3>
+        <a href="#">Cutting Tools</a>
+        <a href="#">Milling</a>
+        <a href="#">Turning</a>
+        <a href="#">Threading</a>
+        <a href="#">Holemaking</a>
+      </div>
+      <div class="mega-col">
+        <h3 class="mega-col__head">Tooling &amp; Workholding</h3>
+        <a href="#">Tooling Systems</a>
+        <a href="#">Tooling Components</a>
+        <a href="#">Machine Tool Accessories</a>
+        <a href="#">Workholding</a>
+      </div>
+      <div class="mega-col">
+        <h3 class="mega-col__head">Hand &amp; Power Tools</h3>
+        <a href="#">Hand Tools</a>
+        <a href="#">Power Tools</a>
+        <a href="#">Abrasives</a>
+        <a href="#">Hardware</a>
+      </div>
+      <div class="mega-col">
+        <h3 class="mega-col__head">Safety &amp; Facility</h3>
+        <a href="#">Safety &amp; PPE</a>
+        <a href="#">Cleaning &amp; Janitorial</a>
+        <a href="#">Office Supplies</a>
+        <a href="#">Outdoor Equipment</a>
+      </div>
+      <div class="mega-col">
+        <h3 class="mega-col__head">Mechanical &amp; Fluid</h3>
+        <a href="#">Hydraulics</a>
+        <a href="#">Pneumatics</a>
+        <a href="#">Pumps</a>
+        <a href="#">Power Transmission</a>
+      </div>
+      <div class="mega-col">
+        <h3 class="mega-col__head">Electrical &amp; Other</h3>
+        <a href="#">Electrical Supplies</a>
+        <a href="#">Electronics</a>
+        <a href="#">Welding</a>
+        <a href="#">Material Handling</a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sub-nav" aria-label="Quick links">
+    <div class="sub-nav__inner">
+      <ul class="sub-nav__links">
+        <li><a href="#">Industrial Supplies</a></li>
+        <li><a href="#">Safety &amp; PPE</a></li>
+        <li><a href="#">Tools &amp; Equipment</a></li>
+        <li><a href="#">Electrical</a></li>
+        <li><a href="#">Hydraulics</a></li>
+        <li><a href="#">Fasteners</a></li>
+        <li><a href="#">Clearance</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div id="mobile-drawer" hidden aria-modal="true" role="dialog" aria-label="Navigation menu">
+    <div class="mobile-drawer__header">Menu</div>
+    <nav class="mobile-drawer__nav" aria-label="Mobile navigation">
+      <div class="mobile-drawer__section">Categories</div>
+      <a href="#">Industrial Supplies</a>
+      <a href="#">Safety &amp; PPE</a>
+      <a href="#">Tools &amp; Equipment</a>
+      <a href="#">Electrical</a>
+      <div class="mobile-drawer__section">Account</div>
+      <a href="#">My Account</a>
+      <a href="#">Shopping Cart</a>
+      <div class="mobile-drawer__section">Company</div>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+    </nav>
+  </div>
+
+  <div id="header-overlay" aria-hidden="true"></div>
+</header>
+
+<script src="data/js/header.js"></script>
+</body>
+</html>

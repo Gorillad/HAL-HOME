@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Warehouse placeholder">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8eef4"/>
+      <stop offset="100%" stop-color="#d0dae6"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#sky)"/>
+  <rect x="80" y="180" width="480" height="220" fill="#8a9aad" rx="2"/>
+  <rect x="100" y="200" width="120" height="80" fill="#6ba3e0" opacity="0.5"/>
+  <rect x="240" y="200" width="120" height="80" fill="#6ba3e0" opacity="0.5"/>
+  <rect x="380" y="200" width="120" height="80" fill="#6ba3e0" opacity="0.5"/>
+  <rect x="280" y="300" width="80" height="100" fill="#0d2137"/>
+  <polygon points="60,180 320,80 580,180" fill="#4a5568"/>
+  <text x="320" y="440" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" fill="#4a5568">Replace with your warehouse, store, or office photo</text>
+</svg>

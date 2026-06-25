@@ -1,0 +1,217 @@
+/* IBC Master — Section Four (Quick Order + CTA band) */
+
+:root {
+  --ibc-navy:         #0d2137;
+  --ibc-navy-dark:    #081525;
+  --ibc-blue:         #004fa3;
+  --ibc-blue-hover:   #003d7a;
+  --ibc-blue-light:   #6ba3e0;
+  --ibc-grey-100:     #f4f6f8;
+  --ibc-grey-200:     #e2e8ee;
+  --ibc-grey-600:     #4a5568;
+  --ibc-white:        #ffffff;
+  --ibc-font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.section-four {
+  font-family: var(--ibc-font);
+}
+
+/* ── Quick Order ─────────────────────────────────────────────── */
+
+.quick-order {
+  background: var(--ibc-grey-100);
+  border-top: 1px solid var(--ibc-grey-200);
+  border-bottom: 1px solid var(--ibc-grey-200);
+}
+
+.quick-order__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.quick-order__header {
+  margin-bottom: 16px;
+}
+
+.quick-order__title {
+  margin: 0 0 4px;
+  color: var(--ibc-navy);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.quick-order__subtitle {
+  margin: 0;
+  color: var(--ibc-grey-600);
+  font-size: 0.875rem;
+}
+
+.quick-order__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.quick-order__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.quick-order__field--qty {
+  flex: 0 0 100px;
+  min-width: 80px;
+}
+
+.quick-order__field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ibc-grey-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quick-order__field input {
+  padding: 11px 14px;
+  border: 1px solid var(--ibc-grey-200);
+  border-radius: 4px;
+  font-family: var(--ibc-font);
+  font-size: 0.9375rem;
+  background: var(--ibc-white);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.quick-order__field input:focus {
+  border-color: var(--ibc-blue);
+  box-shadow: 0 0 0 3px rgba(0, 79, 163, 0.12);
+}
+
+.quick-order__submit {
+  padding: 11px 24px;
+  background: var(--ibc-blue);
+  color: var(--ibc-white);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--ibc-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.quick-order__submit:hover {
+  background: var(--ibc-blue-hover);
+}
+
+/* ── CTA band ────────────────────────────────────────────────── */
+
+.cta-band {
+  background: var(--ibc-blue);
+  color: var(--ibc-white);
+}
+
+.cta-band__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px 32px;
+}
+
+.cta-band__title {
+  margin: 0 0 8px;
+  font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.cta-band__text {
+  margin: 0;
+  max-width: 520px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cta-band__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cta-band__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.cta-band__btn--primary {
+  background: var(--ibc-white);
+  color: var(--ibc-blue);
+  border: 2px solid var(--ibc-white);
+}
+
+.cta-band__btn--primary:hover {
+  background: var(--ibc-grey-100);
+}
+
+.cta-band__btn--secondary {
+  background: transparent;
+  color: var(--ibc-white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.cta-band__btn--secondary:hover {
+  border-color: var(--ibc-white);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .quick-order__inner {
+    padding: 24px 16px;
+  }
+
+  .quick-order__form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quick-order__field--qty {
+    flex: 1;
+  }
+
+  .quick-order__submit {
+    width: 100%;
+  }
+
+  .cta-band__inner {
+    padding: 36px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cta-band__actions {
+    width: 100%;
+  }
+
+  .cta-band__btn {
+    flex: 1;
+    min-width: 140px;
+  }
+}

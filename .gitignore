@@ -10,6 +10,7 @@ node_modules/
 
 server/outbox/
 server/data/access-requests.json
+server/data/designer-drafts/
 
 *.log
 npm-debug.log*
