@@ -1,16 +1,15 @@
 /**
  * Designer Editor — Section One (Hero / Slideshow)
- * Handles:
- *  - Section nav tab switching (Header ↔ Section One)
- *  - Live preview updates via postMessage to the section-one-preview iframe
- *  - Draft load/save (piggy-backs on the main designer draft, namespace "s1")
- *  - Slide background image upload
+ *
+ * Thin config layer over createSectionEditor (section-editor-base.js). The base
+ * handles same-origin DOM writes into the preview iframe, height fitting, and
+ * the namespaced draft merge. This file supplies the Woolf Section One field
+ * map plus the header/sectionOne tab switching for the preview pane.
  */
-
 (function () {
   'use strict';
 
-  /* ── Constants ───────────────────────────────────────────────── */
+  if (typeof window.createSectionEditor !== 'function') return;
 
   const TEMPLATE = window.__designerSlug || 'woolf';
 
@@ -50,158 +49,41 @@
     catsSubtitle: 'Browse our most popular product lines',
   };
 
-  /* ── State ───────────────────────────────────────────────────── */
-
-  let draft = Object.assign({}, DEFAULTS);
-  let autosaveTimer = null;
-  let frameReady = false;
-  let pendingMessages = [];
-
-  /* ── DOM refs ────────────────────────────────────────────────── */
-
-  const frame         = document.getElementById('woolSectionOneFrame');
-  const frameWrap     = document.getElementById('woolSectionOnePreviewWrap');
-  const headerWrap    = document.getElementById('woolPreviewWrap');
-  const sectionHeader = document.getElementById('woolSectionHeader');
-  const sectionOne    = document.getElementById('woolSectionOne');
-  const tabBtns       = document.querySelectorAll('[data-section]');
-
-  /* ── Section tab switching ───────────────────────────────────── */
-
-  function activateSection(section) {
-    tabBtns.forEach((btn) => {
-      const isActive = btn.dataset.section === section;
-      btn.classList.toggle('is-active', isActive);
-      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-
-    if (section === 'header') {
-      sectionHeader.hidden = false;
-      sectionOne.hidden    = true;
-      headerWrap.hidden    = false;
-      frameWrap.hidden     = true;
-    } else if (section === 'sectionOne') {
-      sectionHeader.hidden = true;
-      sectionOne.hidden    = false;
-      headerWrap.hidden    = true;
-      frameWrap.hidden     = false;
-    }
-  }
-
-  tabBtns.forEach((btn) => {
-    btn.addEventListener('click', () => activateSection(btn.dataset.section));
-  });
-
-  /* ── postMessage bridge to the preview iframe ────────────────── */
-
-  function sendToFrame(payload) {
-    if (!frameReady) {
-      pendingMessages.push(payload);
-      return;
-    }
-    try {
-      frame.contentWindow.postMessage({ type: 's1Update', payload }, '*');
-    } catch (_) {}
-  }
-
-  window.addEventListener('message', (e) => {
-    if (!e.data) return;
-    if (e.data.type === 's1Ready') {
-      frameReady = true;
-      pendingMessages.forEach((msg) => {
-        try { frame.contentWindow.postMessage({ type: 's1Update', payload: msg }, '*'); } catch (_) {}
-      });
-      pendingMessages = [];
-      sendFullState();
-    }
-    if (e.data.type === 's1Height' && e.data.height) {
-      // Add a small buffer so nothing clips at the bottom
-      frame.style.height = (e.data.height + 24) + 'px';
-    }
-  });
-
-  frame.addEventListener('load', () => {
-    // Only reset if the frame was previously ready (a true re-navigation).
-    // On initial load the 'load' event fires before 's1Ready', so we do
-    // nothing here and let s1Ready set frameReady = true.
-    if (frameReady) {
-      frameReady = false;
-      pendingMessages = [];
-    }
-  });
-
-  function sendFullState() {
-    sendToFrame({ all: draft });
-  }
-
-  /* ── Apply a single field to the live preview ───────────────── */
-
   const FIELD_MAP = {
-    slide0Eyebrow:  (v) => ({ id: 's1-s0-eyebrow', text: v }),
-    slide0Title:    (v) => ({ id: 's1-s0-title',   text: v }),
-    slide0Text:     (v) => ({ id: 's1-s0-text',    text: v }),
-    slide0Btn1Label:(v) => ({ id: 's1-s0-btn1',    text: v }),
-    slide0Btn1Url:  (v) => ({ id: 's1-s0-btn1',    href: v }),
-    slide0Btn2Label:(v) => ({ id: 's1-s0-btn2',    text: v }),
-    slide0Btn2Url:  (v) => ({ id: 's1-s0-btn2',    href: v }),
-    slide0BgSrc:    (v) => ({ id: 's1-slide-0',    bgSrc: v }),
+    slide0Eyebrow:   { id: 's1-s0-eyebrow', prop: 'text' },
+    slide0Title:     { id: 's1-s0-title',   prop: 'text' },
+    slide0Text:      { id: 's1-s0-text',    prop: 'text' },
+    slide0Btn1Label: { id: 's1-s0-btn1',    prop: 'text' },
+    slide0Btn1Url:   { id: 's1-s0-btn1',    prop: 'href' },
+    slide0Btn2Label: { id: 's1-s0-btn2',    prop: 'text' },
+    slide0Btn2Url:   { id: 's1-s0-btn2',    prop: 'href' },
+    slide0BgSrc:     { id: 's1-slide-0',    prop: 'bg'   },
 
-    slide1Eyebrow:  (v) => ({ id: 's1-s1-eyebrow', text: v }),
-    slide1Title:    (v) => ({ id: 's1-s1-title',   text: v }),
-    slide1Text:     (v) => ({ id: 's1-s1-text',    text: v }),
-    slide1Btn1Label:(v) => ({ id: 's1-s1-btn1',    text: v }),
-    slide1Btn1Url:  (v) => ({ id: 's1-s1-btn1',    href: v }),
-    slide1Btn2Label:(v) => ({ id: 's1-s1-btn2',    text: v }),
-    slide1Btn2Url:  (v) => ({ id: 's1-s1-btn2',    href: v }),
-    slide1BgSrc:    (v) => ({ id: 's1-slide-1',    bgSrc: v }),
+    slide1Eyebrow:   { id: 's1-s1-eyebrow', prop: 'text' },
+    slide1Title:     { id: 's1-s1-title',   prop: 'text' },
+    slide1Text:      { id: 's1-s1-text',    prop: 'text' },
+    slide1Btn1Label: { id: 's1-s1-btn1',    prop: 'text' },
+    slide1Btn1Url:   { id: 's1-s1-btn1',    prop: 'href' },
+    slide1Btn2Label: { id: 's1-s1-btn2',    prop: 'text' },
+    slide1Btn2Url:   { id: 's1-s1-btn2',    prop: 'href' },
+    slide1BgSrc:     { id: 's1-slide-1',    prop: 'bg'   },
 
-    slide2Eyebrow:  (v) => ({ id: 's1-s2-eyebrow', text: v }),
-    slide2Title:    (v) => ({ id: 's1-s2-title',   text: v }),
-    slide2Text:     (v) => ({ id: 's1-s2-text',    text: v }),
-    slide2Btn1Label:(v) => ({ id: 's1-s2-btn1',    text: v }),
-    slide2Btn1Url:  (v) => ({ id: 's1-s2-btn1',    href: v }),
-    slide2Btn2Label:(v) => ({ id: 's1-s2-btn2',    text: v }),
-    slide2Btn2Url:  (v) => ({ id: 's1-s2-btn2',    href: v }),
-    slide2BgSrc:    (v) => ({ id: 's1-slide-2',    bgSrc: v }),
+    slide2Eyebrow:   { id: 's1-s2-eyebrow', prop: 'text' },
+    slide2Title:     { id: 's1-s2-title',   prop: 'text' },
+    slide2Text:      { id: 's1-s2-text',    prop: 'text' },
+    slide2Btn1Label: { id: 's1-s2-btn1',    prop: 'text' },
+    slide2Btn1Url:   { id: 's1-s2-btn1',    prop: 'href' },
+    slide2Btn2Label: { id: 's1-s2-btn2',    prop: 'text' },
+    slide2Btn2Url:   { id: 's1-s2-btn2',    prop: 'href' },
+    slide2BgSrc:     { id: 's1-slide-2',    prop: 'bg'   },
 
-    trust0Text:  (v) => ({ id: 's1-trust-0-text', text: v }),
-    trust1Text:  (v) => ({ id: 's1-trust-1-text', text: v }),
-    trust2Text:  (v) => ({ id: 's1-trust-2-text', text: v }),
+    trust0Text:  { id: 's1-trust-0-text', prop: 'text' },
+    trust1Text:  { id: 's1-trust-1-text', prop: 'text' },
+    trust2Text:  { id: 's1-trust-2-text', prop: 'text' },
 
-    catsTitle:    (v) => ({ id: 's1-cats-heading', text: v }),
-    catsSubtitle: (v) => ({ id: 's1-cats-subtitle', text: v }),
+    catsTitle:    { id: 's1-cats-heading',  prop: 'text' },
+    catsSubtitle: { id: 's1-cats-subtitle', prop: 'text' },
   };
-
-  function applyS1Field(key, value) {
-    draft[key] = value;
-    const mapper = FIELD_MAP[key];
-    if (mapper) sendToFrame(mapper(value));
-    scheduleAutosave();
-  }
-
-  /* ── Input listeners ─────────────────────────────────────────── */
-
-  // When a slide field is focused, jump the preview to that slide
-  function slideIndexFromKey(key) {
-    if (key.startsWith('slide0')) return 0;
-    if (key.startsWith('slide1')) return 1;
-    if (key.startsWith('slide2')) return 2;
-    return null;
-  }
-
-  document.querySelectorAll('[data-s1-field]').forEach((el) => {
-    const key = el.dataset.s1Field;
-    const evType = (el.tagName === 'TEXTAREA' || el.type === 'text') ? 'input' : 'change';
-    el.addEventListener(evType, () => applyS1Field(key, el.value));
-
-    // Jump preview to the matching slide when a slide field gains focus
-    el.addEventListener('focus', () => {
-      const idx = slideIndexFromKey(key);
-      if (idx !== null) sendToFrame({ jumpToSlide: idx });
-    });
-  });
-
-  /* ── Slide background image upload ──────────────────────────── */
 
   const BG_SLOTS = [
     { fileInput: 'df-s1-s0-bg', thumbImg: 's1Slide0BgImg', thumbEmpty: 's1Slide0BgEmpty', removeBtn: 's1Slide0BgRemoveBtn', field: 'slide0BgSrc' },
@@ -209,108 +91,37 @@
     { fileInput: 'df-s1-s2-bg', thumbImg: 's1Slide2BgImg', thumbEmpty: 's1Slide2BgEmpty', removeBtn: 's1Slide2BgRemoveBtn', field: 'slide2BgSrc' },
   ];
 
-  BG_SLOTS.forEach(({ fileInput, thumbImg, thumbEmpty, removeBtn, field }) => {
-    const inputEl   = document.getElementById(fileInput);
-    const imgEl     = document.getElementById(thumbImg);
-    const emptyEl   = document.getElementById(thumbEmpty);
-    const removeEl  = document.getElementById(removeBtn);
-    if (!inputEl) return;
+  // Focus a slide field → click the matching dot inside the iframe so the
+  // slideshow JS stays in sync and the edited slide is visible.
+  function slideIndexFromKey(key) {
+    if (key.indexOf('slide0') === 0) return 0;
+    if (key.indexOf('slide1') === 0) return 1;
+    if (key.indexOf('slide2') === 0) return 2;
+    return null;
+  }
 
-    inputEl.addEventListener('change', () => {
-      const file = inputEl.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const src = ev.target.result;
-        imgEl.src = src;
-        imgEl.hidden = false;
-        emptyEl.hidden = true;
-        removeEl.hidden = false;
-        applyS1Field(field, src);
-      };
-      reader.readAsDataURL(file);
-    });
+  function onFieldFocus(key, iframeDoc) {
+    if (!iframeDoc) return;
+    const idx = slideIndexFromKey(key);
+    if (idx === null) return;
+    const dots = iframeDoc.querySelectorAll('.hero__dot');
+    if (dots[idx]) dots[idx].click();
+  }
 
-    removeEl.addEventListener('click', () => {
-      inputEl.value = '';
-      imgEl.src = '';
-      imgEl.hidden = true;
-      emptyEl.hidden = false;
-      removeEl.hidden = true;
-      applyS1Field(field, '');
-    });
+  const editor = window.createSectionEditor({
+    template: TEMPLATE,
+    namespace: '_s1',
+    sectionKey: 'sectionOne',
+    frameId: 'woolSectionOneFrame',
+    defaults: DEFAULTS,
+    fieldMap: FIELD_MAP,
+    fieldSelector: '[data-s1-field]',
+    fieldDatasetKey: 's1Field',
+    bgSlots: BG_SLOTS,
+    onFieldFocus: onFieldFocus,
   });
 
-  /* ── Draft persistence ───────────────────────────────────────── */
-
-  function showToast(msg) {
-    const toast = document.getElementById('saveToast');
-    if (!toast) return;
-    toast.textContent = msg;
-    toast.classList.add('is-visible');
-    setTimeout(() => toast.classList.remove('is-visible'), 2200);
-  }
-
-  function scheduleAutosave() {
-    clearTimeout(autosaveTimer);
-    autosaveTimer = setTimeout(saveDraft, 1400);
-  }
-
-  async function saveDraft() {
-    try {
-      // Merge: start from whatever the header editor currently holds, then layer in s1
-      const headerDraft = (typeof window.__woolDraft === 'object' && window.__woolDraft)
-        ? window.__woolDraft
-        : {};
-      const body = Object.assign({}, headerDraft, { _s1: draft, _template: TEMPLATE });
-      await fetch(`/api/designer/draft?template=${TEMPLATE}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      showToast('Draft saved');
-    } catch (_) {
-      showToast('Save failed — check connection');
-    }
-  }
-
-  async function loadDraft() {
-    try {
-      const res = await fetch(`/api/designer/draft?template=${TEMPLATE}`);
-      if (!res.ok) return;
-      const data = await res.json();
-      // Server wraps the saved object under { draft: { ... } }
-      const saved = data.draft || data;
-      if (saved && saved._s1) {
-        Object.assign(draft, saved._s1);
-      }
-    } catch (_) {}
-    populateFields();
-  }
-
-  function populateFields() {
-    document.querySelectorAll('[data-s1-field]').forEach((el) => {
-      const key = el.dataset.s1Field;
-      if (draft[key] !== undefined) el.value = draft[key];
-    });
-
-    BG_SLOTS.forEach(({ thumbImg, thumbEmpty, removeBtn, field }) => {
-      const src = draft[field];
-      if (!src) return;
-      const imgEl    = document.getElementById(thumbImg);
-      const emptyEl  = document.getElementById(thumbEmpty);
-      const removeEl = document.getElementById(removeBtn);
-      if (imgEl) { imgEl.src = src; imgEl.hidden = false; }
-      if (emptyEl) emptyEl.hidden = true;
-      if (removeEl) removeEl.hidden = false;
-    });
-  }
-
-  /* ── Expose draft to main designer-editor for combined save ─── */
-  Object.defineProperty(window, '__s1Draft', { get: () => draft });
-
-  /* ── Init ────────────────────────────────────────────────────── */
-
-  loadDraft();
+  /* Back-compat: some code reads window.__s1Draft. */
+  Object.defineProperty(window, '__s1Draft', { get: function () { return editor.getDraft(); } });
 
 })();

@@ -15,7 +15,7 @@
     // ── Constants ────────────────────────────────────────────────────
 
     const TEMPLATE       = 'woolf';
-    const PREVIEW_URL    = '/designer-templates/woolf/header-preview.html';
+    const PREVIEW_URL    = '../designer_editor/woolf/header-preview.html';
     const IFRAME_WIDTH   = 1280; // design width of the template
     const SAVE_DEBOUNCE  = 1800; // ms after last change to auto-save
 
@@ -790,9 +790,20 @@
     function saveDraft() {
         if (!isDirty) return;
         isDirty = false;
-        // Merge with any section-level drafts so a header save never wipes s1 data
-        var s1Snapshot = (window.__s1Draft) ? { _s1: window.__s1Draft } : {};
-        var payload = Object.assign({ _template: TEMPLATE }, draft, s1Snapshot);
+        // localStorage is the source of truth (works with or without the Node
+        // server); the helper also best-effort syncs to /api when present.
+        // buildCombinedDraft pulls header fields (via window.__woolDraft) plus
+        // every registered section namespace, so nothing is dropped.
+        if (typeof window.designerSaveCombined === 'function') {
+            window.designerSaveCombined(TEMPLATE);
+            setStatus('Draft saved', true);
+            showToast('Draft saved ✓');
+            return;
+        }
+        // Fallback: API only (older load order)
+        var payload = Object.assign({ _template: TEMPLATE }, draft);
+        var sections = window.__designerSectionDrafts || {};
+        Object.keys(sections).forEach(function (ns) { payload[ns] = sections[ns]; });
         fetch('/api/designer/draft?template=' + TEMPLATE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -815,23 +826,23 @@
     }
 
     function loadDraft() {
-        return fetch('/api/designer/draft?template=' + TEMPLATE, {
-            credentials: 'include',
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-            if (data.draft && typeof data.draft === 'object') {
-                draft = data.draft;
-                setStatus('Draft loaded', true);
-            } else {
+        var loader = (typeof window.designerLoadCombined === 'function')
+            ? window.designerLoadCombined(TEMPLATE)
+            : Promise.resolve(null);
+        return Promise.resolve(loader)
+            .then(function (saved) {
+                if (saved && typeof saved === 'object') {
+                    draft = saved;
+                    setStatus('Draft loaded', true);
+                } else {
+                    draft = {};
+                    setStatus('New draft', true);
+                }
+            })
+            .catch(function (err) {
+                console.warn('[designer] Could not load draft:', err);
                 draft = {};
-                setStatus('New draft', true);
-            }
-        })
-        .catch(function (err) {
-            console.warn('[designer] Could not load draft:', err);
-            draft = {};
-        });
+            });
     }
 
     // ── iframe loading ────────────────────────────────────────────────
@@ -920,7 +931,13 @@
         '  WELCOME-GUIDE.html        — Premium install guide (open in browser)',
         '  global-head-snippet.html  — Meta tags + favicon + CSS/JS (XO Global section)',
         '  header-block.html         — Header HTML (XO Header section)',
-        '  index.html                — Full homepage (standalone deployment)',
+        '  section-one-block.html    — Hero / slideshow HTML (XO Section One)',
+        '  section-two-block.html    — About block HTML (XO Section Two)',
+        '  section-three-block.html  — Catalog library HTML (XO Section Three)',
+        '  section-four-block.html   — Quick order + CTA HTML (XO Section Four)',
+        '  footer-block.html         — Footer HTML (XO Footer section)',
+        '  homepage.html             — Full assembled homepage (standalone preview)',
+        '  index.html                — Header preview document (reference)',
         '  data/css/                 — Stylesheet files (upload to server)',
         '  data/js/                  — JavaScript files (upload to server)',
         '  data/images/icons/        — Navigation icon SVGs (upload to server)',
@@ -1368,8 +1385,9 @@
         // Serialize the modified iframe HTML
         var htmlContent = '<!DOCTYPE html>\n' + iframeDoc.documentElement.outerHTML;
 
-        // Fetch all CSS and JS files from the server
-        var cssBase = '/designer-templates/woolf/';
+        // Fetch all CSS and JS files. Relative path resolves on both the Node
+        // app server and a static server (e.g. Live Server).
+        var cssBase = '../designer_editor/woolf/';
         var cssPromises = CSS_FILES.map(function (f) {
             return fetchText(cssBase + f).then(function (text) { return { path: f, text: text }; });
         });
@@ -1460,6 +1478,71 @@
             results.slice(cssPromises.length + jsPromises.length + 2).forEach(function (item) {
                 if (item) zip.file(item.path, item.text);
             });
+
+            // ── Section blocks + full homepage assembly ───────────────────────
+            var editors = window.__designerSectionEditors || {};
+            var SECTION_ORDER = [
+                { key: 'sectionOne',   file: 'section-one-block.html',   css: 'data/css/section-one.css' },
+                { key: 'sectionTwo',   file: 'section-two-block.html',   css: 'data/css/section-two.css' },
+                { key: 'sectionThree', file: 'section-three-block.html', css: 'data/css/section-three.css' },
+                { key: 'sectionFour',  file: 'section-four-block.html',  css: 'data/css/section-four.css' },
+                { key: 'footer',       file: 'footer-block.html',        css: 'data/css/footer.css' },
+            ];
+
+            function swapAssetUrls(html) {
+                if (logoServerPath && logoSrc) html = html.split(logoSrc).join(logoServerPath);
+                if (faviconServerPath && faviconSrc) html = html.split(faviconSrc).join(faviconServerPath);
+                return html;
+            }
+
+            var sectionBodies = [];
+            var usedCss = ['data/css/header.css'];
+            SECTION_ORDER.forEach(function (s) {
+                var ed = editors[s.key];
+                if (!ed || typeof ed.getSectionHtml !== 'function') return;
+                var html = swapAssetUrls(ed.getSectionHtml());
+                if (!html) return;
+                zip.file(s.file, '<!-- The Woolf — ' + s.key + ' | LogicX Designer Editor -->\n' + html);
+                sectionBodies.push(html);
+                usedCss.push(s.css);
+            });
+
+            // Recompute the global Meta override CSS for the standalone homepage.
+            var metaDraft = (window.__designerSectionDrafts || {})._meta || {};
+            var metaCss = '';
+            if (metaDraft.fontFamily) metaCss += 'body, body * { font-family: ' + metaDraft.fontFamily + ' !important; }';
+            if (metaDraft.accentColor) {
+                metaCss += 'a { color: ' + metaDraft.accentColor + '; }';
+                metaCss += '.about-block__btn--primary,.cta-band__btn--primary,.quick-order__submit,.catalog-library__all{background-color:' + metaDraft.accentColor + ';border-color:' + metaDraft.accentColor + ';}';
+            }
+
+            var pageTitle = (metaDraft.pageTitle || (draft.companyName || DEFAULTS.companyName) + ' — Home');
+            var pageDesc  = metaDraft.metaDescription || '';
+            var cssLinks  = usedCss.map(function (c) { return '  <link rel="stylesheet" href="' + c + '">'; }).join('\n');
+            var headerBody = swapAssetUrls(buildHeaderBlock());
+
+            var homepageHtml = [
+                '<!DOCTYPE html>',
+                '<html lang="en">',
+                '<head>',
+                '  <meta charset="UTF-8">',
+                '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+                '  <title>' + pageTitle + '</title>',
+                (pageDesc ? '  <meta name="description" content="' + pageDesc.replace(/"/g, '&quot;') + '">' : ''),
+                '  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">',
+                cssLinks,
+                (metaCss ? '  <style id="__designer-meta-overrides__">' + metaCss + '</style>' : ''),
+                '</head>',
+                '<body>',
+                headerBody,
+                sectionBodies.join('\n'),
+                '  <script src="data/js/header.js"></script>',
+                '  <script src="data/js/section-one.js"></script>',
+                '</body>',
+                '</html>',
+            ].filter(Boolean).join('\n');
+
+            zip.file('homepage.html', homepageHtml);
 
             return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
         })

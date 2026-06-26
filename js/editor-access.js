@@ -232,12 +232,17 @@ window.EditorAccess = (function initEditorAccessModule() {
     }
 
     function bindEditorNavigation() {
-        const useDevServer = isLocalDevHost() && window.location.port !== DEV_SERVER_PORT;
-
+        // The editors are self-contained: previews load by relative path and
+        // drafts persist to localStorage, so they run on whatever origin serves
+        // them (including a static server like VS Code Live Server) with no Node
+        // server required. Keep editor links on the CURRENT origin instead of
+        // redirecting to the dev server port — that redirect was the cause of
+        // "Open http://localhost:4242" dead-link/blank-page errors when the
+        // Node server wasn't running.
         document.querySelectorAll('a[href*="/editor/"], a[href^="editor/"]').forEach((link) => {
             const editorPath = normalizeEditorPath(link.getAttribute('href'));
             if (!editorPath) return;
-            link.setAttribute('href', useDevServer ? `${getDevServerUrl()}${editorPath}` : editorPath);
+            link.setAttribute('href', editorPath);
         });
     }
 

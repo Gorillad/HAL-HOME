@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Woolf — Section Four Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="data/css/section-four.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: auto; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #ffffff; }
+  </style>
+  <style id="__s4-overrides__"></style>
+</head>
+<body>
+
+<!-- IBC Master — Section Four: Quick Order + CTA band -->
+<section class="section-four" aria-label="Quick order and contact">
+  <div class="quick-order">
+    <div class="quick-order__inner">
+      <div class="quick-order__header">
+        <h2 class="quick-order__title" id="s4-qo-title">Quick Order</h2>
+        <p class="quick-order__subtitle" id="s4-qo-subtitle">Know your part number? Enter it below to search and order fast.</p>
+      </div>
+      <form class="quick-order__form" action="/industrial-supplies" method="get" role="search">
+        <div class="quick-order__field">
+          <label for="quick-order-part">Part / SKU / Model #</label>
+          <input type="text" id="quick-order-part" name="q" placeholder="e.g. 123-ABC-456" autocomplete="off">
+        </div>
+        <div class="quick-order__field quick-order__field--qty">
+          <label for="quick-order-qty">Qty</label>
+          <input type="number" id="quick-order-qty" name="qty" value="1" min="1" max="9999">
+        </div>
+        <button type="submit" class="quick-order__submit" id="s4-qo-submit">Search &amp; Order</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <div class="cta-band__inner">
+      <div class="cta-band__content">
+        <h2 class="cta-band__title" id="s4-cta-title">Need help sourcing the right product?</h2>
+        <p class="cta-band__text" id="s4-cta-text">Our team is ready to assist with quotes, bulk orders, and hard-to-find parts for your operation.</p>
+      </div>
+      <div class="cta-band__actions">
+        <a class="cta-band__btn cta-band__btn--primary" id="s4-cta-btn1" href="/contact">Request a Quote</a>
+        <a class="cta-band__btn cta-band__btn--secondary" id="s4-cta-btn2" href="/sign-up">Open an Account</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

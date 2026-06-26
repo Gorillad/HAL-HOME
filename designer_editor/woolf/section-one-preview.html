@@ -122,35 +122,35 @@
       </div>
       <ul class="categories__grid">
         <li><a class="category-card" href="/industrial-supplies?category=Safety">
-          <span class="category-card__media"><img src="/data/images/category/d2-safety.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-safety.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Safety &amp; PPE</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Cutting+Tools">
-          <span class="category-card__media"><img src="/data/images/category/d2-cuttingtools.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-cuttingtools.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Cutting Tools</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Hand+Tools">
-          <span class="category-card__media"><img src="/data/images/category/d2-tools.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-tools.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Hand Tools</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Abrasives">
-          <span class="category-card__media"><img src="/data/images/category/d2-abrasives.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-abrasives.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Abrasives</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Electrical+Supplies">
-          <span class="category-card__media"><img src="/data/images/category/d2-electrical.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-electrical.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Electrical</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Fasteners">
-          <span class="category-card__media"><img src="/data/images/category/d2-fasteners.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-fasteners.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Fasteners</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Machinery">
-          <span class="category-card__media"><img src="/data/images/category/d2-machinery.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-machinery.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Machinery</span>
         </a></li>
         <li><a class="category-card" href="/industrial-supplies?category=Adhesives">
-          <span class="category-card__media"><img src="/data/images/category/d2-adhesives.webp" alt="" width="280" height="210" loading="lazy"></span>
+          <span class="category-card__media"><img src="data/images/category/d2-adhesives.webp" alt="" width="280" height="210" loading="lazy"></span>
           <span class="category-card__name">Adhesives</span>
         </a></li>
       </ul>
@@ -159,100 +159,8 @@
 
 </section>
 
+<!-- Slideshow behaviour only. The editor writes content directly into this
+     document's DOM (same-origin), exactly like the header preview. -->
 <script src="data/js/section-one.js"></script>
-<script>
-(function () {
-  'use strict';
-
-  function applyUpdate(payload) {
-    if (!payload) return;
-
-    /* Full state dump */
-    if (payload.all) {
-      Object.keys(payload.all).forEach((key) => {
-        applyUpdate(FIELD_MAP[key] ? FIELD_MAP[key](payload.all[key]) : null);
-      });
-      return;
-    }
-
-    /* Jump to a specific slide index — click the dot so the slideshow JS stays in sync */
-    if (payload.jumpToSlide !== undefined) {
-      const dots = document.querySelectorAll('.hero__dot');
-      const dot  = dots[payload.jumpToSlide];
-      if (dot) dot.click();
-      return;
-    }
-
-    /* Single field update */
-    const el = payload.id ? document.getElementById(payload.id) : null;
-    if (!el) return;
-
-    if (payload.text !== undefined)  el.textContent = payload.text;
-    if (payload.href !== undefined)  el.setAttribute('href', payload.href);
-    if (payload.bgSrc !== undefined) {
-      el.style.backgroundImage = payload.bgSrc
-        ? `linear-gradient(90deg,rgba(8,21,37,0.92) 0%,rgba(8,21,37,0.72) 45%,rgba(8,21,37,0.35) 100%),url(${JSON.stringify(payload.bgSrc)})`
-        : '';
-    }
-  }
-
-  const FIELD_MAP = {
-    slide0Eyebrow:  (v) => ({ id: 's1-s0-eyebrow', text: v }),
-    slide0Title:    (v) => ({ id: 's1-s0-title',   text: v }),
-    slide0Text:     (v) => ({ id: 's1-s0-text',    text: v }),
-    slide0Btn1Label:(v) => ({ id: 's1-s0-btn1',    text: v }),
-    slide0Btn1Url:  (v) => ({ id: 's1-s0-btn1',    href: v }),
-    slide0Btn2Label:(v) => ({ id: 's1-s0-btn2',    text: v }),
-    slide0Btn2Url:  (v) => ({ id: 's1-s0-btn2',    href: v }),
-    slide0BgSrc:    (v) => ({ id: 's1-slide-0',    bgSrc: v }),
-    slide1Eyebrow:  (v) => ({ id: 's1-s1-eyebrow', text: v }),
-    slide1Title:    (v) => ({ id: 's1-s1-title',   text: v }),
-    slide1Text:     (v) => ({ id: 's1-s1-text',    text: v }),
-    slide1Btn1Label:(v) => ({ id: 's1-s1-btn1',    text: v }),
-    slide1Btn1Url:  (v) => ({ id: 's1-s1-btn1',    href: v }),
-    slide1Btn2Label:(v) => ({ id: 's1-s1-btn2',    text: v }),
-    slide1Btn2Url:  (v) => ({ id: 's1-s1-btn2',    href: v }),
-    slide1BgSrc:    (v) => ({ id: 's1-slide-1',    bgSrc: v }),
-    slide2Eyebrow:  (v) => ({ id: 's1-s2-eyebrow', text: v }),
-    slide2Title:    (v) => ({ id: 's1-s2-title',   text: v }),
-    slide2Text:     (v) => ({ id: 's1-s2-text',    text: v }),
-    slide2Btn1Label:(v) => ({ id: 's1-s2-btn1',    text: v }),
-    slide2Btn1Url:  (v) => ({ id: 's1-s2-btn1',    href: v }),
-    slide2Btn2Label:(v) => ({ id: 's1-s2-btn2',    text: v }),
-    slide2Btn2Url:  (v) => ({ id: 's1-s2-btn2',    href: v }),
-    slide2BgSrc:    (v) => ({ id: 's1-slide-2',    bgSrc: v }),
-    trust0Text:    (v) => ({ id: 's1-trust-0-text', text: v }),
-    trust1Text:    (v) => ({ id: 's1-trust-1-text', text: v }),
-    trust2Text:    (v) => ({ id: 's1-trust-2-text', text: v }),
-    catsTitle:     (v) => ({ id: 's1-cats-heading',  text: v }),
-    catsSubtitle:  (v) => ({ id: 's1-cats-subtitle', text: v }),
-  };
-
-  window.addEventListener('message', (e) => {
-    if (e.data && e.data.type === 's1Update') applyUpdate(e.data.payload);
-  });
-
-  /* Auto-resize: notify parent whenever the document height changes */
-  function reportHeight() {
-    const h = document.documentElement.scrollHeight;
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 's1Height', height: h }, '*');
-    }
-  }
-
-  if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(reportHeight).observe(document.body);
-  }
-
-  /* Signal parent that we're ready — use window.load so this fires AFTER
-     the parent's iframe load event, ensuring frameReady stays true */
-  window.addEventListener('load', function () {
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 's1Ready' }, '*');
-    }
-    reportHeight();
-  });
-})();
-</script>
 </body>
 </html>
