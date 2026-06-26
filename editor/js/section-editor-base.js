@@ -68,10 +68,19 @@
         catch (e) { return false; }
     }
 
-    // Best-effort server sync; resolves regardless of success.
+    // Resolve the draft API endpoint. It is only served by the Node app on
+    // :4242; window.DESIGNER_API_BASE (set in designer.html) points there when
+    // the editor runs on a static dev server so calls don't 404.
+    function apiUrl(template) {
+        return (window.DESIGNER_API_BASE || '') + '/api/designer/draft?template=' + template;
+    }
+
+    // Best-effort server sync; resolves regardless of success. Skipped entirely
+    // when no API is present (e.g. static Live Server) so nothing 404s.
     function syncCombinedToApi(template, obj) {
+        if (!window.DESIGNER_API_ENABLED) return Promise.resolve();
         try {
-            return fetch('/api/designer/draft?template=' + template, {
+            return fetch(apiUrl(template), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -90,9 +99,11 @@
     window.designerLoadCombined = function (template) {
         var local = loadCombinedLocal(template);
         if (local) return Promise.resolve(local);
-        // No local copy yet — try the API (Node server) once, then fall back.
+        // No local copy yet. Only ask the API when one exists (Node app); on a
+        // static server there is no API, so stay localStorage-only (no 404).
+        if (!window.DESIGNER_API_ENABLED) return Promise.resolve(null);
         try {
-            return fetch('/api/designer/draft?template=' + template, { credentials: 'include' })
+            return fetch(apiUrl(template), { credentials: 'include' })
                 .then(function (res) { return res.ok ? res.json() : null; })
                 .then(function (data) { return (data && (data.draft || data)) || null; })
                 .catch(function () { return null; });

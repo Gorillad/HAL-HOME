@@ -407,6 +407,21 @@
             const slug = allowed[param] ? param : 'woolf';
             document.body.classList.add('editor-page--designer', `editor-page--${slug}`);
             window.__designerSlug = slug;
+
+            // The draft API (/api/designer/draft) is served ONLY by the Node app.
+            // When the editor is opened from that app (port 4242) or a real
+            // deployment, the API is same-origin and used for per-account
+            // autosave. On a static dev server such as VS Code Live Server
+            // (:5500) there is NO API — the editor runs entirely on localStorage
+            // with zero network API calls, so nothing 404s and the live preview
+            // (including the hero slider, whose images load directly from
+            // designer_editor/woolf/data/images/) works fully offline.
+            const loc = window.location;
+            const host = loc.hostname;
+            const isLocalHost = host === 'localhost' || host === '127.0.0.1'
+                || host === '::1' || host === '0.0.0.0' || host === '';
+            window.DESIGNER_API_ENABLED = (loc.port === '4242') || !isLocalHost;
+            window.DESIGNER_API_BASE = '';   // same-origin when enabled
         }());
     </script>
 

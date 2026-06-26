@@ -800,11 +800,17 @@
             showToast('Draft saved ✓');
             return;
         }
-        // Fallback: API only (older load order)
+        // Fallback: API only (older load order). Skip the network call when no
+        // API is present (static Live Server) so nothing 404s.
+        if (!window.DESIGNER_API_ENABLED) {
+            setStatus('Draft saved', true);
+            showToast('Draft saved ✓');
+            return;
+        }
         var payload = Object.assign({ _template: TEMPLATE }, draft);
         var sections = window.__designerSectionDrafts || {};
         Object.keys(sections).forEach(function (ns) { payload[ns] = sections[ns]; });
-        fetch('/api/designer/draft?template=' + TEMPLATE, {
+        fetch((window.DESIGNER_API_BASE || '') + '/api/designer/draft?template=' + TEMPLATE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
