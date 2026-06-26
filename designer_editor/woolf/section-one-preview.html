@@ -175,6 +175,14 @@
       return;
     }
 
+    /* Jump to a specific slide index — click the dot so the slideshow JS stays in sync */
+    if (payload.jumpToSlide !== undefined) {
+      const dots = document.querySelectorAll('.hero__dot');
+      const dot  = dots[payload.jumpToSlide];
+      if (dot) dot.click();
+      return;
+    }
+
     /* Single field update */
     const el = payload.id ? document.getElementById(payload.id) : null;
     if (!el) return;
@@ -228,6 +236,19 @@
   if (window.parent !== window) {
     window.parent.postMessage({ type: 's1Ready' }, '*');
   }
+
+  /* Auto-resize: notify parent whenever the document height changes */
+  function reportHeight() {
+    const h = document.documentElement.scrollHeight;
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 's1Height', height: h }, '*');
+    }
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(reportHeight).observe(document.body);
+  }
+  reportHeight();
 })();
 </script>
 </body>

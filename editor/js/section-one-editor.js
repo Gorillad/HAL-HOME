@@ -105,13 +105,18 @@
   }
 
   window.addEventListener('message', (e) => {
-    if (e.data && e.data.type === 's1Ready') {
+    if (!e.data) return;
+    if (e.data.type === 's1Ready') {
       frameReady = true;
       pendingMessages.forEach((msg) => {
         try { frame.contentWindow.postMessage({ type: 's1Update', payload: msg }, '*'); } catch (_) {}
       });
       pendingMessages = [];
       sendFullState();
+    }
+    if (e.data.type === 's1Height' && e.data.height) {
+      // Add a small buffer so nothing clips at the bottom
+      frame.style.height = (e.data.height + 24) + 'px';
     }
   });
 
@@ -170,10 +175,24 @@
 
   /* ── Input listeners ─────────────────────────────────────────── */
 
+  // When a slide field is focused, jump the preview to that slide
+  function slideIndexFromKey(key) {
+    if (key.startsWith('slide0')) return 0;
+    if (key.startsWith('slide1')) return 1;
+    if (key.startsWith('slide2')) return 2;
+    return null;
+  }
+
   document.querySelectorAll('[data-s1-field]').forEach((el) => {
     const key = el.dataset.s1Field;
     const evType = (el.tagName === 'TEXTAREA' || el.type === 'text') ? 'input' : 'change';
     el.addEventListener(evType, () => applyS1Field(key, el.value));
+
+    // Jump preview to the matching slide when a slide field gains focus
+    el.addEventListener('focus', () => {
+      const idx = slideIndexFromKey(key);
+      if (idx !== null) sendToFrame({ jumpToSlide: idx });
+    });
   });
 
   /* ── Slide background image upload ──────────────────────────── */
@@ -233,7 +252,11 @@
 
   async function saveDraft() {
     try {
-      const body = Object.assign({}, window.__woolDraft || {}, { _s1: draft, _template: TEMPLATE });
+      // Merge: start from whatever the header editor currently holds, then layer in s1
+      const headerDraft = (typeof window.__woolDraft === 'object' && window.__woolDraft)
+        ? window.__woolDraft
+        : {};
+      const body = Object.assign({}, headerDraft, { _s1: draft, _template: TEMPLATE });
       await fetch(`/api/designer/draft?template=${TEMPLATE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -250,8 +273,10 @@
       const res = await fetch(`/api/designer/draft?template=${TEMPLATE}`);
       if (!res.ok) return;
       const data = await res.json();
-      if (data && data._s1) {
-        Object.assign(draft, data._s1);
+      // Server wraps the saved object under { draft: { ... } }
+      const saved = data.draft || data;
+      if (saved && saved._s1) {
+        Object.assign(draft, saved._s1);
       }
     } catch (_) {}
     populateFields();

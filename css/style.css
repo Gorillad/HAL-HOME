@@ -2687,7 +2687,7 @@ body.cart-open {
 .mock-hero--editorial { height: 48px; background: linear-gradient(135deg, #2b3a42 30%, #7a9eb5 100%); }
 .mock-hero--curator { height: 44px; background: linear-gradient(120deg, #3d4a3e 25%, #8fa888 100%); }
 .mock-hero--canvas { height: 52px; background: linear-gradient(160deg, #4a3d52 20%, #b8a0c4 90%); }
-.mock-hero--woolf { height: 50px; background: linear-gradient(135deg, #2a2420 10%, #6b5a48 55%, #d4c4a8 100%); }
+.mock-hero--woolf { height: 50px; background: linear-gradient(100deg, #081525 0%, #0d2137 50%, #1a3d6b 80%, #004fa3 100%); }
 .mock-hero--luxury { height: 56px; background: linear-gradient(135deg, #1a252b 20%, #c9a962 80%); }
 
 .mock-grid {
@@ -2818,11 +2818,11 @@ body.cart-open {
 }
 
 .mock-woolf-prose {
-    background: linear-gradient(180deg, #ebe4d8 0%, #ddd4c4 100%);
+    background: linear-gradient(180deg, #0f2540 0%, #0d2137 100%);
 }
 
 .mock-woolf-aside {
-    background: linear-gradient(180deg, #3d3428 0%, #524636 100%);
+    background: linear-gradient(180deg, #1a3a5c 0%, #c5d3de 100%);
 }
 
 .mock-story span {

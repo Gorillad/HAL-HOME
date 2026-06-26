@@ -784,10 +784,15 @@
         setTimeout(function () { saveToast.classList.remove('is-visible'); }, 2200);
     }
 
+    // Expose header draft so section-one-editor.js can merge before its own save
+    Object.defineProperty(window, '__woolDraft', { get: function () { return draft; } });
+
     function saveDraft() {
         if (!isDirty) return;
         isDirty = false;
-        var payload = Object.assign({ _template: TEMPLATE }, draft);
+        // Merge with any section-level drafts so a header save never wipes s1 data
+        var s1Snapshot = (window.__s1Draft) ? { _s1: window.__s1Draft } : {};
+        var payload = Object.assign({ _template: TEMPLATE }, draft, s1Snapshot);
         fetch('/api/designer/draft?template=' + TEMPLATE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
