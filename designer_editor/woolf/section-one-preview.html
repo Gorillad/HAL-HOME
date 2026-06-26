@@ -232,11 +232,6 @@
     if (e.data && e.data.type === 's1Update') applyUpdate(e.data.payload);
   });
 
-  /* Signal parent that we're ready */
-  if (window.parent !== window) {
-    window.parent.postMessage({ type: 's1Ready' }, '*');
-  }
-
   /* Auto-resize: notify parent whenever the document height changes */
   function reportHeight() {
     const h = document.documentElement.scrollHeight;
@@ -248,7 +243,15 @@
   if (typeof ResizeObserver !== 'undefined') {
     new ResizeObserver(reportHeight).observe(document.body);
   }
-  reportHeight();
+
+  /* Signal parent that we're ready — use window.load so this fires AFTER
+     the parent's iframe load event, ensuring frameReady stays true */
+  window.addEventListener('load', function () {
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 's1Ready' }, '*');
+    }
+    reportHeight();
+  });
 })();
 </script>
 </body>

@@ -121,7 +121,13 @@
   });
 
   frame.addEventListener('load', () => {
-    frameReady = false;
+    // Only reset if the frame was previously ready (a true re-navigation).
+    // On initial load the 'load' event fires before 's1Ready', so we do
+    // nothing here and let s1Ready set frameReady = true.
+    if (frameReady) {
+      frameReady = false;
+      pendingMessages = [];
+    }
   });
 
   function sendFullState() {
