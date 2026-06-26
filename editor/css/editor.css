@@ -757,11 +757,22 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.editor-panel-block:has(> .editor-accordion) {
+    padding: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .editor-panel-block.is-active {
     border-color: var(--hero-gold);
     box-shadow:
         0 0 0 1px var(--editor-accent-ring),
         0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.editor-panel-block:has(> .editor-accordion) .editor-accordion {
+    border-bottom: none;
+    border-radius: 0;
 }
 
 .editor-panel-block .editor-panel-subhead,
@@ -5348,3 +5359,67 @@ a.showroom-spotlight-footer-logo {
         justify-content: center;
     }
 }
+
+/* ── Collapsible accordion sections (Showroom editor sidebar) ── */
+
+.editor-accordion {
+    border-bottom: 1px solid var(--editor-border, #e4e4e4);
+    margin: 0;
+    padding: 0;
+}
+
+.editor-accordion[hidden] {
+    display: none !important;
+}
+
+.editor-accordion-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--xo-charcoal, #333);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    gap: 8px;
+}
+
+.editor-accordion-head::-webkit-details-marker { display: none; }
+
+.editor-accordion-head::after {
+    content: '›';
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #aaa;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+details.editor-accordion[open] > .editor-accordion-head::after {
+    transform: rotate(90deg);
+}
+
+.editor-accordion-head:hover { color: var(--hero-bg, #000); }
+.editor-accordion-head:hover::after { color: #666; }
+
+.editor-accordion-body {
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.editor-accordion-body .editor-panel-lead {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.editor-accordion-body > .editor-fieldset {
+    margin-bottom: 0;
+}
+
+.editor-accordion-body > *:first-child { margin-top: 0; }

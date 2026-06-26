@@ -1153,6 +1153,10 @@
         const block = editorPanel.querySelector(`.editor-panel-block[data-section-id="${sectionId}"]`);
         if (!heading && !block) return false;
 
+        if (heading && heading.tagName === 'DETAILS' && !heading.open) {
+            heading.open = true;
+        }
+
         scrollEditorPanelTo(`#${sectionId}`);
         setActiveEditorSection(sectionId);
         flashJumpTarget(block || heading);
@@ -5330,6 +5334,7 @@
     window.addEventListener('resize', scheduleFitPreviewScale);
 
     const GALLERY_EDITOR_SECTIONS = new Set([
+        'editor-company-info',
         'editor-section-header',
         'editor-section-hero',
         'editor-section-gallery-catalog',
@@ -5338,6 +5343,7 @@
     ]);
 
     const SPOTLIGHT_EDITOR_SECTIONS = new Set([
+        'editor-company-info',
         'editor-section-header',
         'editor-section-hero',
         'editor-section-spotlight-on-sale',

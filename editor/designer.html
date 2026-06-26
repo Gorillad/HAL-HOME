@@ -312,6 +312,79 @@
             accent-color: #e05555;
         }
         .mega-link-hide-toggle:hover { color: #e05555; }
+
+        /* ── Section nav tabs (Header / Section One / …) ───── */
+        .designer-section-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--editor-border, #2a2a2a);
+            padding: 0 8px;
+            background: rgba(255,255,255,0.02);
+            flex-shrink: 0;
+        }
+        .designer-section-tab {
+            padding: 10px 12px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: #555;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: color 0.15s, border-color 0.15s;
+            margin-bottom: -1px;
+            white-space: nowrap;
+        }
+        .designer-section-tab:hover { color: #bbb; }
+        .designer-section-tab.is-active { color: #fff; border-bottom-color: #4a9eff; }
+
+        /* Hide sub-panels when toggled */
+        #woolSectionHeader[hidden],
+        #woolSectionOne[hidden] { display: none !important; }
+
+        /* Section One iframe */
+        #woolSectionOneFrame {
+            display: block;
+            width: 100%;
+            height: 900px;
+            border: none;
+        }
+
+        /* ── Slide background upload widget ─────────────────── */
+        .editor-slide-bg-widget {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .editor-slide-bg-thumb {
+            width: 100%;
+            height: 80px;
+            background: #0d2137;
+            border-radius: 5px;
+            border: 1px solid #1e3550;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .editor-slide-bg-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .editor-slide-bg-thumb-empty {
+            font-size: 0.62rem;
+            color: #445;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .editor-slide-bg-actions {
+            display: flex;
+            gap: 6px;
+        }
     </style>
 </head>
 <body class="editor-page">
@@ -397,6 +470,15 @@
 
             <!-- Woolf field panel (shown only when design=woolf) -->
             <div class="designer-field-panel" id="woolFieldPanel" hidden>
+
+                <!-- Section navigation tabs -->
+                <div class="designer-section-tabs" id="woolSectionTabs" role="tablist">
+                    <button type="button" class="designer-section-tab is-active" role="tab" data-section="header" aria-selected="true">Header</button>
+                    <button type="button" class="designer-section-tab" role="tab" data-section="sectionOne" aria-selected="false">Section One</button>
+                </div>
+
+                <!-- ── Header sub-panel ──────────────────────────────── -->
+                <div id="woolSectionHeader">
 
                 <details class="designer-group" open>
                     <summary class="designer-group-head">Branding</summary>
@@ -1166,6 +1248,224 @@
                     </div>
                 </details>
 
+                </div><!-- /#woolSectionHeader -->
+
+                <!-- ── Section One sub-panel ────────────────────────── -->
+                <div id="woolSectionOne" hidden>
+
+                    <!-- Hero Slides -->
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Hero Slides</summary>
+                        <div class="designer-group-body">
+
+                            <!-- Slide 1 -->
+                            <details class="designer-slide-group" open>
+                                <summary class="designer-slide-group-head">Slide 1</summary>
+                                <div class="designer-slide-group-body">
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s0-eyebrow">Eyebrow label</label>
+                                        <input type="text" id="df-s1-s0-eyebrow" data-s1-field="slide0Eyebrow" class="editor-field-input" placeholder="500,000+ SKUs">
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s0-title">Headline</label>
+                                        <input type="text" id="df-s1-s0-title" data-s1-field="slide0Title" class="editor-field-input" placeholder="Industrial supplies for every job site">
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s0-text">Body copy</label>
+                                        <textarea id="df-s1-s0-text" data-s1-field="slide0Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="editor-field editor-field--inline">
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s0-btn1l">Button 1 label</label>
+                                            <input type="text" id="df-s1-s0-btn1l" data-s1-field="slide0Btn1Label" class="editor-field-input" placeholder="Browse Catalog">
+                                        </div>
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s0-btn1u">Button 1 URL</label>
+                                            <input type="text" id="df-s1-s0-btn1u" data-s1-field="slide0Btn1Url" class="editor-field-input" placeholder="/catalog">
+                                        </div>
+                                    </div>
+                                    <div class="editor-field editor-field--inline">
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s0-btn2l">Button 2 label</label>
+                                            <input type="text" id="df-s1-s0-btn2l" data-s1-field="slide0Btn2Label" class="editor-field-input" placeholder="Request a Quote">
+                                        </div>
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s0-btn2u">Button 2 URL</label>
+                                            <input type="text" id="df-s1-s0-btn2u" data-s1-field="slide0Btn2Url" class="editor-field-input" placeholder="/contact">
+                                        </div>
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label">Background image</label>
+                                        <div class="editor-slide-bg-widget">
+                                            <div class="editor-slide-bg-thumb" id="s1Slide0BgThumb">
+                                                <img id="s1Slide0BgImg" src="" alt="" hidden>
+                                                <span class="editor-slide-bg-thumb-empty" id="s1Slide0BgEmpty">Default image</span>
+                                            </div>
+                                            <div class="editor-slide-bg-actions">
+                                                <label class="editor-logo-file-label" for="df-s1-s0-bg" style="flex:1">
+                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                                    Upload image
+                                                    <input type="file" id="df-s1-s0-bg" accept="image/*" style="display:none" data-s1-bg-field="slide0BgSrc">
+                                                </label>
+                                                <button type="button" class="editor-logo-remove-btn" id="s1Slide0BgRemoveBtn" hidden>✕ Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Slide 2 -->
+                            <details class="designer-slide-group">
+                                <summary class="designer-slide-group-head">Slide 2</summary>
+                                <div class="designer-slide-group-body">
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s1-eyebrow">Eyebrow label</label>
+                                        <input type="text" id="df-s1-s1-eyebrow" data-s1-field="slide1Eyebrow" class="editor-field-input" placeholder="Safety &amp; PPE">
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s1-title">Headline</label>
+                                        <input type="text" id="df-s1-s1-title" data-s1-field="slide1Title" class="editor-field-input" placeholder="Keep your team protected">
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s1-text">Body copy</label>
+                                        <textarea id="df-s1-s1-text" data-s1-field="slide1Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="editor-field editor-field--inline">
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s1-btn1l">Button 1 label</label>
+                                            <input type="text" id="df-s1-s1-btn1l" data-s1-field="slide1Btn1Label" class="editor-field-input" placeholder="Shop Safety">
+                                        </div>
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s1-btn1u">Button 1 URL</label>
+                                            <input type="text" id="df-s1-s1-btn1u" data-s1-field="slide1Btn1Url" class="editor-field-input" placeholder="/category/safety">
+                                        </div>
+                                    </div>
+                                    <div class="editor-field editor-field--inline">
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s1-btn2l">Button 2 label</label>
+                                            <input type="text" id="df-s1-s1-btn2l" data-s1-field="slide1Btn2Label" class="editor-field-input" placeholder="Browse All">
+                                        </div>
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s1-btn2u">Button 2 URL</label>
+                                            <input type="text" id="df-s1-s1-btn2u" data-s1-field="slide1Btn2Url" class="editor-field-input" placeholder="/catalog">
+                                        </div>
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label">Background image</label>
+                                        <div class="editor-slide-bg-widget">
+                                            <div class="editor-slide-bg-thumb" id="s1Slide1BgThumb">
+                                                <img id="s1Slide1BgImg" src="" alt="" hidden>
+                                                <span class="editor-slide-bg-thumb-empty" id="s1Slide1BgEmpty">Default image</span>
+                                            </div>
+                                            <div class="editor-slide-bg-actions">
+                                                <label class="editor-logo-file-label" for="df-s1-s1-bg" style="flex:1">
+                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                                    Upload image
+                                                    <input type="file" id="df-s1-s1-bg" accept="image/*" style="display:none" data-s1-bg-field="slide1BgSrc">
+                                                </label>
+                                                <button type="button" class="editor-logo-remove-btn" id="s1Slide1BgRemoveBtn" hidden>✕ Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Slide 3 -->
+                            <details class="designer-slide-group">
+                                <summary class="designer-slide-group-head">Slide 3</summary>
+                                <div class="designer-slide-group-body">
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s2-eyebrow">Eyebrow label</label>
+                                        <input type="text" id="df-s1-s2-eyebrow" data-s1-field="slide2Eyebrow" class="editor-field-input" placeholder="Cutting &amp; Machining">
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s2-title">Headline</label>
+                                        <input type="text" id="df-s1-s2-title" data-s1-field="slide2Title" class="editor-field-input" placeholder="Precision tooling for production">
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label" for="df-s1-s2-text">Body copy</label>
+                                        <textarea id="df-s1-s2-text" data-s1-field="slide2Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                    </div>
+                                    <div class="editor-field editor-field--inline">
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s2-btn1l">Button 1 label</label>
+                                            <input type="text" id="df-s1-s2-btn1l" data-s1-field="slide2Btn1Label" class="editor-field-input" placeholder="Shop Cutting Tools">
+                                        </div>
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s2-btn1u">Button 1 URL</label>
+                                            <input type="text" id="df-s1-s2-btn1u" data-s1-field="slide2Btn1Url" class="editor-field-input" placeholder="/category/cutting-tools">
+                                        </div>
+                                    </div>
+                                    <div class="editor-field editor-field--inline">
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s2-btn2l">Button 2 label</label>
+                                            <input type="text" id="df-s1-s2-btn2l" data-s1-field="slide2Btn2Label" class="editor-field-input" placeholder="Browse Milling">
+                                        </div>
+                                        <div>
+                                            <label class="editor-field-label" for="df-s1-s2-btn2u">Button 2 URL</label>
+                                            <input type="text" id="df-s1-s2-btn2u" data-s1-field="slide2Btn2Url" class="editor-field-input" placeholder="/category/milling">
+                                        </div>
+                                    </div>
+                                    <div class="editor-field">
+                                        <label class="editor-field-label">Background image</label>
+                                        <div class="editor-slide-bg-widget">
+                                            <div class="editor-slide-bg-thumb" id="s1Slide2BgThumb">
+                                                <img id="s1Slide2BgImg" src="" alt="" hidden>
+                                                <span class="editor-slide-bg-thumb-empty" id="s1Slide2BgEmpty">Default image</span>
+                                            </div>
+                                            <div class="editor-slide-bg-actions">
+                                                <label class="editor-logo-file-label" for="df-s1-s2-bg" style="flex:1">
+                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                                    Upload image
+                                                    <input type="file" id="df-s1-s2-bg" accept="image/*" style="display:none" data-s1-bg-field="slide2BgSrc">
+                                                </label>
+                                                <button type="button" class="editor-logo-remove-btn" id="s1Slide2BgRemoveBtn" hidden>✕ Remove</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+
+                        </div>
+                    </details>
+
+                    <!-- Trust Bar -->
+                    <details class="designer-group">
+                        <summary class="designer-group-head">Trust Bar</summary>
+                        <div class="designer-group-body">
+                            <p class="editor-field-hint" style="font-size:0.72rem;color:#666;margin:0 0 4px">Short phrases that appear below the hero. Keep each under 30 characters.</p>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="df-s1-trust0">Item 1</label>
+                                <input type="text" id="df-s1-trust0" data-s1-field="trust0Text" class="editor-field-input" placeholder="Fast shipping nationwide">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="df-s1-trust1">Item 2</label>
+                                <input type="text" id="df-s1-trust1" data-s1-field="trust1Text" class="editor-field-input" placeholder="Trusted industrial brands">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="df-s1-trust2">Item 3</label>
+                                <input type="text" id="df-s1-trust2" data-s1-field="trust2Text" class="editor-field-input" placeholder="Dedicated account support">
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Shop by Category headings -->
+                    <details class="designer-group">
+                        <summary class="designer-group-head">Shop by Category</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="df-s1-cats-title">Section title</label>
+                                <input type="text" id="df-s1-cats-title" data-s1-field="catsTitle" class="editor-field-input" placeholder="Shop by Category">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="df-s1-cats-sub">Subtitle</label>
+                                <input type="text" id="df-s1-cats-sub" data-s1-field="catsSubtitle" class="editor-field-input" placeholder="Browse our most popular product lines">
+                            </div>
+                        </div>
+                    </details>
+
+                </div><!-- /#woolSectionOne -->
+
             </div><!-- /#woolFieldPanel -->
 
             <!-- Scaffold shown for non-Woolf designs -->
@@ -1196,7 +1496,16 @@
                     <iframe
                         id="woolPreviewFrame"
                         src="/designer-templates/woolf/header-preview.html"
-                        title="The Woolf — live preview"
+                        title="The Woolf — Header live preview"
+                        scrolling="yes"
+                    ></iframe>
+                </div>
+
+                <div class="designer-iframe-wrap" id="woolSectionOnePreviewWrap" hidden>
+                    <iframe
+                        id="woolSectionOneFrame"
+                        src="/designer-templates/woolf/section-one-preview.html"
+                        title="The Woolf — Section One live preview"
                         scrolling="yes"
                     ></iframe>
                 </div>
@@ -1219,5 +1528,6 @@
     <script src="js/editor-site-nav.js"></script>
     <script src="vendor/jszip.min.js"></script>
     <script src="js/designer-editor.js"></script>
+    <script src="js/section-one-editor.js"></script>
 </body>
 </html>

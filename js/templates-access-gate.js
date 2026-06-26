@@ -205,6 +205,13 @@ function initTemplatesAccessGate() {
         }
     });
 
+    /* ── AUTH GATE DISABLED (re-enable before going live) ────────
+       Restore the EditorAccess.checkSession() block below and
+       remove the immediate unlock() call when ready for production.
+    ─────────────────────────────────────────────────────────── */
+    unlock(null, { redirectToEditor: Boolean(getEditorNextPath()) });
+
+    /* PRODUCTION: swap the line above for this block:
     EditorAccess.checkSession().then((session) => {
         if (session.ok) {
             unlock(session.user, { redirectToEditor: Boolean(getEditorNextPath()) });
@@ -212,4 +219,5 @@ function initTemplatesAccessGate() {
         }
         lock();
     });
+    */
 }

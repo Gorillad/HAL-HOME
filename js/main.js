@@ -283,7 +283,8 @@ function showContactMsg(el, text, type) {
 }
 
 function initShowroomDesignTabs() {
-    const card = document.querySelector('.template-card--showroom');
+    const card = document.querySelector('.home-templates-showroom-spotlight') ||
+                 document.querySelector('.template-card--showroom');
     if (!card) return;
 
     const tablist = card.querySelector('.showroom-design-tabs');

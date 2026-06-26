@@ -5,7 +5,8 @@
   "description": "LogicX marketing site — homepage, showroom editor, and Stripe checkout",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node --watch server/index.js"
+    "dev": "node --watch server/index.js",
+    "designer": "node server/index.js & sleep 2 && open 'http://localhost:4242/editor/designer.html?design=woolf'"
   },
   "engines": {
     "node": ">=18"

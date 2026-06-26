@@ -126,7 +126,28 @@
             <h2>Homepage content</h2>
             <p class="editor-panel-lead">Configure the Showroom homepage template. Your draft saves automatically in this browser. Export includes all homepage sections and assets in a ZIP with PDF brief and JSON spec.</p>
 
-            <h3 class="editor-panel-subhead editor-panel-section" id="editor-section-header">Header</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-company-info" open>
+                <summary class="editor-accordion-head">Company Info</summary>
+                <div class="editor-accordion-body">
+                    <p class="editor-field-hint">These details appear in the footer and throughout the export handoff.</p>
+                    <div class="editor-field">
+                        <label for="fieldFooterCompanyName">Company name</label>
+                        <input type="text" id="fieldFooterCompanyName" name="footerCompanyName" autocomplete="off" placeholder="Acme Lighting Co.">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldFooterPhone">Phone number</label>
+                        <input type="tel" id="fieldFooterPhone" name="footerPhone" autocomplete="off" placeholder="(800) 555-1234">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldFooterEmail">Contact email</label>
+                        <input type="email" id="fieldFooterEmail" name="footerEmail" autocomplete="off" placeholder="hello@company.com">
+                    </div>
+                </div>
+            </details>
+
+            <details class="editor-accordion editor-panel-section" id="editor-section-header">
+                <summary class="editor-accordion-head">Header</summary>
+                <div class="editor-accordion-body">
 
             <div class="editor-header-jump">
                 <label for="headerJumpNav">Jump to</label>
@@ -263,8 +284,12 @@
 
             <div id="mainNavEditor"></div>
             </div>
+                </div>
+            </details><!-- /#editor-section-header -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-hero">Hero</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-hero">
+                <summary class="editor-accordion-head">Hero</summary>
+                <div class="editor-accordion-body">
 
             <div class="editor-hero-gallery" id="editorHeroGallery" hidden>
                 <div class="editor-field">
@@ -422,104 +447,132 @@
                 <p class="editor-panel-lead editor-panel-lead--compact">Large hero image carousel with three slides. Upload lifestyle images and set a link for each slide below.</p>
                 <div id="spotlightHeroSlidesEditor"></div>
             </div>
+                </div>
+            </details><!-- /#editor-section-hero -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-on-sale">What's On Sale</h3>
-                <div class="editor-field">
-                    <label for="fieldSpotlightOnSaleHeading">Section heading</label>
-                    <input type="text" id="fieldSpotlightOnSaleHeading" data-spotlight-field="onSaleHeading" autocomplete="off">
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-on-sale">
+                <summary class="editor-accordion-head">What's On Sale</summary>
+                <div class="editor-accordion-body">
+                    <div class="editor-field">
+                        <label for="fieldSpotlightOnSaleHeading">Section heading</label>
+                        <input type="text" id="fieldSpotlightOnSaleHeading" data-spotlight-field="onSaleHeading" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightOnSaleUrl">Promo image link</label>
+                        <input type="text" id="fieldSpotlightOnSaleUrl" data-spotlight-field="onSaleUrl" autocomplete="off" placeholder="/clearance">
+                    </div>
+                    <p class="editor-field-hint">Promo image is fixed in this template.</p>
                 </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightOnSaleUrl">Promo image link</label>
-                    <input type="text" id="fieldSpotlightOnSaleUrl" data-spotlight-field="onSaleUrl" autocomplete="off" placeholder="/clearance">
-                </div>
-                <p class="editor-field-hint editor-field-hint--fieldset">Promo image is fixed in this template.</p>
+            </details><!-- /#editor-section-spotlight-on-sale -->
 
-                <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-shop-by-room">Shop By Room</h3>
-                <div class="editor-field">
-                    <label for="fieldSpotlightShopByRoomHeading">Section heading</label>
-                    <input type="text" id="fieldSpotlightShopByRoomHeading" data-spotlight-field="shopByRoomHeading" autocomplete="off">
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-shop-by-room">
+                <summary class="editor-accordion-head">Shop By Room</summary>
+                <div class="editor-accordion-body">
+                    <div class="editor-field">
+                        <label for="fieldSpotlightShopByRoomHeading">Section heading</label>
+                        <input type="text" id="fieldSpotlightShopByRoomHeading" data-spotlight-field="shopByRoomHeading" autocomplete="off">
+                    </div>
+                    <p class="editor-panel-lead editor-panel-lead--compact">Six room tiles in a 3×2 grid on desktop. Edit each image, label, and link.</p>
+                    <div id="spotlightShopByRoomEditor"></div>
                 </div>
-                <p class="editor-panel-lead editor-panel-lead--compact">Six room tiles in a 3×2 grid on desktop. Edit each image, label, and link.</p>
-                <div id="spotlightShopByRoomEditor"></div>
+            </details><!-- /#editor-section-spotlight-shop-by-room -->
 
-                <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-about">About Us</h3>
-                <div class="editor-field">
-                    <label for="fieldSpotlightAboutHeading">Heading</label>
-                    <input type="text" id="fieldSpotlightAboutHeading" data-spotlight-field="aboutHeading" autocomplete="off">
-                </div>
-                <div class="editor-field">
-                    <label for="fieldSpotlightAboutCopy">Body copy</label>
-                    <textarea id="fieldSpotlightAboutCopy" data-spotlight-field="aboutCopy" rows="8" autocomplete="off"></textarea>
-                    <span class="editor-field-hint">Separate paragraphs with a blank line.</span>
-                </div>
-                <div class="editor-field">
-                    <label for="fieldSpotlightAboutImage">Lifestyle image</label>
-                    <div class="editor-upload">
-                        <div class="editor-upload-preview editor-upload-preview--spotlight-about is-empty" id="uploadPreviewSpotlightAbout"></div>
-                        <input type="file" id="fieldSpotlightAboutImage" accept="image/*">
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-about">
+                <summary class="editor-accordion-head">About Us</summary>
+                <div class="editor-accordion-body">
+                    <div class="editor-field">
+                        <label for="fieldSpotlightAboutHeading">Heading</label>
+                        <input type="text" id="fieldSpotlightAboutHeading" data-spotlight-field="aboutHeading" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldSpotlightAboutCopy">Body copy</label>
+                        <textarea id="fieldSpotlightAboutCopy" data-spotlight-field="aboutCopy" rows="8" autocomplete="off"></textarea>
+                        <span class="editor-field-hint">Separate paragraphs with a blank line.</span>
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldSpotlightAboutImage">Lifestyle image</label>
+                        <div class="editor-upload">
+                            <div class="editor-upload-preview editor-upload-preview--spotlight-about is-empty" id="uploadPreviewSpotlightAbout"></div>
+                            <input type="file" id="fieldSpotlightAboutImage" accept="image/*">
+                        </div>
                     </div>
                 </div>
+            </details><!-- /#editor-section-spotlight-about -->
 
-                <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-category">Light Up Your World By Category</h3>
-                <div class="editor-field">
-                    <label for="fieldSpotlightCategoryHeading">Section heading</label>
-                    <input type="text" id="fieldSpotlightCategoryHeading" data-spotlight-field="categoryHeading" autocomplete="off">
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-category">
+                <summary class="editor-accordion-head">Categories</summary>
+                <div class="editor-accordion-body">
+                    <div class="editor-field">
+                        <label for="fieldSpotlightCategoryHeading">Section heading</label>
+                        <input type="text" id="fieldSpotlightCategoryHeading" data-spotlight-field="categoryHeading" autocomplete="off">
+                    </div>
+                    <p class="editor-panel-lead editor-panel-lead--compact">Six category tiles. Edit each image, label, and catalog link.</p>
+                    <div id="spotlightCategoryEditor"></div>
                 </div>
-                <p class="editor-panel-lead editor-panel-lead--compact">Six category tiles. Edit each image, label, and catalog link.</p>
-                <div id="spotlightCategoryEditor"></div>
+            </details><!-- /#editor-section-spotlight-category -->
 
-                <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-brands">Our Brands</h3>
-                <div class="editor-field">
-                    <label for="fieldSpotlightBrandsHeading">Section heading</label>
-                    <input type="text" id="fieldSpotlightBrandsHeading" data-spotlight-field="brandsHeading" autocomplete="off">
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-brands">
+                <summary class="editor-accordion-head">Our Brands</summary>
+                <div class="editor-accordion-body">
+                    <div class="editor-field">
+                        <label for="fieldSpotlightBrandsHeading">Section heading</label>
+                        <input type="text" id="fieldSpotlightBrandsHeading" data-spotlight-field="brandsHeading" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightBrandsUrl">Brands image link</label>
+                        <input type="text" id="fieldSpotlightBrandsUrl" data-spotlight-field="brandsUrl" autocomplete="off" placeholder="/brands">
+                    </div>
+                    <p class="editor-field-hint">Brands image is fixed in this template.</p>
                 </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightBrandsUrl">Brands image link</label>
-                    <input type="text" id="fieldSpotlightBrandsUrl" data-spotlight-field="brandsUrl" autocomplete="off" placeholder="/brands">
-                </div>
-                <p class="editor-field-hint editor-field-hint--fieldset">Brands image is fixed in this template.</p>
+            </details><!-- /#editor-section-spotlight-brands -->
 
-                <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-newsletter">Newsletter</h3>
-                <div class="editor-field">
-                    <label for="fieldSpotlightNewsletterHeading">Heading</label>
-                    <input type="text" id="fieldSpotlightNewsletterHeading" data-spotlight-field="newsletterHeading" autocomplete="off">
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-newsletter">
+                <summary class="editor-accordion-head">Newsletter</summary>
+                <div class="editor-accordion-body">
+                    <div class="editor-field">
+                        <label for="fieldSpotlightNewsletterHeading">Heading</label>
+                        <input type="text" id="fieldSpotlightNewsletterHeading" data-spotlight-field="newsletterHeading" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldSpotlightNewsletterCopy">Supporting copy</label>
+                        <textarea id="fieldSpotlightNewsletterCopy" data-spotlight-field="newsletterCopy" rows="3" autocomplete="off"></textarea>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightNewsletterButtonLabel">Button label</label>
+                        <input type="text" id="fieldSpotlightNewsletterButtonLabel" data-spotlight-field="newsletterButtonLabel" autocomplete="off">
+                    </div>
+                    <p class="editor-field-hint">Email field and form action are fixed in this template.</p>
+                    <p class="editor-panel-lead editor-panel-lead--compact">Want To See More? call-to-action box</p>
+                    <div class="editor-field">
+                        <label for="fieldSpotlightNewsletterCtaHeading">Box heading</label>
+                        <input type="text" id="fieldSpotlightNewsletterCtaHeading" data-spotlight-field="newsletterCtaHeading" autocomplete="off">
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldSpotlightNewsletterCtaCopy">Box copy</label>
+                        <textarea id="fieldSpotlightNewsletterCtaCopy" data-spotlight-field="newsletterCtaCopy" rows="4" autocomplete="off"></textarea>
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightNewsletterCtaShopLabel">Shop button label</label>
+                        <input type="text" id="fieldSpotlightNewsletterCtaShopLabel" data-spotlight-field="newsletterCtaShopLabel" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightNewsletterCtaShopUrl">Shop button link</label>
+                        <input type="text" id="fieldSpotlightNewsletterCtaShopUrl" data-spotlight-field="newsletterCtaShopUrl" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightNewsletterCtaContactLabel">Contact button label</label>
+                        <input type="text" id="fieldSpotlightNewsletterCtaContactLabel" data-spotlight-field="newsletterCtaContactLabel" autocomplete="off">
+                    </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldSpotlightNewsletterCtaContactUrl">Contact button link</label>
+                        <input type="text" id="fieldSpotlightNewsletterCtaContactUrl" data-spotlight-field="newsletterCtaContactUrl" autocomplete="off">
+                    </div>
                 </div>
-                <div class="editor-field">
-                    <label for="fieldSpotlightNewsletterCopy">Supporting copy</label>
-                    <textarea id="fieldSpotlightNewsletterCopy" data-spotlight-field="newsletterCopy" rows="3" autocomplete="off"></textarea>
-                </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightNewsletterButtonLabel">Button label</label>
-                    <input type="text" id="fieldSpotlightNewsletterButtonLabel" data-spotlight-field="newsletterButtonLabel" autocomplete="off">
-                </div>
-                <p class="editor-field-hint editor-field-hint--fieldset">Email field and form action are fixed in this template.</p>
-                <p class="editor-panel-lead editor-panel-lead--compact">Want To See More? call-to-action box</p>
-                <div class="editor-field">
-                    <label for="fieldSpotlightNewsletterCtaHeading">Box heading</label>
-                    <input type="text" id="fieldSpotlightNewsletterCtaHeading" data-spotlight-field="newsletterCtaHeading" autocomplete="off">
-                </div>
-                <div class="editor-field">
-                    <label for="fieldSpotlightNewsletterCtaCopy">Box copy</label>
-                    <textarea id="fieldSpotlightNewsletterCtaCopy" data-spotlight-field="newsletterCtaCopy" rows="4" autocomplete="off"></textarea>
-                </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightNewsletterCtaShopLabel">Shop button label</label>
-                    <input type="text" id="fieldSpotlightNewsletterCtaShopLabel" data-spotlight-field="newsletterCtaShopLabel" autocomplete="off">
-                </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightNewsletterCtaShopUrl">Shop button link</label>
-                    <input type="text" id="fieldSpotlightNewsletterCtaShopUrl" data-spotlight-field="newsletterCtaShopUrl" autocomplete="off">
-                </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightNewsletterCtaContactLabel">Contact button label</label>
-                    <input type="text" id="fieldSpotlightNewsletterCtaContactLabel" data-spotlight-field="newsletterCtaContactLabel" autocomplete="off">
-                </div>
-                <div class="editor-field editor-field--compact">
-                    <label for="fieldSpotlightNewsletterCtaContactUrl">Contact button link</label>
-                    <input type="text" id="fieldSpotlightNewsletterCtaContactUrl" data-spotlight-field="newsletterCtaContactUrl" autocomplete="off">
-                </div>
+            </details><!-- /#editor-section-spotlight-newsletter -->
 
-                <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-spotlight-footer">Footer</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-spotlight-footer">
+                <summary class="editor-accordion-head">Footer</summary>
+                <div class="editor-accordion-body">
                 <p class="editor-panel-lead editor-panel-lead--compact">Five-column footer: logo and map, quick links, policies, profile links, and company info.</p>
                 <fieldset class="editor-fieldset">
                     <legend>Footer colors</legend>
@@ -657,14 +710,23 @@
                         <input type="url" id="fieldSpotlightFooterYoutubeUrl" data-spotlight-field="footerYoutubeUrl" autocomplete="off" placeholder="https://youtube.com/...">
                     </div>
                 </fieldset>
+                </div>
+            </details><!-- /#editor-section-spotlight-footer -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-gallery-catalog">Catalog Highlights</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-gallery-catalog">
+                <summary class="editor-accordion-head">Catalog Highlights</summary>
+                <div class="editor-accordion-body">
             <div class="editor-gallery-catalog" id="editorGalleryCatalog" hidden>
                 <p class="editor-panel-lead editor-panel-lead--compact">Four lifestyle tiles linking to catalog sections. Edit each tile’s image, label, and catalog link below — same width as the hero above.</p>
                 <div id="galleryCatalogTilesEditor"></div>
             </div>
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-footer-classic">Footer</h3>
+                </div>
+            </details><!-- /#editor-section-gallery-catalog -->
+
+            <details class="editor-accordion editor-panel-section" id="editor-section-footer-classic">
+                <summary class="editor-accordion-head">Footer</summary>
+                <div class="editor-accordion-body">
             <div class="editor-footer-classic" id="editorFooterClassic" hidden>
                 <p class="editor-panel-lead editor-panel-lead--compact">Four-column footer: company name and about copy, grouped quick links, contact address, and store hours. Shop links can be renamed or removed; About Us and Accounts link labels are fixed — edit URLs only.</p>
 
@@ -731,8 +793,12 @@
                 </fieldset>
 
             </div>
+                </div>
+            </details><!-- /#editor-section-footer-classic -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-copyright-classic">Copyright</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-copyright-classic">
+                <summary class="editor-accordion-head">Copyright</summary>
+                <div class="editor-accordion-body">
             <div class="editor-copyright-classic" id="editorCopyrightClassic" hidden>
                 <p class="editor-panel-lead editor-panel-lead--compact">Required copyright + ADA compliance line shown below the footer. This is a separate site section — not part of the footer columns above.</p>
 
@@ -760,8 +826,12 @@
                     <span class="editor-field-hint">Used in the required copyright + ADA compliance line. Leave blank to use the footer company name.</span>
                 </div>
             </div>
+                </div>
+            </details><!-- /#editor-section-copyright-classic -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-featured-categories">Featured Categories</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-featured-categories">
+                <summary class="editor-accordion-head">Featured Categories</summary>
+                <div class="editor-accordion-body">
             <div class="editor-featured-categories-classic" id="editorClassicSections">
             <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows).</p>
 
@@ -775,8 +845,12 @@
                 <ul class="editor-category-list" id="categoryCheckboxList"></ul>
             </fieldset>
             </div>
+                </div>
+            </details><!-- /#editor-section-featured-categories -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-about-us">About Us</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-about-us">
+                <summary class="editor-accordion-head">About Us</summary>
+                <div class="editor-accordion-body">
 
             <div class="editor-field">
                 <label for="fieldAboutEmployeeImage">Employee photo<span class="editor-field-hint">417 × 282 px</span></label>
@@ -837,8 +911,12 @@
                     </div>
                 </div>
             </fieldset>
+                </div>
+            </details><!-- /#editor-section-about-us -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-feature-cards">Feature Cards</h3>
+            <details class="editor-accordion editor-panel-section" id="editor-section-feature-cards">
+                <summary class="editor-accordion-head">Feature Cards</summary>
+                <div class="editor-accordion-body">
             <div class="editor-feature-cards-classic">
             <p class="editor-panel-lead editor-panel-lead--compact">Two large photo cards side by side with centered copy and a button on each image.</p>
 
@@ -926,36 +1004,49 @@
                 </div>
             </fieldset>
             </div>
+                </div>
+            </details><!-- /#editor-section-feature-cards -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-sketch-section">Sketch Section</h3>
-
+            <details class="editor-accordion editor-panel-section" id="editor-section-sketch-section">
+                <summary class="editor-accordion-head">Sketch Section</summary>
+                <div class="editor-accordion-body">
             <div class="editor-field editor-field--toggle">
                 <label class="editor-toggle" for="fieldSketchSectionVisible">
                     <input type="checkbox" id="fieldSketchSectionVisible" name="sketchSectionVisible" checked>
                     Show sketch section on homepage
                 </label>
             </div>
-
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-you-may-like">You May Like</h3>
-            <p class="editor-panel-lead editor-panel-lead--compact">Upload a lifestyle image (500 × 750 px) for each carousel slot. Enter a catalog item number for each—the section title, product name, and price come from your <strong>You May Like</strong> dashboard attribute on the live site.</p>
-            <div id="youMayLikeEditor"></div>
-            <button type="button" class="btn btn-secondary editor-add-item-btn" id="addYouMayLikeBtn">Add product</button>
-
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-get-inspired">Get Inspired</h3>
-            <p class="editor-panel-lead editor-panel-lead--compact">Upload one lifestyle image (508 × 610 px) for the left column. Enter a catalog item number for each of the eight grid cards—product name, price, and card images pull from your <strong>You May Like</strong> dashboard attribute on the live site.</p>
-
-            <div class="editor-field">
-                <label for="fieldGetInspiredLifestyle">Lifestyle photo (left)<span class="editor-field-hint">508 × 610 px</span></label>
-                <div class="editor-upload">
-                    <div class="editor-upload-preview editor-upload-preview--get-inspired-lifestyle is-empty" id="uploadPreviewGetInspiredLifestyle"></div>
-                    <input type="file" id="fieldGetInspiredLifestyle" name="getInspiredLifestyleImage" accept="image/*">
                 </div>
-            </div>
+            </details><!-- /#editor-section-sketch-section -->
 
-            <div id="getInspiredEditor"></div>
+            <details class="editor-accordion editor-panel-section" id="editor-section-you-may-like">
+                <summary class="editor-accordion-head">You May Like</summary>
+                <div class="editor-accordion-body">
+                    <p class="editor-panel-lead editor-panel-lead--compact">Upload a lifestyle image (500 × 750 px) for each carousel slot. Enter a catalog item number for each — the section title, product name, and price come from your <strong>You May Like</strong> dashboard attribute on the live site.</p>
+                    <div id="youMayLikeEditor"></div>
+                    <button type="button" class="btn btn-secondary editor-add-item-btn" id="addYouMayLikeBtn">Add product</button>
+                </div>
+            </details><!-- /#editor-section-you-may-like -->
 
-            <h3 class="editor-panel-subhead editor-panel-subhead--spaced editor-panel-section" id="editor-section-footer">Footer</h3>
-            <p class="editor-panel-lead editor-panel-lead--compact">Three-column footer with company logo, navigation links, and contact details. Social icons support Facebook, Instagram, X, YouTube, and LinkedIn.</p>
+            <details class="editor-accordion editor-panel-section" id="editor-section-get-inspired">
+                <summary class="editor-accordion-head">Get Inspired</summary>
+                <div class="editor-accordion-body">
+                    <p class="editor-panel-lead editor-panel-lead--compact">Upload one lifestyle image (508 × 610 px) for the left column. Enter a catalog item number for each of the eight grid cards — product name, price, and card images pull from your <strong>You May Like</strong> dashboard attribute on the live site.</p>
+                    <div class="editor-field">
+                        <label for="fieldGetInspiredLifestyle">Lifestyle photo (left)<span class="editor-field-hint">508 × 610 px</span></label>
+                        <div class="editor-upload">
+                            <div class="editor-upload-preview editor-upload-preview--get-inspired-lifestyle is-empty" id="uploadPreviewGetInspiredLifestyle"></div>
+                            <input type="file" id="fieldGetInspiredLifestyle" name="getInspiredLifestyleImage" accept="image/*">
+                        </div>
+                    </div>
+                    <div id="getInspiredEditor"></div>
+                </div>
+            </details><!-- /#editor-section-get-inspired -->
+
+            <details class="editor-accordion editor-panel-section" id="editor-section-footer">
+                <summary class="editor-accordion-head">Footer</summary>
+                <div class="editor-accordion-body">
+                <p class="editor-panel-lead editor-panel-lead--compact">Three-column footer with company logo, navigation links, and contact details. Social icons support Facebook, Instagram, X, YouTube, and LinkedIn.</p>
 
             <div class="editor-field editor-field--toggle">
                 <label class="editor-toggle" for="fieldFooterLogoUseHeader">
@@ -974,10 +1065,7 @@
                 </div>
             </div>
 
-            <div class="editor-field">
-                <label for="fieldFooterEmail">Contact email</label>
-                <input type="email" id="fieldFooterEmail" name="footerEmail" autocomplete="off" placeholder="hello@company.com">
-            </div>
+            <p class="editor-field-hint" style="margin:0 0 12px">Contact email, company name, and phone number are set in the <strong>Company Info</strong> section at the top of this panel.</p>
 
             <fieldset class="editor-fieldset">
                 <legend>Social media</legend>
@@ -1034,18 +1122,8 @@
             </fieldset>
 
             <div class="editor-field">
-                <label for="fieldFooterCompanyName">Company name</label>
-                <input type="text" id="fieldFooterCompanyName" name="footerCompanyName" autocomplete="off">
-            </div>
-
-            <div class="editor-field">
                 <label for="fieldFooterAddress">Address</label>
                 <textarea id="fieldFooterAddress" name="footerAddress" rows="3" autocomplete="off"></textarea>
-            </div>
-
-            <div class="editor-field">
-                <label for="fieldFooterPhone">Phone number</label>
-                <input type="tel" id="fieldFooterPhone" name="footerPhone" autocomplete="off" placeholder="(800) 555-1234">
             </div>
 
             <div class="editor-field editor-field--compact">
@@ -1053,6 +1131,8 @@
                 <input type="text" id="fieldFooterCopyrightName" name="footerCopyrightName" autocomplete="off">
                 <span class="editor-field-hint">Used in the required footer copyright + ADA compliance line (see PDF handoff for copy-paste markup). Year updates automatically. Leave blank to use company name above.</span>
             </div>
+                </div>
+            </details><!-- /#editor-section-footer -->
         </aside>
 
         <div class="editor-preview-wrap">

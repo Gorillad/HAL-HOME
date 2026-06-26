@@ -5269,6 +5269,162 @@ body.home-page .home-templates-grid {
     align-items: stretch;
 }
 
+/* ── Showroom spotlight — full-width feature card above the gate ── */
+
+body.home-page .home-templates-showroom-spotlight {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(32px, 4vw, 56px);
+    align-items: center;
+    background: #fdf9f4;
+    border: 1px solid #e8e5df;
+    border-left: 3px solid var(--hero-gold);
+    border-radius: 16px;
+    padding: clamp(28px, 3.5vw, 44px);
+    margin-bottom: clamp(36px, 4.5vw, 52px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+body.home-page .home-templates-showroom-preview {
+    position: relative;
+}
+
+body.home-page .home-templates-showroom-preview .template-preview-frame {
+    position: relative;
+}
+
+body.home-page .home-templates-showroom-preview .showroom-design-views {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+body.home-page .home-templates-showroom-preview .template-browser {
+    border: 1px solid #e8e5df;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.home-page .home-templates-showroom-preview .template-browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: clamp(10px, 1.2vw, 12px) clamp(12px, 1.4vw, 14px);
+    background: #f0ebe3;
+    border-bottom: 1px solid #e8e5df;
+}
+
+body.home-page .home-templates-showroom-preview .template-browser-bar span {
+    display: block;
+    width: clamp(8px, 1vw, 10px);
+    height: clamp(8px, 1vw, 10px);
+    border-radius: 50%;
+    background: #d8d0c6;
+}
+
+body.home-page .home-templates-showroom-preview .template-browser-body {
+    min-height: clamp(200px, 24vw, 280px);
+    padding: clamp(12px, 1.5vw, 16px);
+}
+
+body.home-page .home-templates-showroom-preview .showroom-design-tabs {
+    border-radius: 0 0 8px 8px;
+    margin-top: 0;
+}
+
+body.home-page .home-templates-showroom-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+body.home-page .home-templates-showroom-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(201, 169, 110, 0.12);
+    border: 1px solid rgba(201, 169, 110, 0.35);
+    color: #9a7835;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    align-self: flex-start;
+}
+
+body.home-page .home-templates-showroom-badge::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hero-gold);
+}
+
+body.home-page .home-templates-showroom-heading {
+    font-family: var(--font-body);
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700;
+    color: #0d0d0d;
+    line-height: 1.1;
+    margin: 0 0 12px;
+}
+
+body.home-page .home-templates-showroom-tagline {
+    font-size: clamp(14px, 1.4vw, 16px);
+    color: #555;
+    line-height: 1.55;
+    margin: 0 0 24px;
+}
+
+body.home-page .home-templates-showroom-body .template-tier-note {
+    color: #888;
+    font-size: clamp(12px, 1.1vw, 13px);
+    margin: 0 0 14px;
+}
+
+body.home-page .home-templates-showroom-body .btn {
+    align-self: stretch;
+}
+
+/* ── Premium tiers divider ── */
+
+body.home-page .home-templates-premium-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 clamp(32px, 4vw, 44px);
+    color: #aaa;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+body.home-page .home-templates-premium-divider::before,
+body.home-page .home-templates-premium-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e8e5df;
+}
+
+body.home-page .home-templates-premium-divider svg {
+    flex-shrink: 0;
+    color: #c5c0b8;
+}
+
+/* ── Premium grid: 2-column (Designer + Signature) ── */
+
+body.home-page .home-templates-grid--premium {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 2.5vw, 28px);
+}
+
 body.home-page .home-page-templates .template-card {
     padding: clamp(24px, 2.5vw, 32px) clamp(20px, 2vw, 28px);
     border: 1px solid #e8e5df;
@@ -5379,6 +5535,70 @@ body.home-page .home-page-templates .mock-showroom--spotlight .mock-spotlight-he
 
 body.home-page .home-page-templates .mock-showroom--spotlight .mock-spotlight-strip span {
     height: clamp(40px, 5vw, 52px);
+}
+
+/* ── Showroom spotlight mock — accurate template palette overrides ── */
+
+/* McQueen (Classic): black top-banner + warm ivory body */
+#showroom-design-classic .template-browser-body {
+    background: linear-gradient(to bottom, #000 0px, #000 8px, #f8f5f0 8px);
+}
+
+#showroom-design-classic .mock-hero-product {
+    background: #efeeeb;
+}
+
+#showroom-design-classic .mock-hero-copy {
+    background: #5a3d2b;
+}
+
+#showroom-design-classic .mock-hero-feature {
+    background: linear-gradient(135deg, #b8c8d4 0%, #d8e2ea 55%, #c5d3de 100%);
+}
+
+#showroom-design-classic .mock-grid span {
+    background: #dce8f0;
+}
+
+/* Gallery: warm cream nav bar + cool-blue photo hero gradient */
+#showroom-design-gallery .template-browser-body {
+    background: #f4f1ea;
+}
+
+#showroom-design-gallery .mock-showroom--gallery .mock-gallery-nav {
+    background: #ede8df;
+    border-bottom: 1px solid #ddd8cf;
+}
+
+#showroom-design-gallery .mock-showroom--gallery .mock-gallery-hero {
+    background: linear-gradient(105deg, #c0cdd8 0%, #d8e4ec 40%, #c8d8e4 70%, #b8c8d4 100%);
+}
+
+#showroom-design-gallery .mock-showroom--gallery .mock-gallery-row span {
+    background: #d4e0ea;
+}
+
+/* Spotlight: steel-blue banner + dark-navy hero */
+#showroom-design-spotlight .template-browser-body {
+    background: #0f1c28;
+}
+
+#showroom-design-spotlight .mock-showroom--spotlight .mock-spotlight-banner {
+    background: #254155;
+    height: 9px;
+}
+
+#showroom-design-spotlight .mock-showroom--spotlight .mock-spotlight-hero {
+    background: linear-gradient(135deg, #081525 0%, #0d2137 50%, #162d48 100%);
+}
+
+#showroom-design-spotlight .mock-showroom--spotlight .mock-spotlight-copy {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 2px;
+}
+
+#showroom-design-spotlight .mock-showroom--spotlight .mock-spotlight-strip span {
+    background: #1a3550;
 }
 
 body.home-page .home-page-templates .mock-hero--editorial,
@@ -5497,6 +5717,15 @@ body.home-page .template-card-actions {
         margin: 0 auto;
         width: 100%;
     }
+
+    body.home-page .home-templates-showroom-spotlight {
+        grid-template-columns: 1fr;
+        gap: clamp(24px, 3vw, 36px);
+    }
+
+    body.home-page .home-templates-grid--premium {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 body.home-page .home-page-templates .template-preview--signature .template-browser-bar {
@@ -5543,6 +5772,18 @@ body.home-page .home-cta-closer + .container {
     body.home-page .home-templates-grid {
         grid-template-columns: 1fr;
         gap: 24px;
+    }
+
+    body.home-page .home-templates-grid--premium {
+        grid-template-columns: 1fr;
+    }
+
+    body.home-page .home-templates-showroom-spotlight {
+        grid-template-columns: 1fr;
+        border-left-width: 1px;
+        border-top: 3px solid var(--hero-gold);
+        border-radius: 12px;
+        padding: clamp(20px, 5vw, 28px);
     }
 
     body.home-page .home-page-templates .template-browser-body {
