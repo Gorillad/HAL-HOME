@@ -344,6 +344,7 @@
         .designer-section-tab.is-active { color: #fff; border-bottom-color: #4a9eff; }
 
         /* Hide sub-panels when toggled */
+        #woolFullSite[hidden],
         #woolSectionHeader[hidden],
         #woolSectionOne[hidden],
         #woolSectionTwo[hidden],
@@ -357,12 +358,14 @@
         #woolSectionTwoFrame,
         #woolSectionThreeFrame,
         #woolSectionFourFrame,
-        #woolFooterFrame {
+        #woolFooterFrame,
+        #woolFullSiteFrame {
             display: block;
             width: 100%;
             height: 900px; /* fallback; overridden once content height is measured */
             border: none;
         }
+        #woolFullSiteFrame { height: 3200px; } /* full homepage; refit on activate */
 
         /* ── Slide background upload widget ─────────────────── */
         .editor-slide-bg-widget {
@@ -500,6 +503,7 @@
 
                 <!-- Section navigation tabs -->
                 <div class="designer-section-tabs" id="woolSectionTabs" role="tablist">
+                    <button type="button" class="designer-section-tab" role="tab" data-section="fullSite" aria-selected="false">Full Site</button>
                     <button type="button" class="designer-section-tab is-active" role="tab" data-section="header" aria-selected="true">Header</button>
                     <button type="button" class="designer-section-tab" role="tab" data-section="sectionOne" aria-selected="false">Section One</button>
                     <button type="button" class="designer-section-tab" role="tab" data-section="sectionTwo" aria-selected="false">Section Two</button>
@@ -507,6 +511,17 @@
                     <button type="button" class="designer-section-tab" role="tab" data-section="sectionFour" aria-selected="false">Section Four</button>
                     <button type="button" class="designer-section-tab" role="tab" data-section="footer" aria-selected="false">Footer</button>
                     <button type="button" class="designer-section-tab" role="tab" data-section="meta" aria-selected="false">Meta</button>
+                </div>
+
+                <!-- ── Full Site (read-only overview) sub-panel ──────── -->
+                <div id="woolFullSite" hidden>
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Full Site Preview</summary>
+                        <div class="designer-group-body">
+                            <p class="editor-panel-lead" style="margin:0 0 10px;">A read-only preview of the complete Woolf homepage — every section assembled in order (Header, Hero, Catalog Library, About, Quick Order &amp; CTA, Footer).</p>
+                            <p class="editor-panel-lead" style="margin:0;font-size:0.8rem;opacity:0.7;">To customize content, switch to an individual section tab. This overview shows the default template for reference and isn't affected by your edits.</p>
+                        </div>
+                    </details>
                 </div>
 
                 <!-- ── Header sub-panel ──────────────────────────────── -->
@@ -1876,6 +1891,15 @@
                     ></iframe>
                 </div>
 
+                <div class="designer-iframe-wrap" id="woolFullSitePreviewWrap" hidden>
+                    <iframe
+                        id="woolFullSiteFrame"
+                        src="../designer_editor/woolf/index.html"
+                        title="The Woolf — Full site preview"
+                        scrolling="yes"
+                    ></iframe>
+                </div>
+
                 <!-- Scaffold preview for non-Woolf designs -->
                 <div class="editor-preview-frame designer-preview-scaffold" id="designerScaffoldPreview" hidden>
                     <div class="designer-preview-scaffold-inner">
@@ -1902,5 +1926,23 @@
     <script src="js/footer-editor.js"></script>
     <script src="js/meta-editor.js"></script>
     <script src="js/designer-section-nav.js"></script>
+
+    <!-- Full Site preview: fit the iframe to its content height (same-origin). -->
+    <script>
+        (function () {
+            var frame = document.getElementById('woolFullSiteFrame');
+            if (!frame) return;
+            function fit() {
+                try {
+                    var h = frame.contentDocument.documentElement.scrollHeight;
+                    if (h > 400) frame.style.height = h + 'px';
+                } catch (e) { /* cross-origin or not ready; keep CSS fallback height */ }
+            }
+            frame.addEventListener('load', fit);
+            // The section nav calls this after un-hiding the Full Site wrap so the
+            // height is measured while the iframe is actually visible.
+            window.__fitFullSite = fit;
+        }());
+    </script>
 </body>
 </html>

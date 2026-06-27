@@ -13,6 +13,7 @@
 
   // sectionKey -> { panel: field-panel id, wrap: preview-wrap id (or null) }
   var SECTIONS = {
+    fullSite:     { panel: 'woolFullSite',      wrap: 'woolFullSitePreviewWrap' },
     header:       { panel: 'woolSectionHeader', wrap: 'woolPreviewWrap' },
     sectionOne:   { panel: 'woolSectionOne',    wrap: 'woolSectionOnePreviewWrap' },
     sectionTwo:   { panel: 'woolSectionTwo',    wrap: 'woolSectionTwoPreviewWrap' },
@@ -58,6 +59,11 @@
     if (editor && typeof editor.activate === 'function') {
       // Defer so layout has applied the un-hidden wrap before measuring.
       setTimeout(editor.activate, 0);
+    }
+
+    // Full Site has no editor; fit its (now-visible) iframe to its content.
+    if (section === 'fullSite' && typeof window.__fitFullSite === 'function') {
+      setTimeout(window.__fitFullSite, 60);
     }
   }
 

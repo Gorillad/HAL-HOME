@@ -145,7 +145,7 @@
         name="q"
       />
       <button type="button" aria-label="Search">
-        <img src="/data/images/icons/search-white.svg" alt="" width="17" height="17" />
+        <img src="data/images/icons/search-white.svg" alt="" width="17" height="17" />
       </button>
     `;
 
