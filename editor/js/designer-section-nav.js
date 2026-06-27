@@ -12,15 +12,10 @@
   'use strict';
 
   // sectionKey -> { panel: field-panel id, wrap: preview-wrap id (or null) }
+  // The editor is consolidated to a single Full Site surface; the left column
+  // is built out top-down inside #woolFullSite.
   var SECTIONS = {
-    fullSite:     { panel: 'woolFullSite',      wrap: 'woolFullSitePreviewWrap' },
-    header:       { panel: 'woolSectionHeader', wrap: 'woolPreviewWrap' },
-    sectionOne:   { panel: 'woolSectionOne',    wrap: 'woolSectionOnePreviewWrap' },
-    sectionTwo:   { panel: 'woolSectionTwo',    wrap: 'woolSectionTwoPreviewWrap' },
-    sectionThree: { panel: 'woolSectionThree',  wrap: 'woolSectionThreePreviewWrap' },
-    sectionFour:  { panel: 'woolSectionFour',   wrap: 'woolSectionFourPreviewWrap' },
-    footer:       { panel: 'woolFooter',        wrap: 'woolFooterPreviewWrap' },
-    meta:         { panel: 'woolMeta',          wrap: null },
+    fullSite: { panel: 'woolFullSite', wrap: 'woolFullSitePreviewWrap' },
   };
 
   var tabBtns = document.querySelectorAll('#woolSectionTabs [data-section]');
@@ -70,4 +65,7 @@
   tabBtns.forEach(function (btn) {
     btn.addEventListener('click', function () { activate(btn.dataset.section); });
   });
+
+  // Full Site is the single editing surface — activate it on load.
+  activate('fullSite');
 })();

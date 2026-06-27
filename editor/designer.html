@@ -111,13 +111,6 @@
             width: 100%;
             background: #fff;
         }
-        #woolPreviewFrame {
-            display: block;
-            width: 100%;
-            height: 700px;
-            border: none;
-        }
-
         /* Loading state */
         .designer-iframe-loading {
             position: absolute;
@@ -344,28 +337,15 @@
         .designer-section-tab.is-active { color: #fff; border-bottom-color: #4a9eff; }
 
         /* Hide sub-panels when toggled */
-        #woolFullSite[hidden],
-        #woolSectionHeader[hidden],
-        #woolSectionOne[hidden],
-        #woolSectionTwo[hidden],
-        #woolSectionThree[hidden],
-        #woolSectionFour[hidden],
-        #woolFooter[hidden],
-        #woolMeta[hidden] { display: none !important; }
+        #woolFullSite[hidden] { display: none !important; }
 
-        /* Section preview iframes — height is fitted dynamically to content */
-        #woolSectionOneFrame,
-        #woolSectionTwoFrame,
-        #woolSectionThreeFrame,
-        #woolSectionFourFrame,
-        #woolFooterFrame,
+        /* Full Site preview iframe — height is fitted dynamically to content */
         #woolFullSiteFrame {
             display: block;
             width: 100%;
-            height: 900px; /* fallback; overridden once content height is measured */
+            height: 3200px; /* fallback; overridden once content height is measured */
             border: none;
         }
-        #woolFullSiteFrame { height: 3200px; } /* full homepage; refit on activate */
 
         /* ── Slide background upload widget ─────────────────── */
         .editor-slide-bg-widget {
@@ -503,29 +483,11 @@
 
                 <!-- Section navigation tabs -->
                 <div class="designer-section-tabs" id="woolSectionTabs" role="tablist">
-                    <button type="button" class="designer-section-tab" role="tab" data-section="fullSite" aria-selected="false">Full Site</button>
-                    <button type="button" class="designer-section-tab is-active" role="tab" data-section="header" aria-selected="true">Header</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-section="sectionOne" aria-selected="false">Section One</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-section="sectionTwo" aria-selected="false">Section Two</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-section="sectionThree" aria-selected="false">Section Three</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-section="sectionFour" aria-selected="false">Section Four</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-section="footer" aria-selected="false">Footer</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-section="meta" aria-selected="false">Meta</button>
+                    <button type="button" class="designer-section-tab is-active" role="tab" data-section="fullSite" aria-selected="true">Full Site</button>
                 </div>
 
-                <!-- ── Full Site (read-only overview) sub-panel ──────── -->
+                <!-- ── Full Site editing panel (built top-down; Header first) ── -->
                 <div id="woolFullSite" hidden>
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Full Site Preview</summary>
-                        <div class="designer-group-body">
-                            <p class="editor-panel-lead" style="margin:0 0 10px;">A read-only preview of the complete Woolf homepage — every section assembled in order (Header, Hero, Catalog Library, About, Quick Order &amp; CTA, Footer).</p>
-                            <p class="editor-panel-lead" style="margin:0;font-size:0.8rem;opacity:0.7;">To customize content, switch to an individual section tab. This overview shows the default template for reference and isn't affected by your edits.</p>
-                        </div>
-                    </details>
-                </div>
-
-                <!-- ── Header sub-panel ──────────────────────────────── -->
-                <div id="woolSectionHeader">
 
                 <details class="designer-group" open>
                     <summary class="designer-group-head">Branding</summary>
@@ -1150,6 +1112,30 @@
                 </details>
 
                 <details class="designer-group">
+                    <summary class="designer-group-head">Catalog Library</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-catalog-title">Title</label>
+                            <input type="text" id="df-catalog-title" data-field="catalogTitle" class="editor-field-input" placeholder="Vendor Catalog Library">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-catalog-subtitle">Subtitle</label>
+                            <input type="text" id="df-catalog-subtitle" data-field="catalogSubtitle" class="editor-field-input">
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-catalog-all-label">"View all" label</label>
+                                <input type="text" id="df-catalog-all-label" data-field="catalogAllLabel" class="editor-field-input" placeholder="View all catalogs">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-catalog-all-url">"View all" URL</label>
+                                <input type="text" id="df-catalog-all-url" data-field="catalogAllUrl" class="editor-field-input" placeholder="/catalogs">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
                     <summary class="designer-group-head">About Us</summary>
                     <div class="designer-group-body">
                         <div class="editor-field">
@@ -1223,6 +1209,24 @@
                 </details>
 
                 <details class="designer-group">
+                    <summary class="designer-group-head">Quick Order</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-qo-title">Title</label>
+                            <input type="text" id="df-qo-title" data-field="qoTitle" class="editor-field-input" placeholder="Quick Order">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-qo-subtitle">Subtitle</label>
+                            <input type="text" id="df-qo-subtitle" data-field="qoSubtitle" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-qo-submit">Submit button label</label>
+                            <input type="text" id="df-qo-submit" data-field="qoSubmit" class="editor-field-input" placeholder="Search &amp; Order">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
                     <summary class="designer-group-head">CTA Section</summary>
                     <div class="designer-group-body">
                         <div class="editor-field">
@@ -1264,6 +1268,10 @@
                             <textarea id="df-footer-tagline" data-field="footerTagline" class="editor-field-input editor-field-textarea" rows="2"></textarea>
                         </div>
                         <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-social-label">Social heading</label>
+                            <input type="text" id="df-footer-social-label" data-field="footerSocialLabel" class="editor-field-input" placeholder="Follow IBC Master">
+                        </div>
+                        <div class="editor-field">
                             <label class="editor-field-label" for="df-footer-email">Email</label>
                             <input type="text" id="df-footer-email" data-field="footerEmail" class="editor-field-input" placeholder="sales@ibcmaster.com">
                         </div>
@@ -1295,521 +1303,8 @@
                     </div>
                 </details>
 
-                </div><!-- /#woolSectionHeader -->
+                </div><!-- /#woolFullSite -->
 
-                <!-- ── Section One sub-panel ────────────────────────── -->
-                <div id="woolSectionOne" hidden>
-
-                    <!-- Hero Slides -->
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Hero Slides</summary>
-                        <div class="designer-group-body">
-
-                            <!-- Slide 1 -->
-                            <details class="designer-slide-group" open>
-                                <summary class="designer-slide-group-head">Slide 1</summary>
-                                <div class="designer-slide-group-body">
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s0-eyebrow">Eyebrow label</label>
-                                        <input type="text" id="df-s1-s0-eyebrow" data-s1-field="slide0Eyebrow" class="editor-field-input" placeholder="500,000+ SKUs">
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s0-title">Headline</label>
-                                        <input type="text" id="df-s1-s0-title" data-s1-field="slide0Title" class="editor-field-input" placeholder="Industrial supplies for every job site">
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s0-text">Body copy</label>
-                                        <textarea id="df-s1-s0-text" data-s1-field="slide0Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                                    </div>
-                                    <div class="editor-field editor-field--inline">
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s0-btn1l">Button 1 label</label>
-                                            <input type="text" id="df-s1-s0-btn1l" data-s1-field="slide0Btn1Label" class="editor-field-input" placeholder="Browse Catalog">
-                                        </div>
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s0-btn1u">Button 1 URL</label>
-                                            <input type="text" id="df-s1-s0-btn1u" data-s1-field="slide0Btn1Url" class="editor-field-input" placeholder="/catalog">
-                                        </div>
-                                    </div>
-                                    <div class="editor-field editor-field--inline">
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s0-btn2l">Button 2 label</label>
-                                            <input type="text" id="df-s1-s0-btn2l" data-s1-field="slide0Btn2Label" class="editor-field-input" placeholder="Request a Quote">
-                                        </div>
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s0-btn2u">Button 2 URL</label>
-                                            <input type="text" id="df-s1-s0-btn2u" data-s1-field="slide0Btn2Url" class="editor-field-input" placeholder="/contact">
-                                        </div>
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label">Background image</label>
-                                        <div class="editor-slide-bg-widget">
-                                            <div class="editor-slide-bg-thumb" id="s1Slide0BgThumb">
-                                                <img id="s1Slide0BgImg" src="" alt="" hidden>
-                                                <span class="editor-slide-bg-thumb-empty" id="s1Slide0BgEmpty">Default image</span>
-                                            </div>
-                                            <div class="editor-slide-bg-actions">
-                                                <label class="editor-logo-file-label" for="df-s1-s0-bg" style="flex:1">
-                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                                    Upload image
-                                                    <input type="file" id="df-s1-s0-bg" accept="image/*" style="display:none" data-s1-bg-field="slide0BgSrc">
-                                                </label>
-                                                <button type="button" class="editor-logo-remove-btn" id="s1Slide0BgRemoveBtn" hidden>✕ Remove</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </details>
-
-                            <!-- Slide 2 -->
-                            <details class="designer-slide-group">
-                                <summary class="designer-slide-group-head">Slide 2</summary>
-                                <div class="designer-slide-group-body">
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s1-eyebrow">Eyebrow label</label>
-                                        <input type="text" id="df-s1-s1-eyebrow" data-s1-field="slide1Eyebrow" class="editor-field-input" placeholder="Safety &amp; PPE">
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s1-title">Headline</label>
-                                        <input type="text" id="df-s1-s1-title" data-s1-field="slide1Title" class="editor-field-input" placeholder="Keep your team protected">
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s1-text">Body copy</label>
-                                        <textarea id="df-s1-s1-text" data-s1-field="slide1Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                                    </div>
-                                    <div class="editor-field editor-field--inline">
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s1-btn1l">Button 1 label</label>
-                                            <input type="text" id="df-s1-s1-btn1l" data-s1-field="slide1Btn1Label" class="editor-field-input" placeholder="Shop Safety">
-                                        </div>
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s1-btn1u">Button 1 URL</label>
-                                            <input type="text" id="df-s1-s1-btn1u" data-s1-field="slide1Btn1Url" class="editor-field-input" placeholder="/category/safety">
-                                        </div>
-                                    </div>
-                                    <div class="editor-field editor-field--inline">
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s1-btn2l">Button 2 label</label>
-                                            <input type="text" id="df-s1-s1-btn2l" data-s1-field="slide1Btn2Label" class="editor-field-input" placeholder="Browse All">
-                                        </div>
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s1-btn2u">Button 2 URL</label>
-                                            <input type="text" id="df-s1-s1-btn2u" data-s1-field="slide1Btn2Url" class="editor-field-input" placeholder="/catalog">
-                                        </div>
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label">Background image</label>
-                                        <div class="editor-slide-bg-widget">
-                                            <div class="editor-slide-bg-thumb" id="s1Slide1BgThumb">
-                                                <img id="s1Slide1BgImg" src="" alt="" hidden>
-                                                <span class="editor-slide-bg-thumb-empty" id="s1Slide1BgEmpty">Default image</span>
-                                            </div>
-                                            <div class="editor-slide-bg-actions">
-                                                <label class="editor-logo-file-label" for="df-s1-s1-bg" style="flex:1">
-                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                                    Upload image
-                                                    <input type="file" id="df-s1-s1-bg" accept="image/*" style="display:none" data-s1-bg-field="slide1BgSrc">
-                                                </label>
-                                                <button type="button" class="editor-logo-remove-btn" id="s1Slide1BgRemoveBtn" hidden>✕ Remove</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </details>
-
-                            <!-- Slide 3 -->
-                            <details class="designer-slide-group">
-                                <summary class="designer-slide-group-head">Slide 3</summary>
-                                <div class="designer-slide-group-body">
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s2-eyebrow">Eyebrow label</label>
-                                        <input type="text" id="df-s1-s2-eyebrow" data-s1-field="slide2Eyebrow" class="editor-field-input" placeholder="Cutting &amp; Machining">
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s2-title">Headline</label>
-                                        <input type="text" id="df-s1-s2-title" data-s1-field="slide2Title" class="editor-field-input" placeholder="Precision tooling for production">
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label" for="df-s1-s2-text">Body copy</label>
-                                        <textarea id="df-s1-s2-text" data-s1-field="slide2Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                                    </div>
-                                    <div class="editor-field editor-field--inline">
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s2-btn1l">Button 1 label</label>
-                                            <input type="text" id="df-s1-s2-btn1l" data-s1-field="slide2Btn1Label" class="editor-field-input" placeholder="Shop Cutting Tools">
-                                        </div>
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s2-btn1u">Button 1 URL</label>
-                                            <input type="text" id="df-s1-s2-btn1u" data-s1-field="slide2Btn1Url" class="editor-field-input" placeholder="/category/cutting-tools">
-                                        </div>
-                                    </div>
-                                    <div class="editor-field editor-field--inline">
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s2-btn2l">Button 2 label</label>
-                                            <input type="text" id="df-s1-s2-btn2l" data-s1-field="slide2Btn2Label" class="editor-field-input" placeholder="Browse Milling">
-                                        </div>
-                                        <div>
-                                            <label class="editor-field-label" for="df-s1-s2-btn2u">Button 2 URL</label>
-                                            <input type="text" id="df-s1-s2-btn2u" data-s1-field="slide2Btn2Url" class="editor-field-input" placeholder="/category/milling">
-                                        </div>
-                                    </div>
-                                    <div class="editor-field">
-                                        <label class="editor-field-label">Background image</label>
-                                        <div class="editor-slide-bg-widget">
-                                            <div class="editor-slide-bg-thumb" id="s1Slide2BgThumb">
-                                                <img id="s1Slide2BgImg" src="" alt="" hidden>
-                                                <span class="editor-slide-bg-thumb-empty" id="s1Slide2BgEmpty">Default image</span>
-                                            </div>
-                                            <div class="editor-slide-bg-actions">
-                                                <label class="editor-logo-file-label" for="df-s1-s2-bg" style="flex:1">
-                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                                    Upload image
-                                                    <input type="file" id="df-s1-s2-bg" accept="image/*" style="display:none" data-s1-bg-field="slide2BgSrc">
-                                                </label>
-                                                <button type="button" class="editor-logo-remove-btn" id="s1Slide2BgRemoveBtn" hidden>✕ Remove</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </details>
-
-                        </div>
-                    </details>
-
-                    <!-- Trust Bar -->
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Trust Bar</summary>
-                        <div class="designer-group-body">
-                            <p class="editor-field-hint" style="font-size:0.72rem;color:#666;margin:0 0 4px">Short phrases that appear below the hero. Keep each under 30 characters.</p>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s1-trust0">Item 1</label>
-                                <input type="text" id="df-s1-trust0" data-s1-field="trust0Text" class="editor-field-input" placeholder="Fast shipping nationwide">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s1-trust1">Item 2</label>
-                                <input type="text" id="df-s1-trust1" data-s1-field="trust1Text" class="editor-field-input" placeholder="Trusted industrial brands">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s1-trust2">Item 3</label>
-                                <input type="text" id="df-s1-trust2" data-s1-field="trust2Text" class="editor-field-input" placeholder="Dedicated account support">
-                            </div>
-                        </div>
-                    </details>
-
-                    <!-- Shop by Category headings -->
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Shop by Category</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s1-cats-title">Section title</label>
-                                <input type="text" id="df-s1-cats-title" data-s1-field="catsTitle" class="editor-field-input" placeholder="Shop by Category">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s1-cats-sub">Subtitle</label>
-                                <input type="text" id="df-s1-cats-sub" data-s1-field="catsSubtitle" class="editor-field-input" placeholder="Browse our most popular product lines">
-                            </div>
-                        </div>
-                    </details>
-
-                </div><!-- /#woolSectionOne -->
-
-                <!-- ── Section Two sub-panel (About) ──────────────── -->
-                <div id="woolSectionTwo" hidden>
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">About Block</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-eyebrow">Eyebrow</label>
-                                <input type="text" id="df-s2-eyebrow" data-s2-field="eyebrow" class="editor-field-input" placeholder="About Us">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-title">Title</label>
-                                <input type="text" id="df-s2-title" data-s2-field="title" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-text1">Paragraph 1</label>
-                                <textarea id="df-s2-text1" data-s2-field="text1" class="editor-field-input" rows="4"></textarea>
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-text2">Paragraph 2</label>
-                                <textarea id="df-s2-text2" data-s2-field="text2" class="editor-field-input" rows="4"></textarea>
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Buttons</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-btn1">Primary button label</label>
-                                <input type="text" id="df-s2-btn1" data-s2-field="btn1Label" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-btn1url">Primary button URL</label>
-                                <input type="text" id="df-s2-btn1url" data-s2-field="btn1Url" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-btn2">Secondary button label</label>
-                                <input type="text" id="df-s2-btn2" data-s2-field="btn2Label" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-btn2url">Secondary button URL</label>
-                                <input type="text" id="df-s2-btn2url" data-s2-field="btn2Url" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Stats</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-stat0v">Stat 1 value</label>
-                                <input type="text" id="df-s2-stat0v" data-s2-field="stat0Value" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-stat0l">Stat 1 label</label>
-                                <input type="text" id="df-s2-stat0l" data-s2-field="stat0Label" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-stat1v">Stat 2 value</label>
-                                <input type="text" id="df-s2-stat1v" data-s2-field="stat1Value" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-stat1l">Stat 2 label</label>
-                                <input type="text" id="df-s2-stat1l" data-s2-field="stat1Label" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-stat2v">Stat 3 value</label>
-                                <input type="text" id="df-s2-stat2v" data-s2-field="stat2Value" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s2-stat2l">Stat 3 label</label>
-                                <input type="text" id="df-s2-stat2l" data-s2-field="stat2Label" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                </div><!-- /#woolSectionTwo -->
-
-                <!-- ── Section Three sub-panel (Catalog Library) ──── -->
-                <div id="woolSectionThree" hidden>
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Header</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-title">Title</label>
-                                <input type="text" id="df-s3-title" data-s3-field="title" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-subtitle">Subtitle</label>
-                                <input type="text" id="df-s3-subtitle" data-s3-field="subtitle" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-all">"View all" label</label>
-                                <input type="text" id="df-s3-all" data-s3-field="allLabel" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-allurl">"View all" URL</label>
-                                <input type="text" id="df-s3-allurl" data-s3-field="allUrl" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Catalog Cards</summary>
-                        <div class="designer-group-body">
-                            <p class="editor-field-hint" style="font-size:0.72rem;color:#666;margin:0 0 4px">Vendor name, catalog title, and PDF link for each card.</p>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c0v">Card 1 — vendor</label>
-                                <input type="text" id="df-s3-c0v" data-s3-field="card0Vendor" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c0t">Card 1 — title</label>
-                                <input type="text" id="df-s3-c0t" data-s3-field="card0Title" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c0u">Card 1 — PDF URL</label>
-                                <input type="text" id="df-s3-c0u" data-s3-field="card0Url" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c1v">Card 2 — vendor</label>
-                                <input type="text" id="df-s3-c1v" data-s3-field="card1Vendor" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c1t">Card 2 — title</label>
-                                <input type="text" id="df-s3-c1t" data-s3-field="card1Title" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c1u">Card 2 — PDF URL</label>
-                                <input type="text" id="df-s3-c1u" data-s3-field="card1Url" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c2v">Card 3 — vendor</label>
-                                <input type="text" id="df-s3-c2v" data-s3-field="card2Vendor" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c2t">Card 3 — title</label>
-                                <input type="text" id="df-s3-c2t" data-s3-field="card2Title" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c2u">Card 3 — PDF URL</label>
-                                <input type="text" id="df-s3-c2u" data-s3-field="card2Url" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c3v">Card 4 — vendor</label>
-                                <input type="text" id="df-s3-c3v" data-s3-field="card3Vendor" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c3t">Card 4 — title</label>
-                                <input type="text" id="df-s3-c3t" data-s3-field="card3Title" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s3-c3u">Card 4 — PDF URL</label>
-                                <input type="text" id="df-s3-c3u" data-s3-field="card3Url" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                </div><!-- /#woolSectionThree -->
-
-                <!-- ── Section Four sub-panel (Quick Order + CTA) ─── -->
-                <div id="woolSectionFour" hidden>
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Quick Order</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-qo-title">Title</label>
-                                <input type="text" id="df-s4-qo-title" data-s4-field="qoTitle" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-qo-sub">Subtitle</label>
-                                <input type="text" id="df-s4-qo-sub" data-s4-field="qoSubtitle" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-qo-submit">Submit button label</label>
-                                <input type="text" id="df-s4-qo-submit" data-s4-field="qoSubmit" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">CTA Band</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-cta-title">Title</label>
-                                <input type="text" id="df-s4-cta-title" data-s4-field="ctaTitle" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-cta-text">Text</label>
-                                <textarea id="df-s4-cta-text" data-s4-field="ctaText" class="editor-field-input" rows="3"></textarea>
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-cta-btn1">Primary button label</label>
-                                <input type="text" id="df-s4-cta-btn1" data-s4-field="ctaBtn1Label" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-cta-btn1url">Primary button URL</label>
-                                <input type="text" id="df-s4-cta-btn1url" data-s4-field="ctaBtn1Url" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-cta-btn2">Secondary button label</label>
-                                <input type="text" id="df-s4-cta-btn2" data-s4-field="ctaBtn2Label" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-s4-cta-btn2url">Secondary button URL</label>
-                                <input type="text" id="df-s4-cta-btn2url" data-s4-field="ctaBtn2Url" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                </div><!-- /#woolSectionFour -->
-
-                <!-- ── Footer sub-panel ───────────────────────────── -->
-                <div id="woolFooter" hidden>
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Brand &amp; Social</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-tagline">Tagline</label>
-                                <textarea id="df-footer-tagline" data-footer-field="tagline" class="editor-field-input" rows="3"></textarea>
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-social-label">Social label</label>
-                                <input type="text" id="df-footer-social-label" data-footer-field="socialLabel" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-fb">Facebook URL</label>
-                                <input type="text" id="df-footer-fb" data-footer-field="facebookUrl" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-li">LinkedIn URL</label>
-                                <input type="text" id="df-footer-li" data-footer-field="linkedinUrl" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-yt">YouTube URL</label>
-                                <input type="text" id="df-footer-yt" data-footer-field="youtubeUrl" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-x">X URL</label>
-                                <input type="text" id="df-footer-x" data-footer-field="xUrl" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Contact</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-phone">Phone</label>
-                                <input type="text" id="df-footer-phone" data-footer-field="phone" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-email">Email</label>
-                                <input type="text" id="df-footer-email" data-footer-field="email" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-hours">Hours</label>
-                                <input type="text" id="df-footer-hours" data-footer-field="hours" class="editor-field-input">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-address">Address</label>
-                                <input type="text" id="df-footer-address" data-footer-field="address" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Bottom Bar</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-footer-copy">Copyright</label>
-                                <input type="text" id="df-footer-copy" data-footer-field="copy" class="editor-field-input">
-                            </div>
-                        </div>
-                    </details>
-                </div><!-- /#woolFooter -->
-
-                <!-- ── Meta sub-panel (global) ────────────────────── -->
-                <div id="woolMeta" hidden>
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Global Typography &amp; Color</summary>
-                        <div class="designer-group-body">
-                            <p class="editor-field-hint" style="font-size:0.72rem;color:#666;margin:0 0 4px">Applies a shared style override across every section preview.</p>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-meta-font">Body font family</label>
-                                <input type="text" id="df-meta-font" data-meta-field="fontFamily" class="editor-field-input" placeholder="Inter, sans-serif">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-meta-accent">Accent color</label>
-                                <input type="text" id="df-meta-accent" data-meta-field="accentColor" class="editor-field-input" placeholder="#4a9eff">
-                            </div>
-                        </div>
-                    </details>
-                    <details class="designer-group">
-                        <summary class="designer-group-head">Document</summary>
-                        <div class="designer-group-body">
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-meta-title">Page title</label>
-                                <input type="text" id="df-meta-title" data-meta-field="pageTitle" class="editor-field-input" placeholder="Company — Industrial Supplies">
-                            </div>
-                            <div class="editor-field">
-                                <label class="editor-field-label" for="df-meta-desc">Meta description</label>
-                                <textarea id="df-meta-desc" data-meta-field="metaDescription" class="editor-field-input" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </details>
-                </div><!-- /#woolMeta -->
 
             </div><!-- /#woolFieldPanel -->
 
@@ -1837,60 +1332,6 @@
 
             <!-- Woolf iframe preview -->
             <div class="editor-preview-scaler" id="previewScaler">
-                <div class="designer-iframe-wrap" id="woolPreviewWrap" hidden>
-                    <iframe
-                        id="woolPreviewFrame"
-                        src="../designer_editor/woolf/header-preview.html"
-                        title="The Woolf — Header live preview"
-                        scrolling="yes"
-                    ></iframe>
-                </div>
-
-                <div class="designer-iframe-wrap" id="woolSectionOnePreviewWrap" hidden>
-                    <iframe
-                        id="woolSectionOneFrame"
-                        src="../designer_editor/woolf/section-one-preview.html"
-                        title="The Woolf — Section One live preview"
-                        scrolling="yes"
-                    ></iframe>
-                </div>
-
-                <div class="designer-iframe-wrap" id="woolSectionTwoPreviewWrap" hidden>
-                    <iframe
-                        id="woolSectionTwoFrame"
-                        src="../designer_editor/woolf/section-two-preview.html"
-                        title="The Woolf — Section Two live preview"
-                        scrolling="yes"
-                    ></iframe>
-                </div>
-
-                <div class="designer-iframe-wrap" id="woolSectionThreePreviewWrap" hidden>
-                    <iframe
-                        id="woolSectionThreeFrame"
-                        src="../designer_editor/woolf/section-three-preview.html"
-                        title="The Woolf — Section Three live preview"
-                        scrolling="yes"
-                    ></iframe>
-                </div>
-
-                <div class="designer-iframe-wrap" id="woolSectionFourPreviewWrap" hidden>
-                    <iframe
-                        id="woolSectionFourFrame"
-                        src="../designer_editor/woolf/section-four-preview.html"
-                        title="The Woolf — Section Four live preview"
-                        scrolling="yes"
-                    ></iframe>
-                </div>
-
-                <div class="designer-iframe-wrap" id="woolFooterPreviewWrap" hidden>
-                    <iframe
-                        id="woolFooterFrame"
-                        src="../designer_editor/woolf/footer-preview.html"
-                        title="The Woolf — Footer live preview"
-                        scrolling="yes"
-                    ></iframe>
-                </div>
-
                 <div class="designer-iframe-wrap" id="woolFullSitePreviewWrap" hidden>
                     <iframe
                         id="woolFullSiteFrame"
@@ -1918,13 +1359,9 @@
     <script src="js/editor-site-nav.js"></script>
     <script src="vendor/jszip.min.js"></script>
     <script src="js/designer-editor.js"></script>
+    <!-- section-editor-base provides the shared draft persistence helpers
+         (designerSaveCombined / designerLoadCombined) used by the editor. -->
     <script src="js/section-editor-base.js"></script>
-    <script src="js/section-one-editor.js"></script>
-    <script src="js/section-two-editor.js"></script>
-    <script src="js/section-three-editor.js"></script>
-    <script src="js/section-four-editor.js"></script>
-    <script src="js/footer-editor.js"></script>
-    <script src="js/meta-editor.js"></script>
     <script src="js/designer-section-nav.js"></script>
 
     <!-- Full Site preview: fit the iframe to its content height (same-origin). -->

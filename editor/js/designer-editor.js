@@ -87,6 +87,15 @@
         ctaBtn1Url:    '/contact',
         ctaBtn2Label:  'Open an Account',
         ctaBtn2Url:    '/sign-up',
+        // Catalog Library (section three)
+        catalogTitle:    'Vendor Catalog Library',
+        catalogSubtitle: 'Browse and download digital catalogs from the manufacturers we represent',
+        catalogAllLabel: 'View all catalogs',
+        catalogAllUrl:   '/catalogs',
+        // Quick Order (section four)
+        qoTitle:    'Quick Order',
+        qoSubtitle: 'Know your part number? Enter it below to search and order fast.',
+        qoSubmit:   'Search & Order',
         // Sub-nav quick links
         subNavL1Visible: true, subNavL1Label: 'Industrial Supplies', subNavL1Url: '#',
         subNavL2Visible: true, subNavL2Label: 'Safety & PPE',        subNavL2Url: '#',
@@ -131,6 +140,7 @@
         footerEmail:   'sales@ibcmaster.com',
         footerAddress: '1200 Industrial Parkway\nHouston, TX 77001',
         footerHours:   'Mon–Fri, 7:00 AM – 6:00 PM CT',
+        footerSocialLabel: 'Follow IBC Master',
         footerSocialFb: 'https://www.facebook.com/',
         footerSocialLi: 'https://www.linkedin.com/',
         footerSocialYt: 'https://www.youtube.com/',
@@ -146,8 +156,8 @@
 
     // ── DOM references ────────────────────────────────────────────────
 
-    var previewFrame       = document.getElementById('woolPreviewFrame');
-    var previewWrap        = document.getElementById('woolPreviewWrap');
+    var previewFrame       = document.getElementById('woolFullSiteFrame');
+    var previewWrap        = document.getElementById('woolFullSitePreviewWrap');
     var previewScaler      = document.getElementById('previewScaler');
     var editorStatus       = document.getElementById('editorStatus');
     var exportBtn          = document.getElementById('exportHandoffBtn');
@@ -482,6 +492,28 @@
                 setText(isel('.cta-band__btn--secondary'), val); break;
             case 'ctaBtn2Url':
                 setAttr(isel('.cta-band__btn--secondary'), 'href', val); break;
+
+            // Catalog Library (section three)
+            case 'catalogTitle':
+                setText(isel('.catalog-library__title'), val); break;
+            case 'catalogSubtitle':
+                setText(isel('.catalog-library__subtitle'), val); break;
+            case 'catalogAllLabel':
+                setText(isel('.catalog-library__all'), val); break;
+            case 'catalogAllUrl':
+                setAttr(isel('.catalog-library__all'), 'href', val); break;
+
+            // Quick Order (section four)
+            case 'qoTitle':
+                setText(isel('.quick-order__title'), val); break;
+            case 'qoSubtitle':
+                setText(isel('.quick-order__subtitle'), val); break;
+            case 'qoSubmit':
+                setText(isel('.quick-order__submit'), val); break;
+
+            // Footer social heading
+            case 'footerSocialLabel':
+                setText(isel('.site-footer__social-label'), val); break;
 
             // Footer contact
             case 'footerEmail': {
@@ -1485,70 +1517,10 @@
                 if (item) zip.file(item.path, item.text);
             });
 
-            // ── Section blocks + full homepage assembly ───────────────────────
-            var editors = window.__designerSectionEditors || {};
-            var SECTION_ORDER = [
-                { key: 'sectionOne',   file: 'section-one-block.html',   css: 'data/css/section-one.css' },
-                { key: 'sectionTwo',   file: 'section-two-block.html',   css: 'data/css/section-two.css' },
-                { key: 'sectionThree', file: 'section-three-block.html', css: 'data/css/section-three.css' },
-                { key: 'sectionFour',  file: 'section-four-block.html',  css: 'data/css/section-four.css' },
-                { key: 'footer',       file: 'footer-block.html',        css: 'data/css/footer.css' },
-            ];
-
-            function swapAssetUrls(html) {
-                if (logoServerPath && logoSrc) html = html.split(logoSrc).join(logoServerPath);
-                if (faviconServerPath && faviconSrc) html = html.split(faviconSrc).join(faviconServerPath);
-                return html;
-            }
-
-            var sectionBodies = [];
-            var usedCss = ['data/css/header.css'];
-            SECTION_ORDER.forEach(function (s) {
-                var ed = editors[s.key];
-                if (!ed || typeof ed.getSectionHtml !== 'function') return;
-                var html = swapAssetUrls(ed.getSectionHtml());
-                if (!html) return;
-                zip.file(s.file, '<!-- The Woolf — ' + s.key + ' | LogicX Designer Editor -->\n' + html);
-                sectionBodies.push(html);
-                usedCss.push(s.css);
-            });
-
-            // Recompute the global Meta override CSS for the standalone homepage.
-            var metaDraft = (window.__designerSectionDrafts || {})._meta || {};
-            var metaCss = '';
-            if (metaDraft.fontFamily) metaCss += 'body, body * { font-family: ' + metaDraft.fontFamily + ' !important; }';
-            if (metaDraft.accentColor) {
-                metaCss += 'a { color: ' + metaDraft.accentColor + '; }';
-                metaCss += '.about-block__btn--primary,.cta-band__btn--primary,.quick-order__submit,.catalog-library__all{background-color:' + metaDraft.accentColor + ';border-color:' + metaDraft.accentColor + ';}';
-            }
-
-            var pageTitle = (metaDraft.pageTitle || (draft.companyName || DEFAULTS.companyName) + ' — Home');
-            var pageDesc  = metaDraft.metaDescription || '';
-            var cssLinks  = usedCss.map(function (c) { return '  <link rel="stylesheet" href="' + c + '">'; }).join('\n');
-            var headerBody = swapAssetUrls(buildHeaderBlock());
-
-            var homepageHtml = [
-                '<!DOCTYPE html>',
-                '<html lang="en">',
-                '<head>',
-                '  <meta charset="UTF-8">',
-                '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-                '  <title>' + pageTitle + '</title>',
-                (pageDesc ? '  <meta name="description" content="' + pageDesc.replace(/"/g, '&quot;') + '">' : ''),
-                '  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">',
-                cssLinks,
-                (metaCss ? '  <style id="__designer-meta-overrides__">' + metaCss + '</style>' : ''),
-                '</head>',
-                '<body>',
-                headerBody,
-                sectionBodies.join('\n'),
-                '  <script src="data/js/header.js"></script>',
-                '  <script src="data/js/section-one.js"></script>',
-                '</body>',
-                '</html>',
-            ].filter(Boolean).join('\n');
-
-            zip.file('homepage.html', homepageHtml);
+            // The complete, customized homepage is the serialized full-site
+            // iframe written above as index.html (it already contains every
+            // section's live-edited markup plus the injected style overrides),
+            // so no per-section re-assembly is needed.
 
             return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
         })
