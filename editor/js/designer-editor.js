@@ -19,6 +19,9 @@
     const IFRAME_WIDTH   = 1280; // design width of the template
     const SAVE_DEBOUNCE  = 1800; // ms after last change to auto-save
 
+    const FOOTER_LOGO_SIZE_MIN = 50;
+    const FOOTER_LOGO_SIZE_MAX = 95; // recommended maximum display height
+
     // ── Default draft values (Woolf template defaults) ────────────────
 
     const DEFAULTS = {
@@ -26,7 +29,29 @@
         logoUrl:       '/',
         logoSrc:       'data/images/ibc-logo-reverse.svg',
         faviconSrc:    '',
+        footerLogoSrc:   '',
+        footerLogoSize:  FOOTER_LOGO_SIZE_MAX,
+        footerLogoUrl:   '/',
         footerTagline: 'Your source for industrial supplies, tooling, safety, and MRO products — shipped nationwide.',
+        footerShopHeading:     'Shop',
+        footerServiceHeading:  'Customer Service',
+        footerContactHeading:  'Contact',
+        footerShopL1Label: 'Catalog',              footerShopL1Url: '/catalog',
+        footerShopL2Label: 'Industrial Supplies', footerShopL2Url: '/industrial-supplies',
+        footerShopL3Label: 'Shop by Brand',       footerShopL3Url: '/brands',
+        footerShopL4Label: 'Safety & PPE',        footerShopL4Url: '/industrial-supplies?category=Safety',
+        footerShopL5Label: 'Cutting Tools',       footerShopL5Url: '/industrial-supplies?category=Cutting+Tools',
+        footerShopL6Label: 'Clearance',           footerShopL6Url: '/clearance',
+        footerServiceL1Label: 'Contact Us',           footerServiceL1Url: '/contact',
+        footerServiceL2Label: 'My Account',           footerServiceL2Url: '/account',
+        footerServiceL3Label: 'Quick Order',          footerServiceL3Url: '/quick-order',
+        footerServiceL4Label: 'Shipping & Delivery',  footerServiceL4Url: '/shipping',
+        footerServiceL5Label: 'Returns & Exchanges',  footerServiceL5Url: '/returns',
+        footerServiceL6Label: 'FAQ',                    footerServiceL6Url: '/faq',
+        footerCopy: '',
+        footerLegalL1Label: 'Privacy Policy', footerLegalL1Url: '/privacy',
+        footerLegalL2Label: 'Terms of Use',   footerLegalL2Url: '/terms',
+        footerLegalL3Label: 'Accessibility',  footerLegalL3Url: '/accessibility',
         colorBlue:        '#004fa3',
         colorNavy:        '#0d2137',
         colorNavyDark:    '#081525',
@@ -178,6 +203,11 @@
     var faviconThumbImg    = document.getElementById('faviconThumbImg');
     var faviconThumbEmpty  = document.getElementById('faviconThumbEmpty');
     var faviconRemoveBtn   = document.getElementById('faviconRemoveBtn');
+    var footerLogoFileInput = document.getElementById('df-footer-logo-file');
+    var footerLogoThumbImg  = document.getElementById('footerLogoThumbImg');
+    var footerLogoThumbEmpty = document.getElementById('footerLogoThumbEmpty');
+    var footerLogoRemoveBtn = document.getElementById('footerLogoRemoveBtn');
+    var footerLogoSizeVal   = document.getElementById('footerLogoSizeVal');
 
     // ── Utility helpers ───────────────────────────────────────────────
 
@@ -239,6 +269,76 @@
         var span = iframeDoc.createElement('span');
         span.innerHTML = val.replace(/\n/g, '<br>');
         item.appendChild(span);
+    }
+
+    function getFooterLogoSrc() {
+        var footerSrc = draft.footerLogoSrc;
+        if (footerSrc) return footerSrc;
+        return draft.logoSrc !== undefined ? draft.logoSrc : DEFAULTS.logoSrc;
+    }
+
+    function clampFooterLogoSize(size) {
+        var n = parseInt(size, 10);
+        if (isNaN(n)) n = FOOTER_LOGO_SIZE_MAX;
+        return Math.min(FOOTER_LOGO_SIZE_MAX, Math.max(FOOTER_LOGO_SIZE_MIN, n));
+    }
+
+    function applyFooterLogoSize() {
+        if (!iframeDoc) return;
+        var size = clampFooterLogoSize(
+            draft.footerLogoSize !== undefined ? draft.footerLogoSize : DEFAULTS.footerLogoSize
+        );
+        var img = isel('.site-footer__logo img');
+        if (img) {
+            img.style.height = size + 'px';
+            img.style.width = 'auto';
+        }
+        var styleId = '__designer-footer-logo-size__';
+        var styleEl = iframeDoc.getElementById(styleId);
+        if (!styleEl) {
+            styleEl = iframeDoc.createElement('style');
+            styleEl.id = styleId;
+            iframeDoc.head.appendChild(styleEl);
+        }
+        styleEl.textContent = '.site-footer__logo img { height: ' + size + 'px !important; width: auto; }';
+    }
+
+    function applyFooterLogo() {
+        if (!iframeDoc) return;
+        var src = getFooterLogoSrc();
+        var img = isel('.site-footer__logo img');
+        var name = draft.companyName !== undefined ? draft.companyName : DEFAULTS.companyName;
+        if (img) {
+            img.setAttribute('src', src);
+            img.setAttribute('alt', name + ' Industrial Supplies');
+        }
+        applyFooterLogoSize();
+    }
+
+    function updateFooterCopy() {
+        var copyEl = isel('.site-footer__copy');
+        if (!copyEl) return;
+        if (draft.footerCopy) {
+            copyEl.textContent = draft.footerCopy;
+            return;
+        }
+        var name = draft.companyName !== undefined ? draft.companyName : DEFAULTS.companyName;
+        copyEl.textContent = '© ' + new Date().getFullYear() + ' ' + name + '. All rights reserved.';
+    }
+
+    function setFooterNavLink(section, linkNum, label, url) {
+        var link = null;
+        if (section === 'shop' || section === 'service') {
+            var navIdx = section === 'shop' ? 0 : 1;
+            var navs = iselAll('.site-footer__inner > nav');
+            if (!navs[navIdx]) return;
+            link = navs[navIdx].querySelectorAll('.site-footer__links li a')[linkNum - 1];
+        } else if (section === 'legal') {
+            link = iselAll('.site-footer__legal li a')[linkNum - 1];
+        }
+        if (!link) return;
+        if (label !== null && label !== undefined) link.textContent = label;
+        if (url !== null && url !== undefined) link.setAttribute('href', url);
     }
 
     // ── Design slug routing ───────────────────────────────────────────
@@ -338,20 +438,28 @@
             // Branding
             case 'companyName':
                 setText(iframeDoc.querySelector('title'), val + ' — Industrial Supplies, MRO & Safety Products');
-                iselAll('.site-footer__copy').forEach(function (el) {
-                    el.textContent = '© ' + new Date().getFullYear() + ' ' + val + '. All rights reserved.';
-                });
+                updateFooterCopy();
                 break;
             case 'logoUrl':
-                iselAll('.top-bar__logo, .site-footer__logo').forEach(function (el) {
+                iselAll('.top-bar__logo').forEach(function (el) {
                     setAttr(el, 'href', val);
                 });
                 break;
             case 'logoSrc':
-                iselAll('.top-bar__logo img, .site-footer__logo img').forEach(function (img) {
+                iselAll('.top-bar__logo img').forEach(function (img) {
                     img.setAttribute('src', val);
                     img.setAttribute('alt', draft.companyName || val);
                 });
+                if (!draft.footerLogoSrc) applyFooterLogo();
+                break;
+            case 'footerLogoSrc':
+                applyFooterLogo();
+                break;
+            case 'footerLogoSize':
+                applyFooterLogoSize();
+                break;
+            case 'footerLogoUrl':
+                setAttr(isel('.site-footer__logo'), 'href', val);
                 break;
             case 'footerTagline':
                 setText(isel('.site-footer__tagline'), val);
@@ -493,6 +601,18 @@
             case 'ctaBtn2Url':
                 setAttr(isel('.cta-band__btn--secondary'), 'href', val); break;
 
+            case 'footerSocialLabel':
+                setText(isel('.site-footer__social-label'), val); break;
+
+            case 'footerShopHeading':
+                setText(isel('#footer-shop-heading'), val); break;
+            case 'footerServiceHeading':
+                setText(isel('#footer-service-heading'), val); break;
+            case 'footerContactHeading':
+                setText(isel('#footer-contact-heading'), val); break;
+            case 'footerCopy':
+                updateFooterCopy(); break;
+
             // Catalog Library (section three)
             case 'catalogTitle':
                 setText(isel('.catalog-library__title'), val); break;
@@ -510,10 +630,6 @@
                 setText(isel('.quick-order__subtitle'), val); break;
             case 'qoSubmit':
                 setText(isel('.quick-order__submit'), val); break;
-
-            // Footer social heading
-            case 'footerSocialLabel':
-                setText(isel('.site-footer__social-label'), val); break;
 
             // Footer contact
             case 'footerEmail': {
@@ -536,10 +652,24 @@
                 setAttr(isel('.site-footer__social-link[aria-label="X"]'), 'href', val); break;
 
             default: {
-                var mc, ml, sn;
+                var mc, ml, sn, fl;
+
+                // ── Footer nav: footerShopL1Label / footerShopL1Url / footerServiceL1* / footerLegalL1*
+                if ((fl = key.match(/^footerShopL(\d+)Label$/))) {
+                    setFooterNavLink('shop', +fl[1], val, null);
+                } else if ((fl = key.match(/^footerShopL(\d+)Url$/))) {
+                    setFooterNavLink('shop', +fl[1], null, val);
+                } else if ((fl = key.match(/^footerServiceL(\d+)Label$/))) {
+                    setFooterNavLink('service', +fl[1], val, null);
+                } else if ((fl = key.match(/^footerServiceL(\d+)Url$/))) {
+                    setFooterNavLink('service', +fl[1], null, val);
+                } else if ((fl = key.match(/^footerLegalL(\d+)Label$/))) {
+                    setFooterNavLink('legal', +fl[1], val, null);
+                } else if ((fl = key.match(/^footerLegalL(\d+)Url$/))) {
+                    setFooterNavLink('legal', +fl[1], null, val);
 
                 // ── Sub-nav: subNavLmVisible / subNavLmLabel / subNavLmUrl
-                if ((sn = key.match(/^subNavL(\d+)Visible$/))) {
+                } else if ((sn = key.match(/^subNavL(\d+)Visible$/))) {
                     setVisible(iselAll('.sub-nav__links a')[+sn[1] - 1] || null, val === true || val === 'true' || val === undefined);
                 } else if ((sn = key.match(/^subNavL(\d+)Label$/))) {
                     setText(iselAll('.sub-nav__links a')[+sn[1] - 1] || null, val);
@@ -571,6 +701,8 @@
             var val = draft[key] !== undefined ? draft[key] : DEFAULTS[key];
             applyField(key, val);
         });
+        applyFooterLogo();
+        updateFooterCopy();
     }
 
     // ── Populate form fields from draft ───────────────────────────────
@@ -603,6 +735,21 @@
         if (logoUrlInput) {
             logoUrlInput.value = (logoVal && logoVal.startsWith('data:')) ? '' : (logoVal || '');
         }
+
+        var footerLogoVal = draft.footerLogoSrc || '';
+        updateFooterLogoThumb(footerLogoVal);
+        var footerSize = clampFooterLogoSize(
+            draft.footerLogoSize !== undefined ? draft.footerLogoSize : DEFAULTS.footerLogoSize
+        );
+        if (draft.footerLogoSize !== footerSize) draft.footerLogoSize = footerSize;
+        if (footerLogoSizeVal) {
+            footerLogoSizeVal.textContent = footerSize + 'px' +
+                (footerSize === FOOTER_LOGO_SIZE_MAX ? ' (max)' : '');
+        }
+        var footerSizeInput = document.getElementById('df-footer-logo-size');
+        if (footerSizeInput && footerSizeInput.value !== String(footerSize)) {
+            footerSizeInput.value = footerSize;
+        }
     }
 
     // ── Bind field panel inputs ───────────────────────────────────────
@@ -613,6 +760,8 @@
         if (!key) return;
 
         var val = input.type === 'checkbox' ? input.checked : input.value;
+        if (input.type === 'range') val = parseInt(val, 10);
+        if (key === 'footerLogoSize') val = clampFooterLogoSize(val);
         draft[key] = val;
 
         // Keep color + hex inputs in sync
@@ -622,6 +771,10 @@
         }
 
         applyField(key, val);
+        if (input.type === 'range' && key === 'footerLogoSize' && footerLogoSizeVal) {
+            footerLogoSizeVal.textContent = val + 'px' +
+                (val === FOOTER_LOGO_SIZE_MAX ? ' (max)' : '');
+        }
         scheduleSave();
     }
 
@@ -738,6 +891,50 @@
                 if (logoUrlInput) logoUrlInput.value = '';
                 updateLogoThumb('');
                 applyField('logoSrc', DEFAULTS.logoSrc);
+                scheduleSave();
+            });
+        }
+    }
+
+    function updateFooterLogoThumb(src) {
+        if (!footerLogoThumbImg || !footerLogoThumbEmpty || !footerLogoRemoveBtn) return;
+        if (src && src.indexOf('data:') === 0) {
+            footerLogoThumbImg.src = src;
+            footerLogoThumbImg.hidden = false;
+            footerLogoThumbEmpty.hidden = true;
+            footerLogoRemoveBtn.hidden = false;
+        } else {
+            footerLogoThumbImg.src = '';
+            footerLogoThumbImg.hidden = true;
+            footerLogoThumbEmpty.hidden = false;
+            footerLogoThumbEmpty.textContent = 'Using header logo';
+            footerLogoRemoveBtn.hidden = true;
+        }
+    }
+
+    function bindFooterLogoUpload() {
+        if (!footerLogoFileInput) return;
+
+        footerLogoFileInput.addEventListener('change', function () {
+            var file = footerLogoFileInput.files && footerLogoFileInput.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                var dataUrl = evt.target.result;
+                draft.footerLogoSrc = dataUrl;
+                updateFooterLogoThumb(dataUrl);
+                applyFooterLogo();
+                scheduleSave();
+            };
+            reader.readAsDataURL(file);
+            footerLogoFileInput.value = '';
+        });
+
+        if (footerLogoRemoveBtn) {
+            footerLogoRemoveBtn.addEventListener('click', function () {
+                draft.footerLogoSrc = '';
+                updateFooterLogoThumb('');
+                applyFooterLogo();
                 scheduleSave();
             });
         }
@@ -1460,14 +1657,24 @@
             // ── Extract uploaded logo + favicon into data/images/header/ ──────
             var logoSrc    = draft.logoSrc    || '';
             var faviconSrc = draft.faviconSrc || '';
+            var footerLogoSrc = draft.footerLogoSrc || '';
             var logoServerPath    = null;
             var faviconServerPath = null;
+            var footerLogoServerPath = null;
 
             if (logoSrc.indexOf('data:') === 0) {
                 var logoMime = (logoSrc.match(/^data:([^;]+)/) || [])[1] || 'image/png';
                 var logoZipPath = 'data/images/header/logo.' + getExtFromMime(logoMime);
                 if (dataUrlToZip(zip, logoSrc, logoZipPath)) {
                     logoServerPath = '/' + logoZipPath;
+                }
+            }
+
+            if (footerLogoSrc.indexOf('data:') === 0) {
+                var footerMime = (footerLogoSrc.match(/^data:([^;]+)/) || [])[1] || 'image/png';
+                var footerZipPath = 'data/images/footer/logo.' + getExtFromMime(footerMime);
+                if (dataUrlToZip(zip, footerLogoSrc, footerZipPath)) {
+                    footerLogoServerPath = '/' + footerZipPath;
                 }
             }
 
@@ -1488,6 +1695,9 @@
                 htmlContent = htmlContent.split(logoSrc).join(logoServerPath);
                 headerHtml  = headerHtml.split(logoSrc).join(logoServerPath);
                 welcomeHtml = welcomeHtml.split(logoSrc).join(logoServerPath);
+            }
+            if (footerLogoServerPath && footerLogoSrc) {
+                htmlContent = htmlContent.split(footerLogoSrc).join(footerLogoServerPath);
             }
             if (faviconServerPath && faviconSrc) {
                 htmlContent = htmlContent.split(faviconSrc).join(faviconServerPath);
@@ -1568,6 +1778,7 @@
 
         bindFieldPanel();
         bindLogoUpload();
+        bindFooterLogoUpload();
         bindFaviconUpload();
         initResetBtn();
 

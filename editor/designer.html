@@ -246,6 +246,44 @@
             margin-top: 2px;
         }
 
+        /* Footer logo preview on dark footer background */
+        .editor-footer-logo-preview {
+            background: #081525;
+            border-color: #1a3347;
+        }
+        .editor-footer-logo-preview .editor-logo-preview-empty {
+            color: #6a8099;
+        }
+
+        /* Logo size slider */
+        .editor-range-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .editor-range-row input[type="range"] {
+            flex: 1;
+            accent-color: #4a9eff;
+        }
+        .editor-range-value {
+            font-size: 0.75rem;
+            color: #888;
+            min-width: 72px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .editor-range-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .editor-range-scale em {
+            font-style: normal;
+            color: #4a9eff;
+        }
+
         /* ── Mega menu editor ───────────────────────────────── */
         .mega-col-toggle {
             display: flex;
@@ -1263,6 +1301,42 @@
                 <details class="designer-group">
                     <summary class="designer-group-head">Footer</summary>
                     <div class="designer-group-body">
+
+                        <p class="editor-field-hint" style="margin:0 0 8px">Upload a dedicated footer logo, or leave empty to use the header logo. For best results use a horizontal PNG or SVG with a transparent background — wide logos often need to be scaled down.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Footer logo</label>
+                            <div class="editor-logo-widget">
+                                <div class="editor-logo-preview editor-footer-logo-preview" id="footerLogoPreviewThumb">
+                                    <img id="footerLogoThumbImg" src="" alt="Footer logo preview" hidden>
+                                    <span class="editor-logo-preview-empty" id="footerLogoThumbEmpty">Using header logo</span>
+                                </div>
+                                <div class="editor-logo-actions">
+                                    <label class="editor-logo-file-label" for="df-footer-logo-file">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Upload image
+                                        <input type="file" id="df-footer-logo-file" accept="image/*" style="display:none">
+                                    </label>
+                                    <button type="button" class="editor-logo-remove-btn" id="footerLogoRemoveBtn" hidden>✕ Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-logo-size">Logo size</label>
+                            <p class="editor-field-hint" style="margin:0 0 6px">Recommended display height: <strong>95px</strong> (slider maximum). Scale down to 50px if your logo looks too large.</p>
+                            <div class="editor-range-row">
+                                <input type="range" id="df-footer-logo-size" data-field="footerLogoSize" min="50" max="95" step="1" value="95">
+                                <span class="editor-range-value" id="footerLogoSizeVal">95px (max)</span>
+                            </div>
+                            <div class="editor-range-scale">
+                                <span>50px</span>
+                                <span><em>95px recommended max</em></span>
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-logo-url">Footer logo link URL</label>
+                            <input type="text" id="df-footer-logo-url" data-field="footerLogoUrl" class="editor-field-input" placeholder="/">
+                        </div>
+
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-footer-tagline">Footer tagline</label>
                             <textarea id="df-footer-tagline" data-field="footerTagline" class="editor-field-input editor-field-textarea" rows="2"></textarea>
@@ -1271,19 +1345,116 @@
                             <label class="editor-field-label" for="df-footer-social-label">Social heading</label>
                             <input type="text" id="df-footer-social-label" data-field="footerSocialLabel" class="editor-field-input" placeholder="Follow IBC Master">
                         </div>
+
+                        <p class="editor-field-label" style="margin:10px 0 4px">Column headings</p>
+                        <div class="editor-field editor-field--inline">
+                            <div>
+                                <label class="editor-field-label" for="df-footer-shop-head">Shop</label>
+                                <input type="text" id="df-footer-shop-head" data-field="footerShopHeading" class="editor-field-input">
+                            </div>
+                            <div>
+                                <label class="editor-field-label" for="df-footer-service-head">Customer Service</label>
+                                <input type="text" id="df-footer-service-head" data-field="footerServiceHeading" class="editor-field-input">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-contact-head">Contact</label>
+                            <input type="text" id="df-footer-contact-head" data-field="footerContactHeading" class="editor-field-input">
+                        </div>
+
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Shop links</summary>
+                            <div class="designer-slide-group-body">
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerShopL1Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerShopL1Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerShopL2Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerShopL2Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerShopL3Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerShopL3Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerShopL4Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerShopL4Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerShopL5Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerShopL5Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerShopL6Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerShopL6Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Customer Service links</summary>
+                            <div class="designer-slide-group-body">
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerServiceL1Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerServiceL1Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerServiceL2Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerServiceL2Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerServiceL3Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerServiceL3Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerServiceL4Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerServiceL4Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerServiceL5Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerServiceL5Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                                <div class="editor-field editor-field--inline">
+                                    <div><input type="text" data-field="footerServiceL6Label" class="editor-field-input" placeholder="Label"></div>
+                                    <div><input type="text" data-field="footerServiceL6Url" class="editor-field-input" placeholder="/url"></div>
+                                </div>
+                            </div>
+                        </details>
+
+                        <p class="editor-field-label" style="margin:10px 0 4px">Contact info</p>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-footer-email">Email</label>
                             <input type="text" id="df-footer-email" data-field="footerEmail" class="editor-field-input" placeholder="sales@ibcmaster.com">
                         </div>
                         <div class="editor-field">
-                            <label class="editor-field-label" for="df-footer-address">Address</label>
-                            <textarea id="df-footer-address" data-field="footerAddress" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                        </div>
-                        <div class="editor-field">
                             <label class="editor-field-label" for="df-footer-hours">Hours</label>
                             <input type="text" id="df-footer-hours" data-field="footerHours" class="editor-field-input" placeholder="Mon–Fri, 7:00 AM – 6:00 PM CT">
                         </div>
-                        <p class="editor-field-label" style="margin:6px 0 4px">Social links</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-address">Address</label>
+                            <textarea id="df-footer-address" data-field="footerAddress" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                        </div>
+
+                        <p class="editor-field-label" style="margin:10px 0 4px">Bottom bar</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-footer-copy">Copyright line <span class="editor-field-hint-inline">(leave blank to auto-generate from company name)</span></label>
+                            <input type="text" id="df-footer-copy" data-field="footerCopy" class="editor-field-input" placeholder="© 2026 Company. All rights reserved.">
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div><input type="text" data-field="footerLegalL1Label" class="editor-field-input" placeholder="Legal link 1"></div>
+                            <div><input type="text" data-field="footerLegalL1Url" class="editor-field-input" placeholder="/url"></div>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div><input type="text" data-field="footerLegalL2Label" class="editor-field-input" placeholder="Legal link 2"></div>
+                            <div><input type="text" data-field="footerLegalL2Url" class="editor-field-input" placeholder="/url"></div>
+                        </div>
+                        <div class="editor-field editor-field--inline">
+                            <div><input type="text" data-field="footerLegalL3Label" class="editor-field-input" placeholder="Legal link 3"></div>
+                            <div><input type="text" data-field="footerLegalL3Url" class="editor-field-input" placeholder="/url"></div>
+                        </div>
+
+                        <p class="editor-field-label" style="margin:10px 0 4px">Social links</p>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-social-fb">Facebook URL</label>
                             <input type="text" id="df-social-fb" data-field="footerSocialFb" class="editor-field-input" placeholder="https://www.facebook.com/company">
