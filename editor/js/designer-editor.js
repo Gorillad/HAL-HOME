@@ -248,6 +248,35 @@
         el.style.display = show ? '' : 'none';
     }
 
+    function getSubNavBarLinkEl(n) {
+        return iselAll('.sub-nav__links a')[n - 1] || null;
+    }
+
+    function getMegaSubNavLinkEl(n) {
+        return iselAll('.mega-menu__subnav-links a')[n - 1] || null;
+    }
+
+    function setSubNavLinkState(n, opts) {
+        var barLink = getSubNavBarLinkEl(n);
+        var megaLink = getMegaSubNavLinkEl(n);
+        var barLi = barLink ? barLink.closest('li') : null;
+        var megaLi = megaLink ? megaLink.closest('li') : null;
+
+        if (opts.visible !== undefined) {
+            var show = opts.visible === true || opts.visible === 'true' || opts.visible === undefined;
+            setVisible(barLi || barLink, show);
+            setVisible(megaLi || megaLink, show);
+        }
+        if (opts.label !== undefined && opts.label !== null) {
+            setText(barLink, opts.label);
+            setText(megaLink, opts.label);
+        }
+        if (opts.url !== undefined && opts.url !== null) {
+            setAttr(barLink, 'href', opts.url);
+            setAttr(megaLink, 'href', opts.url);
+        }
+    }
+
     // Find a .site-footer__contact-item whose label span matches a keyword
     function getContactItem(keyword) {
         var items = iselAll('.site-footer__contact-item');
@@ -576,7 +605,8 @@
             /* Apply the new vars to actual selectors */
             '.top-bar__links a, .top-bar__phone, .top-bar__auth { color: var(--ibc-topbar-text) !important; }',
             '.sub-nav__links { justify-content: center !important; }',
-            '.sub-nav__links a { color: var(--ibc-subnav-text) !important; }',
+            '.sub-nav__links a, .mega-menu__subnav-links a { color: var(--ibc-subnav-text) !important; }',
+            '.mega-menu__subnav-links { justify-content: center !important; }',
             '.mega-col__head { color: var(--ibc-mega-head-color) !important; }',
             '.mega-col a { color: var(--ibc-mega-link-color) !important; }',
         ].join('\n');
@@ -860,13 +890,13 @@
                 } else if ((fl = key.match(/^footerLegalL(\d+)Url$/))) {
                     setFooterLegalLink(+fl[1], null, val);
 
-                // ── Sub-nav: subNavLmVisible / subNavLmLabel / subNavLmUrl
+                // ── Sub-nav: subNavLmVisible / subNavLmLabel / subNavLmUrl (bar + mega menu footer)
                 } else if ((sn = key.match(/^subNavL(\d+)Visible$/))) {
-                    setVisible(iselAll('.sub-nav__links a')[+sn[1] - 1] || null, val === true || val === 'true' || val === undefined);
+                    setSubNavLinkState(+sn[1], { visible: val });
                 } else if ((sn = key.match(/^subNavL(\d+)Label$/))) {
-                    setText(iselAll('.sub-nav__links a')[+sn[1] - 1] || null, val);
+                    setSubNavLinkState(+sn[1], { label: val });
                 } else if ((sn = key.match(/^subNavL(\d+)Url$/))) {
-                    setAttr(iselAll('.sub-nav__links a')[+sn[1] - 1] || null, 'href', val);
+                    setSubNavLinkState(+sn[1], { url: val });
 
                 // ── Mega menu: megaCnVisible / megaCnHead / megaCnLmVisible / megaCnLmLabel / megaCnLmUrl
                 } else if ((mc = key.match(/^megaC(\d)Visible$/))) {
