@@ -21,6 +21,9 @@
 
     const FOOTER_LOGO_SIZE_MIN = 50;
     const FOOTER_LOGO_SIZE_MAX = 95; // recommended maximum display height
+    const HEADER_LOGO_SIZE_MIN = 36;
+    const HEADER_LOGO_SIZE_MAX = 80; // recommended maximum display height in main nav
+    const HEADER_NAV_MIN_GAP = 20; // minimum space between All Products and search bar
 
     // ── Default draft values (Woolf template defaults) ────────────────
 
@@ -28,6 +31,7 @@
         companyName:   'IBC Master',
         logoUrl:       '/',
         logoSrc:       'data/images/ibc-logo-reverse.svg',
+        logoSize:      56,
         faviconSrc:    '',
         footerLogoSrc:   '',
         footerLogoSize:  FOOTER_LOGO_SIZE_MAX,
@@ -36,22 +40,33 @@
         footerShopHeading:     'Shop',
         footerServiceHeading:  'Customer Service',
         footerContactHeading:  'Contact',
-        footerShopL1Label: 'Catalog',              footerShopL1Url: '/catalog',
-        footerShopL2Label: 'Industrial Supplies', footerShopL2Url: '/industrial-supplies',
-        footerShopL3Label: 'Shop by Brand',       footerShopL3Url: '/brands',
-        footerShopL4Label: 'Safety & PPE',        footerShopL4Url: '/industrial-supplies?category=Safety',
-        footerShopL5Label: 'Cutting Tools',       footerShopL5Url: '/industrial-supplies?category=Cutting+Tools',
-        footerShopL6Label: 'Clearance',           footerShopL6Url: '/clearance',
-        footerServiceL1Label: 'Contact Us',           footerServiceL1Url: '/contact',
-        footerServiceL2Label: 'My Account',           footerServiceL2Url: '/account',
-        footerServiceL3Label: 'Quick Order',          footerServiceL3Url: '/quick-order',
-        footerServiceL4Label: 'Shipping & Delivery',  footerServiceL4Url: '/shipping',
-        footerServiceL5Label: 'Returns & Exchanges',  footerServiceL5Url: '/returns',
-        footerServiceL6Label: 'FAQ',                    footerServiceL6Url: '/faq',
+        footerShopVisible:     true,
+        footerServiceVisible:  true,
+        footerContactVisible:  true,
+        footerShopL1Visible: true, footerShopL1Label: 'Catalog',              footerShopL1Url: '/catalog',
+        footerShopL2Visible: true, footerShopL2Label: 'Industrial Supplies', footerShopL2Url: '/industrial-supplies',
+        footerShopL3Visible: true, footerShopL3Label: 'Shop by Brand',       footerShopL3Url: '/brands',
+        footerShopL4Visible: true, footerShopL4Label: 'Safety & PPE',        footerShopL4Url: '/industrial-supplies?category=Safety',
+        footerShopL5Visible: true, footerShopL5Label: 'Cutting Tools',       footerShopL5Url: '/industrial-supplies?category=Cutting+Tools',
+        footerShopL6Visible: true, footerShopL6Label: 'Clearance',           footerShopL6Url: '/clearance',
+        footerServiceL1Visible: true, footerServiceL1Label: 'Contact Us',           footerServiceL1Url: '/contact',
+        footerServiceL2Visible: true, footerServiceL2Label: 'My Account',           footerServiceL2Url: '/account',
+        footerServiceL3Visible: true, footerServiceL3Label: 'Quick Order',          footerServiceL3Url: '/quick-order',
+        footerServiceL4Visible: true, footerServiceL4Label: 'Shipping & Delivery',  footerServiceL4Url: '/shipping',
+        footerServiceL5Visible: true, footerServiceL5Label: 'Returns & Exchanges',  footerServiceL5Url: '/returns',
+        footerServiceL6Visible: true, footerServiceL6Label: 'FAQ',                    footerServiceL6Url: '/faq',
         footerCopy: '',
-        footerLegalL1Label: 'Privacy Policy', footerLegalL1Url: '/privacy',
-        footerLegalL2Label: 'Terms of Use',   footerLegalL2Url: '/terms',
-        footerLegalL3Label: 'Accessibility',  footerLegalL3Url: '/accessibility',
+        footerLegalL1Visible: true, footerLegalL1Label: 'Privacy Policy', footerLegalL1Url: '/privacy',
+        footerLegalL2Visible: true, footerLegalL2Label: 'Terms of Use',   footerLegalL2Url: '/terms',
+        footerLegalL3Visible: true, footerLegalL3Label: 'Accessibility',  footerLegalL3Url: '/accessibility',
+        footerContactPhoneVisible:   true,
+        footerContactEmailVisible:   true,
+        footerContactHoursVisible:   true,
+        footerContactAddressVisible: true,
+        footerSocialFbVisible: true,
+        footerSocialLiVisible: true,
+        footerSocialYtVisible: true,
+        footerSocialXVisible:  true,
         colorBlue:        '#004fa3',
         colorNavy:        '#0d2137',
         colorNavyDark:    '#081525',
@@ -66,30 +81,6 @@
         phoneHref:     'tel:18005551234',
         authUrl:       '/login.php',
         cartUrl:       '/cart',
-        // Hero slide 1
-        hero1Eyebrow:  '500,000+ SKUs',
-        hero1Title:    'Industrial supplies for every job site and shop floor',
-        hero1Text:     'From cutting tools to safety gear — source what you need from one trusted catalog with fast shipping and expert support.',
-        hero1Btn1Label: 'Browse Catalog',
-        hero1Btn1Url:  '/catalog',
-        hero1Btn2Label: 'Request a Quote',
-        hero1Btn2Url:  '/contact',
-        // Hero slide 2
-        hero2Eyebrow:  'Safety & PPE',
-        hero2Title:    'Keep your team protected and compliant',
-        hero2Text:     'Gloves, eye protection, fall protection, respiratory, and more — stocked for industrial, construction, and manufacturing environments.',
-        hero2Btn1Label: 'Shop Safety',
-        hero2Btn1Url:  '/industrial-supplies?category=Safety',
-        hero2Btn2Label: 'Browse All Categories',
-        hero2Btn2Url:  '/catalog',
-        // Hero slide 3
-        hero3Eyebrow:  'Cutting & Machining',
-        hero3Title:    'Precision tooling for production and maintenance',
-        hero3Text:     'Milling, turning, threading, holemaking, and workholding — the brands and part numbers your machinists rely on.',
-        hero3Btn1Label: 'Shop Cutting Tools',
-        hero3Btn1Url:  '/industrial-supplies?category=Cutting+Tools',
-        hero3Btn2Label: 'Browse Milling',
-        hero3Btn2Url:  '/industrial-supplies?category=Milling',
         // About
         aboutEyebrow:  'About Us',
         aboutTitle:    'Supplying industry with the parts and products that keep operations running',
@@ -99,6 +90,8 @@
         aboutBtn1Url:  '/about',
         aboutBtn2Label: 'Contact Our Team',
         aboutBtn2Url:  '/contact',
+        aboutImageSrc: 'data/images/about/spacexs-new-profile-picture-showing-the-interstage-and-v0-8JBeO-PFL5IKys9c4o0dlwu_071nBq7gq2HX0fMN-mI.webp',
+        aboutImageAlt: 'IBC Master warehouse and distribution center',
         stat1Value:    '25+',
         stat1Label:    'Years in business',
         stat2Value:    '500K+',
@@ -106,18 +99,23 @@
         stat3Value:    'Nationwide',
         stat3Label:    'Shipping & support',
         // CTA section
+        ctaVisible:    true,
+        ctaEyebrow:    'Talk to our team',
         ctaTitle:      'Need help sourcing the right product?',
         ctaText:       'Our team is ready to assist with quotes, bulk orders, and hard-to-find parts for your operation.',
         ctaBtn1Label:  'Request a Quote',
         ctaBtn1Url:    '/contact',
         ctaBtn2Label:  'Open an Account',
         ctaBtn2Url:    '/sign-up',
+        ctaShowPhone:  true,
+        ctaBgColor:    '#004fa3',
         // Catalog Library (section three)
         catalogTitle:    'Vendor Catalog Library',
         catalogSubtitle: 'Browse and download digital catalogs from the manufacturers we represent',
         catalogAllLabel: 'View all catalogs',
         catalogAllUrl:   '/catalogs',
         // Quick Order (section four)
+        qoVisible:   true,
         qoTitle:    'Quick Order',
         qoSubtitle: 'Know your part number? Enter it below to search and order fast.',
         qoSubmit:   'Search & Order',
@@ -208,6 +206,11 @@
     var footerLogoThumbEmpty = document.getElementById('footerLogoThumbEmpty');
     var footerLogoRemoveBtn = document.getElementById('footerLogoRemoveBtn');
     var footerLogoSizeVal   = document.getElementById('footerLogoSizeVal');
+    var headerLogoSizeVal   = document.getElementById('headerLogoSizeVal');
+    var aboutImageFileInput = document.getElementById('df-about-image-file');
+    var aboutImageThumbImg  = document.getElementById('aboutImageThumbImg');
+    var aboutImageThumbEmpty = document.getElementById('aboutImageThumbEmpty');
+    var aboutImageRemoveBtn = document.getElementById('aboutImageRemoveBtn');
 
     // ── Utility helpers ───────────────────────────────────────────────
 
@@ -283,6 +286,148 @@
         return Math.min(FOOTER_LOGO_SIZE_MAX, Math.max(FOOTER_LOGO_SIZE_MIN, n));
     }
 
+    function clampHeaderLogoSize(size) {
+        var n = parseInt(size, 10);
+        if (isNaN(n)) n = DEFAULTS.logoSize;
+        return Math.min(HEADER_LOGO_SIZE_MAX, Math.max(HEADER_LOGO_SIZE_MIN, n));
+    }
+
+    function forceIframeLayout() {
+        if (!iframeDoc || !iframeDoc.body) return;
+        void iframeDoc.body.offsetHeight;
+    }
+
+    function isHeaderNavDesktopLayout() {
+        if (!iframeDoc) return false;
+        var allProd = isel('.all-prod-btn');
+        if (!allProd) return false;
+        var win = iframeDoc.defaultView;
+        if (!win) return false;
+        return allProd.offsetWidth > 0 && win.getComputedStyle(allProd).display !== 'none';
+    }
+
+    function headerNavHasInsufficientGap() {
+        if (!iframeDoc || !isHeaderNavDesktopLayout()) return false;
+        var allProd = isel('.all-prod-btn');
+        var center = isel('.main-nav__center');
+        if (!allProd || !center) return false;
+        var btnRect = allProd.getBoundingClientRect();
+        var centerRect = center.getBoundingClientRect();
+        return btnRect.right + HEADER_NAV_MIN_GAP > centerRect.left;
+    }
+
+    function setHeaderLogoHeightInDom(size) {
+        if (!iframeDoc) return;
+        var height = clampHeaderLogoSize(size);
+        var img = isel('.main-nav__logo img');
+        if (img) {
+            img.style.height = height + 'px';
+            img.style.width = 'auto';
+        }
+        var styleId = '__designer-header-logo-size__';
+        var styleEl = iframeDoc.getElementById(styleId);
+        if (!styleEl) {
+            styleEl = iframeDoc.createElement('style');
+            styleEl.id = styleId;
+            iframeDoc.head.appendChild(styleEl);
+        }
+        styleEl.textContent = [
+            '.main-nav__logo { overflow: hidden; flex-shrink: 0; }',
+            '.main-nav__logo img {',
+            '  height: ' + height + 'px !important;',
+            '  width: auto !important;',
+            '  object-fit: contain;',
+            '}',
+        ].join('\n');
+    }
+
+    function syncHeaderLogoSizeControls(size, rejected) {
+        var fitted = clampHeaderLogoSize(size);
+        var sizeInput = document.getElementById('df-header-logo-size');
+        if (sizeInput && sizeInput.value !== String(fitted)) {
+            sizeInput.value = fitted;
+        }
+        if (headerLogoSizeVal) {
+            var label = fitted + 'px';
+            if (rejected) label += ' — needs more space';
+            else if (fitted === HEADER_LOGO_SIZE_MAX) label += ' (max)';
+            headerLogoSizeVal.textContent = label;
+        }
+    }
+
+    function attemptHeaderLogoSize(requestedSize, previousSize) {
+        if (!iframeDoc) {
+            return { accepted: true, size: clampHeaderLogoSize(previousSize) };
+        }
+        var target = clampHeaderLogoSize(requestedSize);
+        var previous = clampHeaderLogoSize(previousSize);
+        if (!isHeaderNavDesktopLayout()) {
+            setHeaderLogoHeightInDom(target);
+            return { accepted: true, size: target };
+        }
+        setHeaderLogoHeightInDom(target);
+        forceIframeLayout();
+        if (!headerNavHasInsufficientGap()) {
+            return { accepted: true, size: target };
+        }
+        setHeaderLogoHeightInDom(previous);
+        forceIframeLayout();
+        return { accepted: false, size: previous };
+    }
+
+    function fitHeaderLogoSizeToNav(requestedSize) {
+        if (!iframeDoc) return clampHeaderLogoSize(requestedSize);
+        var target = clampHeaderLogoSize(requestedSize);
+        if (!isHeaderNavDesktopLayout()) {
+            setHeaderLogoHeightInDom(target);
+            return target;
+        }
+        setHeaderLogoHeightInDom(target);
+        forceIframeLayout();
+        if (!headerNavHasInsufficientGap()) return target;
+        for (var size = target - 1; size >= HEADER_LOGO_SIZE_MIN; size--) {
+            setHeaderLogoHeightInDom(size);
+            forceIframeLayout();
+            if (!headerNavHasInsufficientGap()) return size;
+        }
+        setHeaderLogoHeightInDom(HEADER_LOGO_SIZE_MIN);
+        return HEADER_LOGO_SIZE_MIN;
+    }
+
+    function applyHeaderLogoSize() {
+        if (!iframeDoc) return HEADER_LOGO_SIZE_MIN;
+        var requested = clampHeaderLogoSize(
+            draft.logoSize !== undefined ? draft.logoSize : DEFAULTS.logoSize
+        );
+        var fitted = fitHeaderLogoSizeToNav(requested);
+        if (draft.logoSize !== fitted) draft.logoSize = fitted;
+        setHeaderLogoHeightInDom(fitted);
+        syncHeaderLogoSizeControls(fitted, false);
+        return fitted;
+    }
+
+    function applyHeaderLogo() {
+        if (!iframeDoc) return;
+        var src = draft.logoSrc !== undefined ? draft.logoSrc : DEFAULTS.logoSrc;
+        var name = draft.companyName !== undefined ? draft.companyName : DEFAULTS.companyName;
+        var img = isel('.main-nav__logo img');
+        if (img) {
+            img.setAttribute('src', src);
+            img.setAttribute('alt', name + ' Industrial Supplies');
+            if (img.complete) {
+                applyHeaderLogoSize();
+            } else {
+                img.onload = function () {
+                    img.onload = null;
+                    applyHeaderLogoSize();
+                };
+            }
+        } else {
+            applyHeaderLogoSize();
+        }
+        if (!draft.footerLogoSrc) applyFooterLogo();
+    }
+
     function applyFooterLogoSize() {
         if (!iframeDoc) return;
         var size = clampFooterLogoSize(
@@ -327,15 +472,35 @@
     }
 
     function setFooterNavLink(section, linkNum, label, url) {
-        var link = null;
-        if (section === 'shop' || section === 'service') {
-            var navIdx = section === 'shop' ? 0 : 1;
-            var navs = iselAll('.site-footer__inner > nav');
-            if (!navs[navIdx]) return;
-            link = navs[navIdx].querySelectorAll('.site-footer__links li a')[linkNum - 1];
-        } else if (section === 'legal') {
-            link = iselAll('.site-footer__legal li a')[linkNum - 1];
-        }
+        var li = getFooterNavLinkLi(section, linkNum);
+        if (!li) return;
+        var link = li.querySelector('a');
+        if (!link) return;
+        if (label !== null && label !== undefined) link.textContent = label;
+        if (url !== null && url !== undefined) link.setAttribute('href', url);
+    }
+
+    function getFooterShopCol() {
+        return isel('[aria-labelledby="footer-shop-heading"]');
+    }
+    function getFooterServiceCol() {
+        return isel('[aria-labelledby="footer-service-heading"]');
+    }
+    function getFooterContactCol() {
+        return isel('[aria-labelledby="footer-contact-heading"]');
+    }
+    function getFooterNavLinkLi(section, linkNum) {
+        var col = section === 'shop' ? getFooterShopCol() : getFooterServiceCol();
+        if (!col) return null;
+        return col.querySelectorAll('.site-footer__links li')[linkNum - 1] || null;
+    }
+    function getFooterLegalLi(linkNum) {
+        return iselAll('.site-footer__legal li')[linkNum - 1] || null;
+    }
+    function setFooterLegalLink(linkNum, label, url) {
+        var li = getFooterLegalLi(linkNum);
+        if (!li) return;
+        var link = li.querySelector('a');
         if (!link) return;
         if (label !== null && label !== undefined) link.textContent = label;
         if (url !== null && url !== undefined) link.setAttribute('href', url);
@@ -410,16 +575,6 @@
             '.sub-nav__links a { color: var(--ibc-subnav-text) !important; }',
             '.mega-col__head { color: var(--ibc-mega-head-color) !important; }',
             '.mega-col a { color: var(--ibc-mega-link-color) !important; }',
-            /* Logo containment — prevents overflow regardless of uploaded image size */
-            '.top-bar__logo { overflow: hidden; max-width: 220px; }',
-            '.top-bar__logo img {',
-            '  max-width: 100%;',
-            '  max-height: 44px;',
-            '  width: auto;',
-            '  height: auto;',
-            '  object-fit: contain;',
-            '  display: block;',
-            '}',
         ].join('\n');
     }
 
@@ -439,18 +594,19 @@
             case 'companyName':
                 setText(iframeDoc.querySelector('title'), val + ' — Industrial Supplies, MRO & Safety Products');
                 updateFooterCopy();
+                applyHeaderLogo();
                 break;
             case 'logoUrl':
-                iselAll('.top-bar__logo').forEach(function (el) {
+                iselAll('.main-nav__logo').forEach(function (el) {
                     setAttr(el, 'href', val);
                 });
                 break;
             case 'logoSrc':
-                iselAll('.top-bar__logo img').forEach(function (img) {
-                    img.setAttribute('src', val);
-                    img.setAttribute('alt', draft.companyName || val);
-                });
+                applyHeaderLogo();
                 if (!draft.footerLogoSrc) applyFooterLogo();
+                break;
+            case 'logoSize':
+                applyHeaderLogoSize();
                 break;
             case 'footerLogoSrc':
                 applyFooterLogo();
@@ -507,54 +663,6 @@
                 });
                 break;
 
-            // Hero slide 1
-            case 'hero1Eyebrow':
-                setText(isel('.hero__slide:nth-child(1) .hero__eyebrow'), val); break;
-            case 'hero1Title':
-                setText(isel('.hero__slide:nth-child(1) .hero__title'), val); break;
-            case 'hero1Text':
-                setText(isel('.hero__slide:nth-child(1) .hero__text'), val); break;
-            case 'hero1Btn1Label':
-                setText(isel('.hero__slide:nth-child(1) .hero__btn--primary'), val); break;
-            case 'hero1Btn1Url':
-                setAttr(isel('.hero__slide:nth-child(1) .hero__btn--primary'), 'href', val); break;
-            case 'hero1Btn2Label':
-                setText(isel('.hero__slide:nth-child(1) .hero__btn--secondary'), val); break;
-            case 'hero1Btn2Url':
-                setAttr(isel('.hero__slide:nth-child(1) .hero__btn--secondary'), 'href', val); break;
-
-            // Hero slide 2
-            case 'hero2Eyebrow':
-                setText(isel('.hero__slide:nth-child(2) .hero__eyebrow'), val); break;
-            case 'hero2Title':
-                setText(isel('.hero__slide:nth-child(2) .hero__title'), val); break;
-            case 'hero2Text':
-                setText(isel('.hero__slide:nth-child(2) .hero__text'), val); break;
-            case 'hero2Btn1Label':
-                setText(isel('.hero__slide:nth-child(2) .hero__btn--primary'), val); break;
-            case 'hero2Btn1Url':
-                setAttr(isel('.hero__slide:nth-child(2) .hero__btn--primary'), 'href', val); break;
-            case 'hero2Btn2Label':
-                setText(isel('.hero__slide:nth-child(2) .hero__btn--secondary'), val); break;
-            case 'hero2Btn2Url':
-                setAttr(isel('.hero__slide:nth-child(2) .hero__btn--secondary'), 'href', val); break;
-
-            // Hero slide 3
-            case 'hero3Eyebrow':
-                setText(isel('.hero__slide:nth-child(3) .hero__eyebrow'), val); break;
-            case 'hero3Title':
-                setText(isel('.hero__slide:nth-child(3) .hero__title'), val); break;
-            case 'hero3Text':
-                setText(isel('.hero__slide:nth-child(3) .hero__text'), val); break;
-            case 'hero3Btn1Label':
-                setText(isel('.hero__slide:nth-child(3) .hero__btn--primary'), val); break;
-            case 'hero3Btn1Url':
-                setAttr(isel('.hero__slide:nth-child(3) .hero__btn--primary'), 'href', val); break;
-            case 'hero3Btn2Label':
-                setText(isel('.hero__slide:nth-child(3) .hero__btn--secondary'), val); break;
-            case 'hero3Btn2Url':
-                setAttr(isel('.hero__slide:nth-child(3) .hero__btn--secondary'), 'href', val); break;
-
             // About
             case 'aboutEyebrow':
                 setText(isel('.about-block__eyebrow'), val); break;
@@ -579,6 +687,17 @@
             case 'aboutBtn2Url':
                 setAttr(isel('.about-block__btn--secondary'), 'href', val); break;
 
+            case 'aboutImageSrc':
+                iselAll('.about-block__image').forEach(function (img) {
+                    img.setAttribute('src', val);
+                });
+                break;
+            case 'aboutImageAlt':
+                iselAll('.about-block__image').forEach(function (img) {
+                    img.setAttribute('alt', val);
+                });
+                break;
+
             // Stats
             case 'stat1Value': setText(isel('.about-block__stat:nth-child(1) .about-block__stat-value'), val); break;
             case 'stat1Label': setText(isel('.about-block__stat:nth-child(1) .about-block__stat-label'), val); break;
@@ -588,6 +707,20 @@
             case 'stat3Label': setText(isel('.about-block__stat:nth-child(3) .about-block__stat-label'), val); break;
 
             // CTA
+            case 'ctaVisible':
+                setVisible(isel('.cta-band'), val === true || val === 'true' || val === undefined);
+                if (typeof window.__fitFullSite === 'function') {
+                    setTimeout(window.__fitFullSite, 60);
+                }
+                break;
+            case 'ctaEyebrow': {
+                var ctaEyebrow = isel('.cta-band__eyebrow');
+                if (ctaEyebrow) {
+                    setText(ctaEyebrow, val);
+                    setVisible(ctaEyebrow, val && String(val).trim());
+                }
+                break;
+            }
             case 'ctaTitle':
                 setText(isel('.cta-band__title'), val); break;
             case 'ctaText':
@@ -600,6 +733,16 @@
                 setText(isel('.cta-band__btn--secondary'), val); break;
             case 'ctaBtn2Url':
                 setAttr(isel('.cta-band__btn--secondary'), 'href', val); break;
+            case 'ctaShowPhone':
+                setVisible(isel('.cta-band__btn--phone'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'ctaBgColor': {
+                var ctaBand = isel('.cta-band');
+                if (ctaBand && val) {
+                    ctaBand.style.backgroundColor = val;
+                }
+                break;
+            }
 
             case 'footerSocialLabel':
                 setText(isel('.site-footer__social-label'), val); break;
@@ -610,6 +753,27 @@
                 setText(isel('#footer-service-heading'), val); break;
             case 'footerContactHeading':
                 setText(isel('#footer-contact-heading'), val); break;
+            case 'footerShopVisible':
+                setVisible(getFooterShopCol(), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerServiceVisible':
+                setVisible(getFooterServiceCol(), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerContactVisible':
+                setVisible(getFooterContactCol(), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerContactPhoneVisible':
+                setVisible(getContactItem('phone'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerContactEmailVisible':
+                setVisible(getContactItem('email'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerContactHoursVisible':
+                setVisible(getContactItem('hours'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerContactAddressVisible':
+                setVisible(getContactItem('address'), val === true || val === 'true' || val === undefined);
+                break;
             case 'footerCopy':
                 updateFooterCopy(); break;
 
@@ -624,6 +788,12 @@
                 setAttr(isel('.catalog-library__all'), 'href', val); break;
 
             // Quick Order (section four)
+            case 'qoVisible':
+                setVisible(isel('.quick-order'), val === true || val === 'true' || val === undefined);
+                if (typeof window.__fitFullSite === 'function') {
+                    setTimeout(window.__fitFullSite, 60);
+                }
+                break;
             case 'qoTitle':
                 setText(isel('.quick-order__title'), val); break;
             case 'qoSubtitle':
@@ -650,23 +820,41 @@
                 setAttr(isel('.site-footer__social-link[aria-label="YouTube"]'), 'href', val); break;
             case 'footerSocialX':
                 setAttr(isel('.site-footer__social-link[aria-label="X"]'), 'href', val); break;
+            case 'footerSocialFbVisible':
+                setVisible(isel('.site-footer__social-link[aria-label="Facebook"]'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerSocialLiVisible':
+                setVisible(isel('.site-footer__social-link[aria-label="LinkedIn"]'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerSocialYtVisible':
+                setVisible(isel('.site-footer__social-link[aria-label="YouTube"]'), val === true || val === 'true' || val === undefined);
+                break;
+            case 'footerSocialXVisible':
+                setVisible(isel('.site-footer__social-link[aria-label="X"]'), val === true || val === 'true' || val === undefined);
+                break;
 
             default: {
                 var mc, ml, sn, fl;
 
                 // ── Footer nav: footerShopL1Label / footerShopL1Url / footerServiceL1* / footerLegalL1*
-                if ((fl = key.match(/^footerShopL(\d+)Label$/))) {
+                if ((fl = key.match(/^footerShopL(\d+)Visible$/))) {
+                    setVisible(getFooterNavLinkLi('shop', +fl[1]), val === true || val === 'true' || val === undefined);
+                } else if ((fl = key.match(/^footerShopL(\d+)Label$/))) {
                     setFooterNavLink('shop', +fl[1], val, null);
                 } else if ((fl = key.match(/^footerShopL(\d+)Url$/))) {
                     setFooterNavLink('shop', +fl[1], null, val);
+                } else if ((fl = key.match(/^footerServiceL(\d+)Visible$/))) {
+                    setVisible(getFooterNavLinkLi('service', +fl[1]), val === true || val === 'true' || val === undefined);
                 } else if ((fl = key.match(/^footerServiceL(\d+)Label$/))) {
                     setFooterNavLink('service', +fl[1], val, null);
                 } else if ((fl = key.match(/^footerServiceL(\d+)Url$/))) {
                     setFooterNavLink('service', +fl[1], null, val);
+                } else if ((fl = key.match(/^footerLegalL(\d+)Visible$/))) {
+                    setVisible(getFooterLegalLi(+fl[1]), val === true || val === 'true' || val === undefined);
                 } else if ((fl = key.match(/^footerLegalL(\d+)Label$/))) {
-                    setFooterNavLink('legal', +fl[1], val, null);
+                    setFooterLegalLink(+fl[1], val, null);
                 } else if ((fl = key.match(/^footerLegalL(\d+)Url$/))) {
-                    setFooterNavLink('legal', +fl[1], null, val);
+                    setFooterLegalLink(+fl[1], null, val);
 
                 // ── Sub-nav: subNavLmVisible / subNavLmLabel / subNavLmUrl
                 } else if ((sn = key.match(/^subNavL(\d+)Visible$/))) {
@@ -693,6 +881,92 @@
         }
     }
 
+    function ensureHeroSlides() {
+        if (window.HeroSlidesEditor) {
+            draft.heroSlides = window.HeroSlidesEditor.migrateFromDraft(draft);
+            var overlay = window.HeroSlidesEditor.migrateOverlayFromDraft(draft);
+            draft.heroOverlayColor = overlay.color;
+            draft.heroOverlayOpacity = overlay.opacity;
+        }
+    }
+
+    function ensureShopCategories() {
+        if (window.ShopCategoriesEditor) {
+            draft.shopCategories = window.ShopCategoriesEditor.migrateFromDraft(draft);
+            draft.shopCategoriesTitle = (draft.shopCategoriesTitle !== undefined)
+                ? draft.shopCategoriesTitle
+                : window.ShopCategoriesEditor.DEFAULT_TITLE;
+            draft.shopCategoriesSubtitle = (draft.shopCategoriesSubtitle !== undefined)
+                ? draft.shopCategoriesSubtitle
+                : window.ShopCategoriesEditor.DEFAULT_SUBTITLE;
+        }
+    }
+
+    function getShopCategoriesHeader() {
+        return {
+            title: draft.shopCategoriesTitle || (window.ShopCategoriesEditor && window.ShopCategoriesEditor.DEFAULT_TITLE) || 'Shop by Category',
+            subtitle: draft.shopCategoriesSubtitle || (window.ShopCategoriesEditor && window.ShopCategoriesEditor.DEFAULT_SUBTITLE) || '',
+        };
+    }
+
+    function ensureShopBrands() {
+        if (window.ShopBrandsEditor) {
+            draft.shopBrands = window.ShopBrandsEditor.migrateFromDraft(draft);
+            draft.shopBrandsTitle = (draft.shopBrandsTitle !== undefined)
+                ? draft.shopBrandsTitle
+                : window.ShopBrandsEditor.DEFAULT_TITLE;
+            draft.shopBrandsSubtitle = (draft.shopBrandsSubtitle !== undefined)
+                ? draft.shopBrandsSubtitle
+                : window.ShopBrandsEditor.DEFAULT_SUBTITLE;
+            draft.shopBrandsAllLabel = (draft.shopBrandsAllLabel !== undefined)
+                ? draft.shopBrandsAllLabel
+                : window.ShopBrandsEditor.DEFAULT_ALL_LABEL;
+            draft.shopBrandsAllUrl = (draft.shopBrandsAllUrl !== undefined)
+                ? draft.shopBrandsAllUrl
+                : window.ShopBrandsEditor.DEFAULT_ALL_URL;
+            draft.shopBrandsCarouselBg = (draft.shopBrandsCarouselBg !== undefined)
+                ? draft.shopBrandsCarouselBg
+                : window.ShopBrandsEditor.DEFAULT_CAROUSEL_BG;
+        }
+    }
+
+    function getShopBrandsHeader() {
+        return {
+            title: draft.shopBrandsTitle || (window.ShopBrandsEditor && window.ShopBrandsEditor.DEFAULT_TITLE) || 'Shop by Brand',
+            subtitle: draft.shopBrandsSubtitle || (window.ShopBrandsEditor && window.ShopBrandsEditor.DEFAULT_SUBTITLE) || '',
+            allLabel: draft.shopBrandsAllLabel || (window.ShopBrandsEditor && window.ShopBrandsEditor.DEFAULT_ALL_LABEL) || 'View all brands',
+            allUrl: draft.shopBrandsAllUrl || (window.ShopBrandsEditor && window.ShopBrandsEditor.DEFAULT_ALL_URL) || '/brands',
+            carouselBg: draft.shopBrandsCarouselBg || (window.ShopBrandsEditor && window.ShopBrandsEditor.DEFAULT_CAROUSEL_BG) || '#e6ebf0',
+        };
+    }
+
+    function ensureCatalogLibrary() {
+        if (window.CatalogLibraryEditor) {
+            draft.catalogItems = window.CatalogLibraryEditor.migrateFromDraft(draft);
+            draft.catalogTitle = (draft.catalogTitle !== undefined)
+                ? draft.catalogTitle
+                : window.CatalogLibraryEditor.DEFAULT_TITLE;
+            draft.catalogSubtitle = (draft.catalogSubtitle !== undefined)
+                ? draft.catalogSubtitle
+                : window.CatalogLibraryEditor.DEFAULT_SUBTITLE;
+            draft.catalogAllLabel = (draft.catalogAllLabel !== undefined)
+                ? draft.catalogAllLabel
+                : window.CatalogLibraryEditor.DEFAULT_ALL_LABEL;
+            draft.catalogAllUrl = (draft.catalogAllUrl !== undefined)
+                ? draft.catalogAllUrl
+                : window.CatalogLibraryEditor.DEFAULT_ALL_URL;
+        }
+    }
+
+    function getCatalogLibraryHeader() {
+        return {
+            title: draft.catalogTitle || (window.CatalogLibraryEditor && window.CatalogLibraryEditor.DEFAULT_TITLE) || 'Vendor Catalog Library',
+            subtitle: draft.catalogSubtitle || (window.CatalogLibraryEditor && window.CatalogLibraryEditor.DEFAULT_SUBTITLE) || '',
+            allLabel: draft.catalogAllLabel || (window.CatalogLibraryEditor && window.CatalogLibraryEditor.DEFAULT_ALL_LABEL) || 'View all catalogs',
+            allUrl: draft.catalogAllUrl || (window.CatalogLibraryEditor && window.CatalogLibraryEditor.DEFAULT_ALL_URL) || '/catalogs',
+        };
+    }
+
     // Apply all draft fields to the iframe
     function applyAllFields() {
         if (!iframeDoc) return;
@@ -702,7 +976,30 @@
             applyField(key, val);
         });
         applyFooterLogo();
+        applyHeaderLogo();
         updateFooterCopy();
+        ensureHeroSlides();
+        if (window.HeroSlidesEditor && draft.heroSlides) {
+            window.HeroSlidesEditor.applyToDocument(iframeDoc, draft.heroSlides);
+        }
+        if (window.HeroSlidesEditor) {
+            window.HeroSlidesEditor.applyOverlayToDocument(iframeDoc, {
+                color: draft.heroOverlayColor,
+                opacity: draft.heroOverlayOpacity,
+            });
+        }
+        ensureShopCategories();
+        if (window.ShopCategoriesEditor && draft.shopCategories) {
+            window.ShopCategoriesEditor.applyToDocument(iframeDoc, draft.shopCategories, getShopCategoriesHeader());
+        }
+        ensureShopBrands();
+        if (window.ShopBrandsEditor && draft.shopBrands) {
+            window.ShopBrandsEditor.applyToDocument(iframeDoc, draft.shopBrands, getShopBrandsHeader());
+        }
+        ensureCatalogLibrary();
+        if (window.CatalogLibraryEditor && draft.catalogItems) {
+            window.CatalogLibraryEditor.applyToDocument(iframeDoc, draft.catalogItems, getCatalogLibraryHeader());
+        }
     }
 
     // ── Populate form fields from draft ───────────────────────────────
@@ -750,6 +1047,35 @@
         if (footerSizeInput && footerSizeInput.value !== String(footerSize)) {
             footerSizeInput.value = footerSize;
         }
+        var headerSize = clampHeaderLogoSize(
+            draft.logoSize !== undefined ? draft.logoSize : DEFAULTS.logoSize
+        );
+        syncHeaderLogoSizeControls(headerSize, false);
+        var headerSizeInput = document.getElementById('df-header-logo-size');
+        if (headerSizeInput && headerSizeInput.value !== String(headerSize)) {
+            headerSizeInput.value = headerSize;
+        }
+        var aboutImageVal = draft.aboutImageSrc !== undefined ? draft.aboutImageSrc : DEFAULTS.aboutImageSrc;
+        updateAboutImageThumb(aboutImageVal || '');
+        if (window.HeroSlidesEditor) {
+            window.HeroSlidesEditor.renderPanel();
+            window.HeroSlidesEditor.syncOverlayControls({
+                color: draft.heroOverlayColor,
+                opacity: draft.heroOverlayOpacity,
+            });
+        }
+        if (window.ShopCategoriesEditor) {
+            window.ShopCategoriesEditor.renderPanel();
+            window.ShopCategoriesEditor.syncHeaderControls(getShopCategoriesHeader());
+        }
+        if (window.ShopBrandsEditor) {
+            window.ShopBrandsEditor.renderPanel();
+            window.ShopBrandsEditor.syncHeaderControls(getShopBrandsHeader());
+        }
+        if (window.CatalogLibraryEditor) {
+            window.CatalogLibraryEditor.renderPanel();
+            window.CatalogLibraryEditor.syncHeaderControls(getCatalogLibraryHeader());
+        }
     }
 
     // ── Bind field panel inputs ───────────────────────────────────────
@@ -761,6 +1087,19 @@
 
         var val = input.type === 'checkbox' ? input.checked : input.value;
         if (input.type === 'range') val = parseInt(val, 10);
+
+        if (key === 'logoSize') {
+            var prevLogoSize = clampHeaderLogoSize(
+                draft.logoSize !== undefined ? draft.logoSize : DEFAULTS.logoSize
+            );
+            var logoResult = attemptHeaderLogoSize(val, prevLogoSize);
+            draft.logoSize = logoResult.size;
+            input.value = logoResult.size;
+            syncHeaderLogoSizeControls(logoResult.size, !logoResult.accepted);
+            scheduleSave();
+            return;
+        }
+
         if (key === 'footerLogoSize') val = clampFooterLogoSize(val);
         draft[key] = val;
 
@@ -940,6 +1279,49 @@
         }
     }
 
+    function updateAboutImageThumb(src) {
+        if (!aboutImageThumbImg || !aboutImageThumbEmpty || !aboutImageRemoveBtn) return;
+        if (src) {
+            aboutImageThumbImg.src = src;
+            aboutImageThumbImg.hidden = false;
+            aboutImageThumbEmpty.hidden = true;
+            aboutImageRemoveBtn.hidden = src.indexOf('data:') !== 0;
+        } else {
+            aboutImageThumbImg.src = '';
+            aboutImageThumbImg.hidden = true;
+            aboutImageThumbEmpty.hidden = false;
+            aboutImageRemoveBtn.hidden = true;
+        }
+    }
+
+    function bindAboutImageUpload() {
+        if (!aboutImageFileInput) return;
+
+        aboutImageFileInput.addEventListener('change', function () {
+            var file = aboutImageFileInput.files && aboutImageFileInput.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                var dataUrl = evt.target.result;
+                draft.aboutImageSrc = dataUrl;
+                updateAboutImageThumb(dataUrl);
+                applyField('aboutImageSrc', dataUrl);
+                scheduleSave();
+            };
+            reader.readAsDataURL(file);
+            aboutImageFileInput.value = '';
+        });
+
+        if (aboutImageRemoveBtn) {
+            aboutImageRemoveBtn.addEventListener('click', function () {
+                draft.aboutImageSrc = DEFAULTS.aboutImageSrc;
+                updateAboutImageThumb(DEFAULTS.aboutImageSrc);
+                applyField('aboutImageSrc', DEFAULTS.aboutImageSrc);
+                scheduleSave();
+            });
+        }
+    }
+
     // ── Favicon upload helper ─────────────────────────────────────────
 
     function updateFaviconThumb(src) {
@@ -1068,15 +1450,27 @@
             .then(function (saved) {
                 if (saved && typeof saved === 'object') {
                     draft = saved;
+                    ensureHeroSlides();
+                    ensureShopCategories();
+                    ensureShopBrands();
+                    ensureCatalogLibrary();
                     setStatus('Draft loaded', true);
                 } else {
                     draft = {};
+                    ensureHeroSlides();
+                    ensureShopCategories();
+                    ensureShopBrands();
+                    ensureCatalogLibrary();
                     setStatus('New draft', true);
                 }
             })
             .catch(function (err) {
                 console.warn('[designer] Could not load draft:', err);
                 draft = {};
+                ensureHeroSlides();
+                ensureShopCategories();
+                ensureShopBrands();
+                ensureCatalogLibrary();
             });
     }
 
@@ -1084,9 +1478,29 @@
 
     var iframeReady = false;
     var draftReady  = false;
+    var headerNavResizeTimer = null;
+
+    function bindHeaderNavResize() {
+        if (!iframeDoc || !iframeDoc.defaultView) return;
+        var win = iframeDoc.defaultView;
+        if (win.__designerHeaderNavResizeBound) return;
+        win.__designerHeaderNavResizeBound = true;
+        win.addEventListener('resize', function () {
+            clearTimeout(headerNavResizeTimer);
+            headerNavResizeTimer = setTimeout(function () {
+                if (!iframeDoc) return;
+                var fitted = applyHeaderLogoSize();
+                if (draft.logoSize !== fitted) {
+                    draft.logoSize = fitted;
+                    scheduleSave();
+                }
+            }, 120);
+        });
+    }
 
     function onIframeReady() {
         if (!iframeReady || !draftReady) return;
+        bindHeaderNavResize();
         applyAllFields();
     }
 
@@ -1125,6 +1539,10 @@
         resetBtn.addEventListener('click', function () {
             if (!confirm('Reset all fields to the original template defaults? Your saved draft will be overwritten.')) return;
             draft = {};
+            ensureHeroSlides();
+            ensureShopCategories();
+            ensureShopBrands();
+            ensureCatalogLibrary();
             populatePanel();
             applyAllFields();
             isDirty = true;
@@ -1146,6 +1564,7 @@
     var JS_FILES = [
         'data/js/header.js',
         'data/js/section-one.js',
+        'data/js/section-three.js',
     ];
 
     function fetchText(url) {
@@ -1169,7 +1588,7 @@
         '  section-one-block.html    — Hero / slideshow HTML (XO Section One)',
         '  section-two-block.html    — About block HTML (XO Section Two)',
         '  section-three-block.html  — Catalog library HTML (XO Section Three)',
-        '  section-four-block.html   — Quick order + CTA HTML (XO Section Four)',
+        '  section-four-block.html   — CTA band + Quick order HTML (XO Section Four)',
         '  footer-block.html         — Footer HTML (XO Footer section)',
         '  homepage.html             — Full assembled homepage (standalone preview)',
         '  index.html                — Header preview document (reference)',
@@ -1658,9 +2077,11 @@
             var logoSrc    = draft.logoSrc    || '';
             var faviconSrc = draft.faviconSrc || '';
             var footerLogoSrc = draft.footerLogoSrc || '';
+            var aboutImageSrc = draft.aboutImageSrc || '';
             var logoServerPath    = null;
             var faviconServerPath = null;
             var footerLogoServerPath = null;
+            var aboutImageServerPath = null;
 
             if (logoSrc.indexOf('data:') === 0) {
                 var logoMime = (logoSrc.match(/^data:([^;]+)/) || [])[1] || 'image/png';
@@ -1686,6 +2107,14 @@
                 }
             }
 
+            if (aboutImageSrc.indexOf('data:') === 0) {
+                var aboutMime = (aboutImageSrc.match(/^data:([^;]+)/) || [])[1] || 'image/jpeg';
+                var aboutZipPath = 'data/images/about/company-photo.' + getExtFromMime(aboutMime);
+                if (dataUrlToZip(zip, aboutImageSrc, aboutZipPath)) {
+                    aboutImageServerPath = '/' + aboutZipPath;
+                }
+            }
+
             // ── Build HTML snippets, then swap data URLs for file paths ───────
             var globalHtml  = buildGlobalHeadSnippet();
             var headerHtml  = buildHeaderBlock();
@@ -1703,6 +2132,9 @@
                 htmlContent = htmlContent.split(faviconSrc).join(faviconServerPath);
                 globalHtml  = globalHtml.split(faviconSrc).join(faviconServerPath);
                 welcomeHtml = welcomeHtml.split(faviconSrc).join(faviconServerPath);
+            }
+            if (aboutImageServerPath && aboutImageSrc) {
+                htmlContent = htmlContent.split(aboutImageSrc).join(aboutImageServerPath);
             }
 
             zip.file('index.html', htmlContent);
@@ -1780,7 +2212,90 @@
         bindLogoUpload();
         bindFooterLogoUpload();
         bindFaviconUpload();
+        bindAboutImageUpload();
         initResetBtn();
+
+        if (window.HeroSlidesEditor) {
+            window.HeroSlidesEditor.init({
+                mount: document.getElementById('heroSlidesEditorMount'),
+                overlayMount: document.getElementById('heroOverlayControls'),
+                getSlides: function () { return draft.heroSlides; },
+                setSlides: function (slides) { draft.heroSlides = slides; },
+                getOverlay: function () {
+                    return {
+                        color: draft.heroOverlayColor,
+                        opacity: draft.heroOverlayOpacity,
+                    };
+                },
+                setOverlay: function (overlay) {
+                    draft.heroOverlayColor = overlay.color;
+                    draft.heroOverlayOpacity = overlay.opacity;
+                },
+                getIframeDoc: function () { return iframeDoc; },
+                onUpdate: function () {
+                    scheduleSave();
+                },
+            });
+        }
+
+        if (window.ShopCategoriesEditor) {
+            window.ShopCategoriesEditor.init({
+                mount: document.getElementById('shopCategoriesEditorMount'),
+                headerMount: document.getElementById('shopCategoriesHeaderControls'),
+                getCategories: function () { return draft.shopCategories; },
+                setCategories: function (categories) { draft.shopCategories = categories; },
+                getHeader: getShopCategoriesHeader,
+                setHeader: function (header) {
+                    draft.shopCategoriesTitle = header.title;
+                    draft.shopCategoriesSubtitle = header.subtitle;
+                },
+                getIframeDoc: function () { return iframeDoc; },
+                onUpdate: function () {
+                    scheduleSave();
+                },
+            });
+        }
+
+        if (window.ShopBrandsEditor) {
+            window.ShopBrandsEditor.init({
+                mount: document.getElementById('shopBrandsEditorMount'),
+                headerMount: document.getElementById('shopBrandsHeaderControls'),
+                getBrands: function () { return draft.shopBrands; },
+                setBrands: function (brands) { draft.shopBrands = brands; },
+                getHeader: getShopBrandsHeader,
+                setHeader: function (header) {
+                    draft.shopBrandsTitle = header.title;
+                    draft.shopBrandsSubtitle = header.subtitle;
+                    draft.shopBrandsAllLabel = header.allLabel;
+                    draft.shopBrandsAllUrl = header.allUrl;
+                    draft.shopBrandsCarouselBg = header.carouselBg;
+                },
+                getIframeDoc: function () { return iframeDoc; },
+                onUpdate: function () {
+                    scheduleSave();
+                },
+            });
+        }
+
+        if (window.CatalogLibraryEditor) {
+            window.CatalogLibraryEditor.init({
+                mount: document.getElementById('catalogLibraryEditorMount'),
+                headerMount: document.getElementById('catalogLibraryHeaderControls'),
+                getCatalogs: function () { return draft.catalogItems; },
+                setCatalogs: function (catalogs) { draft.catalogItems = catalogs; },
+                getHeader: getCatalogLibraryHeader,
+                setHeader: function (header) {
+                    draft.catalogTitle = header.title;
+                    draft.catalogSubtitle = header.subtitle;
+                    draft.catalogAllLabel = header.allLabel;
+                    draft.catalogAllUrl = header.allUrl;
+                },
+                getIframeDoc: function () { return iframeDoc; },
+                onUpdate: function () {
+                    scheduleSave();
+                },
+            });
+        }
 
         if (exportBtn) {
             exportBtn.disabled = false;

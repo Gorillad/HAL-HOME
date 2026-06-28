@@ -1,6 +1,6 @@
 window.EditorAccess = (function initEditorAccessModule() {
-    const DEV_USERNAME = 'hello@logicxo.com';
-    const DEV_PASSWORD = 'Logicx12345';
+    const DEV_USERNAME = 'admin';
+    const DEV_PASSWORD = 'Logic050601';
     const DEV_SERVER_PORT = '4242';
     const CLIENT_SESSION_KEY = 'lx-site-session';
 

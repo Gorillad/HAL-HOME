@@ -53,6 +53,21 @@
             gap: 10px;
         }
 
+        .designer-image-size-guide {
+            margin: 0;
+            padding: 0 0 0 18px;
+            font-size: 0.78rem;
+            line-height: 1.55;
+            color: var(--editor-label, #888);
+        }
+        .designer-image-size-guide li + li {
+            margin-top: 6px;
+        }
+        .designer-image-size-guide strong {
+            color: var(--editor-text, #ccc);
+            font-weight: 600;
+        }
+
         /* Slide sub-sections within a group */
         .designer-slide-group {
             border: 1px solid var(--editor-border, #2a2a2a);
@@ -180,7 +195,7 @@
         /* Full-width preview bar — mimics the template's dark top bar */
         .editor-logo-preview {
             width: 100%;
-            height: 52px;
+            height: 64px;
             background: #0d2137;
             border-radius: 6px;
             border: 1px solid #1e3550;
@@ -418,6 +433,54 @@
             display: flex;
             gap: 6px;
         }
+
+        .hero-slides-add-btn,
+        .hero-slide-remove-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .hero-slides-add-btn {
+            border: 1px dashed #3a5a7a;
+            background: rgba(74, 158, 255, 0.08);
+            color: #8ec0ff;
+        }
+
+        .hero-slides-add-btn:hover:not(:disabled) {
+            background: rgba(74, 158, 255, 0.16);
+        }
+
+        .hero-slides-add-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .hero-slide-remove-btn {
+            border: 1px solid rgba(255, 120, 120, 0.35);
+            background: rgba(255, 80, 80, 0.08);
+            color: #ffaaaa;
+        }
+
+        .hero-slide-remove-btn:hover {
+            background: rgba(255, 80, 80, 0.16);
+        }
+
+        .hero-slide-editor-card + .hero-slide-editor-card {
+            margin-top: 8px;
+        }
+
+        .hero-overlay-controls {
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
     </style>
 </head>
 <body class="editor-page">
@@ -527,7 +590,24 @@
                 <!-- ── Full Site editing panel (built top-down; Header first) ── -->
                 <div id="woolFullSite" hidden>
 
-                <details class="designer-group" open>
+                <details class="designer-group">
+                    <summary class="designer-group-head">Image size guide</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 10px">Recommended pixel sizes for uploads in this template. Landscape photos work best unless noted.</p>
+                        <ul class="designer-image-size-guide">
+                            <li><strong>Header logo</strong> — horizontal SVG/PNG; next to All Products, up to 80 px height</li>
+                            <li><strong>Favicon</strong> — 32×32 or 16×16 px</li>
+                            <li><strong>Footer logo</strong> — max 95 px display height</li>
+                            <li><strong>Hero slide background</strong> — 1920×600 px min (wide)</li>
+                            <li><strong>Category image</strong> — 280×210 px (4:3)</li>
+                            <li><strong>Brand logo</strong> — 120×48 px max display; wide logos</li>
+                            <li><strong>Catalog cover</strong> — 280×360 px (7:9 portrait)</li>
+                            <li><strong>About company photo</strong> — 640×480 px (4:3)</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="designer-group">
                     <summary class="designer-group-head">Branding</summary>
                     <div class="designer-group-body">
                         <div class="editor-field">
@@ -578,7 +658,19 @@
                                     <button type="button" class="editor-logo-remove-btn" id="logoRemoveBtn" hidden>✕ Remove</button>
                                 </div>
                             </div>
-                            <p class="editor-field-hint">SVG or PNG recommended. Logo is contained within the header bar.</p>
+                            <p class="editor-field-hint">Recommended: horizontal SVG or PNG on the main nav bar, left of the All Products menu. Use the size slider below to scale.</p>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-header-logo-size">Header logo size</label>
+                            <p class="editor-field-hint" style="margin:0 0 6px">Display height in the main nav, left of All Products. Keeps at least 20px clear of the search bar — if a size is too wide, the slider will not apply it.</p>
+                            <div class="editor-range-row">
+                                <input type="range" id="df-header-logo-size" data-field="logoSize" min="36" max="80" step="1" value="56">
+                                <span class="editor-range-value" id="headerLogoSizeVal">56px</span>
+                            </div>
+                            <div class="editor-range-scale">
+                                <span>36px</span>
+                                <span><em>80px recommended max</em></span>
+                            </div>
                         </div>
                     </div>
                 </details>
@@ -743,7 +835,7 @@
                     <div class="designer-group-body">
 
                         <!-- Column 1 -->
-                        <details class="designer-slide-group" open>
+                        <details class="designer-slide-group">
                             <summary class="designer-slide-group-head">Column 1 — Cutting &amp; Machining</summary>
                             <div class="designer-slide-group-body">
                                 <label class="mega-col-toggle">
@@ -1031,151 +1123,66 @@
                 <details class="designer-group">
                     <summary class="designer-group-head">Hero Slides</summary>
                     <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 10px">Add slides, edit copy, upload backgrounds, and set optional link URLs. Button links are optional — leave labels blank to hide a button. Background recommended: <strong>1920×600 px</strong> min (wide landscape).</p>
+                        <div id="heroOverlayControls" class="hero-overlay-controls"></div>
+                        <div id="heroSlidesEditorMount"></div>
+                        <button type="button" class="hero-slides-add-btn" id="heroSlidesAddBtn">+ Add slide</button>
+                    </div>
+                </details>
 
-                        <details class="designer-slide-group" open>
-                            <summary class="designer-slide-group-head">Slide 1 — Catalog</summary>
-                            <div class="designer-slide-group-body">
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h1-eyebrow">Eyebrow text</label>
-                                    <input type="text" id="df-h1-eyebrow" data-field="hero1Eyebrow" class="editor-field-input" placeholder="500,000+ SKUs">
-                                </div>
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h1-title">Headline</label>
-                                    <input type="text" id="df-h1-title" data-field="hero1Title" class="editor-field-input" placeholder="Industrial supplies for every job site">
-                                </div>
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h1-text">Body text</label>
-                                    <textarea id="df-h1-text" data-field="hero1Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div>
-                                        <label class="editor-field-label" for="df-h1-btn1-label">Button 1 label</label>
-                                        <input type="text" id="df-h1-btn1-label" data-field="hero1Btn1Label" class="editor-field-input" placeholder="Browse Catalog">
-                                    </div>
-                                    <div>
-                                        <label class="editor-field-label" for="df-h1-btn1-url">Button 1 URL</label>
-                                        <input type="text" id="df-h1-btn1-url" data-field="hero1Btn1Url" class="editor-field-input" placeholder="/catalog">
-                                    </div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div>
-                                        <label class="editor-field-label" for="df-h1-btn2-label">Button 2 label</label>
-                                        <input type="text" id="df-h1-btn2-label" data-field="hero1Btn2Label" class="editor-field-input" placeholder="Request a Quote">
-                                    </div>
-                                    <div>
-                                        <label class="editor-field-label" for="df-h1-btn2-url">Button 2 URL</label>
-                                        <input type="text" id="df-h1-btn2-url" data-field="hero1Btn2Url" class="editor-field-input" placeholder="/contact">
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
+                <details class="designer-group">
+                    <summary class="designer-group-head">Shop by Category</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 10px">Edit section title, add or remove categories, rename each category, and upload images. Category image recommended: <strong>280×210 px</strong> (4:3).</p>
+                        <div id="shopCategoriesHeaderControls"></div>
+                        <div id="shopCategoriesEditorMount"></div>
+                        <button type="button" class="hero-slides-add-btn" id="shopCategoriesAddBtn">+ Add category</button>
+                    </div>
+                </details>
 
-                        <details class="designer-slide-group">
-                            <summary class="designer-slide-group-head">Slide 2 — Safety</summary>
-                            <div class="designer-slide-group-body">
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h2-eyebrow">Eyebrow text</label>
-                                    <input type="text" id="df-h2-eyebrow" data-field="hero2Eyebrow" class="editor-field-input" placeholder="Safety &amp; PPE">
-                                </div>
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h2-title">Headline</label>
-                                    <input type="text" id="df-h2-title" data-field="hero2Title" class="editor-field-input">
-                                </div>
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h2-text">Body text</label>
-                                    <textarea id="df-h2-text" data-field="hero2Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div>
-                                        <label class="editor-field-label" for="df-h2-btn1-label">Button 1 label</label>
-                                        <input type="text" id="df-h2-btn1-label" data-field="hero2Btn1Label" class="editor-field-input">
-                                    </div>
-                                    <div>
-                                        <label class="editor-field-label" for="df-h2-btn1-url">Button 1 URL</label>
-                                        <input type="text" id="df-h2-btn1-url" data-field="hero2Btn1Url" class="editor-field-input">
-                                    </div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div>
-                                        <label class="editor-field-label" for="df-h2-btn2-label">Button 2 label</label>
-                                        <input type="text" id="df-h2-btn2-label" data-field="hero2Btn2Label" class="editor-field-input">
-                                    </div>
-                                    <div>
-                                        <label class="editor-field-label" for="df-h2-btn2-url">Button 2 URL</label>
-                                        <input type="text" id="df-h2-btn2-url" data-field="hero2Btn2Url" class="editor-field-input">
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
-
-                        <details class="designer-slide-group">
-                            <summary class="designer-slide-group-head">Slide 3 — Cutting Tools</summary>
-                            <div class="designer-slide-group-body">
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h3-eyebrow">Eyebrow text</label>
-                                    <input type="text" id="df-h3-eyebrow" data-field="hero3Eyebrow" class="editor-field-input">
-                                </div>
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h3-title">Headline</label>
-                                    <input type="text" id="df-h3-title" data-field="hero3Title" class="editor-field-input">
-                                </div>
-                                <div class="editor-field">
-                                    <label class="editor-field-label" for="df-h3-text">Body text</label>
-                                    <textarea id="df-h3-text" data-field="hero3Text" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div>
-                                        <label class="editor-field-label" for="df-h3-btn1-label">Button 1 label</label>
-                                        <input type="text" id="df-h3-btn1-label" data-field="hero3Btn1Label" class="editor-field-input">
-                                    </div>
-                                    <div>
-                                        <label class="editor-field-label" for="df-h3-btn1-url">Button 1 URL</label>
-                                        <input type="text" id="df-h3-btn1-url" data-field="hero3Btn1Url" class="editor-field-input">
-                                    </div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div>
-                                        <label class="editor-field-label" for="df-h3-btn2-label">Button 2 label</label>
-                                        <input type="text" id="df-h3-btn2-label" data-field="hero3Btn2Label" class="editor-field-input">
-                                    </div>
-                                    <div>
-                                        <label class="editor-field-label" for="df-h3-btn2-url">Button 2 URL</label>
-                                        <input type="text" id="df-h3-btn2-url" data-field="hero3Btn2Url" class="editor-field-input">
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
-
+                <details class="designer-group">
+                    <summary class="designer-group-head">Shop by Brand</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 10px">Add or remove brands, upload logos, and set link URLs. Brand name is used for accessibility (alt text). Logo recommended: <strong>120×48 px</strong> max display; wide horizontal logos.</p>
+                        <div id="shopBrandsHeaderControls"></div>
+                        <div id="shopBrandsEditorMount"></div>
+                        <button type="button" class="hero-slides-add-btn" id="shopBrandsAddBtn">+ Add brand</button>
                     </div>
                 </details>
 
                 <details class="designer-group">
                     <summary class="designer-group-head">Catalog Library</summary>
                     <div class="designer-group-body">
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-catalog-title">Title</label>
-                            <input type="text" id="df-catalog-title" data-field="catalogTitle" class="editor-field-input" placeholder="Vendor Catalog Library">
-                        </div>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-catalog-subtitle">Subtitle</label>
-                            <input type="text" id="df-catalog-subtitle" data-field="catalogSubtitle" class="editor-field-input">
-                        </div>
-                        <div class="editor-field editor-field--inline">
-                            <div>
-                                <label class="editor-field-label" for="df-catalog-all-label">"View all" label</label>
-                                <input type="text" id="df-catalog-all-label" data-field="catalogAllLabel" class="editor-field-input" placeholder="View all catalogs">
-                            </div>
-                            <div>
-                                <label class="editor-field-label" for="df-catalog-all-url">"View all" URL</label>
-                                <input type="text" id="df-catalog-all-url" data-field="catalogAllUrl" class="editor-field-input" placeholder="/catalogs">
-                            </div>
-                        </div>
+                        <p class="editor-field-hint" style="margin:0 0 10px">Add catalogs with a cover image and PDF link. Cover recommended: <strong>280×360 px</strong> (7:9 portrait). Use the arrows in the preview when you have more than one catalog.</p>
+                        <div id="catalogLibraryHeaderControls"></div>
+                        <div id="catalogLibraryEditorMount"></div>
+                        <button type="button" class="hero-slides-add-btn" id="catalogLibraryAddBtn">+ Add catalog</button>
                     </div>
                 </details>
 
                 <details class="designer-group">
                     <summary class="designer-group-head">About Us</summary>
                     <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label">Company photo</label>
+                            <div class="editor-slide-bg-widget">
+                                <div class="editor-slide-bg-thumb">
+                                    <img id="aboutImageThumbImg" src="" alt="" class="about-image-preview" hidden>
+                                    <span class="editor-slide-bg-thumb-empty" id="aboutImageThumbEmpty">No image uploaded</span>
+                                </div>
+                                <div class="editor-slide-bg-actions">
+                                    <label class="editor-logo-file-label" for="df-about-image-file">Upload
+                                        <input type="file" id="df-about-image-file" accept="image/*" hidden>
+                                    </label>
+                                    <button type="button" class="editor-logo-remove-btn" id="aboutImageRemoveBtn" hidden>Remove</button>
+                                </div>
+                            </div>
+                            <p class="editor-field-hint">Recommended: <strong>640×480 px</strong> (4:3 landscape). Warehouse, team, or facility photos work well.</p>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-about-image-alt">Photo description (alt text)</label>
+                            <input type="text" id="df-about-image-alt" data-field="aboutImageAlt" class="editor-field-input" placeholder="Company warehouse and distribution center">
+                        </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-about-eyebrow">Eyebrow</label>
                             <input type="text" id="df-about-eyebrow" data-field="aboutEyebrow" class="editor-field-input" placeholder="About Us">
@@ -1247,26 +1254,17 @@
                 </details>
 
                 <details class="designer-group">
-                    <summary class="designer-group-head">Quick Order</summary>
-                    <div class="designer-group-body">
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-qo-title">Title</label>
-                            <input type="text" id="df-qo-title" data-field="qoTitle" class="editor-field-input" placeholder="Quick Order">
-                        </div>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-qo-subtitle">Subtitle</label>
-                            <input type="text" id="df-qo-subtitle" data-field="qoSubtitle" class="editor-field-input">
-                        </div>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-qo-submit">Submit button label</label>
-                            <input type="text" id="df-qo-submit" data-field="qoSubmit" class="editor-field-input" placeholder="Search &amp; Order">
-                        </div>
-                    </div>
-                </details>
-
-                <details class="designer-group">
                     <summary class="designer-group-head">CTA Section</summary>
                     <div class="designer-group-body">
+                        <label class="mega-col-toggle">
+                            <input type="checkbox" data-field="ctaVisible" checked> Show CTA section
+                        </label>
+                        <p class="editor-field-hint" style="margin:0 0 12px">The blue contact band appears above Quick Order. Uncheck to hide it entirely.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-cta-eyebrow">Eyebrow label</label>
+                            <input type="text" id="df-cta-eyebrow" data-field="ctaEyebrow" class="editor-field-input" placeholder="Talk to our team">
+                            <p class="editor-field-hint">Small label above the headline. Leave blank to hide.</p>
+                        </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-cta-title">Title</label>
                             <input type="text" id="df-cta-title" data-field="ctaTitle" class="editor-field-input" placeholder="Need help sourcing the right product?">
@@ -1294,6 +1292,39 @@
                                 <label class="editor-field-label" for="df-cta-btn2-url">Button 2 URL</label>
                                 <input type="text" id="df-cta-btn2-url" data-field="ctaBtn2Url" class="editor-field-input" placeholder="/sign-up">
                             </div>
+                        </div>
+                        <label class="mega-col-toggle" style="margin-top:4px">
+                            <input type="checkbox" data-field="ctaShowPhone" checked> Show phone button
+                        </label>
+                        <p class="editor-field-hint" style="margin:0 0 12px">Uses the phone number from Branding. Updates automatically when you change it.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-cta-bg">Band background color</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="df-cta-bg" data-field="ctaBgColor" value="#004fa3">
+                                <input type="text" class="editor-color-hex editor-field-input" data-field-hex="ctaBgColor" value="#004fa3" maxlength="7" aria-label="CTA band background hex">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Quick Order</summary>
+                    <div class="designer-group-body">
+                        <label class="mega-col-toggle">
+                            <input type="checkbox" data-field="qoVisible" checked> Show Quick Order section
+                        </label>
+                        <p class="editor-field-hint" style="margin:0">Uncheck to hide the part-number search block below the CTA band.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-qo-title">Title</label>
+                            <input type="text" id="df-qo-title" data-field="qoTitle" class="editor-field-input" placeholder="Quick Order">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-qo-subtitle">Subtitle</label>
+                            <input type="text" id="df-qo-subtitle" data-field="qoSubtitle" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="df-qo-submit">Submit button label</label>
+                            <input type="text" id="df-qo-submit" data-field="qoSubmit" class="editor-field-input" placeholder="Search &amp; Order">
                         </div>
                     </div>
                 </details>
@@ -1346,129 +1377,216 @@
                             <input type="text" id="df-footer-social-label" data-field="footerSocialLabel" class="editor-field-input" placeholder="Follow IBC Master">
                         </div>
 
-                        <p class="editor-field-label" style="margin:10px 0 4px">Column headings</p>
-                        <div class="editor-field editor-field--inline">
-                            <div>
-                                <label class="editor-field-label" for="df-footer-shop-head">Shop</label>
-                                <input type="text" id="df-footer-shop-head" data-field="footerShopHeading" class="editor-field-input">
-                            </div>
-                            <div>
-                                <label class="editor-field-label" for="df-footer-service-head">Customer Service</label>
-                                <input type="text" id="df-footer-service-head" data-field="footerServiceHeading" class="editor-field-input">
-                            </div>
-                        </div>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-footer-contact-head">Contact</label>
-                            <input type="text" id="df-footer-contact-head" data-field="footerContactHeading" class="editor-field-input">
-                        </div>
+                        <p class="editor-field-hint" style="margin:0 0 12px">Edit column headings, quick links, contact info, and the copyright line. Uncheck any link or whole column you do not need.</p>
 
                         <details class="designer-slide-group">
-                            <summary class="designer-slide-group-head">Shop links</summary>
+                            <summary class="designer-slide-group-head">Shop column</summary>
                             <div class="designer-slide-group-body">
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerShopL1Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerShopL1Url" class="editor-field-input" placeholder="/url"></div>
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerShopVisible" checked> Show Shop column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-footer-shop-head">Column heading</label>
+                                    <input type="text" id="df-footer-shop-head" data-field="footerShopHeading" class="editor-field-input" placeholder="Shop">
                                 </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerShopL2Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerShopL2Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerShopL3Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerShopL3Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerShopL4Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerShopL4Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerShopL5Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerShopL5Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerShopL6Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerShopL6Url" class="editor-field-input" placeholder="/url"></div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerShopL1Label" class="editor-field-input" placeholder="Catalog">
+                                            <input type="text" data-field="footerShopL1Url" class="editor-field-input" placeholder="/catalog">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerShopL1Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerShopL2Label" class="editor-field-input" placeholder="Industrial Supplies">
+                                            <input type="text" data-field="footerShopL2Url" class="editor-field-input" placeholder="/industrial-supplies">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerShopL2Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerShopL3Label" class="editor-field-input" placeholder="Shop by Brand">
+                                            <input type="text" data-field="footerShopL3Url" class="editor-field-input" placeholder="/brands">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerShopL3Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerShopL4Label" class="editor-field-input" placeholder="Safety &amp; PPE">
+                                            <input type="text" data-field="footerShopL4Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerShopL4Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerShopL5Label" class="editor-field-input" placeholder="Cutting Tools">
+                                            <input type="text" data-field="footerShopL5Url" class="editor-field-input" placeholder="/url">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerShopL5Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerShopL6Label" class="editor-field-input" placeholder="Clearance">
+                                            <input type="text" data-field="footerShopL6Url" class="editor-field-input" placeholder="/clearance">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerShopL6Visible" checked> Show link</label>
+                                    </div>
                                 </div>
                             </div>
                         </details>
 
                         <details class="designer-slide-group">
-                            <summary class="designer-slide-group-head">Customer Service links</summary>
+                            <summary class="designer-slide-group-head">Customer Service column</summary>
                             <div class="designer-slide-group-body">
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerServiceL1Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerServiceL1Url" class="editor-field-input" placeholder="/url"></div>
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerServiceVisible" checked> Show Customer Service column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-footer-service-head">Column heading</label>
+                                    <input type="text" id="df-footer-service-head" data-field="footerServiceHeading" class="editor-field-input" placeholder="Customer Service">
                                 </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerServiceL2Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerServiceL2Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerServiceL3Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerServiceL3Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerServiceL4Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerServiceL4Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerServiceL5Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerServiceL5Url" class="editor-field-input" placeholder="/url"></div>
-                                </div>
-                                <div class="editor-field editor-field--inline">
-                                    <div><input type="text" data-field="footerServiceL6Label" class="editor-field-input" placeholder="Label"></div>
-                                    <div><input type="text" data-field="footerServiceL6Url" class="editor-field-input" placeholder="/url"></div>
+                                <div class="mega-link-row-header"><span>Label</span><span>URL</span></div>
+                                <div class="mega-link-list">
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerServiceL1Label" class="editor-field-input" placeholder="Contact Us">
+                                            <input type="text" data-field="footerServiceL1Url" class="editor-field-input" placeholder="/contact">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerServiceL1Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerServiceL2Label" class="editor-field-input" placeholder="My Account">
+                                            <input type="text" data-field="footerServiceL2Url" class="editor-field-input" placeholder="/account">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerServiceL2Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerServiceL3Label" class="editor-field-input" placeholder="Quick Order">
+                                            <input type="text" data-field="footerServiceL3Url" class="editor-field-input" placeholder="/quick-order">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerServiceL3Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerServiceL4Label" class="editor-field-input" placeholder="Shipping &amp; Delivery">
+                                            <input type="text" data-field="footerServiceL4Url" class="editor-field-input" placeholder="/shipping">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerServiceL4Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerServiceL5Label" class="editor-field-input" placeholder="Returns &amp; Exchanges">
+                                            <input type="text" data-field="footerServiceL5Url" class="editor-field-input" placeholder="/returns">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerServiceL5Visible" checked> Show link</label>
+                                    </div>
+                                    <div class="mega-link-item">
+                                        <div class="mega-link-row">
+                                            <input type="text" data-field="footerServiceL6Label" class="editor-field-input" placeholder="FAQ">
+                                            <input type="text" data-field="footerServiceL6Url" class="editor-field-input" placeholder="/faq">
+                                        </div>
+                                        <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerServiceL6Visible" checked> Show link</label>
+                                    </div>
                                 </div>
                             </div>
                         </details>
 
-                        <p class="editor-field-label" style="margin:10px 0 4px">Contact info</p>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-footer-email">Email</label>
-                            <input type="text" id="df-footer-email" data-field="footerEmail" class="editor-field-input" placeholder="sales@ibcmaster.com">
-                        </div>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-footer-hours">Hours</label>
-                            <input type="text" id="df-footer-hours" data-field="footerHours" class="editor-field-input" placeholder="Mon–Fri, 7:00 AM – 6:00 PM CT">
-                        </div>
-                        <div class="editor-field">
-                            <label class="editor-field-label" for="df-footer-address">Address</label>
-                            <textarea id="df-footer-address" data-field="footerAddress" class="editor-field-input editor-field-textarea" rows="2"></textarea>
-                        </div>
+                        <details class="designer-slide-group">
+                            <summary class="designer-slide-group-head">Contact column</summary>
+                            <div class="designer-slide-group-body">
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerContactVisible" checked> Show Contact column
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-footer-contact-head">Column heading</label>
+                                    <input type="text" id="df-footer-contact-head" data-field="footerContactHeading" class="editor-field-input" placeholder="Contact">
+                                </div>
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerContactPhoneVisible" checked> Show phone
+                                </label>
+                                <p class="editor-field-hint" style="margin:0 0 10px">Phone number comes from Branding. Edit it there.</p>
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerContactEmailVisible" checked> Show email
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-footer-email">Email</label>
+                                    <input type="text" id="df-footer-email" data-field="footerEmail" class="editor-field-input" placeholder="sales@ibcmaster.com">
+                                </div>
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerContactHoursVisible" checked> Show hours
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-footer-hours">Hours</label>
+                                    <input type="text" id="df-footer-hours" data-field="footerHours" class="editor-field-input" placeholder="Mon–Fri, 7:00 AM – 6:00 PM CT">
+                                </div>
+                                <label class="mega-col-toggle">
+                                    <input type="checkbox" data-field="footerContactAddressVisible" checked> Show address
+                                </label>
+                                <div class="editor-field">
+                                    <label class="editor-field-label" for="df-footer-address">Address</label>
+                                    <textarea id="df-footer-address" data-field="footerAddress" class="editor-field-input editor-field-textarea" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </details>
 
                         <p class="editor-field-label" style="margin:10px 0 4px">Bottom bar</p>
                         <div class="editor-field">
-                            <label class="editor-field-label" for="df-footer-copy">Copyright line <span class="editor-field-hint-inline">(leave blank to auto-generate from company name)</span></label>
-                            <input type="text" id="df-footer-copy" data-field="footerCopy" class="editor-field-input" placeholder="© 2026 Company. All rights reserved.">
+                            <label class="editor-field-label" for="df-footer-copy">Copyright / All rights reserved</label>
+                            <input type="text" id="df-footer-copy" data-field="footerCopy" class="editor-field-input" placeholder="© 2026 Company Name. All rights reserved.">
+                            <p class="editor-field-hint">Leave blank to auto-generate from company name and current year.</p>
                         </div>
-                        <div class="editor-field editor-field--inline">
-                            <div><input type="text" data-field="footerLegalL1Label" class="editor-field-input" placeholder="Legal link 1"></div>
-                            <div><input type="text" data-field="footerLegalL1Url" class="editor-field-input" placeholder="/url"></div>
-                        </div>
-                        <div class="editor-field editor-field--inline">
-                            <div><input type="text" data-field="footerLegalL2Label" class="editor-field-input" placeholder="Legal link 2"></div>
-                            <div><input type="text" data-field="footerLegalL2Url" class="editor-field-input" placeholder="/url"></div>
-                        </div>
-                        <div class="editor-field editor-field--inline">
-                            <div><input type="text" data-field="footerLegalL3Label" class="editor-field-input" placeholder="Legal link 3"></div>
-                            <div><input type="text" data-field="footerLegalL3Url" class="editor-field-input" placeholder="/url"></div>
+                        <div class="mega-link-row-header"><span>Legal link</span><span>URL</span></div>
+                        <div class="mega-link-list">
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="footerLegalL1Label" class="editor-field-input" placeholder="Privacy Policy">
+                                    <input type="text" data-field="footerLegalL1Url" class="editor-field-input" placeholder="/privacy">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerLegalL1Visible" checked> Show link</label>
+                            </div>
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="footerLegalL2Label" class="editor-field-input" placeholder="Terms of Use">
+                                    <input type="text" data-field="footerLegalL2Url" class="editor-field-input" placeholder="/terms">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerLegalL2Visible" checked> Show link</label>
+                            </div>
+                            <div class="mega-link-item">
+                                <div class="mega-link-row">
+                                    <input type="text" data-field="footerLegalL3Label" class="editor-field-input" placeholder="Accessibility">
+                                    <input type="text" data-field="footerLegalL3Url" class="editor-field-input" placeholder="/accessibility">
+                                </div>
+                                <label class="mega-link-hide-toggle"><input type="checkbox" data-field="footerLegalL3Visible" checked> Show link</label>
+                            </div>
                         </div>
 
                         <p class="editor-field-label" style="margin:10px 0 4px">Social links</p>
                         <div class="editor-field">
-                            <label class="editor-field-label" for="df-social-fb">Facebook URL</label>
+                            <label class="mega-col-toggle">
+                                <input type="checkbox" data-field="footerSocialFbVisible" checked> Facebook
+                            </label>
                             <input type="text" id="df-social-fb" data-field="footerSocialFb" class="editor-field-input" placeholder="https://www.facebook.com/company">
                         </div>
                         <div class="editor-field">
-                            <label class="editor-field-label" for="df-social-li">LinkedIn URL</label>
+                            <label class="mega-col-toggle">
+                                <input type="checkbox" data-field="footerSocialLiVisible" checked> LinkedIn
+                            </label>
                             <input type="text" id="df-social-li" data-field="footerSocialLi" class="editor-field-input" placeholder="https://www.linkedin.com/company">
                         </div>
                         <div class="editor-field">
-                            <label class="editor-field-label" for="df-social-yt">YouTube URL</label>
+                            <label class="mega-col-toggle">
+                                <input type="checkbox" data-field="footerSocialYtVisible" checked> YouTube
+                            </label>
                             <input type="text" id="df-social-yt" data-field="footerSocialYt" class="editor-field-input" placeholder="https://www.youtube.com/@company">
                         </div>
                         <div class="editor-field">
-                            <label class="editor-field-label" for="df-social-x">X / Twitter URL</label>
+                            <label class="mega-col-toggle">
+                                <input type="checkbox" data-field="footerSocialXVisible" checked> X / Twitter
+                            </label>
                             <input type="text" id="df-social-x" data-field="footerSocialX" class="editor-field-input" placeholder="https://x.com/company">
                         </div>
                     </div>
@@ -1529,6 +1647,10 @@
 
     <script src="js/editor-site-nav.js"></script>
     <script src="vendor/jszip.min.js"></script>
+    <script src="js/hero-slides-editor.js"></script>
+    <script src="js/shop-categories-editor.js"></script>
+    <script src="js/shop-brands-editor.js"></script>
+    <script src="js/catalog-library-editor.js"></script>
     <script src="js/designer-editor.js"></script>
     <!-- section-editor-base provides the shared draft persistence helpers
          (designerSaveCombined / designerLoadCombined) used by the editor. -->

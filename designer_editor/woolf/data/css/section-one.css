@@ -20,6 +20,10 @@
 .hero {
   position: relative;
   overflow: hidden;
+  --hero-overlay-r: 8;
+  --hero-overlay-g: 21;
+  --hero-overlay-b: 37;
+  --hero-overlay-opacity: 0.92;
 }
 
 .hero__viewport {
@@ -48,11 +52,13 @@
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(
     90deg,
-    rgba(8, 21, 37, 0.92) 0%,
-    rgba(8, 21, 37, 0.72) 45%,
-    rgba(8, 21, 37, 0.35) 100%
+    rgba(var(--hero-overlay-r), var(--hero-overlay-g), var(--hero-overlay-b), var(--hero-overlay-opacity)) 0%,
+    rgba(var(--hero-overlay-r), var(--hero-overlay-g), var(--hero-overlay-b), calc(var(--hero-overlay-opacity) * 0.78)) 45%,
+    rgba(var(--hero-overlay-r), var(--hero-overlay-g), var(--hero-overlay-b), calc(var(--hero-overlay-opacity) * 0.38)) 100%
   );
 }
 
@@ -77,9 +83,19 @@
   background-color: #0d2137;
 }
 
+.hero__slide--custom {
+  background-color: #0d2137;
+}
+
+.hero__slide-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
 .hero__content {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
@@ -539,6 +555,194 @@
   }
 
   .brand-card:hover {
+    transform: none;
+  }
+}
+
+/* ── Brand logo carousel (below grid) ─────────────────────────── */
+
+.brands__carousel {
+  --brands-carousel-duration: 48s;
+  margin-top: 48px;
+  padding: 28px 24px;
+  position: relative;
+  background: #e6ebf0;
+  border: 1px solid #d4dce6;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.65) inset,
+    0 8px 24px rgba(8, 21, 37, 0.07);
+}
+
+.brands__carousel-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+}
+
+.brands__carousel-track {
+  display: flex;
+  width: max-content;
+  animation: brands-carousel-scroll var(--brands-carousel-duration) linear infinite;
+  will-change: transform;
+}
+
+.brands__carousel:hover .brands__carousel-track,
+.brands__carousel:focus-within .brands__carousel-track {
+  animation-play-state: paused;
+}
+
+.brands__carousel-group {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding-right: 12px;
+  flex-shrink: 0;
+}
+
+.brand-carousel__item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 168px;
+  height: 68px;
+  padding: 14px 18px;
+  background: var(--ibc-white);
+  border: 1px solid #d8e0e8;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(8, 21, 37, 0.05);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.15s;
+}
+
+.brand-carousel__item:hover {
+  background: var(--ibc-white);
+  border-color: var(--ibc-blue);
+  box-shadow: 0 6px 18px rgba(0, 79, 163, 0.12);
+  transform: translateY(-1px);
+}
+
+.brand-carousel__item:focus-visible {
+  outline: 2px solid var(--ibc-blue);
+  outline-offset: 2px;
+}
+
+.brand-carousel__item img {
+  display: block;
+  max-width: 100%;
+  max-height: 36px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.brand-carousel__item--all {
+  flex-direction: column;
+  gap: 4px;
+  width: 148px;
+  background: linear-gradient(135deg, var(--ibc-navy) 0%, #0d2844 100%);
+  border-color: transparent;
+  color: var(--ibc-white);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.brand-carousel__item--all:hover {
+  background: linear-gradient(135deg, var(--ibc-blue) 0%, var(--ibc-blue-hover) 100%);
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(0, 79, 163, 0.25);
+}
+
+.brand-carousel__all-label {
+  display: block;
+}
+
+.brand-carousel__all-arrow {
+  display: block;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.85;
+  transition: transform 0.15s ease;
+}
+
+.brand-carousel__item--all:hover .brand-carousel__all-arrow {
+  transform: translateX(3px);
+}
+
+@keyframes brands-carousel-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .brands__carousel {
+    margin-top: 40px;
+    padding: 22px 16px;
+    border-radius: 10px;
+  }
+
+  .brand-carousel__item {
+    width: 140px;
+    height: 60px;
+    padding: 12px 14px;
+  }
+
+  .brand-carousel__item img {
+    max-height: 32px;
+  }
+
+  .brand-carousel__item--all {
+    width: 128px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brands__carousel-viewport {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .brands__carousel-track {
+    animation: none;
+  }
+
+  .brands__carousel-group + .brands__carousel-group {
+    display: none;
+  }
+
+  .brand-carousel__item {
+    scroll-snap-align: start;
+  }
+
+  .brand-carousel__all-arrow {
+    transition: none;
+  }
+
+  .brand-carousel__item--all:hover .brand-carousel__all-arrow {
+    transform: none;
+  }
+
+  .brand-carousel__item:hover {
     transform: none;
   }
 }

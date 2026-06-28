@@ -63,6 +63,82 @@
   text-decoration: underline;
 }
 
+/* Carousel showcase */
+.catalog-library__showcase {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.catalog-library__viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.catalog-library__track {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+
+.catalog-library__track .catalog-card {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.catalog-library__arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: var(--ibc-white);
+  border: 1px solid var(--ibc-grey-200);
+  border-radius: 8px;
+  color: var(--ibc-navy);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.catalog-library__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.catalog-library__arrow:hover:not(:disabled) {
+  background: var(--ibc-blue);
+  border-color: var(--ibc-blue);
+  color: var(--ibc-white);
+  box-shadow: 0 4px 14px rgba(0, 79, 163, 0.2);
+}
+
+.catalog-library__arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.catalog-library__arrow:focus-visible {
+  outline: 2px solid var(--ibc-blue);
+  outline-offset: 2px;
+}
+
+.catalog-library__showcase.is-single .catalog-library__arrow {
+  display: none;
+}
+
+.catalog-library__showcase.is-single .catalog-library__viewport {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
 .catalog-library__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -203,6 +279,15 @@
     align-items: flex-start;
   }
 
+  .catalog-library__showcase {
+    gap: 8px;
+  }
+
+  .catalog-library__arrow {
+    width: 38px;
+    height: 38px;
+  }
+
   .catalog-library__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
@@ -230,5 +315,9 @@
 
   .catalog-card__link:hover .catalog-card__cover img {
     transform: none;
+  }
+
+  .catalog-library__track {
+    transition: none;
   }
 }
