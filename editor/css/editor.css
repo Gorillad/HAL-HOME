@@ -350,6 +350,15 @@
     pointer-events: none;
 }
 
+.btn-primary.is-evolved {
+    background: linear-gradient(135deg, #0a0f14 0%, #101820 100%);
+    border-color: rgba(94, 231, 255, 0.35);
+    color: #e8f7ff;
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.25),
+        0 0 18px rgba(94, 231, 255, 0.12);
+}
+
 .export-spinner {
     width: 16px;
     height: 16px;

@@ -547,11 +547,14 @@
     };
 
     const exportBtn = document.getElementById('exportPdfBtn');
+    const resetBtn = document.getElementById('resetDraftBtn');
     const statusEl = document.getElementById('editorStatus');
     const evolvedToast = document.getElementById('evolvedToast');
     const EXPORT_BTN_LABEL = 'Export handoff';
+    const EXPORT_BTN_SUCCESS_LABEL = 'Evolved 🕺';
     let evolvedToastHideTimer = null;
     let evolvedToastRemoveTimer = null;
+    let exportInProgress = false;
     const previewRoot = document.getElementById('showroomPreview');
     const heroRoot = document.getElementById('showroomHeroSection');
     const galleryHeroLayoutRoot = document.getElementById('showroomGalleryHeroLayout');
@@ -779,6 +782,7 @@
         footerCopyrightName: '',
         reviewedSections: [],
         previewTheme: 'light',
+        handoffExported: false,
     };
 
     function createGetInspiredItem(data = {}, index = 0) {
@@ -941,20 +945,57 @@
         }, 2800);
     }
 
+    function getExportButton() {
+        return document.getElementById('exportPdfBtn');
+    }
+
+    function renderExportButtonAsEvolved() {
+        const btn = getExportButton();
+        if (!btn) return;
+        btn.disabled = false;
+        btn.classList.remove('is-exporting');
+        btn.classList.add('is-evolved');
+        btn.removeAttribute('aria-busy');
+        btn.textContent = EXPORT_BTN_SUCCESS_LABEL;
+        btn.setAttribute('aria-label', 'Handoff exported successfully');
+    }
+
+    function setExportSuccess() {
+        renderExportButtonAsEvolved();
+        state.handoffExported = true;
+        saveState({ silent: true });
+    }
+
+    function resetExportButton() {
+        setExportLoading(false);
+    }
+
+    function applyExportButtonState() {
+        if (exportInProgress) return;
+        if (state.handoffExported) {
+            renderExportButtonAsEvolved();
+            return;
+        }
+        resetExportButton();
+    }
+
     function setExportLoading(isLoading) {
-        if (!exportBtn) return;
+        const btn = getExportButton();
+        if (!btn) return;
         if (isLoading) {
-            exportBtn.disabled = true;
-            exportBtn.classList.add('is-exporting');
-            exportBtn.setAttribute('aria-busy', 'true');
-            exportBtn.innerHTML = '<span class="export-spinner" aria-hidden="true"></span><span class="export-btn-text">Building handoff…</span>';
+            btn.disabled = true;
+            btn.classList.remove('is-evolved');
+            btn.classList.add('is-exporting');
+            btn.setAttribute('aria-busy', 'true');
+            btn.innerHTML = '<span class="export-spinner" aria-hidden="true"></span><span class="export-btn-text">Building handoff…</span>';
             setStatus('Building PDF, images, and assets…');
             return;
         }
-        exportBtn.disabled = false;
-        exportBtn.classList.remove('is-exporting');
-        exportBtn.removeAttribute('aria-busy');
-        exportBtn.textContent = EXPORT_BTN_LABEL;
+        btn.disabled = false;
+        btn.classList.remove('is-exporting', 'is-evolved');
+        btn.removeAttribute('aria-busy');
+        btn.textContent = EXPORT_BTN_LABEL;
+        btn.removeAttribute('aria-label');
     }
 
     function clampPreviewScroll() {
@@ -1348,6 +1389,66 @@
     function bindPreviewScroll() {
         if (!previewWrap) return;
         previewWrap.addEventListener('scroll', clampPreviewScroll, { passive: true });
+    }
+
+    function flushSessionToStorage() {
+        if (templateDesign === 'gallery') {
+            readClassicFooterLinksFromEditor();
+        } else if (templateDesign === 'spotlight') {
+            readSpotlightExportForm();
+        } else {
+            readYouMayLikeFieldsFromEditor();
+            readGetInspiredFieldsFromEditor();
+            readMainNavFromEditor();
+        }
+        readForm();
+        saveState({ silent: true });
+    }
+
+    function restoreStateFromBaseline() {
+        if (!baselineState) return false;
+
+        const baseline = JSON.parse(JSON.stringify(baselineState));
+        Object.keys(state).forEach((key) => {
+            delete state[key];
+        });
+        Object.assign(state, baseline, {
+            reviewedSections: [],
+            handoffExported: false,
+            previewTheme: baseline.previewTheme === 'dark' ? 'dark' : 'light',
+        });
+        return true;
+    }
+
+    function resetToDefaults() {
+        if (!confirm('Reset all fields to the original template defaults? Your saved draft will be overwritten.')) {
+            return;
+        }
+
+        if (!restoreStateFromBaseline()) {
+            setStatus('Could not reset — defaults not available');
+            return;
+        }
+
+        populateForm(state);
+        resetExportButton();
+
+        if (templateDesign === 'gallery') {
+            finishGalleryEditorInit();
+        } else if (templateDesign === 'spotlight') {
+            finishSpotlightEditorInit();
+        } else {
+            finishClassicEditorInit();
+        }
+
+        saveState({ silent: true });
+        setStatus('Reset to defaults');
+    }
+
+    function initResetBtn() {
+        if (!resetBtn) return;
+        resetBtn.style.display = '';
+        resetBtn.addEventListener('click', resetToDefaults);
     }
 
     function saveState(options = {}) {
@@ -5117,8 +5218,10 @@
         }));
     }
 
-    exportBtn.addEventListener('click', async () => {
+    if (exportBtn) exportBtn.addEventListener('click', async () => {
+        exportInProgress = true;
         setExportLoading(true);
+        let exportSucceeded = false;
         if (templateDesign === 'gallery') {
             ensureGalleryImageDefaults();
             readClassicFooterLinksFromEditor();
@@ -5313,8 +5416,8 @@
                 pdfFilename: 'showroom-homepage-brief.pdf',
                 zipFilename: 'showroom-homepage-handoff.zip',
             });
+            exportSucceeded = true;
             setStatus('Handoff ZIP downloaded');
-            showEvolvedToast();
         } catch (err) {
             console.error(err);
             const detail = err && err.message ? ` — ${err.message}` : '';
@@ -5327,7 +5430,14 @@
                 previewWrap.scrollLeft = prevScrollLeft;
             }
             fitPreviewScale();
-            setExportLoading(false);
+            exportInProgress = false;
+            if (exportSucceeded) {
+                setExportSuccess();
+            } else if (state.handoffExported) {
+                renderExportButtonAsEvolved();
+            } else {
+                setExportLoading(false);
+            }
         }
     });
 
@@ -5618,6 +5728,9 @@
             if (restored.previewTheme === 'dark') {
                 state.previewTheme = 'dark';
             }
+            if (restored.handoffExported) {
+                state.handoffExported = true;
+            }
             if (templateDesign === 'gallery') {
                 finishGalleryEditorInit({ restoredDraft: true });
             } else if (templateDesign === 'spotlight') {
@@ -5645,6 +5758,12 @@
             }
             saveState({ silent: true });
         }
+
+        applyExportButtonState();
+        initResetBtn();
+
+        window.addEventListener('pagehide', flushSessionToStorage);
+        window.addEventListener('beforeunload', flushSessionToStorage);
 
         if (window.EditorProgressDock) {
             EditorProgressDock.init({
