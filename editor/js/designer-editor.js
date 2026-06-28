@@ -176,6 +176,10 @@
     var iframeDoc = null;
     var saveTimer = null;
     var isDirty   = false;
+    var exportInProgress = false;
+
+    var EXPORT_BTN_LABEL = 'Export handoff';
+    var EXPORT_BTN_SUCCESS_LABEL = 'Evolved 🕺';
 
     // ── DOM references ────────────────────────────────────────────────
 
@@ -1398,7 +1402,8 @@
     // Expose header draft so section-one-editor.js can merge before its own save
     Object.defineProperty(window, '__woolDraft', { get: function () { return draft; } });
 
-    function saveDraft() {
+    function saveDraft(options) {
+        options = options || {};
         if (!isDirty) return;
         isDirty = false;
         // localStorage is the source of truth (works with or without the Node
@@ -1407,15 +1412,19 @@
         // every registered section namespace, so nothing is dropped.
         if (typeof window.designerSaveCombined === 'function') {
             window.designerSaveCombined(TEMPLATE);
-            setStatus('Draft saved', true);
-            showToast('Draft saved ✓');
+            if (!options.silent) {
+                setStatus('Draft saved', true);
+                showToast('Draft saved ✓');
+            }
             return;
         }
         // Fallback: API only (older load order). Skip the network call when no
         // API is present (static Live Server) so nothing 404s.
         if (!window.DESIGNER_API_ENABLED) {
-            setStatus('Draft saved', true);
-            showToast('Draft saved ✓');
+            if (!options.silent) {
+                setStatus('Draft saved', true);
+                showToast('Draft saved ✓');
+            }
             return;
         }
         var payload = Object.assign({ _template: TEMPLATE }, draft);
@@ -1430,8 +1439,10 @@
         .then(function (r) { return r.json(); })
         .then(function (data) {
             if (data.ok) {
-                setStatus('Draft saved', true);
-                showToast('Draft saved ✓');
+                if (!options.silent) {
+                    setStatus('Draft saved', true);
+                    showToast('Draft saved ✓');
+                }
             } else {
                 setStatus('Save failed — ' + (data.error || 'unknown error'), false);
             }
@@ -1531,6 +1542,47 @@
         } catch (e) { /* cross-origin guard */ }
     }
 
+    // ── Export button UI ──────────────────────────────────────────────
+
+    function getExportButton() {
+        return document.getElementById('exportHandoffBtn');
+    }
+
+    function renderExportButtonAsEvolved() {
+        var btn = getExportButton();
+        if (!btn) return;
+        btn.disabled = false;
+        btn.classList.remove('is-exporting');
+        btn.classList.add('is-evolved');
+        btn.textContent = EXPORT_BTN_SUCCESS_LABEL;
+        btn.setAttribute('aria-label', 'Handoff exported successfully');
+    }
+
+    function resetExportButton() {
+        var btn = getExportButton();
+        if (!btn) return;
+        btn.disabled = false;
+        btn.classList.remove('is-exporting', 'is-evolved');
+        btn.textContent = EXPORT_BTN_LABEL;
+        btn.removeAttribute('aria-label');
+    }
+
+    function setExportSuccess() {
+        renderExportButtonAsEvolved();
+        draft.handoffExported = true;
+        isDirty = true;
+        saveDraft({ silent: true });
+    }
+
+    function applyExportButtonState() {
+        if (exportInProgress) return;
+        if (draft.handoffExported) {
+            renderExportButtonAsEvolved();
+            return;
+        }
+        resetExportButton();
+    }
+
     // ── Reset to defaults ─────────────────────────────────────────────
 
     function initResetBtn() {
@@ -1545,6 +1597,7 @@
             ensureCatalogLibrary();
             populatePanel();
             applyAllFields();
+            resetExportButton();
             isDirty = true;
             saveDraft();
         });
@@ -1958,10 +2011,16 @@
             return;
         }
 
-        if (exportBtn) {
-            exportBtn.disabled = true;
-            exportBtn.textContent = 'Exporting…';
+        exportInProgress = true;
+        var btn = getExportButton();
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.remove('is-evolved');
+            btn.classList.add('is-exporting');
+            btn.textContent = 'Exporting…';
         }
+
+        var exportSucceeded = false;
 
         window.exportWoolfHandoff({
             iframeDoc: iframeDoc,
@@ -1983,6 +2042,7 @@
                 URL.revokeObjectURL(a.href);
                 document.body.removeChild(a);
             }, 1000);
+            exportSucceeded = true;
             showToast('Export downloaded!');
         })
         .catch(function (err) {
@@ -1990,9 +2050,13 @@
             alert('Export failed: ' + err.message);
         })
         .finally(function () {
-            if (exportBtn) {
-                exportBtn.disabled = false;
-                exportBtn.textContent = 'Export handoff';
+            exportInProgress = false;
+            if (exportSucceeded) {
+                setExportSuccess();
+            } else if (draft.handoffExported) {
+                renderExportButtonAsEvolved();
+            } else {
+                resetExportButton();
             }
         });
     }
@@ -2013,6 +2077,7 @@
             populatePanel();
             draftReady = true;
             onIframeReady(); // applies if iframe already loaded; no-op if still loading
+            applyExportButtonState();
         });
 
         bindFieldPanel();
