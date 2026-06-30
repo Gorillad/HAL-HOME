@@ -724,7 +724,7 @@
         headerLogoImage: templateDesign === 'gallery'
             ? DEFAULT_GALLERY_HEADER_LOGO
             : templateDesign === 'spotlight'
-                ? 'spotlight/xologic-logo.png'
+                ? 'Spotlight/xologic-logo.png'
                 : DEFAULT_CLASSIC_HEADER_LOGO,
         galleryHeaderBarBackgroundColor: DEFAULT_GALLERY_HEADER_BAR_BG,
         galleryHeaderCenterCopy: DEFAULT_GALLERY_HEADER_CENTER_COPY,
@@ -1577,9 +1577,21 @@
         syncClassicCopyrightPreview();
     }
 
+    function resolveEditorAssetPath(path) {
+        const trimmed = String(path || '').trim();
+        if (!trimmed || trimmed.startsWith('data:') || /^https?:\/\//i.test(trimmed)) {
+            return trimmed;
+        }
+        if (trimmed.startsWith('spotlight/')) {
+            return `Spotlight/${trimmed.slice('spotlight/'.length)}`;
+        }
+        return trimmed;
+    }
+
     function applyImage(targetImg, placeholderWrap, dataUrl) {
-        if (dataUrl) {
-            targetImg.src = dataUrl;
+        const resolved = resolveEditorAssetPath(dataUrl);
+        if (resolved) {
+            targetImg.src = resolved;
             targetImg.hidden = false;
             if (placeholderWrap) placeholderWrap.classList.remove('is-empty');
         } else {
@@ -2143,7 +2155,7 @@
         }
         container.classList.remove('is-empty');
         const img = document.createElement('img');
-        img.src = src;
+        img.src = resolveEditorAssetPath(src);
         img.alt = '';
         container.appendChild(img);
     }
@@ -4574,8 +4586,8 @@
             state.headerLogoImage = savedGalleryImageRef(data.headerLogoImage) || DEFAULT_GALLERY_HEADER_LOGO;
         } else if (templateDesign === 'spotlight') {
             const saved = data.headerLogoImage;
-            const fallback = window.SpotlightEditor?.DEFAULT_HEADER_LOGO || 'spotlight/xologic-logo.png';
-            if (saved && (String(saved).startsWith('data:') || String(saved).startsWith('spotlight/'))) {
+            const fallback = window.SpotlightEditor?.DEFAULT_HEADER_LOGO || 'Spotlight/xologic-logo.png';
+            if (saved && (String(saved).startsWith('data:') || String(saved).startsWith('spotlight/') || String(saved).startsWith('Spotlight/'))) {
                 state.headerLogoImage = saved;
             } else {
                 state.headerLogoImage = fallback;
@@ -5629,6 +5641,7 @@
             normalizeHex,
             normalizeHexColor,
             applyImage,
+            resolveEditorAssetPath,
             setUploadPreviewImage,
             readFileAsDataUrl,
             renderMainNavEditor,

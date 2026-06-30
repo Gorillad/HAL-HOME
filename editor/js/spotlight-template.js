@@ -3,7 +3,7 @@
  * Loaded before showroom-editor.js; integrated when ?design=spotlight.
  */
 window.SpotlightEditor = (function createSpotlightEditorModule() {
-    const IMAGE_DIR = 'spotlight/';
+    const IMAGE_DIR = 'Spotlight/';
     const DEFAULT_HEADER_LOGO = `${IMAGE_DIR}xologic-logo.png`;
     const DEFAULT_HEADER_BANNER_BG = '#254155';
     const DEFAULT_HEADER_BANNER_TEXT = '#ffffff';
@@ -460,16 +460,27 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
 
     function isBundledImage(src) {
         if (!src || typeof src !== 'string') return false;
-        return src.startsWith(IMAGE_DIR) && !src.startsWith('data:');
+        const normalized = src.startsWith('spotlight/')
+            ? `${IMAGE_DIR}${src.slice('spotlight/'.length)}`
+            : src;
+        return normalized.startsWith(IMAGE_DIR) && !normalized.startsWith('data:');
     }
 
     function resolveImage(saved, fallback) {
-        if (!saved || typeof saved !== 'string') return fallback;
+        if (!saved || typeof saved !== 'string') return resolveAssetPath(fallback);
         if (saved.startsWith('data:')) return saved;
         if (isBundledImage(saved) || saved.startsWith('classic/') || saved.startsWith('gallery/')) {
-            return fallback;
+            return resolveAssetPath(fallback);
         }
-        return saved;
+        return resolveAssetPath(saved);
+    }
+
+    function resolveAssetPath(src) {
+        if (!src || typeof src !== 'string') return src;
+        if (src.startsWith('spotlight/')) {
+            return `${IMAGE_DIR}${src.slice('spotlight/'.length)}`;
+        }
+        return src;
     }
 
     function migrateTiles(savedTiles, defaults) {
@@ -1285,7 +1296,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             const url = escapeHtml(tile.url || '#');
             const jumpTarget = `#uploadPreview${editorPrefix}-${tile.id}`;
             const imgMarkup = tile.image
-                ? `<img src="${tile.image}" alt="">`
+                ? `<img src="${ctx.resolveEditorAssetPath(tile.image)}" alt="">`
                 : '';
             return (
                 `<a class="${gridClass}-tile editor-preview-image-jump-target${tile.image ? '' : ' is-empty'}" href="${url}" data-tile-id="${tile.id}" data-editor-jump-target="${jumpTarget}">
@@ -1308,7 +1319,8 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
 
         refs.previewSpotlightCarousel.innerHTML = slides.map((slide, index) => {
             const slideUrl = escapeHtml(slide.url || DEFAULT_HERO_SLIDE_URL);
-            const inner = slide.image ? `<img src="${slide.image}" alt="">` : '';
+            const slideImage = slide.image ? ctx.resolveEditorAssetPath(slide.image) : '';
+            const inner = slideImage ? `<img src="${slideImage}" alt="">` : '';
             const jumpTarget = `#uploadPreviewSpotlightSlide-${slide.id}`;
             return (
                 `<div class="showroom-spotlight-carousel-slide${index === carouselIndex ? ' is-active' : ''}" data-slide-index="${index}">
