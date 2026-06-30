@@ -116,7 +116,7 @@ function initTemplatesAccessGate() {
     }
 
     function unlock(user, options = {}) {
-        const { redirectToEditor = false, offline = false } = options;
+        const { redirectToEditor = false, scrollToTemplates = false, offline = false } = options;
         const editorNext = redirectToEditor ? getEditorNextPath() : null;
 
         clearResumeQuery();
@@ -136,7 +136,9 @@ function initTemplatesAccessGate() {
             return;
         }
 
-        content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (scrollToTemplates) {
+            content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     function lock() {
@@ -197,7 +199,11 @@ function initTemplatesAccessGate() {
         try {
             const result = await EditorAccess.login(email, password);
             const user = result.user || email.toLowerCase();
-            unlock(user, { redirectToEditor: false, offline: Boolean(result.offline) });
+            unlock(user, {
+                redirectToEditor: Boolean(getEditorNextPath()),
+                scrollToTemplates: false,
+                offline: Boolean(result.offline),
+            });
         } catch (err) {
             EditorAccess.showMessage(msg, err.message || 'Sign in failed. Check your credentials.', 'error');
         } finally {
@@ -205,19 +211,16 @@ function initTemplatesAccessGate() {
         }
     });
 
-    /* ── AUTH GATE DISABLED (re-enable before going live) ────────
-       Restore the EditorAccess.checkSession() block below and
-       remove the immediate unlock() call when ready for production.
-    ─────────────────────────────────────────────────────────── */
-    unlock(null, { redirectToEditor: Boolean(getEditorNextPath()) });
-
-    /* PRODUCTION: swap the line above for this block:
-    EditorAccess.checkSession().then((session) => {
+    EditorAccess.checkSession().then(function (session) {
         if (session.ok) {
-            unlock(session.user, { redirectToEditor: Boolean(getEditorNextPath()) });
+            const resumeEditor = Boolean(getEditorNextPath());
+            unlock(session.user, {
+                redirectToEditor: resumeEditor,
+                scrollToTemplates: false,
+                offline: Boolean(session.offline),
+            });
             return;
         }
         lock();
     });
-    */
 }

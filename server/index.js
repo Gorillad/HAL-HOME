@@ -73,6 +73,7 @@ async function getTaxRateId() {
 }
 
 const app = express();
+app.set('trust proxy', 1);
 
 function devLocalhostCors(req, res, next) {
     const origin = req.headers.origin;
