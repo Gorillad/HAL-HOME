@@ -101,13 +101,21 @@
     ];
     const GALLERY_IMAGE_DIR = 'gallery/';
     const CLASSIC_IMAGE_DIR = 'classic/';
+    /** Per-template header logo height slider limits (px) — adjust min/max when tuning. */
+    const HEADER_LOGO_SIZE_LIMITS = {
+        classic: { min: 40, max: 80, default: 56 },
+        gallery: { min: 60, max: 150, default: 100 },
+        spotlight: { min: 40, max: 80, default: 56 },
+    };
     const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}header/logo-classic.png`;
+    const DEFAULT_SHOWROOM_HEADER_LOGO_DARK = `${CLASSIC_IMAGE_DIR}header/classic-white.png`;
     const DEFAULT_CLASSIC_PRODUCT_IMAGE = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
     const DEFAULT_CLASSIC_LIFESTYLE_IMAGE = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
     const DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE = `${CLASSIC_IMAGE_DIR}lady-showroom.jpg`;
     const DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE = `${CLASSIC_IMAGE_DIR}kitchEnclavePhoto-min.jpg`;
     const DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE = `${CLASSIC_IMAGE_DIR}exteriorLightingPhoto-min.jpg`;
     const DEFAULT_GALLERY_HEADER_LOGO = `${GALLERY_IMAGE_DIR}xologic-logo.png`;
+    const DEFAULT_SPOTLIGHT_HEADER_LOGO = 'Spotlight/xologic-logo.png';
     const DEFAULT_GALLERY_HERO_PRIMARY = `${GALLERY_IMAGE_DIR}quorum1.jpg`;
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP = `${GALLERY_IMAGE_DIR}chandelier4.jpg`;
     const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM = `${GALLERY_IMAGE_DIR}pendants3.jpg`;
@@ -726,6 +734,8 @@
             : templateDesign === 'spotlight'
                 ? 'Spotlight/xologic-logo.png'
                 : DEFAULT_CLASSIC_HEADER_LOGO,
+        headerLogoSize: HEADER_LOGO_SIZE_LIMITS[templateDesign]?.default
+            ?? HEADER_LOGO_SIZE_LIMITS.classic.default,
         galleryHeaderBarBackgroundColor: DEFAULT_GALLERY_HEADER_BAR_BG,
         galleryHeaderCenterCopy: DEFAULT_GALLERY_HEADER_CENTER_COPY,
         galleryHeaderWishlistLabel: DEFAULT_GALLERY_HEADER_WISHLIST,
@@ -2779,9 +2789,120 @@
         }
     }
 
+    function getHeaderLogoSizeLimits() {
+        return HEADER_LOGO_SIZE_LIMITS[templateDesign] || HEADER_LOGO_SIZE_LIMITS.classic;
+    }
+
+    function clampHeaderLogoSize(size) {
+        const { min, max, default: fallback } = getHeaderLogoSizeLimits();
+        const n = Number(size);
+        if (Number.isNaN(n)) return fallback;
+        return Math.min(max, Math.max(min, Math.round(n)));
+    }
+
+    function getResolvedHeaderLogoSize() {
+        return clampHeaderLogoSize(state.headerLogoSize);
+    }
+
+    function syncHeaderLogoSizeControls(size) {
+        const fitted = clampHeaderLogoSize(size);
+        document.querySelectorAll('.editor-header-logo-size').forEach((input) => {
+            const limits = getHeaderLogoSizeLimits();
+            input.min = String(limits.min);
+            input.max = String(limits.max);
+            if (input.value !== String(fitted)) {
+                input.value = String(fitted);
+            }
+        });
+        document.querySelectorAll('.editor-header-logo-size-val').forEach((el) => {
+            el.textContent = `${fitted}px`;
+        });
+        document.querySelectorAll('.editor-header-logo-size-min').forEach((el) => {
+            el.textContent = `${getHeaderLogoSizeLimits().min}px`;
+        });
+        document.querySelectorAll('.editor-header-logo-size-max').forEach((el) => {
+            el.textContent = `${getHeaderLogoSizeLimits().max}px`;
+        });
+    }
+
+    function applyHeaderLogoSizeToUploadPreviews(size) {
+        const px = `${size}px`;
+        document.querySelectorAll(
+            '.editor-upload-preview--header-logo img, .editor-upload-preview--gallery-header-logo img',
+        ).forEach((img) => {
+            img.style.setProperty('height', px, 'important');
+            img.style.setProperty('max-height', px, 'important');
+            img.style.setProperty('width', 'auto', 'important');
+            img.style.setProperty('max-width', 'none', 'important');
+        });
+    }
+
+    function applyHeaderLogoSizeToPreviewLogos(size) {
+        const px = `${size}px`;
+        ['#previewHeaderLogo', '#previewGalleryLogo', '#previewSpotlightHeaderLogo'].forEach((selector) => {
+            const img = document.querySelector(selector);
+            if (!img || img.hidden) return;
+            img.style.setProperty('height', px, 'important');
+            img.style.setProperty('max-height', px, 'important');
+            img.style.setProperty('width', 'auto', 'important');
+            img.style.setProperty('max-width', 'none', 'important');
+        });
+    }
+
+    function applyHeaderLogoSize() {
+        const size = getResolvedHeaderLogoSize();
+        state.headerLogoSize = size;
+        if (previewRoot) {
+            previewRoot.style.setProperty('--showroom-header-logo-h', `${size}px`);
+        }
+        syncHeaderLogoSizeControls(size);
+        applyHeaderLogoSizeToUploadPreviews(size);
+        applyHeaderLogoSizeToPreviewLogos(size);
+    }
+
+    function bindHeaderLogoSizeControls() {
+        document.querySelectorAll('.editor-header-logo-size').forEach((input) => {
+            if (input.dataset.bound === 'true') return;
+            input.dataset.bound = 'true';
+            input.addEventListener('input', () => {
+                state.headerLogoSize = clampHeaderLogoSize(input.value);
+                applyHeaderLogoSize();
+                saveState({ silent: true });
+            });
+        });
+    }
+
+    function isBundledDefaultHeaderLogo(src, defaultLight) {
+        const trimmed = String(src || '').trim();
+        return !trimmed || trimmed === defaultLight;
+    }
+
+    function getEffectiveHeaderLogo() {
+        if (state.previewTheme !== 'dark') {
+            return state.headerLogoImage;
+        }
+        const src = state.headerLogoImage;
+        if (templateDesign === 'classic'
+            && isBundledDefaultHeaderLogo(src, DEFAULT_CLASSIC_HEADER_LOGO)) {
+            return DEFAULT_SHOWROOM_HEADER_LOGO_DARK;
+        }
+        if (templateDesign === 'gallery'
+            && isBundledDefaultHeaderLogo(src, DEFAULT_GALLERY_HEADER_LOGO)) {
+            return DEFAULT_SHOWROOM_HEADER_LOGO_DARK;
+        }
+        if (templateDesign === 'spotlight') {
+            const spotlightDefault = window.SpotlightEditor?.DEFAULT_HEADER_LOGO
+                || DEFAULT_SPOTLIGHT_HEADER_LOGO;
+            if (isBundledDefaultHeaderLogo(src, spotlightDefault)) {
+                return DEFAULT_SHOWROOM_HEADER_LOGO_DARK;
+            }
+        }
+        return state.headerLogoImage;
+    }
+
     function getEffectiveFooterLogo() {
         return state.footerLogoUseHeader !== false
-            ? state.headerLogoImage
+            ? getEffectiveHeaderLogo()
             : state.footerLogoImage;
     }
 
@@ -2796,11 +2917,15 @@
     function syncLogoUploadPreviews() {
         setUploadPreviewImage(uploadPreviewHeaderLogo, state.headerLogoImage);
         setUploadPreviewImage(uploadPreviewGalleryHeaderLogo, state.headerLogoImage);
-        setUploadPreviewImage(uploadPreviewFooterLogo, getEffectiveFooterLogo());
+        const footerUploadLogo = state.footerLogoUseHeader !== false
+            ? state.headerLogoImage
+            : state.footerLogoImage;
+        setUploadPreviewImage(uploadPreviewFooterLogo, footerUploadLogo);
     }
 
     function syncGalleryHeaderPreview() {
-        applyImage(previewGalleryLogo, previewGalleryLogoWrap, state.headerLogoImage);
+        applyImage(previewGalleryLogo, previewGalleryLogoWrap, getEffectiveHeaderLogo());
+        applyHeaderLogoSize();
         syncLogoUploadPreviews();
 
         const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
@@ -2840,6 +2965,7 @@
     function syncHeaderPreview() {
         if (templateDesign === 'spotlight' && window.SpotlightEditor) {
             SpotlightEditor.syncHeaderPreview();
+            applyHeaderLogoSize();
             return;
         }
 
@@ -2848,7 +2974,8 @@
             return;
         }
 
-        applyImage(previewHeaderLogo, previewHeaderLogoWrap, state.headerLogoImage);
+        applyImage(previewHeaderLogo, previewHeaderLogoWrap, getEffectiveHeaderLogo());
+        applyHeaderLogoSize();
         syncLogoUploadPreviews();
 
         const bannerBg = normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG);
@@ -2920,11 +3047,15 @@
     }
 
     function buildHeaderExportSpec() {
+        const logoSizePx = getResolvedHeaderLogoSize();
+        const logoDimensions = `${logoSizePx} px display height · width auto`;
+
         if (templateDesign === 'gallery') {
             return {
                 layout: 'gallery',
                 logoSharedWithFooter: state.footerLogoUseHeader !== false,
-                logoDimensions: 'max 150 px high · centered below top bar',
+                logoSizePx,
+                logoDimensions,
                 logoFilename: 'header-logo.png',
                 contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
                 topBar: {
@@ -2964,7 +3095,8 @@
         return {
             layout: 'classic',
             logoSharedWithFooter: state.footerLogoUseHeader !== false,
-            logoDimensions: 'max 220 × 68 px in header',
+            logoSizePx,
+            logoDimensions,
             logoFilename: 'header-logo.png',
             contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
             banner: {
@@ -4608,6 +4740,7 @@
         );
         state.headerBannerLinks = migrateHeaderBannerLinks(data);
         state.mainNavItems = migrateMainNavItems(data);
+        state.headerLogoSize = clampHeaderLogoSize(data.headerLogoSize);
         populateGalleryHeaderFields(data);
 
         renderHeaderBannerLinksEditor();
@@ -5080,16 +5213,14 @@
     async function buildGalleryHandoffAssetsForExport() {
         ensureGalleryImageDefaults();
 
-        const assets = [];
-
-        if (isGalleryClientImage(state.headerLogoImage, DEFAULT_GALLERY_HEADER_LOGO)) {
-            assets.push({
+        const assets = [
+            {
                 filename: 'header-logo.png',
                 label: 'Header logo',
-                dimensions: 'max 150 px high',
-                dataUrl: state.headerLogoImage,
-            });
-        }
+                dimensions: `${getResolvedHeaderLogoSize()} px display height`,
+                dataUrl: state.headerLogoImage || DEFAULT_GALLERY_HEADER_LOGO,
+            },
+        ];
 
         if (isGalleryClientImage(state.galleryHeroPrimaryImage, DEFAULT_GALLERY_HERO_PRIMARY)) {
             assets.push({
@@ -5174,6 +5305,24 @@
         return SpotlightEditor.buildHandoffAssets(resolveImageDataUrlForExport);
     }
 
+    async function resolveHandoffLogoDataUrl(handoffAssets) {
+        const headerAsset = handoffAssets.find((asset) => asset.filename === 'header-logo.png');
+        if (headerAsset?.dataUrl && String(headerAsset.dataUrl).startsWith('data:')) {
+            return headerAsset.dataUrl;
+        }
+        return resolveImageDataUrlForExport(state.headerLogoImage);
+    }
+
+    function getHandoffCompanyName() {
+        if (templateDesign === 'gallery') {
+            return state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
+        }
+        if (templateDesign === 'spotlight') {
+            return state.spotlightFooterCompanyName || DEFAULT_FOOTER_COMPANY;
+        }
+        return state.footerCompanyName || DEFAULT_FOOTER_COMPANY;
+    }
+
     async function buildHandoffAssetsForExport() {
         if (templateDesign === 'gallery') {
             return buildGalleryHandoffAssetsForExport();
@@ -5183,6 +5332,12 @@
         }
 
         const assets = [
+            {
+                filename: 'header-logo.png',
+                label: 'Company logo (header)',
+                dimensions: `${getResolvedHeaderLogoSize()} px display height`,
+                dataUrl: state.headerLogoImage || DEFAULT_CLASSIC_HEADER_LOGO,
+            },
             {
                 filename: 'about-employee-image.png',
                 label: 'About Us employee photo (centered, overlaps panel)',
@@ -5260,6 +5415,7 @@
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         try {
             const handoffAssets = await buildHandoffAssetsForExport();
+            const handoffLogoDataUrl = await resolveHandoffLogoDataUrl(handoffAssets);
             const handoffSpec = templateDesign === 'gallery'
                 ? buildGalleryHandoffSpec()
                 : templateDesign === 'spotlight'
@@ -5427,6 +5583,12 @@
                 assets: handoffAssets,
                 pdfFilename: 'showroom-homepage-brief.pdf',
                 zipFilename: 'showroom-homepage-handoff.zip',
+                guideMeta: {
+                    companyName: getHandoffCompanyName(),
+                    templateLabel: TEMPLATE_DESIGNS[templateDesign],
+                    design: templateDesign,
+                    logoDataUrl: handoffLogoDataUrl,
+                },
             });
             exportSucceeded = true;
             setStatus('Handoff ZIP downloaded');
@@ -5652,6 +5814,7 @@
             },
             renderHeaderJumpNav,
             syncLogoUploadPreviews,
+            getEffectiveHeaderLogo,
             hideMcQueenGalleryUI: hideMcQueenGalleryEditorUI,
             applyPreviewTheme,
             DEFAULT_HEADER_BANNER_BG,
@@ -5711,6 +5874,7 @@
         bindFooterLinksEditorEvents();
         bindClassicFooterEditorEvents();
         bindClassicCopyrightEditorEvents();
+        bindHeaderLogoSizeControls();
         bindPreviewResizeObserver();
         window.addEventListener('load', scheduleFitPreviewScale);
 

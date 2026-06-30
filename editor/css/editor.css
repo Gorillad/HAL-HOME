@@ -951,6 +951,33 @@
     color: var(--xo-grey);
 }
 
+.editor-range-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.editor-range-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--editor-accent, var(--hero-gold));
+}
+
+.editor-range-value {
+    font-size: 0.75rem;
+    color: var(--xo-grey);
+    min-width: 72px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.editor-range-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: var(--xo-grey);
+    margin-top: 4px;
+}
+
 .editor-upload-preview {
     border-radius: 8px;
     border: 1px dashed var(--xo-border);
@@ -1231,10 +1258,10 @@
 
 .showroom-gallery-logo img {
     display: block;
-    max-width: 100%;
-    max-height: var(--gallery-header-logo-max-h);
     width: auto;
-    height: auto;
+    max-width: none;
+    height: var(--showroom-header-logo-h, var(--gallery-header-logo-max-h));
+    max-height: var(--showroom-header-logo-h, var(--gallery-header-logo-max-h));
     object-fit: contain;
 }
 
@@ -1760,10 +1787,15 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: var(--header-logo-w);
-    max-width: 100%;
-    height: var(--header-logo-h);
+    width: auto;
+    max-width: none;
+    height: auto;
     text-decoration: none;
+}
+
+.showroom-header-logo.is-empty {
+    width: var(--header-logo-w);
+    height: var(--header-logo-h);
 }
 
 .showroom-header-logo.is-empty::after {
@@ -1776,10 +1808,10 @@
 
 .showroom-header-logo img {
     display: block;
-    max-width: var(--header-logo-w);
-    max-height: var(--header-logo-h);
     width: auto;
-    height: auto;
+    max-width: none;
+    height: var(--showroom-header-logo-h, var(--header-logo-h));
+    max-height: var(--showroom-header-logo-h, var(--header-logo-h));
     object-fit: contain;
 }
 
@@ -3826,7 +3858,7 @@
 
 .showroom-spotlight-toolbar-row {
     display: grid;
-    grid-template-columns: var(--header-logo-w) minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 28px;
     min-height: 80px;

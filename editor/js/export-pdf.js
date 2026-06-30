@@ -19,6 +19,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         assets = [],
         pdfFilename = 'showroom-homepage-brief.pdf',
         zipFilename = 'showroom-homepage-handoff.zip',
+        guideMeta = {},
     } = options;
 
     const isGallery = spec?.design === 'gallery';
@@ -26,6 +27,19 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const resolvedHandoffAssets = assets.filter(
         (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
     );
+
+    const handoffGuide = window.ShowroomHandoffGuide || {};
+    const packageId = guideMeta.packageId
+        || (handoffGuide.buildPackageId ? handoffGuide.buildPackageId() : `SHR-${Date.now().toString(36).toUpperCase().slice(-6)}`);
+    const coverMeta = {
+        companyName: guideMeta.companyName || spec?.footer?.companyName || spec?.copyright?.companyName || 'Your Showroom',
+        templateLabel: guideMeta.templateLabel || spec?.template || 'Showroom',
+        design: guideMeta.design || spec?.design || 'classic',
+        packageId,
+        logoDataUrl: guideMeta.logoDataUrl || '',
+        pdfFilename,
+        hasHandoffImages: resolvedHandoffAssets.length > 0,
+    };
 
     function assetIncludedInHandoff(filename) {
         return resolvedHandoffAssets.some((asset) => asset.filename === filename);
@@ -504,6 +518,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         doc.text(captionLines, margin, pageH - assetPad - captionBlockH + lineHeight(7));
     }
 
+    // ——— Branded cover page ———
+    if (handoffGuide.appendShowroomPdfCover) {
+        handoffGuide.appendShowroomPdfCover(doc, coverMeta);
+        y = margin;
+    }
+
     // ——— Spec pages ———
     writeLines('Showroom Homepage — Developer Handoff', { bold: true, size: 18, gap: 10 });
     writeLines(`Generated ${new Date().toLocaleString()}`, { size: 9, color: [90, 90, 90], gap: 14 });
@@ -514,13 +534,13 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     writeLines(
         isGallery
             ? (resolvedHandoffAssets.length
-                ? 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. Client-replaced images are included in the ZIP and on dedicated PDF pages after the layout previews. Template default images are not bundled.'
-                : 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. No client-replaced images are bundled — template defaults are shown in the layout previews only.')
+                ? 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. The header logo and any client-replaced images are included in the ZIP. Other template default images are shown in layout previews only.'
+                : 'This Classic template handoff covers Header, Hero, Catalog Highlights, Footer, and Copyright. No image files could be resolved for export — check that editor/gallery assets are available.')
             : isSpotlight
                 ? (resolvedHandoffAssets.length
                     ? 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). All handoff images are included in the ZIP and on dedicated PDF pages after the layout previews.'
                     : 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Image files could not be resolved for export — check that spotlight/ assets are available.')
-                : 'Only selected client images are included in the ZIP (About Us employee photo, feature cards, You May Like, Get Inspired lifestyle, and a separate footer logo when applicable). Header logo, hero images, featured category thumbnails, and Get Inspired grid cards are not included — upload or source those separately.',
+                : 'Handoff images include the header logo plus About Us, feature cards, You May Like, and Get Inspired photos (when configured). A separate footer logo is included only when it differs from the header. Hero images and featured category thumbnails are not bundled — source those on the live site.',
         { size: 9, color: [90, 90, 90], gap: 16 },
     );
 
@@ -572,7 +592,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Center copy', topBar.centerCopy || '—'],
             ['Wishlist', pdfLinkLine(utilities.wishlist?.label, utilities.wishlist?.url)],
             ['Sign in', pdfLinkLine(utilities.signIn?.label, utilities.signIn?.url)],
-            ['Header logo size', header.logoDimensions || 'max 150 px high'],
+            ['Header logo size', header.logoSizePx
+                ? `${header.logoSizePx} px display height · width auto`
+                : (header.logoDimensions || 'max 150 px high')],
             ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'hardcoded in template')],
             ['Main nav alignment', header.mainNav?.alignment || 'center'],
             ['Search bar', header.mainNav?.search?.hardcoded !== false
@@ -596,7 +618,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Top bar text', spotlightTopBar.textColor || '—'],
             ['Address line', spotlightTopBar.address || '—'],
             ['Phone line', spotlightTopBar.phone || '—'],
-            ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
+            ['Header logo size', header.logoSizePx
+                ? `${header.logoSizePx} px display height · width auto`
+                : (header.logoDimensions || 'max 220 × 68 px')],
             ['Header logo in handoff', spotlightHandoffImageLine('header-logo.png', 'hardcoded in template')],
             ['Search bar', header.toolbar?.searchBarHardcoded !== false
                 ? `Hardcoded — placeholder “${header.toolbar?.searchPlaceholder || 'what can we find for you?'}”`
@@ -645,8 +669,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Search placeholder', headerToolbar.searchPlaceholder || 'Enter Keyword or Item#'],
             ['Search style', headerToolbar.searchStyle || 'Single bottom border underline'],
             ['Toolbar icons', headerToolbar.iconsHardcoded !== false ? 'Hardcoded — not editable in template' : '—'],
-            ['Header logo size', header.logoDimensions || 'max 220 × 68 px'],
-            ['Header logo in handoff', 'No — upload separately'],
+            ['Header logo size', header.logoSizePx
+                ? `${header.logoSizePx} px display height · width auto`
+                : (header.logoDimensions || 'max 220 × 68 px')],
+            ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'template default')],
             ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
         ]);
         const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
@@ -1130,6 +1156,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 ? ['header', 'homepage-hero', 'on-sale', 'shop-by-room', 'about-us', 'categories', 'brands', 'newsletter', 'footer']
                 : ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
         generatedAt: new Date().toISOString(),
+        packageId,
         adaCompliance: {
             required: true,
             placement: 'Very bottom of footer on every website',
@@ -1158,6 +1185,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 logo: {
                     filename: header.logoFilename || 'header-logo.png',
                     dimensions: header.logoDimensions || 'max 150 px high',
+                    logoSizePx: header.logoSizePx || null,
                     includedInHandoff: assetIncludedInHandoff('header-logo.png'),
                 },
                 contentColumnWidth: header.contentColumnWidth || '1479 px',
@@ -1228,7 +1256,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 logo: {
                     filename: header.logoFilename || 'header-logo.png',
                     dimensions: header.logoDimensions || 'max 220 × 68 px',
-                    includedInHandoff: false,
+                    logoSizePx: header.logoSizePx || null,
+                    includedInHandoff: assetIncludedInHandoff('header-logo.png'),
                 },
                 contentColumnWidth: header.contentColumnWidth || '1429 px',
                 banner: {
@@ -1395,7 +1424,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 policies: footerPolicies,
             },
             imageHandoffPolicy: {
-                headerLogo: false,
+                headerLogo: assetIncludedInHandoff('header-logo.png'),
                 heroImages: false,
                 featuredCategoryThumbnails: false,
                 aboutEmployeePhoto: true,
@@ -1430,15 +1459,18 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             'Showroom Classic — Developer Handoff',
             '====================================',
             '',
+            'START HERE: Open WELCOME-GUIDE.html in your browser, then read showroom-homepage-brief.pdf.',
+            '',
             'REQUIRED — ADA compliance footer (all websites)',
             'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
             '',
-            `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
+            '1. WELCOME-GUIDE.html — Package overview and install workflow',
+            `2. ${pdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, handoff image list`,
             resolvedHandoffAssets.length
-                ? '2. images/ — Client-replaced images only (template defaults are not bundled)'
-                : '2. images/ — Omitted (no client-replaced images in this export)',
-            '3. spec/homepage-spec.json — Machine-readable spec (Header, Hero, Catalog Highlights, Footer, Copyright)',
-            '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+                ? '3. images/ — Header logo and any client-replaced section images'
+                : '3. images/ — Omitted (image files could not be resolved for export)',
+            '4. spec/homepage-spec.json — Machine-readable spec (Header, Hero, Catalog Highlights, Footer, Copyright)',
+            '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
             '',
             resolvedHandoffAssets.length
                 ? 'Handoff image files are listed in the PDF under “Handoff images”.'
@@ -1449,15 +1481,18 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 'Showroom Spotlight — Developer Handoff',
                 '======================================',
                 '',
+                'START HERE: Open WELCOME-GUIDE.html in your browser, then read showroom-homepage-brief.pdf.',
+                '',
                 'REQUIRED — ADA compliance footer (all websites)',
                 'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
                 '',
-                `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
+                '1. WELCOME-GUIDE.html — Package overview and install workflow',
+                `2. ${pdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, handoff image list`,
                 resolvedHandoffAssets.length
-                    ? '2. images/ — All handoff image files (header logo, hero slides, section images, footer logo)'
-                    : '2. images/ — Omitted (image files could not be resolved for export)',
-                '3. spec/homepage-spec.json — Machine-readable spec (Header, Hero, sections, Footer)',
-                '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+                    ? '3. images/ — All handoff image files (header logo, hero slides, section images, footer logo)'
+                    : '3. images/ — Omitted (image files could not be resolved for export)',
+                '4. spec/homepage-spec.json — Machine-readable spec (Header, Hero, sections, Footer)',
+                '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
                 '',
                 resolvedHandoffAssets.length
                     ? 'Handoff image files are listed in the PDF under “Handoff images”.'
@@ -1467,22 +1502,31 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             'Showroom Homepage — Developer Handoff',
             '=====================================',
             '',
+            'START HERE: Open WELCOME-GUIDE.html in your browser, then read showroom-homepage-brief.pdf.',
+            '',
             'REQUIRED — ADA compliance footer (all websites)',
             'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
             '',
-            `1. ${pdfFilename} (ZIP root) — Start here: copy spec, layout previews, and handoff image list`,
-            '2. images/ — Client image files referenced in the PDF',
-            '3. spec/homepage-spec.json — Machine-readable spec',
-            '4. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+            '1. WELCOME-GUIDE.html — Package overview and install workflow',
+            `2. ${pdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, and handoff image list`,
+            '3. images/ — Client image files referenced in the PDF',
+            '4. spec/homepage-spec.json — Machine-readable spec',
+            '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
             '',
-            'Handoff image files (when present): About Us employee photo, feature card photos,',
+            'Handoff image files (when present): Header logo, About Us employee photo, feature card photos,',
             'You May Like product images, Get Inspired lifestyle photo, and footer logo only when',
-            'it differs from the header logo. Header logo, hero images, and featured category',
-            'thumbnails are not included — upload those separately.',
+            'it differs from the header. Hero images and featured category thumbnails are not bundled.',
         ].join('\n');
 
     const zip = new JSZip();
     zip.file(pdfFilename, pdfBlob);
+
+    if (handoffGuide.buildShowroomHandoffGuide) {
+        zip.file('WELCOME-GUIDE.html', handoffGuide.buildShowroomHandoffGuide(coverMeta));
+    }
+    if (handoffGuide.buildShowroomHandoffReadme) {
+        zip.file('HANDOFF-README.txt', handoffGuide.buildShowroomHandoffReadme(coverMeta));
+    }
 
     for (const asset of resolvedHandoffAssets) {
         if (!String(asset.dataUrl).startsWith('data:')) continue;

@@ -1349,7 +1349,11 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         const state = ctx.getState();
         const { escapeHtml, normalizeHex, normalizeHexColor, applyImage } = ctx;
 
-        applyImage(refs.previewSpotlightHeaderLogo, refs.previewSpotlightHeaderLogoWrap, state.headerLogoImage);
+        applyImage(
+            refs.previewSpotlightHeaderLogo,
+            refs.previewSpotlightHeaderLogoWrap,
+            ctx.getEffectiveHeaderLogo ? ctx.getEffectiveHeaderLogo() : state.headerLogoImage,
+        );
         if (refs.previewSpotlightHeaderLogoWrap) {
             refs.previewSpotlightHeaderLogoWrap.href = state.spotlightHeaderLogoUrl || DEFAULT_HEADER_LOGO_URL;
         }
@@ -1725,7 +1729,10 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             header: {
                 layout: 'spotlight',
                 logoFilename: 'header-logo.png',
-                logoDimensions: 'max 220 × 68 px',
+                logoSizePx: state.headerLogoSize,
+                logoDimensions: state.headerLogoSize
+                    ? `${state.headerLogoSize} px display height · width auto`
+                    : '56 px display height · width auto',
                 contentColumnWidth: '1479 px',
                 topBar: {
                     backgroundColor: normalizeHex(state.headerBannerBackgroundColor || DEFAULT_HEADER_BANNER_BG),
@@ -1888,7 +1895,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         pushAsset(
             'header-logo.png',
             'Header logo',
-            'max 220 × 68 px',
+            state.headerLogoSize ? `${state.headerLogoSize} px display height` : 'max 220 × 68 px',
             state.headerLogoImage,
             DEFAULT_HEADER_LOGO,
         );
