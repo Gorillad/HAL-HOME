@@ -325,8 +325,13 @@ function initShowroomDesignTabs() {
         }
 
         if (designNote) {
-            designNote.textContent = `${label} selected — open the editor to customize this layout.`;
+            designNote.textContent = `${label} selected — double-click the template name or use Open ${label} editor below.`;
         }
+    }
+
+    function openActiveEditor(design) {
+        applyDesign(design);
+        if (editorBtn?.href) window.location.assign(editorBtn.href);
     }
 
     function setActiveDesign(design) {
@@ -355,6 +360,21 @@ function initShowroomDesignTabs() {
         if (!design) return;
 
         setActiveDesign(design);
+    });
+
+    tablist.addEventListener('dblclick', (e) => {
+        const tab = e.target.closest('.showroom-design-tab');
+        if (!tab || !tablist.contains(tab)) return;
+
+        const design = tab.dataset.showroomDesign;
+        if (!design) return;
+
+        e.preventDefault();
+        openActiveEditor(design);
+    });
+
+    tabs.forEach((tab) => {
+        tab.title = 'Double-click to open in editor';
     });
 
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
@@ -406,8 +426,13 @@ function initDesignerDesignTabs() {
         }
 
         if (designNote) {
-            designNote.textContent = `${label} selected — open the editor to customize this layout.`;
+            designNote.textContent = `${label} selected — double-click the template name or use Open ${label} editor below.`;
         }
+    }
+
+    function openActiveEditor(design) {
+        applyDesign(design);
+        if (editorBtn?.href) window.location.assign(editorBtn.href);
     }
 
     function setActiveDesign(design) {
@@ -436,6 +461,21 @@ function initDesignerDesignTabs() {
         if (!design) return;
 
         setActiveDesign(design);
+    });
+
+    tablist.addEventListener('dblclick', (e) => {
+        const tab = e.target.closest('.showroom-design-tab');
+        if (!tab || !tablist.contains(tab)) return;
+
+        const design = tab.dataset.designerDesign;
+        if (!design) return;
+
+        e.preventDefault();
+        openActiveEditor(design);
+    });
+
+    tabs.forEach((tab) => {
+        tab.title = 'Double-click to open in editor';
     });
 
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
