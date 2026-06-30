@@ -1,6 +1,16 @@
 (function guardEditorPage() {
     const html = document.documentElement;
 
+    function isPublicEditorPage() {
+        const path = window.location.pathname.split('?')[0].toLowerCase();
+        return path === '/editor/showroom.html' || path === '/editor/knowledge-base.html';
+    }
+
+    if (isPublicEditorPage()) {
+        html.classList.remove('editor-auth-pending');
+        return;
+    }
+
     /* ── Dev shortcut ─────────────────────────────────────────────
        When running locally (localhost / 127.0.0.1) the editor is
        open without a login. The server also auto-authenticates

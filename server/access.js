@@ -181,7 +181,16 @@ function isLocalhostRequest(req) {
     return ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
 }
 
+function isPublicEditorHtmlPath(pathname) {
+    const normalized = String(pathname || '').split('?')[0].toLowerCase();
+    return normalized === '/editor/showroom.html' || normalized === '/editor/knowledge-base.html';
+}
+
 function requireEditorAuth(req, res, next) {
+    if (isPublicEditorHtmlPath(req.path)) {
+        return next();
+    }
+
     const token = getCookie(req, SESSION_COOKIE);
     if (verifySession(token)) {
         return next();
