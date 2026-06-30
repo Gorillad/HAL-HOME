@@ -150,7 +150,12 @@ window.EditorAccess = (function initEditorAccessModule() {
             if (res.ok && data.authenticated) {
                 authenticated = true;
                 setClientSession(data.user || getClientSessionUser());
-                return { ok: true, user: data.user || getClientSessionUser(), source: 'server' };
+                return {
+                    ok: true,
+                    user: data.user || getClientSessionUser(),
+                    source: 'server',
+                    betaOpen: Boolean(data.betaOpen),
+                };
             }
 
             if (res.status === 401) {

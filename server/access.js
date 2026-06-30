@@ -6,6 +6,12 @@ const { sendAccessRequestEmail } = require('./email');
 const SESSION_COOKIE = 'lx_editor_session';
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 const REQUESTS_PATH = path.join(__dirname, 'data', 'access-requests.json');
+const BETA_GUEST_USER = 'beta';
+
+/** Skip editor login while beta testing. Set EDITOR_AUTH_DISABLED=false on Render to require sign-in. */
+function isEditorAuthDisabled() {
+    return process.env.EDITOR_AUTH_DISABLED !== 'false';
+}
 
 function getSessionSecret() {
     return process.env.EDITOR_SESSION_SECRET || 'logicxo-dev-session-secret-change-me';
@@ -128,6 +134,10 @@ function handleLogout(_req, res) {
 }
 
 function handleSessionCheck(req, res) {
+    if (isEditorAuthDisabled()) {
+        return res.json({ authenticated: true, user: null, betaOpen: true });
+    }
+
     const token = getCookie(req, SESSION_COOKIE);
     const session = verifySession(token);
     if (session) {
@@ -187,7 +197,7 @@ function isPublicEditorHtmlPath(pathname) {
 }
 
 function requireEditorAuth(req, res, next) {
-    if (isPublicEditorHtmlPath(req.path)) {
+    if (isPublicEditorHtmlPath(req.path) || isEditorAuthDisabled()) {
         return next();
     }
 
@@ -208,6 +218,10 @@ function requireEditorAuth(req, res, next) {
 }
 
 function getSessionUser(req) {
+    if (isEditorAuthDisabled()) {
+        return BETA_GUEST_USER;
+    }
+
     const token = getCookie(req, SESSION_COOKIE);
     const session = verifySession(token);
     return session ? session.user : null;
@@ -224,4 +238,5 @@ module.exports = {
     handleRequestAccess,
     requireEditorAuth,
     isValidNextPath,
+    isEditorAuthDisabled,
 };

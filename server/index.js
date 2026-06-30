@@ -18,6 +18,7 @@ const {
     handleRequestAccess,
     requireEditorAuth,
     getSessionUser,
+    isEditorAuthDisabled,
 } = require('./access');
 const { loadDraft, saveDraft } = require('./designer-drafts');
 
@@ -198,6 +199,7 @@ app.get('/api/config', (_req, res) => {
         automaticTax: automaticTaxEnabled,
         taxPercent: automaticTaxEnabled ? 0 : taxPercent,
         billingAddressRequired: true,
+        editorAuthDisabled: isEditorAuthDisabled(),
     });
 });
 

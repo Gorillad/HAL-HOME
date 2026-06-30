@@ -116,7 +116,12 @@ function initTemplatesAccessGate() {
     }
 
     function unlock(user, options = {}) {
-        const { redirectToEditor = false, scrollToTemplates = false, offline = false } = options;
+        const {
+            redirectToEditor = false,
+            scrollToTemplates = false,
+            offline = false,
+            skipWelcome = false,
+        } = options;
         const editorNext = redirectToEditor ? getEditorNextPath() : null;
 
         clearResumeQuery();
@@ -124,12 +129,16 @@ function initTemplatesAccessGate() {
         stopHeroRotation();
         gate.hidden = true;
         if (welcome) {
-            welcome.hidden = false;
-            if (welcomeText) welcomeText.textContent = formatWelcome(user, offline);
+            if (skipWelcome) {
+                welcome.hidden = true;
+            } else {
+                welcome.hidden = false;
+                if (welcomeText) welcomeText.textContent = formatWelcome(user, offline);
+            }
         }
         content.hidden = false;
         content.removeAttribute('aria-hidden');
-        setLogoutVisible(true);
+        setLogoutVisible(!skipWelcome && Boolean(user));
 
         if (editorNext) {
             window.location.assign(editorNext);
@@ -212,6 +221,15 @@ function initTemplatesAccessGate() {
     });
 
     EditorAccess.checkSession().then(function (session) {
+        if (session.ok && session.betaOpen) {
+            const resumeEditor = Boolean(getEditorNextPath());
+            unlock(null, {
+                redirectToEditor: resumeEditor,
+                scrollToTemplates: false,
+                skipWelcome: true,
+            });
+            return;
+        }
         if (session.ok) {
             const resumeEditor = Boolean(getEditorNextPath());
             unlock(session.user, {
