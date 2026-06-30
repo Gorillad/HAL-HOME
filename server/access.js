@@ -13,8 +13,8 @@ function getSessionSecret() {
 
 function getCredentials() {
     return {
-        username: process.env.EDITOR_USERNAME || 'admin',
-        password: process.env.EDITOR_PASSWORD || 'Logic050601',
+        username: 'admin',
+        password: 'Logic050601',
     };
 }
 
