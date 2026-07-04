@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/trend-catalog-mega-menu.css" rel="stylesheet">
 </head>
 <body class="trend-catalog-page">
     <header class="site-nav site-nav--dark trend-catalog-header" aria-label="Trend Catalog navigation">
@@ -21,9 +22,9 @@
                 <img src="images/logos/logicxo-gold.png" alt="LogicX">
             </a>
 
-            <form class="trend-catalog-search" role="search" action="https://www.catalog.logicxo.com/lighting-fixtures" method="get">
+            <form class="trend-catalog-search" role="search" action="https://www.catalog.logicxo.com/catalog" method="get">
                 <label class="visually-hidden" for="trendCatalogSearch">Search Trend Catalog</label>
-                <input type="search" id="trendCatalogSearch" name="q" placeholder="Search by keyword, brand, item #, or collection" autocomplete="off">
+                <input type="search" id="trendCatalogSearch" name="itemNumVal" placeholder="Search by item #, SKU, keyword, or brand" autocomplete="off">
                 <button type="submit" aria-label="Search Trend Catalog">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>
                 </button>
@@ -55,7 +56,7 @@
                     </div>
                 </div>
 
-                <a href="https://www.catalog.logicxo.com/login" class="trend-catalog-action trend-catalog-signin">
+                <a href="https://www.catalog.logicxo.com/login.php" class="trend-catalog-action trend-catalog-signin">
                     <span class="trend-catalog-action-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
                     </span>
@@ -78,6 +79,241 @@
         </div>
     </header>
 
+    <nav class="sb-nav trend-catalog-mega-nav" id="trendMegaMenu" aria-label="Trend Catalog departments">
+        <ul class="sb-menu">
+            <li>
+                <a href="https://www.catalog.logicxo.com/lighting-fixtures">Lighting</a>
+                <div class="sb-mega-menu">
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Ceiling Lights</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/chandeliers">Chandeliers</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/pendants">Pendants</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/mini-pendants">Mini Pendants</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/flush-mounts">Flush Mounts</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Semi-Flush%20Mounts">Semi-Flush Mounts</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/track-ltg">Track Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures?bs=priceD&itemNumVal=Ceiling%20Lights&showitems=1">More Ceiling Lights</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Wall Lights</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/sconces">Wall Sconces</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights">Bathroom Vanity Lights</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Picture%20Lights">Picture Lights</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/wall-lights">Swing Arm / Wall Lamps</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/undercabinet/led-undercabinet-lights">Cabinet Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/landscape-ltg/spot-lights">Spot Lights</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Outdoor Lighting</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=exterior%20Wall%20Lights">Outdoor Wall Lights</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/exterior-pendants">Outdoor Pendants</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/exterior-chandeliers">Outdoor Chandeliers</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=exterior%20Ceiling%20Lights">Outdoor Ceiling Lights</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Pathway">Pathway Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/landscape-ltg">Landscape Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/landscape-ltg/landscape-ltg-accessories">Outdoor Accessories</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Outdoor&limitRange=0">More Outdoor Lighting</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Lamps</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/lamps/table-lamps">Table Lamps</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/lamps/floor-lamps">Floor Lamps</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/lamps/desk-lamps">Desk Lamps</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Task%20Lamps">Task Lamps</a></li>
+                            <li><strong>Accessories</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs">Light Bulbs</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/lighting-controls/dimmers">Dimmers &amp; Switches</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col sb-col-image sb-promo-card">
+                        <a class="sb-promo-link" href="https://www.catalog.logicxo.com/lighting-fixtures/chandeliers">
+                            <span class="sb-promo-badge">July Sale</span>
+                            <span class="sb-promo-title">Up to 50% Off Chandeliers</span>
+                            <span class="sb-promo-text">Limited-time savings on select styles.</span>
+                            <img src="https://www.catalog.logicxo.com/data/images/July-prom-sale.png" alt="July sale — up to 50% off" width="168" height="168" loading="lazy">
+                            <span class="sb-promo-cta">Shop Chandeliers</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="https://www.catalog.logicxo.com/lighting-fixtures/fans">Fans</a>
+                <div class="sb-mega-menu">
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans">Fans</a></strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/ceiling-fans?limitRange=0">Indoor Ceiling Fans</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/outdoor-fans">Outdoor Fans</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/portable-fans">Portable Fans</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/wall-fans">Wall Fans</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans">More Fans</a></strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Belt%20Fans">Belt Fans</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/fandeliers">Fandeliers</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/huggers">Huggers</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/other-fans">More Fans</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Fan Accessories</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Fan%20Light%20Kits">Fan Light Kits</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fan-accessories/fan-blades">Fan Blades</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fans/dual-motor-fans">Dual Motor Fans</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/fan-accessories">Fan Accessories</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col sb-col-image sb-promo-card">
+                        <a class="sb-promo-link" href="https://www.catalog.logicxo.com/lighting-fixtures/fans">
+                            <span class="sb-promo-badge">July Sale</span>
+                            <span class="sb-promo-title">Up to 50% Off Fans</span>
+                            <span class="sb-promo-text">Indoor &amp; outdoor styles for every room.</span>
+                            <img src="https://www.catalog.logicxo.com/data/images/July-prom-sale-02.png" alt="July promo sale — up to 50% off" width="168" height="168" loading="lazy">
+                            <span class="sb-promo-cta">Shop Fans</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="https://www.catalog.logicxo.com/lighting-fixtures/furniture">Furniture &amp; Decor</a>
+                <div class="sb-mega-menu">
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong><a href="https://www.catalog.logicxo.com/lighting-fixtures/decor-home-accents">Home Decor</a></strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=rug&limitRange=0">Area Rugs</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/decor-home-accents/vases">Vases</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/decor-home-accents/wall-art">Wall Accents</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/decor-home-accents/sculptures">Sculptures</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Figurine">Decorative Objects &amp; Figurines</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/decor-home-accents/bowls">Decorative Bowls</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/decor-home-accents?bs=priceD&showitems=1">More Home Decor</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong><a href="https://www.catalog.logicxo.com/lighting-fixtures/furniture">Furniture</a></strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/furniture/tables">End &amp; Side Tables</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Console%20Tables">Console Tables</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=stools">Ottomans &amp; Stools</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Coffee%20tables">Coffee Tables</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/furniture?itemNumVal=chairs">Chairs</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/furniture/cabinets/wine-cabinets?limitRange=0">Cabinets</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/furniture">More Furniture</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col sb-col-image sb-promo-card">
+                        <a class="sb-promo-link" href="https://www.catalog.logicxo.com/lighting-fixtures/furniture">
+                            <span class="sb-promo-badge">July Sale</span>
+                            <span class="sb-promo-title">Furniture &amp; Decor Deals</span>
+                            <span class="sb-promo-text">Tables, accents, and pieces to finish the room.</span>
+                            <img src="https://www.catalog.logicxo.com/data/images/July-prom-sale.png" alt="July sale — up to 50% off" width="168" height="168" loading="lazy">
+                            <span class="sb-promo-cta">Shop Furniture</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior">Outdoor</a>
+                <div class="sb-mega-menu">
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Patio &amp; Outdoor Furniture</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/furniture?itemNumVal=Outdoor%20Chairs">Outdoor Chairs</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Outdoor%20Furniture&limitRange=0">Other Outdoor Furniture</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Outdoor%20stools">Outdoor Ottomans &amp; Stools</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Outdoor%20Tables">Outdoor Tables</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Outdoor Decor</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/address-numbers?limitRange=0">Bird Feeders</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/door-bells?limitRange=0">Outdoor Door Bells</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Outdoor%20Lanterns">Outdoor Lanterns</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/other-exterior">More Outdoor Decor</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong>Outdoor Lighting</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/wall-lights">Outdoor Wall Lights</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/exterior-pendants">Outdoor Pendants / Chandeliers</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/bollards?limitRange=0">Outdoor Ceiling Lights</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Post%20Lights">Post Lights &amp; Accessories</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Pathway">Pathway Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures/landscape-ltg">Landscape Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/catalog?itemNumVal=Outdoor%20Lighting">More Outdoor Lighting</a></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col">
+                        <ul>
+                            <li><strong><a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior/exterior-fans">Outdoor Fans</a></strong></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col sb-col-image sb-promo-card">
+                        <a class="sb-promo-link" href="https://www.catalog.logicxo.com/lighting-fixtures/exterior">
+                            <span class="sb-promo-badge">July Sale</span>
+                            <span class="sb-promo-title">Outdoor Savings</span>
+                            <span class="sb-promo-text">Wall lights, path lighting, and patio picks.</span>
+                            <img src="https://www.catalog.logicxo.com/data/images/July-prom-sale-02.png" alt="July promo sale — up to 50% off" width="168" height="168" loading="lazy">
+                            <span class="sb-promo-cta">Shop Outdoor</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li><a href="https://www.catalog.logicxo.com/lighting-fixtures">Shop All</a></li>
+            <li>
+                <a href="https://www.catalog.logicxo.com/brands">Brands</a>
+                <div class="sb-mega-menu">
+                    <div class="sb-col sb-col-split">
+                        <ul>
+                            <li><strong>Popular Brands</strong></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-visual-comfort--co-architectural-collection">Visual Comfort &amp; Co. Architectural Collection</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-visual-comfort--co-fan-collection">Visual Comfort &amp; Co. Fan Collection</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-visual-comfort--co-modern-collection">Visual Comfort &amp; Co. Modern Collection</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-visual-comfort--co-signature-collection">Visual Comfort &amp; Co. Signature Collection</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-visual-comfort--co-studio-collection">Visual Comfort &amp; Co. Studio Collection</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-visual-comfort-rl">Visual Comfort RL</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-wac-us">WAC US</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-hinkley">Hinkley</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="https://www.catalog.logicxo.com/brand-lib--co-us">Lib &amp; Co.</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-fine-art-handcrafted-lighting">Fine Art Handcrafted Lighting</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-hubbardton-forge">Hubbardton Forge</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-hammerton">Hammerton</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-quoizel">Quoizel</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-nora">Nora</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-eurofase">Eurofase</a></li>
+                            <li><a href="https://www.catalog.logicxo.com/brand-progress">Progress</a></li>
+                            <li><b><a href="https://www.catalog.logicxo.com/brands">More Brands</a></b></li>
+                        </ul>
+                    </div>
+                    <div class="sb-col sb-col-image sb-promo-card">
+                        <a class="sb-promo-link" href="https://www.catalog.logicxo.com/brands">
+                            <span class="sb-promo-badge">July Sale</span>
+                            <span class="sb-promo-title">Top Brand Deals</span>
+                            <span class="sb-promo-text">Visual Comfort, Hinkley, WAC &amp; more.</span>
+                            <img src="https://www.catalog.logicxo.com/data/images/July-prom-sale.png" alt="July sale — up to 50% off" width="168" height="168" loading="lazy">
+                            <span class="sb-promo-cta">Browse Brands</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li><a href="https://www.catalog.logicxo.com/page-gallery.html">Inspirations</a></li>
+        </ul>
+    </nav>
+
     <main>
         <section class="trend-catalog-hero">
             <div class="trend-catalog-shell">
@@ -91,12 +327,12 @@
             </div>
         </section>
 
-        <section class="trend-mega-menu-section" id="trendMegaMenu" aria-labelledby="trendMegaMenuTitle">
+        <section class="trend-mega-menu-section" aria-labelledby="trendMegaMenuTitle">
             <div class="trend-catalog-shell">
                 <div class="trend-mega-menu-head">
                     <div>
-                        <p class="trend-catalog-kicker">Mega Menu Starter</p>
-                        <h2 id="trendMegaMenuTitle">Shop by department</h2>
+                        <p class="trend-catalog-kicker">Featured Shortcuts</p>
+                        <h2 id="trendMegaMenuTitle">Popular catalog paths</h2>
                     </div>
                     <a href="https://www.catalog.logicxo.com/lighting-fixtures">View all products</a>
                 </div>
@@ -111,12 +347,12 @@
                         <strong>Pendants</strong>
                         <small>Island, bar, and task lighting with curated style filters.</small>
                     </a>
-                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/bathroom-vanity-lights" class="trend-mega-card">
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights" class="trend-mega-card">
                         <span>03</span>
                         <strong>Bath & Vanity</strong>
                         <small>Bathroom lighting built around finish, size, and room needs.</small>
                     </a>
-                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/outdoor-lighting" class="trend-mega-card">
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/exterior" class="trend-mega-card">
                         <span>04</span>
                         <strong>Outdoor</strong>
                         <small>Exterior fixtures, lanterns, landscape, and security lighting.</small>
