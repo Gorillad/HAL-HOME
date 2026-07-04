@@ -57,24 +57,29 @@
         chandeliers: {
             label: 'Chandeliers',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
+            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/chandeliers'],
             fallbackTrend: 'Sculptural chandeliers with warm metallic finishes are defining foyers and open dining spaces.',
             fallbackFinishes: ['brass', 'black', 'bronze'],
         },
         pendants: {
             label: 'Pendants',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/pendants',
+            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/pendants'],
             fallbackTrend: 'Oversized pendants are bringing tailored statement lighting to kitchen islands and bars.',
             fallbackFinishes: ['black', 'nickel', 'brass'],
         },
         'bath-vanity': {
             label: 'Bath & Vanity',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights',
+            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights'],
             fallbackTrend: 'Clean vanity bars and soft globe forms are making bath lighting feel more elevated.',
             fallbackFinishes: ['nickel', 'black', 'chrome'],
         },
         outdoor: {
             label: 'Outdoor',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/exterior',
+            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/exterior'],
+            menuHeadings: ['Outdoor Lighting'],
             fallbackTrend: 'Dark-sky outdoor fixtures and textured black lanterns are leading exterior refreshes.',
             fallbackFinishes: ['black', 'bronze', 'brass'],
         },
@@ -274,7 +279,63 @@
     }
 
     function renderTrendCards(cards) {
-        normalizeTrendCards(cards).forEach(renderTrendCard);
+        const normalizedCards = normalizeTrendCards(cards);
+        normalizedCards.forEach(renderTrendCard);
+        renderMegaMenuTrendDots(normalizedCards);
+    }
+
+    function createMegaMenuTrendDot(card, config) {
+        const topFinish = card.finishes?.[0] || '';
+        const finishUrl = buildFinishUrl(config.baseUrl, card.finishes);
+        const dot = document.createElement('a');
+        dot.className = 'trend-menu-dot';
+        dot.href = finishUrl;
+        dot.title = topFinish ? `Trending: ${topFinish} ${card.label}` : `Trending: ${card.label}`;
+        dot.setAttribute('aria-label', dot.title);
+        dot.style.setProperty('--trend-menu-dot-color', getFinishColor(topFinish));
+        dot.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+        return dot;
+    }
+
+    function appendDotToMenuLink(link, card, config) {
+        if (!link || link.parentElement?.querySelector(':scope > .trend-menu-dot')) return;
+        link.parentElement?.classList.add('has-trend-menu-dot');
+        link.insertAdjacentElement('afterend', createMegaMenuTrendDot(card, config));
+    }
+
+    function appendDotToMenuHeading(heading, card, config) {
+        const listItem = heading?.closest('li');
+        if (!listItem || listItem.querySelector(':scope > .trend-menu-dot')) return;
+        listItem.classList.add('has-trend-menu-dot');
+        heading.insertAdjacentElement('afterend', createMegaMenuTrendDot(card, config));
+    }
+
+    function renderMegaMenuTrendDots(cards) {
+        document.querySelectorAll('.trend-menu-dot').forEach((dot) => dot.remove());
+        document.querySelectorAll('.has-trend-menu-dot').forEach((item) => {
+            item.classList.remove('has-trend-menu-dot');
+        });
+
+        cards.forEach((card) => {
+            const config = CATEGORY_CONFIG[card.category];
+            if (!config) return;
+
+            (config.menuHrefs || []).forEach((href) => {
+                document.querySelectorAll(`.sb-mega-menu a[href="${href}"]`).forEach((link) => {
+                    appendDotToMenuLink(link, card, config);
+                });
+            });
+
+            (config.menuHeadings || []).forEach((label) => {
+                document.querySelectorAll('.sb-mega-menu .sb-col strong').forEach((heading) => {
+                    if (heading.textContent.trim() === label) {
+                        appendDotToMenuHeading(heading, card, config);
+                    }
+                });
+            });
+        });
     }
 
     async function initTrendCategoryCards() {
