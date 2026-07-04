@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trend Catalog | LogicX</title>
+    <meta name="description" content="Search lighting products, browse curated catalog departments, and connect with LogicX expert help.">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/favicon/android-chrome-512x512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body class="trend-catalog-page">
+    <header class="site-nav site-nav--dark trend-catalog-header" aria-label="Trend Catalog navigation">
+        <div class="trend-catalog-header-inner">
+            <a href="index.html" class="site-nav-logo trend-catalog-logo" aria-label="LogicX home">
+                <img src="images/logos/logicxo-gold.png" alt="LogicX">
+            </a>
+
+            <form class="trend-catalog-search" role="search" action="https://www.catalog.logicxo.com/lighting-fixtures" method="get">
+                <label class="visually-hidden" for="trendCatalogSearch">Search Trend Catalog</label>
+                <input type="search" id="trendCatalogSearch" name="q" placeholder="Search by keyword, brand, item #, or collection" autocomplete="off">
+                <button type="submit" aria-label="Search Trend Catalog">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>
+                </button>
+            </form>
+
+            <button type="button" class="trend-catalog-menu-toggle" aria-expanded="false" aria-controls="trendCatalogActions" aria-label="Open catalog menu">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+
+            <div class="trend-catalog-actions" id="trendCatalogActions">
+                <div class="trend-catalog-help">
+                    <button type="button" class="trend-catalog-action trend-catalog-help-toggle" aria-expanded="false" aria-controls="expertHelpDropdown">
+                        <span class="trend-catalog-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18h.01"/><path d="M9.1 9a3 3 0 1 1 5.2 2c-.9.8-1.8 1.4-2.1 2.8"/><circle cx="12" cy="12" r="10"/></svg>
+                        </span>
+                        <span>
+                            <strong>Expert Help</strong>
+                            <small>Project guidance</small>
+                        </span>
+                        <svg class="trend-catalog-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                    </button>
+                    <div class="trend-catalog-help-menu" id="expertHelpDropdown" hidden>
+                        <p class="trend-catalog-menu-eyebrow">How can we help?</p>
+                        <a href="mailto:hello@logicxo.com">Talk to a catalog specialist</a>
+                        <a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Visit support</a>
+                        <a href="index.html#contact">Request a quote</a>
+                    </div>
+                </div>
+
+                <a href="https://www.catalog.logicxo.com/login" class="trend-catalog-action trend-catalog-signin">
+                    <span class="trend-catalog-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+                    </span>
+                    <span>
+                        <strong>Sign In</strong>
+                        <small>Member extra discounts</small>
+                    </span>
+                </a>
+
+                <a href="https://www.catalog.logicxo.com/cart" class="trend-catalog-action trend-catalog-cart" aria-label="Cart">
+                    <span class="trend-catalog-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M6 6L5 3H2"/></svg>
+                    </span>
+                    <span>
+                        <strong>Cart</strong>
+                        <small>Review items</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="trend-catalog-hero">
+            <div class="trend-catalog-shell">
+                <div class="trend-catalog-kicker">Trend Catalog</div>
+                <h1>Browse lighting products with showroom-ready guidance.</h1>
+                <p>Use this page as the new bridge between LogicX and the product catalog. Search, explore departments, and connect with expert help before moving into the full catalog integration.</p>
+                <div class="trend-catalog-hero-actions">
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures" class="trend-catalog-primary-link">Open full catalog</a>
+                    <a href="#trendMegaMenu" class="trend-catalog-secondary-link">Browse departments</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="trend-mega-menu-section" id="trendMegaMenu" aria-labelledby="trendMegaMenuTitle">
+            <div class="trend-catalog-shell">
+                <div class="trend-mega-menu-head">
+                    <div>
+                        <p class="trend-catalog-kicker">Mega Menu Starter</p>
+                        <h2 id="trendMegaMenuTitle">Shop by department</h2>
+                    </div>
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures">View all products</a>
+                </div>
+                <div class="trend-mega-menu-grid">
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/chandeliers" class="trend-mega-card">
+                        <span>01</span>
+                        <strong>Chandeliers</strong>
+                        <small>Statement lighting for dining rooms, foyers, and open spaces.</small>
+                    </a>
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/pendants" class="trend-mega-card">
+                        <span>02</span>
+                        <strong>Pendants</strong>
+                        <small>Island, bar, and task lighting with curated style filters.</small>
+                    </a>
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/bathroom-vanity-lights" class="trend-mega-card">
+                        <span>03</span>
+                        <strong>Bath & Vanity</strong>
+                        <small>Bathroom lighting built around finish, size, and room needs.</small>
+                    </a>
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures/outdoor-lighting" class="trend-mega-card">
+                        <span>04</span>
+                        <strong>Outdoor</strong>
+                        <small>Exterior fixtures, lanterns, landscape, and security lighting.</small>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/trend-catalog.js" defer></script>
+</body>
+</html>

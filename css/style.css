@@ -48,6 +48,18 @@ html {
     -ms-overflow-style: none;
 }
 
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 html::-webkit-scrollbar {
     display: none;
 }
@@ -471,6 +483,394 @@ body.cart-open {
 
 .site-nav--dark .site-nav-toggle-bar {
     background: rgba(255, 255, 255, 0.85);
+}
+
+/* ——— Trend Catalog page ——— */
+.trend-catalog-page {
+    background: #f5f3ee;
+    color: var(--text-primary);
+}
+
+.trend-catalog-header {
+    position: sticky;
+    top: 0;
+    z-index: 220;
+}
+
+.trend-catalog-header-inner {
+    display: grid;
+    grid-template-columns: auto minmax(280px, 560px) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 14px clamp(20px, 4vw, 48px);
+}
+
+.trend-catalog-logo img {
+    height: 60px;
+}
+
+.trend-catalog-search {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    width: 100%;
+}
+
+.trend-catalog-search input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid rgba(201, 169, 110, 0.5);
+    border-right: 0;
+    border-radius: 2px 0 0 2px;
+    background: #ffffff;
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 13px 16px;
+    outline: none;
+}
+
+.trend-catalog-search input:focus {
+    border-color: var(--hero-gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.16);
+}
+
+.trend-catalog-search button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    border: 1px solid var(--hero-gold);
+    border-radius: 0 2px 2px 0;
+    background: var(--hero-gold);
+    color: var(--hero-bg);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.trend-catalog-search button:hover {
+    background: #d4b87e;
+    border-color: #d4b87e;
+}
+
+.trend-catalog-search svg {
+    width: 20px;
+    height: 20px;
+}
+
+.trend-catalog-actions {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.trend-catalog-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.82);
+    font: inherit;
+    padding: 8px 12px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.trend-catalog-action:hover,
+.trend-catalog-action:focus-visible {
+    border-color: rgba(201, 169, 110, 0.55);
+    background: rgba(201, 169, 110, 0.1);
+    color: #ffffff;
+}
+
+.trend-catalog-action strong,
+.trend-catalog-action small {
+    display: block;
+    line-height: 1.15;
+    white-space: nowrap;
+}
+
+.trend-catalog-action strong {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.trend-catalog-action small {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.54);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.trend-catalog-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--hero-gold);
+}
+
+.trend-catalog-action-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.trend-catalog-help {
+    position: relative;
+}
+
+.trend-catalog-help-toggle {
+    height: 100%;
+}
+
+.trend-catalog-chevron {
+    width: 14px;
+    height: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    transition: transform 0.15s ease;
+}
+
+.trend-catalog-help-toggle[aria-expanded="true"] .trend-catalog-chevron {
+    transform: rotate(180deg);
+}
+
+.trend-catalog-help-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+    min-width: 260px;
+    padding: 14px;
+    border: 1px solid rgba(201, 169, 110, 0.35);
+    border-radius: 8px;
+    background: #111111;
+    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.35);
+}
+
+.trend-catalog-help-menu::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: 24px;
+    width: 12px;
+    height: 12px;
+    border-left: 1px solid rgba(201, 169, 110, 0.35);
+    border-top: 1px solid rgba(201, 169, 110, 0.35);
+    background: #111111;
+    transform: rotate(45deg);
+}
+
+.trend-catalog-menu-eyebrow {
+    margin: 0 0 10px;
+    color: var(--hero-gold);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.trend-catalog-help-menu a {
+    display: block;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.trend-catalog-help-menu a:hover {
+    color: var(--hero-gold);
+}
+
+.trend-catalog-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    background: transparent;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.trend-catalog-menu-toggle span {
+    display: block;
+    height: 2px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.trend-catalog-header.is-open .trend-catalog-menu-toggle span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.trend-catalog-header.is-open .trend-catalog-menu-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.trend-catalog-header.is-open .trend-catalog-menu-toggle span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+.trend-catalog-shell {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.trend-catalog-hero {
+    padding: clamp(72px, 10vw, 132px) 0;
+    background:
+        radial-gradient(circle at 80% 10%, rgba(201, 169, 110, 0.2), transparent 30%),
+        linear-gradient(135deg, #111111 0%, #1b1b1b 45%, #080808 100%);
+    color: #ffffff;
+}
+
+.trend-catalog-kicker {
+    color: var(--hero-gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.trend-catalog-hero h1 {
+    max-width: 760px;
+    margin: 16px 0 18px;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: clamp(44px, 7vw, 86px);
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+}
+
+.trend-catalog-hero p {
+    max-width: 660px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(16px, 1.8vw, 20px);
+}
+
+.trend-catalog-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.trend-catalog-primary-link,
+.trend-catalog-secondary-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 12px 18px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.trend-catalog-primary-link {
+    background: var(--hero-gold);
+    color: var(--hero-bg);
+}
+
+.trend-catalog-secondary-link {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.trend-mega-menu-section {
+    padding: clamp(56px, 8vw, 96px) 0;
+}
+
+.trend-mega-menu-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.trend-mega-menu-head h2 {
+    margin: 8px 0 0;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 600;
+    line-height: 0.98;
+}
+
+.trend-mega-menu-head a {
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.trend-mega-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.trend-mega-card {
+    display: flex;
+    min-height: 220px;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    border: 1px solid var(--border-warm);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--text-primary);
+    padding: 24px;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.trend-mega-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(201, 169, 110, 0.55);
+    box-shadow: 0 20px 44px rgba(8, 8, 8, 0.09);
+}
+
+.trend-mega-card span {
+    color: var(--hero-gold-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.trend-mega-card strong {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1;
+}
+
+.trend-mega-card small {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 /* ——— Hero ——— */
@@ -5793,5 +6193,139 @@ body.home-page .home-cta-closer + .container {
     body.home-page .section h2,
     body.home-page .design-services h2 {
         font-size: 26px;
+    }
+}
+
+@media (max-width: 1180px) {
+    .trend-catalog-header-inner {
+        grid-template-columns: auto minmax(240px, 1fr) auto;
+    }
+
+    .trend-catalog-action {
+        padding-inline: 10px;
+    }
+
+    .trend-catalog-action small {
+        display: none;
+    }
+
+    .trend-mega-menu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 860px) {
+    .trend-catalog-header-inner {
+        grid-template-columns: auto 1fr auto;
+        gap: 14px;
+    }
+
+    .trend-catalog-logo {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .trend-catalog-search {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .trend-catalog-menu-toggle {
+        display: flex;
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: end;
+    }
+
+    .trend-catalog-actions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0 clamp(20px, 4vw, 48px) 18px;
+        background: var(--hero-bg);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 22px 34px rgba(0, 0, 0, 0.28);
+        transform: translateY(-8px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .trend-catalog-header.is-open .trend-catalog-actions {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .trend-catalog-action {
+        justify-content: flex-start;
+        border-width: 0 0 1px;
+        border-color: rgba(255, 255, 255, 0.08);
+        background: transparent;
+        padding: 15px 0;
+    }
+
+    .trend-catalog-action small {
+        display: block;
+    }
+
+    .trend-catalog-help-menu {
+        position: static;
+        min-width: 0;
+        margin: 0 0 12px 38px;
+        box-shadow: none;
+    }
+
+    .trend-catalog-help-menu::before {
+        display: none;
+    }
+
+    .trend-mega-menu-head {
+        align-items: start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 640px) {
+    .trend-catalog-logo img {
+        height: 52px;
+    }
+
+    .trend-catalog-header-inner {
+        padding-block: 12px;
+    }
+
+    .trend-catalog-search input {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .trend-catalog-search button {
+        width: 46px;
+    }
+
+    .trend-catalog-hero {
+        padding: 56px 0 72px;
+    }
+
+    .trend-catalog-hero h1 {
+        font-size: clamp(38px, 13vw, 58px);
+    }
+
+    .trend-catalog-hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .trend-mega-menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-mega-card {
+        min-height: 180px;
     }
 }
