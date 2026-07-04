@@ -30,6 +30,14 @@
             setHelpMenu(helpMenu?.hidden);
         });
 
+        document.querySelectorAll('.sb-nav a').forEach((link) => {
+            link.addEventListener('click', () => {
+                if (window.matchMedia('(max-width: 1023px)').matches) {
+                    setMobileMenu(false);
+                }
+            });
+        });
+
         document.addEventListener('click', (event) => {
             if (helpMenu && !helpMenu.hidden && !event.target.closest('.trend-catalog-help')) {
                 setHelpMenu(false);
@@ -42,44 +50,42 @@
             setMobileMenu(false);
         });
 
-        window.matchMedia('(min-width: 861px)').addEventListener('change', (event) => {
+        window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
             if (event.matches) setMobileMenu(false);
         });
 
         initTrendCategoryCards();
+        initInspirationGuides();
     }
 
     const TREND_API_URL = 'https://logicx-trend.gorillad.workers.dev';
     const TREND_CACHE_KEY = 'lxo_trend_catalog_cards';
     const TREND_CACHE_DATE_KEY = 'lxo_trend_catalog_cards_date';
+    const GUIDE_FEED_URL = 'data/inspiration-guides.json';
 
     const CATEGORY_CONFIG = {
         chandeliers: {
             label: 'Chandeliers',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
-            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/chandeliers'],
             fallbackTrend: 'Sculptural chandeliers with warm metallic finishes are defining foyers and open dining spaces.',
             fallbackFinishes: ['brass', 'black', 'bronze'],
         },
         pendants: {
             label: 'Pendants',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/pendants',
-            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/pendants'],
             fallbackTrend: 'Oversized pendants are bringing tailored statement lighting to kitchen islands and bars.',
             fallbackFinishes: ['black', 'nickel', 'brass'],
         },
         'bath-vanity': {
             label: 'Bath & Vanity',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights',
-            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights'],
             fallbackTrend: 'Clean vanity bars and soft globe forms are making bath lighting feel more elevated.',
             fallbackFinishes: ['nickel', 'black', 'chrome'],
         },
         outdoor: {
             label: 'Outdoor',
             baseUrl: 'https://www.catalog.logicxo.com/lighting-fixtures/exterior',
-            menuHrefs: ['https://www.catalog.logicxo.com/lighting-fixtures/exterior'],
-            menuHeadings: ['Outdoor Lighting'],
+            menuUrlMode: 'search',
             fallbackTrend: 'Dark-sky outdoor fixtures and textured black lanterns are leading exterior refreshes.',
             fallbackFinishes: ['black', 'bronze', 'brass'],
         },
@@ -172,6 +178,35 @@
         const slug = getFinishSlug(firstFinish);
         if (!slug) return baseUrl;
         return `${baseUrl.replace(/\?.*$/, '')}/${encodeURIComponent(slug)}?limitRange=0`;
+    }
+
+    function buildTrendSearchKeywords(card, config) {
+        const stopWords = new Set([
+            'and', 'are', 'for', 'the', 'with', 'into', 'that', 'this', 'from', 'more',
+            'feel', 'feels', 'lighting', 'fixtures', 'fixture', 'spaces', 'refreshes',
+        ]);
+        const topFinish = card.finishes?.[0] || '';
+        const words = [topFinish, config.label, card.trend]
+            .join(' ')
+            .toLowerCase()
+            .replace(/&/g, ' and ')
+            .replace(/[^a-z0-9\s-]/g, ' ')
+            .split(/\s+/)
+            .filter((word, index, source) => word.length > 2 && !stopWords.has(word) && source.indexOf(word) === index);
+
+        return words.slice(0, 7).join(' ') || config.label;
+    }
+
+    function buildCatalogSearchUrl(keywords) {
+        return `https://www.catalog.logicxo.com/catalog?itemNumVal=${encodeURIComponent(keywords)}&limitRange=0`;
+    }
+
+    function buildTrendUrl(config, card, options = {}) {
+        if (!options.forceSearch && config.baseUrl) {
+            return buildFinishUrl(config.baseUrl, card.finishes);
+        }
+
+        return buildCatalogSearchUrl(buildTrendSearchKeywords(card, config));
     }
 
     function fallbackTrendCards() {
@@ -281,61 +316,252 @@
     function renderTrendCards(cards) {
         const normalizedCards = normalizeTrendCards(cards);
         normalizedCards.forEach(renderTrendCard);
-        renderMegaMenuTrendDots(normalizedCards);
+        renderMegaMenuTrendingColumn(normalizedCards);
     }
 
-    function createMegaMenuTrendDot(card, config) {
+    function findTopLevelDropdown(href) {
+        const topLink = document.querySelector(`.sb-menu > li > a[href="${href}"]`);
+        return topLink?.parentElement?.querySelector(':scope > .sb-mega-menu') || null;
+    }
+
+    function formatTrendLinkLabel(card, config) {
         const topFinish = card.finishes?.[0] || '';
-        const finishUrl = buildFinishUrl(config.baseUrl, card.finishes);
-        const dot = document.createElement('a');
-        dot.className = 'trend-menu-dot';
-        dot.href = finishUrl;
-        dot.title = topFinish ? `Trending: ${topFinish} ${card.label}` : `Trending: ${card.label}`;
-        dot.setAttribute('aria-label', dot.title);
-        dot.style.setProperty('--trend-menu-dot-color', getFinishColor(topFinish));
-        dot.addEventListener('click', (event) => {
-            event.stopPropagation();
+        if (config.menuUrlMode === 'search') {
+            return topFinish ? `${topFinish} Outdoor Trend` : 'Outdoor Trend';
+        }
+        return topFinish ? `${topFinish} ${config.label}` : config.label;
+    }
+
+    function createTrendingMenuItem(card, config) {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.className = 'trend-menu-link';
+        link.href = buildTrendUrl(config, card, {
+            forceSearch: config.menuUrlMode === 'search',
         });
-        return dot;
+
+        const label = document.createElement('span');
+        label.textContent = formatTrendLinkLabel(card, config);
+        const summary = document.createElement('small');
+        summary.textContent = card.trend;
+
+        link.append(label, summary);
+        item.appendChild(link);
+        return item;
     }
 
-    function appendDotToMenuLink(link, card, config) {
-        if (!link || link.parentElement?.querySelector(':scope > .trend-menu-dot')) return;
-        link.parentElement?.classList.add('has-trend-menu-dot');
-        link.insertAdjacentElement('afterend', createMegaMenuTrendDot(card, config));
-    }
+    function createTrendingMenuColumn(cards) {
+        const column = document.createElement('div');
+        column.className = 'sb-col sb-col-trending';
+        column.setAttribute('data-trend-menu-column', '');
 
-    function appendDotToMenuHeading(heading, card, config) {
-        const listItem = heading?.closest('li');
-        if (!listItem || listItem.querySelector(':scope > .trend-menu-dot')) return;
-        listItem.classList.add('has-trend-menu-dot');
-        heading.insertAdjacentElement('afterend', createMegaMenuTrendDot(card, config));
-    }
-
-    function renderMegaMenuTrendDots(cards) {
-        document.querySelectorAll('.trend-menu-dot').forEach((dot) => dot.remove());
-        document.querySelectorAll('.has-trend-menu-dot').forEach((item) => {
-            item.classList.remove('has-trend-menu-dot');
-        });
+        const list = document.createElement('ul');
+        const heading = document.createElement('li');
+        const headingText = document.createElement('strong');
+        headingText.textContent = 'Trending';
+        heading.appendChild(headingText);
+        list.appendChild(heading);
 
         cards.forEach((card) => {
             const config = CATEGORY_CONFIG[card.category];
-            if (!config) return;
-
-            (config.menuHrefs || []).forEach((href) => {
-                document.querySelectorAll(`.sb-mega-menu a[href="${href}"]`).forEach((link) => {
-                    appendDotToMenuLink(link, card, config);
-                });
-            });
-
-            (config.menuHeadings || []).forEach((label) => {
-                document.querySelectorAll('.sb-mega-menu .sb-col strong').forEach((heading) => {
-                    if (heading.textContent.trim() === label) {
-                        appendDotToMenuHeading(heading, card, config);
-                    }
-                });
-            });
+            if (config) list.appendChild(createTrendingMenuItem(card, config));
         });
+
+        column.appendChild(list);
+        return column;
+    }
+
+    function renderMegaMenuTrendingColumn(cards) {
+        document.querySelectorAll('[data-trend-menu-column]').forEach((column) => column.remove());
+
+        const dropdown = findTopLevelDropdown('https://www.catalog.logicxo.com/lighting-fixtures');
+        if (!dropdown) return;
+
+        dropdown.prepend(createTrendingMenuColumn(cards));
+    }
+
+    const DEFAULT_GUIDE_FEED = {
+        updatedLabel: 'Updated weekly',
+        eyebrow: 'Inspiration - Lighting Guides',
+        title: 'Research-backed lighting advice for better decisions.',
+        intro: 'Our team studies customer questions, online search behavior, showroom insights, and lighting industry trends to help shoppers choose fixtures, finishes, bulbs, and layouts with confidence.',
+        featuredTitle: 'Featured Quick Guide',
+        questionTitle: "This week's most asked lighting questions",
+        guides: [{
+            category: 'Dining Room',
+            title: 'How to Choose the Right Size Chandelier for Your Dining Room',
+            question: 'What size chandelier do I need for my dining table?',
+            summary: 'Use table dimensions and hanging height to choose a chandelier that feels balanced, not undersized or overwhelming.',
+            image: 'images/trend-catalog/Chandelier-2.png',
+            url: 'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
+            featured: true,
+            productLinks: [{
+                label: 'Shop Chandeliers',
+                url: 'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
+            }],
+        }, {
+            category: 'Bulbs',
+            title: 'What Bulbs Should You Use in Your Chandeliers?',
+            question: 'What color temperature is best for chandeliers?',
+            summary: 'Learn why 2700K to 3000K usually creates the warm, flattering light most homes need.',
+            url: 'https://www.catalog.logicxo.com/catalog?itemNumVal=chandelier%20bulbs&limitRange=0',
+        }, {
+            category: 'Kitchen',
+            title: 'How Many Lights Should You Have in Your Kitchen?',
+            question: 'How many pendant lights do I need over an island?',
+            summary: 'A simple guide to spacing pendants, layering task lighting, and avoiding dark work zones.',
+            image: 'images/trend-catalog/Pendant-Light.png',
+            url: 'https://www.catalog.logicxo.com/lighting-fixtures/pendants',
+        }],
+    };
+
+    function setText(selector, value, root = document) {
+        const el = root.querySelector(selector);
+        if (el && value) el.textContent = value;
+    }
+
+    function normalizeGuideFeed(feed) {
+        const source = feed && Array.isArray(feed.guides) ? feed : DEFAULT_GUIDE_FEED;
+        const guides = source.guides
+            .filter((guide) => guide && guide.title && guide.summary)
+            .map((guide, index) => ({
+                category: guide.category || 'Lighting Guide',
+                title: guide.title,
+                question: guide.question || guide.title,
+                summary: guide.summary,
+                image: guide.image || '',
+                url: guide.url || '#',
+                featured: Boolean(guide.featured) || index === 0,
+                productLinks: Array.isArray(guide.productLinks) ? guide.productLinks : [],
+            }));
+
+        return {
+            ...DEFAULT_GUIDE_FEED,
+            ...source,
+            guides,
+        };
+    }
+
+    async function fetchGuideFeed() {
+        const response = await fetch(GUIDE_FEED_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Guide feed failed with ${response.status}`);
+        return response.json();
+    }
+
+    function createGuideLink(label, url, className) {
+        const link = document.createElement('a');
+        link.href = url || '#';
+        link.className = className;
+        link.textContent = label;
+        return link;
+    }
+
+    function renderGuideFeature(container, guide, feed) {
+        if (!container || !guide) return;
+        container.innerHTML = '';
+
+        if (guide.image) {
+            const imageWrap = document.createElement('a');
+            imageWrap.href = guide.url;
+            imageWrap.className = 'trend-guide-feature-image';
+            const image = document.createElement('img');
+            image.src = guide.image;
+            image.alt = guide.title;
+            image.loading = 'lazy';
+            imageWrap.appendChild(image);
+            container.appendChild(imageWrap);
+        }
+
+        const body = document.createElement('div');
+        body.className = 'trend-guide-feature-body';
+        const label = document.createElement('span');
+        label.textContent = feed.featuredTitle || 'Featured Quick Guide';
+        const category = document.createElement('em');
+        category.textContent = guide.category;
+        const title = document.createElement('h3');
+        title.textContent = guide.title;
+        const summary = document.createElement('p');
+        summary.textContent = guide.summary;
+        const cta = createGuideLink('Read Quick Guide', guide.url, 'trend-guide-link');
+
+        body.append(label, category, title, summary, cta);
+        if (guide.productLinks.length) {
+            const products = document.createElement('div');
+            products.className = 'trend-guide-products';
+            guide.productLinks.slice(0, 2).forEach((product) => {
+                products.appendChild(createGuideLink(product.label, product.url, 'trend-guide-product-link'));
+            });
+            body.appendChild(products);
+        }
+
+        container.appendChild(body);
+    }
+
+    function renderGuideQuestions(container, guides) {
+        if (!container) return;
+        container.innerHTML = '';
+        guides.slice(0, 4).forEach((guide) => {
+            const item = document.createElement('li');
+            const link = createGuideLink(guide.question, guide.url, '');
+            item.appendChild(link);
+            container.appendChild(item);
+        });
+    }
+
+    function createGuideCard(guide) {
+        const card = document.createElement('a');
+        card.className = 'trend-guide-card';
+        card.href = guide.url;
+
+        const category = document.createElement('span');
+        category.textContent = guide.category;
+        const title = document.createElement('strong');
+        title.textContent = guide.title;
+        const summary = document.createElement('small');
+        summary.textContent = guide.summary;
+        const cta = document.createElement('em');
+        cta.textContent = 'Read Guide';
+
+        card.append(category, title, summary, cta);
+        return card;
+    }
+
+    function renderGuideGrid(container, guides, featuredGuide) {
+        if (!container) return;
+        container.innerHTML = '';
+        guides
+            .filter((guide) => guide !== featuredGuide)
+            .slice(0, 6)
+            .forEach((guide) => {
+                container.appendChild(createGuideCard(guide));
+            });
+    }
+
+    function renderInspirationGuides(feedData) {
+        const section = document.querySelector('[data-inspiration-guides]');
+        if (!section) return;
+
+        const feed = normalizeGuideFeed(feedData);
+        const featuredGuide = feed.guides.find((guide) => guide.featured) || feed.guides[0];
+
+        setText('[data-guide-eyebrow]', feed.eyebrow, section);
+        setText('[data-guide-title]', feed.title, section);
+        setText('[data-guide-intro]', feed.intro, section);
+        setText('[data-guide-updated]', feed.updatedLabel, section);
+        setText('[data-guide-question-title]', feed.questionTitle, section);
+        renderGuideFeature(section.querySelector('[data-guide-feature]'), featuredGuide, feed);
+        renderGuideQuestions(section.querySelector('[data-guide-questions]'), feed.guides);
+        renderGuideGrid(section.querySelector('[data-guide-grid]'), feed.guides, featuredGuide);
+    }
+
+    async function initInspirationGuides() {
+        if (!document.querySelector('[data-inspiration-guides]')) return;
+
+        try {
+            renderInspirationGuides(await fetchGuideFeed());
+        } catch {
+            renderInspirationGuides(DEFAULT_GUIDE_FEED);
+        }
     }
 
     async function initTrendCategoryCards() {

@@ -737,6 +737,20 @@ body.cart-open {
         radial-gradient(circle at 80% 10%, rgba(201, 169, 110, 0.2), transparent 30%),
         linear-gradient(135deg, #111111 0%, #1b1b1b 45%, #080808 100%);
     color: #ffffff;
+    overflow: hidden;
+}
+
+.trend-catalog-hero .trend-catalog-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(440px, 1fr);
+    align-items: center;
+    gap: clamp(36px, 5vw, 72px);
+}
+
+.trend-catalog-hero-copy {
+    position: relative;
+    z-index: 6;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.42);
 }
 
 .trend-catalog-kicker {
@@ -761,7 +775,7 @@ body.cart-open {
 .trend-catalog-hero p {
     max-width: 660px;
     margin: 0;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.82);
     font-size: clamp(16px, 1.8vw, 20px);
 }
 
@@ -795,6 +809,200 @@ body.cart-open {
 .trend-catalog-secondary-link {
     border: 1px solid rgba(255, 255, 255, 0.18);
     color: #ffffff;
+}
+
+.trend-catalog-hero-gallery {
+    position: relative;
+    z-index: 1;
+    min-height: clamp(520px, 50vw, 700px);
+    margin-left: clamp(12px, 2vw, 34px);
+    margin-right: clamp(-120px, -5vw, -36px);
+}
+
+.trend-catalog-hero-gallery::before {
+    content: '';
+    position: absolute;
+    inset: 12% 8% 7% 4%;
+    border: 1px solid rgba(201, 169, 110, 0.22);
+    border-radius: 34px;
+    background: rgba(255, 255, 255, 0.035);
+    transform: rotate(-4deg);
+}
+
+.trend-catalog-hero-frame {
+    position: absolute;
+    display: grid;
+    place-items: end start;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 26px;
+    background:
+        linear-gradient(135deg, rgba(201, 169, 110, 0.3), rgba(255, 255, 255, 0.06)),
+        #171717;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.36);
+    isolation: isolate;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.trend-catalog-hero-frame:hover,
+.trend-catalog-hero-frame:focus-visible {
+    border-color: rgba(201, 169, 110, 0.58);
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.46), 0 0 0 1px rgba(201, 169, 110, 0.18);
+    outline: none;
+    transform: translateY(-4px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .trend-catalog-hero-frame {
+        transition:
+            inset 0.24s ease,
+            top 0.24s ease,
+            right 0.24s ease,
+            bottom 0.24s ease,
+            left 0.24s ease,
+            width 0.24s ease,
+            height 0.24s ease,
+            opacity 0.18s ease,
+            border-color 0.18s ease,
+            box-shadow 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .trend-catalog-hero-gallery:has(.trend-catalog-hero-frame:hover) .trend-catalog-hero-frame:not(:hover),
+    .trend-catalog-hero-gallery:has(.trend-catalog-hero-frame:focus-visible) .trend-catalog-hero-frame:not(:focus-visible) {
+        opacity: 0.22;
+        transform: scale(0.96);
+    }
+
+    .trend-catalog-hero-gallery:has(.trend-catalog-hero-frame:hover) .trend-catalog-hero-finish-card,
+    .trend-catalog-hero-gallery:has(.trend-catalog-hero-frame:focus-visible) .trend-catalog-hero-finish-card {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+    }
+
+    .trend-catalog-hero-gallery .trend-catalog-hero-frame:hover,
+    .trend-catalog-hero-gallery .trend-catalog-hero-frame:focus-visible {
+        inset: 0 !important;
+        z-index: 8;
+        width: auto !important;
+        height: auto !important;
+        opacity: 1;
+        transform: none !important;
+    }
+
+    .trend-catalog-hero-gallery .trend-catalog-hero-frame:hover img,
+    .trend-catalog-hero-gallery .trend-catalog-hero-frame:focus-visible img {
+        filter: saturate(1) brightness(0.92) contrast(1.04);
+    }
+}
+
+.trend-catalog-hero-frame::before {
+    content: attr(data-label);
+    position: relative;
+    z-index: 2;
+    margin: 18px;
+    padding: 8px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: rgba(8, 8, 8, 0.62);
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.trend-catalog-hero-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, 0.58));
+    pointer-events: none;
+}
+
+.trend-catalog-hero-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    filter: saturate(0.92) brightness(0.82) contrast(1.04);
+    object-fit: cover;
+}
+
+.trend-catalog-hero-frame--main {
+    inset: 0 9% 16% 0;
+}
+
+.trend-catalog-hero-frame--chandelier {
+    left: -2%;
+    bottom: 2%;
+    width: 36%;
+    height: 30%;
+}
+
+.trend-catalog-hero-frame--pendant {
+    right: -3%;
+    top: 7%;
+    width: 40%;
+    height: 36%;
+}
+
+.trend-catalog-hero-frame--vanity {
+    left: 31%;
+    bottom: 0;
+    width: 37%;
+    height: 28%;
+}
+
+.trend-catalog-hero-frame--outdoor {
+    right: -1%;
+    bottom: 0;
+    width: 37%;
+    height: 29%;
+}
+
+.trend-catalog-hero-finish-card {
+    position: absolute;
+    right: 2%;
+    bottom: 25%;
+    z-index: 3;
+    display: grid;
+    gap: 10px;
+    min-width: 168px;
+    padding: 16px;
+    border: 1px solid rgba(201, 169, 110, 0.22);
+    border-radius: 18px;
+    background: rgba(8, 8, 8, 0.76);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(14px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.trend-catalog-hero-finish-card span {
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.trend-catalog-hero-finish-card div {
+    display: flex;
+    gap: 8px;
+}
+
+.trend-catalog-hero-finish-card i {
+    width: 28px;
+    height: 28px;
+    border: 2px solid rgba(255, 255, 255, 0.72);
+    border-radius: 999px;
+    background: var(--finish-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
 }
 
 .trend-mega-menu-section {
@@ -919,6 +1127,270 @@ body.cart-open {
 .trend-mega-card:hover .trend-card-cta {
     background: var(--hero-gold);
     color: var(--hero-bg);
+}
+
+.trend-guides-section {
+    padding: clamp(58px, 8vw, 104px) 0 clamp(72px, 9vw, 120px);
+    background:
+        radial-gradient(circle at 8% 8%, rgba(201, 169, 110, 0.12), transparent 30%),
+        linear-gradient(180deg, #f5f3ee 0%, #ebe3d4 100%);
+}
+
+.trend-guides-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 30px;
+}
+
+.trend-guides-head h2 {
+    max-width: 760px;
+    margin: 8px 0 14px;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5.4vw, 64px);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+}
+
+.trend-guides-head p:not(.trend-catalog-kicker) {
+    max-width: 760px;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.7;
+}
+
+.trend-guides-head > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 9px 13px;
+    border: 1px solid rgba(201, 169, 110, 0.38);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.58);
+    color: var(--hero-gold-dark);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.trend-guides-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+    gap: 22px;
+    align-items: stretch;
+    margin-bottom: 22px;
+}
+
+.trend-guide-feature {
+    display: grid;
+    min-height: 430px;
+    grid-template-columns: minmax(260px, 0.84fr) minmax(0, 1fr);
+    overflow: hidden;
+    border: 1px solid rgba(201, 169, 110, 0.28);
+    border-radius: 24px;
+    background: #111111;
+    box-shadow: 0 26px 70px rgba(26, 37, 43, 0.12);
+}
+
+.trend-guide-feature-image {
+    position: relative;
+    display: block;
+    min-height: 100%;
+    overflow: hidden;
+}
+
+.trend-guide-feature-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.38));
+}
+
+.trend-guide-feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.92) contrast(1.04);
+}
+
+.trend-guide-feature-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding: clamp(26px, 4vw, 44px);
+    color: #ffffff;
+}
+
+.trend-guide-feature-body span,
+.trend-guide-feature-body em {
+    color: var(--hero-gold);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.trend-guide-feature-body h3 {
+    margin: 0;
+    max-width: 12ch;
+    font-family: var(--font-display);
+    font-size: clamp(34px, 4.6vw, 58px);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+}
+
+.trend-guide-feature-body p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.trend-guide-link,
+.trend-guide-product-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.trend-guide-link {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: var(--hero-gold);
+    color: #111111;
+}
+
+.trend-guide-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.trend-guide-product-link {
+    padding: 8px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.trend-guide-questions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    border: 1px solid rgba(201, 169, 110, 0.28);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.68);
+    padding: clamp(24px, 3vw, 34px);
+    box-shadow: 0 20px 48px rgba(26, 37, 43, 0.08);
+}
+
+.trend-guide-questions > span {
+    color: var(--hero-gold-dark);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.trend-guide-questions h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 600;
+    line-height: 1;
+}
+
+.trend-guide-questions ol {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.trend-guide-questions a {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-decoration: none;
+}
+
+.trend-guides-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.trend-guide-card {
+    display: flex;
+    min-height: 220px;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+    border: 1px solid rgba(201, 169, 110, 0.2);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.74);
+    color: var(--text-primary);
+    padding: 22px;
+    text-decoration: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.trend-guide-card:hover,
+.trend-guide-card:focus-visible {
+    border-color: rgba(201, 169, 110, 0.58);
+    box-shadow: 0 18px 42px rgba(26, 37, 43, 0.1);
+    outline: none;
+    transform: translateY(-3px);
+}
+
+.trend-guide-card span {
+    color: var(--hero-gold-dark);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.trend-guide-card strong {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.trend-guide-card small {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.trend-guide-card em {
+    color: var(--hero-gold-dark);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 /* ——— Hero ——— */
@@ -6262,7 +6734,7 @@ body.home-page .home-cta-closer + .container {
     }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1023px) {
     .trend-catalog-header-inner {
         grid-template-columns: auto 1fr auto;
         gap: 14px;
@@ -6286,26 +6758,22 @@ body.home-page .home-cta-closer + .container {
     }
 
     .trend-catalog-actions {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
+        grid-column: 1 / -1;
+        grid-row: 3;
         display: grid;
         grid-template-columns: 1fr;
         gap: 0;
-        padding: 0 clamp(20px, 4vw, 48px) 18px;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0;
         background: var(--hero-bg);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 22px 34px rgba(0, 0, 0, 0.28);
-        transform: translateY(-8px);
-        opacity: 0;
         pointer-events: none;
-        transition: opacity 0.18s ease, transform 0.18s ease;
+        transition: max-height 0.22s ease, padding 0.22s ease;
     }
 
     .trend-catalog-header.is-open .trend-catalog-actions {
-        transform: translateY(0);
-        opacity: 1;
+        max-height: 360px;
+        padding: 8px 0 2px;
         pointer-events: auto;
     }
 
@@ -6332,9 +6800,39 @@ body.home-page .home-cta-closer + .container {
         display: none;
     }
 
+    .trend-catalog-hero .trend-catalog-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-catalog-hero-gallery {
+        width: min(720px, 100%);
+        margin: 0 auto;
+    }
+
     .trend-mega-menu-head {
         align-items: start;
         flex-direction: column;
+    }
+
+    .trend-guides-head,
+    .trend-guides-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-guides-head > span {
+        justify-self: start;
+    }
+
+    .trend-guide-feature {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-guide-feature-image {
+        min-height: 280px;
+    }
+
+    .trend-guides-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -6364,6 +6862,59 @@ body.home-page .home-cta-closer + .container {
         font-size: clamp(38px, 13vw, 58px);
     }
 
+    .trend-catalog-hero-gallery {
+        min-height: 480px;
+    }
+
+    .trend-catalog-hero-frame {
+        border-radius: 20px;
+    }
+
+    .trend-catalog-hero-frame::before {
+        margin: 12px;
+        font-size: 10px;
+    }
+
+    .trend-catalog-hero-frame--main {
+        inset: 0 0 32% 0;
+    }
+
+    .trend-catalog-hero-frame--chandelier {
+        left: 0;
+        bottom: 11%;
+        width: 34%;
+        height: 24%;
+    }
+
+    .trend-catalog-hero-frame--pendant {
+        top: auto;
+        right: 0;
+        bottom: 11%;
+        width: 34%;
+        height: 24%;
+    }
+
+    .trend-catalog-hero-frame--vanity {
+        left: 20%;
+        bottom: 0;
+        width: 34%;
+        height: 27%;
+    }
+
+    .trend-catalog-hero-frame--outdoor {
+        right: 0;
+        bottom: 0;
+        width: 34%;
+        height: 27%;
+    }
+
+    .trend-catalog-hero-finish-card {
+        right: 10px;
+        bottom: 38%;
+        min-width: 146px;
+        padding: 13px;
+    }
+
     .trend-catalog-hero-actions {
         align-items: stretch;
         flex-direction: column;
@@ -6375,5 +6926,35 @@ body.home-page .home-cta-closer + .container {
 
     .trend-mega-card {
         min-height: 180px;
+    }
+
+    .trend-guides-section {
+        padding: 54px 0 72px;
+    }
+
+    .trend-guide-feature {
+        min-height: 0;
+        border-radius: 18px;
+    }
+
+    .trend-guide-feature-image {
+        min-height: 220px;
+    }
+
+    .trend-guide-feature-body,
+    .trend-guide-questions {
+        padding: 22px;
+    }
+
+    .trend-guide-feature-body h3 {
+        font-size: clamp(32px, 11vw, 46px);
+    }
+
+    .trend-guides-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-guide-card {
+        min-height: 190px;
     }
 }

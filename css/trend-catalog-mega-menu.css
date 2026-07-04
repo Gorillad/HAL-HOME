@@ -6,15 +6,17 @@
     --xo-mega-gold-dark: #a8854a;
     --xo-mega-ink: #1a252b;
     --xo-mega-muted: #5a6570;
-    --xo-mega-border: #e8edf2;
-    --xo-mega-panel: #ffffff;
+    --xo-mega-border: #e4d8c4;
+    --xo-mega-panel: #f7f2e8;
     --xo-mega-max-width: min(1120px, calc(100vw - 32px));
     --xo-mega-max-height: calc(100dvh - 220px);
 
     position: sticky;
     top: 88px;
     z-index: 180;
-    background: #ffffff;
+    background:
+        radial-gradient(circle at 18% 0%, rgba(201, 169, 110, 0.16), transparent 34%),
+        linear-gradient(180deg, #fbf8f1 0%, #f4ecdf 100%);
     border-bottom: 1px solid var(--xo-mega-border);
     box-shadow: 0 10px 30px rgba(8, 8, 8, 0.08);
     overflow: visible;
@@ -120,7 +122,9 @@
     gap: 0.25rem 0;
     overflow-x: hidden;
     overflow-y: auto;
-    background: var(--xo-mega-panel);
+    background:
+        radial-gradient(circle at 8% 0%, rgba(201, 169, 110, 0.14), transparent 30%),
+        linear-gradient(180deg, #fbf8f1 0%, var(--xo-mega-panel) 100%);
     border: 1px solid var(--xo-mega-border);
     border-top: 3px solid var(--xo-mega-gold);
     border-radius: 0 0 12px 12px;
@@ -182,12 +186,6 @@
     margin-bottom: 0.05rem;
 }
 
-.sb-mega-menu .sb-col li.has-trend-menu-dot {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
 .sb-mega-menu .sb-col strong {
     display: block;
     margin: 0 0 0.55rem;
@@ -231,39 +229,53 @@
     outline: none;
 }
 
-.trend-menu-dot {
-    --trend-menu-dot-color: var(--xo-mega-gold);
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    min-width: 16px;
-    margin: 0 0 0 0.1rem !important;
-    padding: 0 !important;
-    border: 2px solid var(--xo-mega-gold) !important;
-    border-radius: 999px !important;
-    background: var(--trend-menu-dot-color) !important;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 4px 10px rgba(26, 37, 43, 0.16);
-    text-decoration: none;
-    transform: none !important;
-    transition: transform 0.16s ease, box-shadow 0.16s ease !important;
+.sb-col-trending {
+    order: -2;
+    flex: 0 0 210px;
+    max-width: 230px;
 }
 
-.trend-menu-dot::after {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: inherit;
-    background: rgba(255, 255, 255, 0.9);
-    opacity: 0.9;
+.sb-mega-menu .sb-col-trending strong {
+    color: var(--xo-mega-gold-dark);
 }
 
-.trend-menu-dot:hover,
-.trend-menu-dot:focus-visible {
-    transform: scale(1.12) !important;
-    box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.25), 0 6px 14px rgba(26, 37, 43, 0.2);
-    outline: none;
+.sb-mega-menu .sb-col.sb-col-trending a.trend-menu-link {
+    display: grid;
+    gap: 0.2rem;
+    margin: 0 0 0.28rem;
+    padding: 0.5rem 0.55rem;
+    border: 1px solid rgba(168, 133, 74, 0.42);
+    border-radius: 10px;
+    background:
+        linear-gradient(135deg, #dfc47f 0%, #c9a96e 48%, #b9904e 100%);
+    color: #111111;
+    box-shadow: 0 8px 18px rgba(168, 133, 74, 0.14);
+}
+
+.sb-mega-menu .sb-col.sb-col-trending a.trend-menu-link:hover,
+.sb-mega-menu .sb-col.sb-col-trending a.trend-menu-link:focus-visible {
+    border-color: rgba(26, 37, 43, 0.28);
+    background:
+        linear-gradient(135deg, #ead18d 0%, #d2b374 48%, #bd9654 100%);
+    color: #080808;
+    transform: translateX(2px);
+}
+
+.trend-menu-link span {
+    font-size: 0.8rem;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.trend-menu-link small {
+    display: -webkit-box;
+    overflow: hidden;
+    color: rgba(8, 8, 8, 0.78);
+    font-size: 0.68rem;
+    font-weight: 500;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 .sb-mega-menu .sb-col b a,
@@ -343,9 +355,9 @@
     object-position: center;
     margin: 0.25rem auto 0;
     padding: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(232, 220, 196, 0.42);
     border-radius: 8px;
-    background: #ffffff;
+    background: #fbf8f1;
 }
 
 .sb-promo-cta {
@@ -410,9 +422,14 @@
 
 @media (max-width: 1023px) {
     .sb-nav {
+        display: none;
         position: static;
         top: auto;
         box-shadow: none;
+    }
+
+    .trend-catalog-header.is-open + .sb-nav {
+        display: block;
     }
 
     .sb-menu {

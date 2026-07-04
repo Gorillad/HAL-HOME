@@ -1,0 +1,116 @@
+{
+  "updatedLabel": "Updated weekly",
+  "eyebrow": "Inspiration - Lighting Guides",
+  "title": "Research-backed lighting advice for better decisions.",
+  "intro": "Our team studies customer questions, online search behavior, showroom insights, and lighting industry trends to help shoppers choose fixtures, finishes, bulbs, and layouts with confidence.",
+  "featuredTitle": "Featured Quick Guide",
+  "questionTitle": "This week's most asked lighting questions",
+  "guides": [
+    {
+      "id": "dining-room-chandelier-size",
+      "category": "Dining Room",
+      "title": "How to Choose the Right Size Chandelier for Your Dining Room",
+      "question": "What size chandelier do I need for my dining table?",
+      "summary": "Use table dimensions and hanging height to choose a chandelier that feels balanced, not undersized or overwhelming.",
+      "image": "images/trend-catalog/Chandelier for dining room.png",
+      "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers",
+      "featured": true,
+      "productLinks": [
+        {
+          "label": "Shop Chandeliers",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers"
+        },
+        {
+          "label": "Browse Brass Finishes",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers/brass?limitRange=0"
+        }
+      ]
+    },
+    {
+      "id": "chandelier-bulb-temperature",
+      "category": "Bulbs",
+      "title": "What Bulbs Should You Use in Your Chandeliers?",
+      "question": "What color temperature is best for chandeliers?",
+      "summary": "Learn why 2700K to 3000K usually creates the warm, flattering light most homes need.",
+      "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=chandelier%20bulbs&limitRange=0",
+      "productLinks": [
+        {
+          "label": "Search Chandelier Bulbs",
+          "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=chandelier%20bulbs&limitRange=0"
+        }
+      ]
+    },
+    {
+      "id": "kitchen-light-count",
+      "category": "Kitchen",
+      "title": "How Many Lights Should You Have in Your Kitchen?",
+      "question": "How many pendant lights do I need over an island?",
+      "summary": "A simple guide to spacing pendants, layering task lighting, and avoiding dark work zones.",
+      "image": "images/trend-catalog/Pendant-Light.png",
+      "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants",
+      "productLinks": [
+        {
+          "label": "Shop Pendants",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants"
+        }
+      ]
+    },
+    {
+      "id": "lighting-finish-guide",
+      "category": "Finishes",
+      "title": "How to Pick the Right Finish for Your Lighting Fixtures",
+      "question": "Should lighting finishes match hardware?",
+      "summary": "Understand when to match, contrast, or mix finishes so the room feels intentional.",
+      "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=brass%20black%20bronze%20lighting&limitRange=0",
+      "productLinks": [
+        {
+          "label": "Explore Trending Finishes",
+          "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=brass%20black%20bronze%20lighting&limitRange=0"
+        }
+      ]
+    },
+    {
+      "id": "pendant-vs-island-lighting",
+      "category": "Kitchen",
+      "title": "Pendant Lighting vs Island Lighting - What's the Difference?",
+      "question": "Are pendant lights and island lights the same thing?",
+      "summary": "Clear up common kitchen lighting confusion before choosing the wrong fixture type.",
+      "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants",
+      "productLinks": [
+        {
+          "label": "Shop Kitchen Pendants",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants"
+        }
+      ]
+    },
+    {
+      "id": "living-room-layered-lighting",
+      "category": "Living Room",
+      "title": "How to Layer Lighting in Your Living Room",
+      "question": "How do I make a living room feel warm but bright enough?",
+      "summary": "Combine ambient, task, and accent lighting to avoid a flat or harsh room.",
+      "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=living%20room%20lighting&limitRange=0",
+      "productLinks": [
+        {
+          "label": "Search Living Room Lighting",
+          "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=living%20room%20lighting&limitRange=0"
+        }
+      ]
+    },
+    {
+      "id": "outdoor-lighting-curb-appeal",
+      "category": "Outdoor",
+      "title": "Outdoor Lighting Ideas for Your Home's Exterior",
+      "question": "What outdoor lights improve curb appeal?",
+      "summary": "Use wall lights, path lights, and warm color temperatures to make the exterior feel polished and welcoming.",
+      "image": "images/trend-catalog/outdoor-mood.png",
+      "url": "https://www.catalog.logicxo.com/lighting-fixtures/exterior",
+      "productLinks": [
+        {
+          "label": "Shop Outdoor Lighting",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/exterior"
+        }
+      ]
+    }
+  ]
+}
