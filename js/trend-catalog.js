@@ -173,6 +173,62 @@
         return FINISH_COLORS[getFinishSlug(name)] || '#888888';
     }
 
+    function formatFinishLabel(name) {
+        return String(name || '')
+            .trim()
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
+    function createFinishSwatch(finish, options = {}) {
+        const wrap = document.createElement('span');
+        wrap.className = 'trend-finish-swatch-wrap';
+
+        const swatch = document.createElement('span');
+        swatch.className = options.hero
+            ? 'trend-card-swatch trend-card-swatch--hero'
+            : 'trend-card-swatch';
+        swatch.style.background = getFinishColor(finish);
+        swatch.setAttribute('aria-hidden', 'true');
+
+        const label = formatFinishLabel(finish);
+        const tip = document.createElement('span');
+        tip.className = 'trend-finish-swatch-label';
+        tip.textContent = label;
+        tip.setAttribute('role', 'tooltip');
+
+        wrap.title = label;
+        wrap.appendChild(swatch);
+        wrap.appendChild(tip);
+        return wrap;
+    }
+
+    function collectHeroFinishes(cards) {
+        const finishes = [];
+
+        cards.forEach((card) => {
+            (card.finishes || []).forEach((finish) => {
+                if (finishes.length >= 3) return;
+                const slug = getFinishSlug(finish);
+                if (!finishes.some((item) => getFinishSlug(item) === slug)) {
+                    finishes.push(finish);
+                }
+            });
+        });
+
+        return finishes;
+    }
+
+    function renderHeroFinishSwatches(cards) {
+        const container = document.querySelector('[data-hero-finish-list]');
+        if (!container) return;
+
+        const finishes = collectHeroFinishes(cards);
+        if (!finishes.length) return;
+
+        container.replaceChildren(...finishes.map((finish) => createFinishSwatch(finish, { hero: true })));
+    }
+
     function buildFinishUrl(baseUrl, finishes) {
         const firstFinish = Array.isArray(finishes) ? finishes[0] : '';
         const slug = getFinishSlug(firstFinish);
@@ -303,12 +359,7 @@
         if (swatches) {
             swatches.innerHTML = '';
             card.finishes.slice(0, 3).forEach((finish) => {
-                const swatch = document.createElement('span');
-                swatch.className = 'trend-card-swatch';
-                swatch.style.background = getFinishColor(finish);
-                swatch.title = finish;
-                swatch.setAttribute('aria-label', finish);
-                swatches.appendChild(swatch);
+                swatches.appendChild(createFinishSwatch(finish));
             });
         }
     }
@@ -316,6 +367,7 @@
     function renderTrendCards(cards) {
         const normalizedCards = normalizeTrendCards(cards);
         normalizedCards.forEach(renderTrendCard);
+        renderHeroFinishSwatches(normalizedCards);
         renderMegaMenuTrendingColumn(normalizedCards);
     }
 
