@@ -3,7 +3,7 @@
   "eyebrow": "Inspiration - Lighting Guides",
   "title": "Research-backed lighting advice for better decisions.",
   "intro": "Our team studies customer questions, online search behavior, showroom insights, and lighting industry trends to help shoppers choose fixtures, finishes, bulbs, and layouts with confidence.",
-  "featuredTitle": "Featured Quick Guide",
+  "featuredTitle": "Featured Guide",
   "questionTitle": "This week's most asked lighting questions",
   "guides": [
     {
@@ -11,9 +11,11 @@
       "category": "Dining Room",
       "title": "How to Choose the Right Size Chandelier for Your Dining Room",
       "question": "What size chandelier do I need for my dining table?",
-      "summary": "Use table dimensions and hanging height to choose a chandelier that feels balanced, not undersized or overwhelming.",
+      "summary": "Room and table formulas, hanging height, and FAQ — the pro sizing guide for dining chandeliers.",
+      "readTime": "8 min read",
+      "articleUrl": "guides/dining-room-chandelier-size.html",
       "image": "images/trend-catalog/Chandelier for dining room.png",
-      "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers",
+      "url": "guides/dining-room-chandelier-size.html",
       "featured": true,
       "productLinks": [
         {
@@ -29,14 +31,21 @@
     {
       "id": "chandelier-bulb-temperature",
       "category": "Bulbs",
-      "title": "What Bulbs Should You Use in Your Chandeliers?",
+      "title": "What Color Temperature Is Best for Chandeliers? The Complete Bulb Guide",
       "question": "What color temperature is best for chandeliers?",
-      "summary": "Learn why 2700K to 3000K usually creates the warm, flattering light most homes need.",
-      "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=chandelier%20bulbs&limitRange=0",
+      "summary": "2700K warm white, dimmable LED, and CRI 90+ — plus base sizes, bulb shapes, and dimmer tips.",
+      "readTime": "10 min read",
+      "articleUrl": "guides/chandelier-bulb-temperature.html",
+      "image": "images/trend-catalog/Chandelier-2.png",
+      "url": "guides/chandelier-bulb-temperature.html",
       "productLinks": [
         {
           "label": "Search Chandelier Bulbs",
           "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=chandelier%20bulbs&limitRange=0"
+        },
+        {
+          "label": "Shop Chandeliers",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers"
         }
       ]
     },
