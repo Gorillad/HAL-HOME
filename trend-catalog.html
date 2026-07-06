@@ -576,13 +576,16 @@
                 <div class="trend-guides-layout">
                     <article class="trend-guide-feature" data-guide-feature></article>
                     <aside class="trend-guide-questions" aria-label="This week's lighting questions">
-                        <span>Weekly Research</span>
-                        <h3 data-guide-question-title>This week&apos;s most asked lighting questions</h3>
-                        <ol data-guide-questions></ol>
+                        <div class="trend-guide-questions-head">
+                            <span>Weekly Research</span>
+                            <h3 data-guide-question-title>This week&apos;s most asked lighting questions</h3>
+                        </div>
+                        <div class="trend-guide-questions-list" data-guide-questions></div>
+                        <a class="trend-guide-questions-all" href="#inspiration-guides-grid" data-guide-questions-all>Browse all guides</a>
                     </aside>
                 </div>
 
-                <div class="trend-guides-grid" data-guide-grid></div>
+                <div class="trend-guides-grid" id="inspiration-guides-grid" data-guide-grid></div>
             </div>
         </section>
     </main>

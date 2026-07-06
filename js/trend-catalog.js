@@ -658,21 +658,68 @@
         container.appendChild(body);
     }
 
-    function renderGuideQuestions(container, guides) {
+    function createGuideQuestionCard(guide) {
+        const card = document.createElement('a');
+        card.className = 'trend-guide-question-card';
+        card.href = getGuideHref(guide);
+
+        if (guide.image) {
+            const thumb = document.createElement('div');
+            thumb.className = 'trend-guide-question-thumb';
+            const image = document.createElement('img');
+            image.src = guide.image;
+            image.alt = '';
+            image.loading = 'lazy';
+            thumb.appendChild(image);
+            card.appendChild(thumb);
+        }
+
+        const body = document.createElement('div');
+        body.className = 'trend-guide-question-body';
+
+        const category = document.createElement('span');
+        category.textContent = guide.category;
+
+        const question = document.createElement('strong');
+        question.textContent = guide.question;
+
+        const meta = document.createElement('small');
+        meta.textContent = guide.readTime ? `${guide.readTime} · Read guide` : 'Read guide';
+
+        body.append(category, question, meta);
+        card.appendChild(body);
+        return card;
+    }
+
+    function renderGuideQuestions(container, guides, featuredGuide) {
         if (!container) return;
         container.innerHTML = '';
-        guides.slice(0, 4).forEach((guide) => {
-            const item = document.createElement('li');
-            const link = createGuideLink(guide.question, getGuideHref(guide), '');
-            item.appendChild(link);
-            container.appendChild(item);
-        });
+        guides
+            .filter((guide) => guide !== featuredGuide)
+            .slice(0, 5)
+            .forEach((guide) => {
+                container.appendChild(createGuideQuestionCard(guide));
+            });
     }
 
     function createGuideCard(guide) {
         const card = document.createElement('a');
         card.className = 'trend-guide-card';
         card.href = getGuideHref(guide);
+
+        if (guide.image) {
+            const media = document.createElement('div');
+            media.className = 'trend-guide-card-media';
+            const image = document.createElement('img');
+            image.src = guide.image;
+            image.alt = guide.title;
+            image.loading = 'lazy';
+            media.appendChild(image);
+            card.appendChild(media);
+        }
+
+        const body = document.createElement('div');
+        body.className = 'trend-guide-card-body';
 
         const category = document.createElement('span');
         category.textContent = guide.category;
@@ -681,9 +728,10 @@
         const summary = document.createElement('small');
         summary.textContent = guide.summary;
         const cta = document.createElement('em');
-        cta.textContent = 'Read Guide';
+        cta.textContent = guide.readTime ? `${guide.readTime} · Read Guide` : 'Read Guide';
 
-        card.append(category, title, summary, cta);
+        body.append(category, title, summary, cta);
+        card.appendChild(body);
         return card;
     }
 
@@ -711,7 +759,7 @@
         setText('[data-guide-updated]', feed.updatedLabel, section);
         setText('[data-guide-question-title]', feed.questionTitle, section);
         renderGuideFeature(section.querySelector('[data-guide-feature]'), featuredGuide, feed);
-        renderGuideQuestions(section.querySelector('[data-guide-questions]'), feed.guides);
+        renderGuideQuestions(section.querySelector('[data-guide-questions]'), feed.guides, featuredGuide);
         renderGuideGrid(section.querySelector('[data-guide-grid]'), feed.guides, featuredGuide);
     }
 
