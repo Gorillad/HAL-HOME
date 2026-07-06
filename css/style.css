@@ -8417,3 +8417,940 @@ body.home-page .home-cta-closer + .container {
         flex: 1 1 calc(50% - 0.5rem);
     }
 }
+
+/* ── Pendant vs island guide phase-1 graphics ── */
+.guide-island-sidebyside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guide-island-sidebyside-card p {
+    margin: 0.5rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.guide-island-sidebyside-scene {
+    position: relative;
+    height: 110px;
+    margin-top: 0.35rem;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #f0ebe3 0%, #e8e0d4 100%);
+}
+
+.guide-island-sidebyside-island {
+    position: absolute;
+    bottom: 12px;
+    left: 12%;
+    right: 12%;
+    height: 22px;
+    border: 2px solid #1a252b;
+    border-radius: 4px;
+    background: rgba(201, 169, 110, 0.2);
+}
+
+.guide-island-sidebyside-pendant {
+    position: absolute;
+    bottom: calc(12px + 22px + 28px);
+    width: 14px;
+    height: 18px;
+    border: 2px solid #1a252b;
+    border-radius: 5px 5px 10px 10px;
+    background: linear-gradient(180deg, #c9a96e 0%, #a8854a 100%);
+    transform: translateX(-50%);
+}
+
+.guide-island-sidebyside-pendant::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 2px;
+    height: 28px;
+    background: #1a252b;
+    transform: translateX(-50%);
+}
+
+.guide-island-sidebyside-linear {
+    position: absolute;
+    bottom: calc(12px + 22px + 32px);
+    left: 18%;
+    right: 18%;
+    height: 10px;
+    border: 2px solid #1a252b;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #c9a96e, #e8c88a, #c9a96e);
+    box-shadow: 0 32px 0 -28px #1a252b;
+}
+
+.guide-island-terms {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.guide-island-term {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.65rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(26, 37, 43, 0.1);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.guide-island-term strong {
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+}
+
+.guide-island-term span {
+    color: var(--hero-gold-dark);
+    font-size: 0.8125rem;
+    font-weight: 700;
+}
+
+.guide-island-term small {
+    flex: 1 1 100%;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.guide-island-term--highlight {
+    border-color: rgba(201, 169, 110, 0.45);
+    background: rgba(201, 169, 110, 0.1);
+}
+
+.guide-island-flow {
+    display: grid;
+    gap: 0.65rem;
+    padding: 1rem;
+    border: 1px solid rgba(26, 37, 43, 0.12);
+    border-radius: 14px;
+    background: #ffffff;
+}
+
+.guide-island-flow-step {
+    padding: 0.45rem 0.65rem;
+    border-radius: 8px;
+    background: rgba(201, 169, 110, 0.14);
+    color: var(--hero-gold-dark);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.guide-island-flow-branch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.guide-island-flow-path {
+    padding: 0.75rem;
+    border: 1px solid rgba(26, 37, 43, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.guide-island-flow-path span {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.guide-island-flow-path strong {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.guide-island-flow-path--split {
+    border-color: rgba(201, 169, 110, 0.4);
+    background: rgba(201, 169, 110, 0.08);
+}
+
+@media (max-width: 900px) {
+    .guide-island-sidebyside {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-island-flow-branch {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Living room layers guide phase-1 graphics ── */
+.guide-living-layer-cards {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1.25rem 0;
+}
+
+.guide-living-layer-card {
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(201, 169, 110, 0.24);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.guide-living-layer-card strong {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: var(--hero-gold-dark);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+}
+
+.guide-living-layer-card p {
+    margin: 0;
+    font-size: 0.9375rem;
+}
+
+.guide-living-layer-card--accent {
+    border-left: 4px solid var(--hero-gold);
+    background: rgba(201, 169, 110, 0.1);
+}
+
+.guide-living-layers-progressive {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.guide-living-layers-panel {
+    text-align: center;
+}
+
+.guide-living-layers-panel > span {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: var(--hero-gold-dark);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.guide-living-layers-panel--combined > span {
+    color: var(--text-primary);
+}
+
+.guide-living-layers-scene {
+    height: 88px;
+    border: 1px solid rgba(26, 37, 43, 0.12);
+    border-radius: 8px;
+    background: linear-gradient(180deg, #ebe4d8 0%, #ddd4c6 100%);
+    position: relative;
+}
+
+.guide-living-layers-scene--ambient::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    width: 28px;
+    height: 14px;
+    border: 2px solid #1a252b;
+    border-radius: 6px 6px 10px 10px;
+    background: #c9a96e;
+    transform: translateX(-50%);
+    box-shadow: 0 40px 24px rgba(255, 220, 150, 0.2);
+}
+
+.guide-living-layers-scene--task::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    width: 28px;
+    height: 14px;
+    border: 2px solid #1a252b;
+    border-radius: 6px 6px 10px 10px;
+    background: #c9a96e;
+    transform: translateX(-50%);
+    box-shadow: 0 40px 20px rgba(255, 220, 150, 0.15);
+}
+
+.guide-living-layers-scene--task::before {
+    content: "";
+    position: absolute;
+    bottom: 14px;
+    left: 22%;
+    width: 8px;
+    height: 22px;
+    border: 2px solid #1a252b;
+    border-radius: 3px;
+    background: #c9a96e;
+    box-shadow: 0 -8px 12px rgba(255, 210, 120, 0.25);
+}
+
+.guide-living-layers-scene--accent::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    width: 28px;
+    height: 14px;
+    border: 2px solid #1a252b;
+    border-radius: 6px 6px 10px 10px;
+    background: #c9a96e;
+    transform: translateX(-50%);
+}
+
+.guide-living-layers-scene--accent::before {
+    content: "";
+    position: absolute;
+    bottom: 20px;
+    left: 14%;
+    width: 6px;
+    height: 14px;
+    background: #c9a96e;
+    box-shadow: 72px 0 0 #c9a96e, 0 -6px 10px rgba(255, 210, 120, 0.3);
+}
+
+.guide-living-layers-scene--combined {
+    border-color: rgba(201, 169, 110, 0.45);
+    background: linear-gradient(180deg, #f0e8dc 0%, #e5d9c8 100%);
+}
+
+.guide-living-layers-scene--combined::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 30px;
+    height: 14px;
+    border: 2px solid #1a252b;
+    border-radius: 6px 6px 10px 10px;
+    background: #c9a96e;
+    transform: translateX(-50%);
+    box-shadow: 0 36px 20px rgba(255, 220, 150, 0.22);
+}
+
+.guide-living-layers-scene--combined::before {
+    content: "";
+    position: absolute;
+    bottom: 12px;
+    left: 20%;
+    width: 8px;
+    height: 20px;
+    border: 2px solid #1a252b;
+    border-radius: 3px;
+    background: #c9a96e;
+    box-shadow: 48px 0 0 -2px #c9a96e, 14px -18px 0 2px #c9a96e, 58px -18px 0 2px #c9a96e;
+}
+
+.guide-living-heights {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.45rem;
+    min-height: 200px;
+    padding: 1rem;
+}
+
+.guide-living-heights-zone {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid rgba(26, 37, 43, 0.1);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.guide-living-heights-zone--high {
+    background: rgba(201, 169, 110, 0.12);
+}
+
+.guide-living-heights-zone--mid {
+    background: rgba(201, 169, 110, 0.2);
+}
+
+.guide-living-heights-zone--low {
+    background: rgba(201, 169, 110, 0.28);
+}
+
+.guide-living-flat-vs-layered {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guide-living-flat-card p {
+    margin: 0.5rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.guide-living-flat-scene {
+    position: relative;
+    height: 100px;
+    margin-top: 0.35rem;
+    border-radius: 8px;
+    background: #e8e0d4;
+    overflow: hidden;
+}
+
+.guide-living-flat-ceiling {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 20px;
+    height: 12px;
+    border: 2px solid #1a252b;
+    border-radius: 4px;
+    background: #fff8e8;
+    transform: translateX(-50%);
+    box-shadow: 0 50px 30px rgba(255, 255, 255, 0.5);
+}
+
+.guide-living-flat-wall {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: #3a3530;
+}
+
+.guide-living-flat-wall--lit {
+    background: linear-gradient(180deg, #6a5a48 0%, #4a4038 100%);
+}
+
+.guide-living-flat-lamp {
+    position: absolute;
+    bottom: 28%;
+    left: 30%;
+    width: 8px;
+    height: 18px;
+    background: #c9a96e;
+    border: 2px solid #1a252b;
+    border-radius: 2px;
+    box-shadow: 0 -6px 14px rgba(255, 210, 120, 0.35);
+}
+
+.guide-living-flat-sconce {
+    position: absolute;
+    bottom: 45%;
+    right: 18%;
+    width: 10px;
+    height: 6px;
+    background: #c9a96e;
+    box-shadow: -12px 0 10px rgba(255, 210, 120, 0.25);
+}
+
+.guide-living-scenes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 1.25rem 0;
+}
+
+.guide-living-scene-card {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.85rem;
+    border: 1px solid rgba(201, 169, 110, 0.28);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.72);
+    text-align: center;
+}
+
+.guide-living-scene-card strong {
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+}
+
+.guide-living-scene-card span {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.guide-living-plan-room {
+    position: relative;
+    width: min(100%, 380px);
+    aspect-ratio: 7 / 9;
+    margin: 0 auto;
+    border: 2px solid #1a252b;
+    border-radius: 8px;
+    background: #f5f0e8;
+}
+
+.guide-living-plan-point {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(26, 37, 43, 0.15);
+    color: #1a252b;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.guide-living-plan-point--ambient {
+    border-color: rgba(201, 169, 110, 0.5);
+}
+
+.guide-living-plan-point--task {
+    border-color: rgba(26, 37, 43, 0.25);
+}
+
+.guide-living-plan-point--accent {
+    border-color: rgba(201, 169, 110, 0.7);
+    background: rgba(201, 169, 110, 0.15);
+}
+
+.guide-living-plan-zone {
+    position: absolute;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(26, 37, 43, 0.75);
+    color: #f5f0e8;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.guide-living-plan-zone--ceiling {
+    top: 4%;
+    left: 4%;
+}
+
+.guide-living-plan-zone--lamps {
+    bottom: 4%;
+    left: 4%;
+}
+
+.guide-living-plan-zone--accent {
+    bottom: 4%;
+    right: 4%;
+}
+
+@media (max-width: 900px) {
+    .guide-living-layers-progressive {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .guide-living-flat-vs-layered {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-living-scenes {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .guide-living-layers-progressive {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Outdoor lighting guide — phase-1 diagrams */
+.guide-outdoor-kelvin-compare {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guide-outdoor-kelvin-card {
+    min-height: 110px;
+}
+
+.guide-outdoor-kelvin-card--warm {
+    background: linear-gradient(160deg, rgba(255, 214, 153, 0.4) 0%, rgba(201, 169, 110, 0.15) 100%);
+}
+
+.guide-outdoor-kelvin-card--cool {
+    background: linear-gradient(160deg, rgba(210, 220, 235, 0.7) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.guide-outdoor-layers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+}
+
+.guide-outdoor-layer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 1rem 0.65rem 0.85rem;
+    border: 1px solid rgba(201, 169, 110, 0.28);
+    border-radius: 12px;
+    background: #1a252b;
+    color: #f5f0e8;
+    text-align: center;
+    min-height: 140px;
+    position: relative;
+    overflow: hidden;
+}
+
+.guide-outdoor-layer::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48%;
+    background: linear-gradient(180deg, transparent 0%, rgba(201, 169, 110, 0.12) 100%);
+}
+
+.guide-outdoor-layer span {
+    position: relative;
+    z-index: 1;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #c9a96e;
+}
+
+.guide-outdoor-layer small {
+    position: relative;
+    z-index: 1;
+    font-size: 0.6875rem;
+    color: rgba(245, 240, 232, 0.75);
+    line-height: 1.35;
+}
+
+.guide-outdoor-layer--ambient::after {
+    content: "";
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    width: 22px;
+    height: 28px;
+    border: 2px solid #c9a96e;
+    border-radius: 4px;
+    transform: translateX(-50%);
+    box-shadow: -28px 0 0 -2px #c9a96e, 28px 0 0 -2px #c9a96e;
+}
+
+.guide-outdoor-layer--task::after {
+    content: "";
+    position: absolute;
+    bottom: 22%;
+    left: 50%;
+    width: 6px;
+    height: 14px;
+    background: #c9a96e;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    box-shadow: -18px 8px 0 #c9a96e, 18px 8px 0 #c9a96e, 0 -10px 16px rgba(255, 210, 120, 0.25);
+}
+
+.guide-outdoor-layer--accent::after {
+    content: "";
+    position: absolute;
+    bottom: 28%;
+    left: 50%;
+    width: 8px;
+    height: 32px;
+    background: linear-gradient(180deg, #c9a96e 0%, rgba(201, 169, 110, 0.2) 100%);
+    transform: translateX(-50%);
+    box-shadow: 0 -18px 20px rgba(255, 210, 120, 0.35);
+}
+
+.guide-outdoor-rating {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 1.25rem 0;
+}
+
+.guide-outdoor-rating-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.85rem 0.65rem;
+    border: 1px solid rgba(26, 37, 43, 0.12);
+    border-radius: 10px;
+    background: #ffffff;
+    text-align: center;
+}
+
+.guide-outdoor-rating-card strong {
+    color: #1a252b;
+    font-size: 0.8125rem;
+}
+
+.guide-outdoor-rating-card span {
+    color: #c9a96e;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.guide-outdoor-rating-card small {
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+    line-height: 1.35;
+}
+
+.guide-outdoor-rating-card--highlight {
+    border-color: rgba(201, 169, 110, 0.45);
+    background: linear-gradient(180deg, rgba(201, 169, 110, 0.08) 0%, #ffffff 100%);
+}
+
+.guide-outdoor-facade {
+    position: relative;
+    min-height: 220px;
+    padding: 1.5rem 1rem 2.5rem;
+    background: linear-gradient(180deg, #2a3540 0%, #1a252b 55%, #141c22 100%);
+    border-radius: 12px;
+}
+
+.guide-outdoor-facade-house {
+    position: relative;
+    max-width: 320px;
+    height: 160px;
+    margin: 0 auto;
+    border: 2px solid rgba(201, 169, 110, 0.35);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(180deg, #3a4550 0%, #2a3540 100%);
+}
+
+.guide-outdoor-facade-door {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 52px;
+    height: 88px;
+    border: 2px solid #c9a96e;
+    border-radius: 4px 4px 0 0;
+    background: #1a252b;
+    transform: translateX(-50%);
+}
+
+.guide-outdoor-facade-sconce {
+    position: absolute;
+    bottom: 52px;
+    width: 18px;
+    height: 24px;
+    border: 2px solid #c9a96e;
+    border-radius: 3px;
+    background: rgba(201, 169, 110, 0.35);
+    box-shadow: 0 0 12px rgba(255, 210, 120, 0.4);
+}
+
+.guide-outdoor-facade-sconce--left {
+    left: calc(50% - 52px);
+}
+
+.guide-outdoor-facade-sconce--right {
+    right: calc(50% - 52px);
+}
+
+.guide-outdoor-facade-garage {
+    position: absolute;
+    bottom: 0;
+    right: -72px;
+    width: 64px;
+    height: 48px;
+    border: 2px solid rgba(201, 169, 110, 0.35);
+    border-radius: 4px 4px 0 0;
+    background: #252f38;
+}
+
+.guide-outdoor-facade-path {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    width: 48px;
+    height: 24px;
+    background: rgba(201, 169, 110, 0.15);
+    transform: translateX(-50%);
+    clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+}
+
+.guide-outdoor-facade-callouts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.guide-outdoor-facade-callouts span {
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1a252b;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.guide-outdoor-path-plan {
+    position: relative;
+    min-height: 200px;
+    margin: 1.25rem 0;
+    padding: 1.25rem;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #1a252b 0%, #141c22 100%);
+    overflow: hidden;
+}
+
+.guide-outdoor-path-walk {
+    position: absolute;
+    top: 8%;
+    bottom: 8%;
+    left: 42%;
+    width: 16%;
+    background: linear-gradient(180deg, rgba(201, 169, 110, 0.2) 0%, rgba(201, 169, 110, 0.08) 100%);
+    border-radius: 4px;
+}
+
+.guide-outdoor-path-light {
+    position: absolute;
+    width: 8px;
+    height: 14px;
+    border: 2px solid #c9a96e;
+    border-radius: 2px;
+    background: #c9a96e;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(255, 210, 120, 0.45);
+}
+
+.guide-outdoor-path-pool {
+    position: absolute;
+    width: 56px;
+    height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 210, 120, 0.35) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.guide-outdoor-path-avoid {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px dashed rgba(220, 80, 80, 0.5);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #f5f0e8;
+    font-size: 0.5625rem;
+    text-align: center;
+}
+
+.guide-outdoor-path-avoid strong {
+    color: #e8a0a0;
+    font-size: 0.5625rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.guide-outdoor-path-note {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #1a252b;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .guide-outdoor-layers {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-outdoor-rating {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-outdoor-facade-garage {
+        right: -48px;
+        width: 48px;
+    }
+}
+
+@media (max-width: 640px) {
+    .guide-outdoor-kelvin-compare {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Related guides — cluster navigation */
+.guide-related {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(26, 37, 43, 0.1);
+}
+
+.guide-related h2 {
+    margin: 0 0 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.8vw, 28px);
+}
+
+.guide-related-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.guide-related-list a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    height: 100%;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid rgba(201, 169, 110, 0.24);
+    border-radius: 12px;
+    background: #ffffff;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.guide-related-list a:hover,
+.guide-related-list a:focus-visible {
+    border-color: rgba(201, 169, 110, 0.5);
+    box-shadow: 0 4px 16px rgba(26, 37, 43, 0.06);
+    outline: none;
+}
+
+.guide-related-list strong {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+}
+
+.guide-related-list span {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+    .guide-related-list {
+        grid-template-columns: 1fr;
+    }
+}

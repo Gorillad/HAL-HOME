@@ -78,7 +78,7 @@
       "summary": "When to match, contrast, or mix — warm/cool finish map, dominant + accent formula, and 2026 trends.",
       "readTime": "12 min read",
       "articleUrl": "guides/lighting-finish-guide.html",
-      "image": "images/trend-catalog/Screenshot 2026-07-03 232524.png",
+      "image": "images/trend-catalog/Vanity-Glow.png",
       "url": "guides/lighting-finish-guide.html",
       "productLinks": [
         {
@@ -94,43 +94,63 @@
     {
       "id": "pendant-vs-island-lighting",
       "category": "Kitchen",
-      "title": "Pendant Lighting vs Island Lighting - What's the Difference?",
+      "title": "Pendant Lighting vs. Island Lighting: What's the Difference? (A Clear Answer)",
       "question": "Are pendant lights and island lights the same thing?",
-      "summary": "Clear up common kitchen lighting confusion before choosing the wrong fixture type.",
-      "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants",
+      "summary": "Pendants are a fixture type; island lighting is a location — when to choose a pendant row vs one linear fixture.",
+      "readTime": "8 min read",
+      "articleUrl": "guides/pendant-vs-island-lighting.html",
+      "image": "images/trend-catalog/Chandelier-sea.png",
+      "url": "guides/pendant-vs-island-lighting.html",
       "productLinks": [
         {
-          "label": "Shop Kitchen Pendants",
+          "label": "Shop Pendants",
           "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants"
+        },
+        {
+          "label": "Shop Island & Linear Lighting",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/directional-lights/directional-island-lights"
         }
       ]
     },
     {
       "id": "living-room-layered-lighting",
       "category": "Living Room",
-      "title": "How to Layer Lighting in Your Living Room",
+      "title": "How to Layer Lighting in Your Living Room: Ambient, Task, and Accent Done Right",
       "question": "How do I make a living room feel warm but bright enough?",
-      "summary": "Combine ambient, task, and accent lighting to avoid a flat or harsh room.",
-      "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=living%20room%20lighting&limitRange=0",
+      "summary": "Ambient, task, and accent layers — the pro recipe, worked example, and mistakes that make rooms flat or harsh.",
+      "readTime": "10 min read",
+      "articleUrl": "guides/living-room-layered-lighting.html",
+      "image": "images/trend-catalog/Screenshot 2026-07-03 232524.png",
+      "url": "guides/living-room-layered-lighting.html",
       "productLinks": [
         {
           "label": "Search Living Room Lighting",
           "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=living%20room%20lighting&limitRange=0"
+        },
+        {
+          "label": "Shop Chandeliers",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers"
         }
       ]
     },
     {
       "id": "outdoor-lighting-curb-appeal",
       "category": "Outdoor",
-      "title": "Outdoor Lighting Ideas for Your Home's Exterior",
+      "title": "Outdoor Lighting Ideas for Your Home Exterior: Wall Lights, Path Lights, and the Warm Glow That Makes It All Work",
       "question": "What outdoor lights improve curb appeal?",
-      "summary": "Use wall lights, path lights, and warm color temperatures to make the exterior feel polished and welcoming.",
+      "summary": "Wall light sizing, path spacing, warm Kelvin rules, and a complete starter plan for curb appeal.",
+      "readTime": "12 min read",
+      "articleUrl": "guides/outdoor-lighting-curb-appeal.html",
       "image": "images/trend-catalog/outdoor-mood.png",
-      "url": "https://www.catalog.logicxo.com/lighting-fixtures/exterior",
+      "url": "guides/outdoor-lighting-curb-appeal.html",
       "productLinks": [
         {
           "label": "Shop Outdoor Lighting",
           "url": "https://www.catalog.logicxo.com/lighting-fixtures/exterior"
+        },
+        {
+          "label": "Shop Outdoor Wall Lights",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/sconces/outdoor-wall-lights"
         }
       ]
     }
