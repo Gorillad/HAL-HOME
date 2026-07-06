@@ -52,29 +52,42 @@
     {
       "id": "kitchen-light-count",
       "category": "Kitchen",
-      "title": "How Many Lights Should You Have in Your Kitchen?",
+      "title": "How Many Lights Should You Have in Your Kitchen? A Simple Guide to Spacing, Layering, and Zero Dark Zones",
       "question": "How many pendant lights do I need over an island?",
-      "summary": "A simple guide to spacing pendants, layering task lighting, and avoiding dark work zones.",
+      "summary": "Recessed formulas, island pendant spacing, under-cabinet placement, and a dark-zone checklist for kitchens.",
+      "readTime": "12 min read",
+      "articleUrl": "guides/kitchen-light-count.html",
       "image": "images/trend-catalog/Pendant-Light.png",
-      "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants",
+      "url": "guides/kitchen-light-count.html",
       "productLinks": [
         {
-          "label": "Shop Pendants",
+          "label": "Shop Island Pendants",
           "url": "https://www.catalog.logicxo.com/lighting-fixtures/pendants"
+        },
+        {
+          "label": "Shop Under-Cabinet Lighting",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/under-cabinet"
         }
       ]
     },
     {
       "id": "lighting-finish-guide",
       "category": "Finishes",
-      "title": "How to Pick the Right Finish for Your Lighting Fixtures",
+      "title": "How to Pick the Right Finish for Your Lighting Fixtures (And When to Match, Contrast, or Mix)",
       "question": "Should lighting finishes match hardware?",
-      "summary": "Understand when to match, contrast, or mix finishes so the room feels intentional.",
-      "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=brass%20black%20bronze%20lighting&limitRange=0",
+      "summary": "When to match, contrast, or mix — warm/cool finish map, dominant + accent formula, and 2026 trends.",
+      "readTime": "12 min read",
+      "articleUrl": "guides/lighting-finish-guide.html",
+      "image": "images/trend-catalog/Screenshot 2026-07-03 232524.png",
+      "url": "guides/lighting-finish-guide.html",
       "productLinks": [
         {
           "label": "Explore Trending Finishes",
           "url": "https://www.catalog.logicxo.com/catalog?itemNumVal=brass%20black%20bronze%20lighting&limitRange=0"
+        },
+        {
+          "label": "Shop Brass Chandeliers",
+          "url": "https://www.catalog.logicxo.com/lighting-fixtures/chandeliers/brass?limitRange=0"
         }
       ]
     },

@@ -7824,3 +7824,596 @@ body.home-page .home-cta-closer + .container {
         font-size: 0.625rem;
     }
 }
+
+/* ── Kitchen guide phase-1 graphics ── */
+.guide-numbered-list {
+    margin: 0 0 1rem;
+    padding-left: 1.35rem;
+}
+
+.guide-numbered-list li + li {
+    margin-top: 0.45rem;
+}
+
+.guide-kitchen-layers {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.guide-kitchen-layer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(26, 37, 43, 0.1);
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.guide-kitchen-layer span {
+    color: var(--hero-gold-dark);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.guide-kitchen-layer small {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.guide-kitchen-layer--ambient {
+    border-left: 4px solid rgba(201, 169, 110, 0.35);
+}
+
+.guide-kitchen-layer--task {
+    border-left: 4px solid rgba(201, 169, 110, 0.55);
+}
+
+.guide-kitchen-layer--accent {
+    border-left: 4px solid rgba(201, 169, 110, 0.75);
+}
+
+.guide-kitchen-layer--combined {
+    border-color: rgba(201, 169, 110, 0.45);
+    background: rgba(201, 169, 110, 0.1);
+}
+
+.guide-kitchen-plan-room {
+    position: relative;
+    width: min(100%, 360px);
+    aspect-ratio: 4 / 3;
+    margin: 0 auto;
+    border: 2px solid #1a252b;
+    border-radius: 8px;
+    background: #f5f0e8;
+}
+
+.guide-kitchen-plan-cabinet {
+    position: absolute;
+    background: #1a252b;
+    border-radius: 2px;
+}
+
+.guide-kitchen-plan-cabinet--top {
+    top: 4%;
+    left: 4%;
+    right: 4%;
+    height: 8%;
+}
+
+.guide-kitchen-plan-cabinet--left {
+    top: 4%;
+    left: 4%;
+    width: 8%;
+    bottom: 4%;
+}
+
+.guide-kitchen-plan-cabinet--right {
+    top: 4%;
+    right: 4%;
+    width: 8%;
+    bottom: 4%;
+}
+
+.guide-kitchen-plan-island {
+    position: absolute;
+    top: 42%;
+    left: 32%;
+    width: 36%;
+    height: 22%;
+    border: 2px solid #1a252b;
+    border-radius: 4px;
+    background: rgba(201, 169, 110, 0.25);
+}
+
+.guide-kitchen-plan-recessed {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #c9a96e;
+    border: 2px solid #1a252b;
+    transform: translate(-50%, -50%);
+}
+
+.guide-kitchen-plan-undercab {
+    position: absolute;
+    top: 11%;
+    left: 14%;
+    right: 14%;
+    height: 3px;
+    background: linear-gradient(90deg, #c9a96e, #e8c88a, #c9a96e);
+    border-radius: 2px;
+}
+
+.guide-kitchen-plan-pendant {
+    position: absolute;
+    top: 30%;
+    width: 8px;
+    height: 14px;
+    border: 2px solid #1a252b;
+    border-radius: 4px 4px 8px 8px;
+    background: #c9a96e;
+    transform: translateX(-50%);
+}
+
+.guide-kitchen-plan-sink {
+    position: absolute;
+    top: 10%;
+    right: 18%;
+    width: 14%;
+    height: 10%;
+    border: 2px dashed rgba(26, 37, 43, 0.35);
+    border-radius: 50%;
+}
+
+.guide-kitchen-plan-note {
+    margin: 0.75rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.guide-kitchen-shadow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guide-kitchen-shadow-card p {
+    margin: 0.5rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+.guide-kitchen-shadow-scene {
+    position: relative;
+    height: 100px;
+    margin-top: 0.35rem;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #f0ebe3 0%, #e8e0d4 100%);
+    overflow: hidden;
+}
+
+.guide-kitchen-shadow-light {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff8e8;
+    border: 2px solid #c9a96e;
+    transform: translateX(-50%);
+    box-shadow: 0 40px 30px rgba(255, 220, 150, 0.15);
+}
+
+.guide-kitchen-shadow-light--edge {
+    left: 72%;
+}
+
+.guide-kitchen-shadow-undercab {
+    position: absolute;
+    top: 42px;
+    right: 12%;
+    width: 28%;
+    height: 3px;
+    background: #c9a96e;
+    box-shadow: 0 8px 16px rgba(255, 210, 120, 0.35);
+}
+
+.guide-kitchen-shadow-person {
+    position: absolute;
+    bottom: 28px;
+    left: 42%;
+    width: 16px;
+    height: 36px;
+    border-radius: 8px 8px 4px 4px;
+    background: #1a252b;
+}
+
+.guide-kitchen-shadow-counter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background: #1a252b;
+}
+
+.guide-kitchen-shadow-scene--wrong .guide-kitchen-shadow-counter {
+    box-shadow: inset 0 12px 20px rgba(0, 0, 0, 0.45);
+}
+
+.guide-kitchen-shadow-scene--right .guide-kitchen-shadow-counter {
+    box-shadow: inset 0 -8px 16px rgba(255, 220, 150, 0.35);
+}
+
+.guide-kitchen-pendant-spacing {
+    position: relative;
+    min-height: 200px;
+    padding-bottom: 2.5rem;
+}
+
+.guide-kitchen-pendant-island {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 10%;
+    right: 10%;
+    height: 28px;
+    border: 2px solid #1a252b;
+    border-radius: 4px;
+    background: rgba(201, 169, 110, 0.2);
+}
+
+.guide-kitchen-pendant-fixture {
+    position: absolute;
+    bottom: calc(1.5rem + 28px + 36px);
+    width: 20px;
+    height: 24px;
+    border: 2px solid #1a252b;
+    border-radius: 6px 6px 12px 12px;
+    background: linear-gradient(180deg, #c9a96e 0%, #a8854a 100%);
+    transform: translateX(-50%);
+}
+
+.guide-kitchen-pendant-fixture::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 2px;
+    height: 36px;
+    background: #1a252b;
+    transform: translateX(-50%);
+}
+
+.guide-kitchen-pendant-dim {
+    position: absolute;
+    padding: 0.25rem 0.45rem;
+    border: 1px solid rgba(201, 169, 110, 0.45);
+    border-radius: 5px;
+    background: rgba(201, 169, 110, 0.12);
+    color: #1a252b;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.guide-kitchen-pendant-dim--height {
+    top: 18%;
+    right: 8%;
+}
+
+.guide-kitchen-pendant-dim--end {
+    bottom: 2.25rem;
+    left: 12%;
+}
+
+.guide-kitchen-pendant-dim--span {
+    bottom: calc(1.5rem + 28px + 48px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 900px) {
+    .guide-kitchen-shadow {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .guide-kitchen-pendant-dim {
+        position: static;
+        display: inline-block;
+        margin: 0.35rem 0.25rem 0 0;
+    }
+
+    .guide-kitchen-pendant-spacing {
+        min-height: auto;
+        padding-bottom: 1rem;
+    }
+}
+
+/* ── Finish guide phase-1 graphics ── */
+.guide-finish-temp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+}
+
+.guide-finish-temp-col {
+    padding: 1rem;
+    border: 1px solid rgba(201, 169, 110, 0.24);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.guide-finish-temp-col h3 {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+}
+
+.guide-finish-temp-note {
+    margin: 0 0 0.65rem;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-style: italic;
+}
+
+.guide-finish-temp-col ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.875rem;
+}
+
+.guide-finish-spectrum {
+    padding: 1.5rem 0 0.5rem;
+}
+
+.guide-finish-spectrum-bar {
+    height: 18px;
+    border-radius: 999px;
+    background: linear-gradient(
+        90deg,
+        #c9a96e 0%,
+        #a07840 18%,
+        #6b4226 32%,
+        #8a9099 52%,
+        #b8bcc4 68%,
+        #4a4f56 85%,
+        #2e3338 100%
+    );
+    border: 1px solid rgba(26, 37, 43, 0.12);
+}
+
+.guide-finish-spectrum-stops {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.55rem;
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.guide-finish-spectrum-neutrals {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed rgba(201, 169, 110, 0.35);
+    color: var(--hero-gold-dark);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.guide-finish-sheen {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.guide-finish-sheen-swatch {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 72px;
+    padding-bottom: 0.55rem;
+    border: 1px solid rgba(26, 37, 43, 0.12);
+    border-radius: 10px;
+    color: #1a252b;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.guide-finish-sheen-swatch--polished {
+    background: linear-gradient(135deg, #f5e6c8 0%, #c9a96e 45%, #fff8ee 55%, #b8924f 100%);
+}
+
+.guide-finish-sheen-swatch--satin {
+    background: linear-gradient(180deg, #d4b87a 0%, #c9a96e 100%);
+}
+
+.guide-finish-sheen-swatch--matte {
+    background: linear-gradient(180deg, #b8924f 0%, #9a7540 100%);
+    color: #f5f0e8;
+}
+
+.guide-finish-dominant {
+    min-height: auto;
+    padding: 1.25rem;
+}
+
+.guide-finish-dominant-bar {
+    display: flex;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+    border-radius: 8px;
+    border: 1px solid rgba(26, 37, 43, 0.1);
+}
+
+.guide-finish-dominant-segment {
+    padding: 0.55rem 0.65rem;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.guide-finish-dominant-segment--dominant {
+    flex: 2;
+    background: rgba(201, 169, 110, 0.28);
+    color: #1a252b;
+}
+
+.guide-finish-dominant-segment--accent {
+    flex: 1;
+    background: #1a252b;
+    color: #f5f0e8;
+}
+
+.guide-finish-dominant-room {
+    display: grid;
+    gap: 1rem;
+}
+
+.guide-finish-dominant-level {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.guide-finish-dominant-level em {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-style: normal;
+}
+
+.guide-finish-dominant-fixture {
+    width: 48px;
+    height: 22px;
+    border: 2px solid #1a252b;
+    border-radius: 6px 6px 12px 12px;
+    background: linear-gradient(180deg, #c9a96e 0%, #a8854a 100%);
+}
+
+.guide-finish-dominant-hardware {
+    width: 28px;
+    height: 8px;
+    border-radius: 4px;
+    background: #1a252b;
+}
+
+.guide-finish-dominant-lamp {
+    width: 18px;
+    height: 28px;
+    border: 2px solid #1a252b;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #c9a96e 0%, #a8854a 100%);
+}
+
+.guide-finish-matrix {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.guide-finish-matrix-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.guide-finish-matrix-row--works {
+    border: 1px solid rgba(201, 169, 110, 0.45);
+    background: rgba(201, 169, 110, 0.1);
+}
+
+.guide-finish-matrix-row--avoid {
+    border: 1px solid rgba(26, 37, 43, 0.12);
+    background: rgba(26, 37, 43, 0.04);
+    color: var(--text-muted);
+}
+
+.guide-finish-matrix-label {
+    min-width: 3.5rem;
+    color: var(--hero-gold-dark);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.guide-finish-matrix-row--avoid .guide-finish-matrix-label {
+    color: var(--text-muted);
+}
+
+.guide-finish-patina {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.guide-finish-patina-card {
+    text-align: center;
+}
+
+.guide-finish-patina-swatch {
+    width: 56px;
+    height: 56px;
+    margin: 0.5rem auto;
+    border-radius: 50%;
+    border: 2px solid rgba(26, 37, 43, 0.15);
+}
+
+.guide-finish-patina-card--new .guide-finish-patina-swatch {
+    background: linear-gradient(135deg, #f0d48a 0%, #e8c060 50%, #f5e090 100%);
+}
+
+.guide-finish-patina-card--mid .guide-finish-patina-swatch {
+    background: linear-gradient(135deg, #c9a050 0%, #a07840 60%, #8a6530 100%);
+}
+
+.guide-finish-patina-card--aged .guide-finish-patina-swatch {
+    background: linear-gradient(135deg, #7a5a28 0%, #5c4220 50%, #4a3520 100%);
+}
+
+.guide-finish-patina-card p {
+    margin: 0;
+    font-size: 0.8125rem;
+}
+
+@media (max-width: 900px) {
+    .guide-finish-temp-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-finish-patina {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .guide-finish-sheen {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-finish-matrix-row span:not(.guide-finish-matrix-label) {
+        flex: 1 1 calc(50% - 0.5rem);
+    }
+}
