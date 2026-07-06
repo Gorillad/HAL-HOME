@@ -446,7 +446,7 @@
             summary: 'Room and table formulas, hanging height, and FAQ — the pro sizing guide for dining chandeliers.',
             readTime: '8 min read',
             articleUrl: 'guides/dining-room-chandelier-size.html',
-            image: 'images/trend-catalog/Chandelier for dining room.png',
+            image: 'images/trend-catalog/dining-room-chandelier-size.png',
             url: 'guides/dining-room-chandelier-size.html',
             featured: true,
             productLinks: [{
@@ -461,7 +461,7 @@
             summary: '2700K warm white, dimmable LED, and CRI 90+ — plus base sizes, bulb shapes, and dimmer tips.',
             readTime: '10 min read',
             articleUrl: 'guides/chandelier-bulb-temperature.html',
-            image: 'images/trend-catalog/Chandelier-2.png',
+            image: 'images/trend-catalog/chandelier-bulb-temperature.png',
             url: 'guides/chandelier-bulb-temperature.html',
             productLinks: [{
                 label: 'Search Chandelier Bulbs',
@@ -478,7 +478,7 @@
             summary: 'Recessed formulas, island pendant spacing, under-cabinet placement, and a dark-zone checklist for kitchens.',
             readTime: '12 min read',
             articleUrl: 'guides/kitchen-light-count.html',
-            image: 'images/trend-catalog/Pendant-Light.png',
+            image: 'images/trend-catalog/kitchen-light-count-01.png',
             url: 'guides/kitchen-light-count.html',
             productLinks: [{
                 label: 'Shop Island Pendants',
@@ -495,7 +495,7 @@
             summary: 'When to match, contrast, or mix — warm/cool finish map, dominant + accent formula, and 2026 trends.',
             readTime: '12 min read',
             articleUrl: 'guides/lighting-finish-guide.html',
-            image: 'images/trend-catalog/Vanity-Glow.png',
+            image: 'images/trend-catalog/lighting-finish-guide.png',
             url: 'guides/lighting-finish-guide.html',
             productLinks: [{
                 label: 'Explore Trending Finishes',
@@ -512,7 +512,7 @@
             summary: 'Pendants are a fixture type; island lighting is a location — when to choose a pendant row vs one linear fixture.',
             readTime: '8 min read',
             articleUrl: 'guides/pendant-vs-island-lighting.html',
-            image: 'images/trend-catalog/Chandelier-sea.png',
+            image: 'images/trend-catalog/pendant-vs-island-lighting-01.png',
             url: 'guides/pendant-vs-island-lighting.html',
             productLinks: [{
                 label: 'Shop Pendants',
@@ -529,7 +529,7 @@
             summary: 'Ambient, task, and accent layers — the pro recipe, worked example, and mistakes that make rooms flat or harsh.',
             readTime: '10 min read',
             articleUrl: 'guides/living-room-layered-lighting.html',
-            image: 'images/trend-catalog/Screenshot 2026-07-03 232524.png',
+            image: 'images/trend-catalog/living-room-layered-lighting.png',
             url: 'guides/living-room-layered-lighting.html',
             productLinks: [{
                 label: 'Search Living Room Lighting',
@@ -546,7 +546,7 @@
             summary: 'Wall light sizing, path spacing, warm Kelvin rules, and a complete starter plan for curb appeal.',
             readTime: '12 min read',
             articleUrl: 'guides/outdoor-lighting-curb-appeal.html',
-            image: 'images/trend-catalog/outdoor-mood.png',
+            image: 'images/trend-catalog/outdoor-lighting-curb-01.png',
             url: 'guides/outdoor-lighting-curb-appeal.html',
             productLinks: [{
                 label: 'Shop Outdoor Lighting',

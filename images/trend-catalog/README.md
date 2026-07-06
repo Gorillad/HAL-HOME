@@ -1,13 +1,15 @@
-# Trend Catalog Hero Images
+# Trend Catalog Guide Images
 
-The Trend Catalog hero currently uses these files:
+Hero and inline editorial images for Inspiration Lighting Guides. Naming: `{guide-id}.png` (hero), `{guide-id}-01.png` (inline), etc.
 
-- `Screenshot 2026-07-03 232524.png` — living room layers guide
-- `Chandelier-2.png` — bulb temperature guide
-- `Chandelier for dining room.png` — dining chandelier sizing guide
-- `Chandelier-sea.png` — pendant vs island guide
-- `Pendant-Light.png` — kitchen light count guide
-- `Vanity-Glow.png` — lighting finish guide
-- `outdoor-mood.png` — outdoor curb appeal guide
+| Guide | Hero | Inline |
+|-------|------|--------|
+| dining-room-chandelier-size | `dining-room-chandelier-size.png` | `-01` linear table |
+| chandelier-bulb-temperature | `chandelier-bulb-temperature.png` | `-01` Kelvin scenes |
+| kitchen-light-count | `kitchen-light-count-01.png` | `kitchen-light-count.png` accent nook |
+| lighting-finish-guide | `lighting-finish-guide.png` | `-01`, `-02` finish examples |
+| pendant-vs-island-lighting | `pendant-vs-island-lighting-01.png` | `.png` linear compare |
+| living-room-layered-lighting | `living-room-layered-lighting.png` | `-01`, `-02`, `-03` layers |
+| outdoor-lighting-curb-appeal | `outdoor-lighting-curb-01.png` | `outdoor-lighting-curb-appeal.png`, `outdoor-lighting-curb.png` |
 
-WebP versions can be added later if we decide to use `<picture>` sources.
+WebP `<picture>` sources can be added later for performance.
