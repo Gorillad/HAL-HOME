@@ -188,13 +188,13 @@
 
 .sb-mega-menu .sb-col strong {
     display: block;
-    margin: 0 0 0.55rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 2px solid rgba(201, 169, 110, 0.35);
+    margin: 0 0 0.7rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid rgba(201, 169, 110, 0.55);
     font-family: var(--font-display);
-    font-size: 1.0625rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     color: var(--xo-mega-ink);
     line-height: 1.2;
 }
@@ -237,6 +237,7 @@
 
 .sb-mega-menu .sb-col-trending strong {
     color: var(--xo-mega-gold-dark);
+    font-weight: 700;
 }
 
 .sb-mega-menu .sb-col.sb-col-trending a.trend-menu-link {
@@ -489,13 +490,13 @@
 
 .mega-menu-section-title {
     display: block;
-    margin: 0 0 0.55rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 2px solid rgba(201, 169, 110, 0.35);
+    margin: 0 0 0.7rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid rgba(201, 169, 110, 0.55);
     font-family: var(--font-display);
-    font-size: 1.0625rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     color: var(--xo-mega-ink);
     line-height: 1.2;
 }
@@ -732,6 +733,16 @@
     background:
         radial-gradient(circle at 100% 0%, rgba(201, 169, 110, 0.22), transparent 42%),
         linear-gradient(165deg, #171717 0%, #050505 100%);
+}
+
+.sb-promo-link--trend {
+    background:
+        radial-gradient(circle at 100% 0%, rgba(201, 169, 110, 0.32), transparent 46%),
+        linear-gradient(165deg, #1a1410 0%, #050505 100%);
+}
+
+.sb-promo-link--trend .sb-promo-title {
+    color: var(--xo-mega-gold-light);
 }
 
 .brands-mega-promo-stats,

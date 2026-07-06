@@ -7608,6 +7608,73 @@ body.home-page .home-cta-closer + .container {
     left: 12%;
 }
 
+.lx-diagram-wrap {
+    max-width: 640px;
+    margin: 1.5rem 0 2rem;
+    font-family: 'Josefin Sans', 'Segoe UI', sans-serif;
+    background: #ffffff;
+    border: 1px solid #e6e2da;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.lx-diagram-head {
+    background: #2b2b2e;
+    padding: 1.1rem 1.5rem 0.9rem;
+}
+
+.lx-diagram-head h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c9a96e;
+}
+
+.lx-diagram-head p {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: #d8d5cf;
+    letter-spacing: 0.03em;
+}
+
+.lx-diagram-body {
+    padding: 1.25rem 1rem 0.5rem;
+}
+
+.lx-diagram-body svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.lx-diagram-foot {
+    padding: 0.9rem 1.5rem 1.2rem;
+    border-top: 1px solid #e6e2da;
+}
+
+.lx-diagram-foot p {
+    margin: 0.2rem 0;
+    font-size: 0.85rem;
+    color: #4a4a4d;
+    line-height: 1.55;
+}
+
+.lx-diagram-foot strong {
+    color: #2b2b2e;
+    font-weight: 600;
+}
+
+.lx-brandmark {
+    margin-top: 0.7rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #c9a96e;
+}
+
 .guide-compare {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

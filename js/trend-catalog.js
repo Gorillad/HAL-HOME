@@ -91,6 +91,11 @@
         },
     };
 
+    const DEPARTMENT_TREND_CATEGORIES = {
+        lighting: ['chandeliers', 'pendants', 'bath-vanity'],
+        outdoor: ['outdoor'],
+    };
+
     const FINISH_COLORS = {
         aluminum: '#b0b4b8',
         'antique-brass': '#a07840',
@@ -369,6 +374,7 @@
         normalizedCards.forEach(renderTrendCard);
         renderHeroFinishSwatches(normalizedCards);
         renderMegaMenuTrendingColumn(normalizedCards);
+        renderMegaMenuPromoTrends(normalizedCards);
     }
 
     function findTopLevelDropdown(href) {
@@ -430,6 +436,58 @@
         if (!dropdown) return;
 
         dropdown.prepend(createTrendingMenuColumn(cards));
+    }
+
+    function findDepartmentTrendCard(cards, categories) {
+        return categories
+            .map((category) => cards.find((card) => card.category === category))
+            .find(Boolean) || null;
+    }
+
+    function renderMegaMenuPromoTrends(cards) {
+        document.querySelectorAll('[data-trend-promo]').forEach((promoCard) => {
+            const departmentKey = promoCard.getAttribute('data-trend-promo');
+            const categories = DEPARTMENT_TREND_CATEGORIES[departmentKey];
+            if (!categories) return;
+
+            const card = findDepartmentTrendCard(cards, categories);
+            const config = card ? CATEGORY_CONFIG[card.category] : null;
+            const link = promoCard.querySelector('.sb-promo-link');
+            if (!card || !config || !link) return;
+
+            const badge = link.querySelector('.sb-promo-badge');
+            const title = link.querySelector('.sb-promo-title');
+            const text = link.querySelector('.sb-promo-text');
+            const tags = link.querySelector('.mega-menu-promo-tags');
+            const cta = link.querySelector('.sb-promo-cta');
+            const topFinish = card.finishes?.[0] || '';
+
+            link.href = buildTrendUrl(config, card);
+            link.classList.add('sb-promo-link--trend');
+            link.setAttribute(
+                'aria-label',
+                topFinish
+                    ? `Shop ${formatFinishLabel(topFinish)} ${card.label}: ${card.trend}`
+                    : `Shop ${card.label}: ${card.trend}`,
+            );
+
+            if (badge) badge.textContent = 'Trending Now';
+            if (title) title.textContent = formatTrendLinkLabel(card, config);
+            if (text) text.textContent = card.trend;
+            if (cta) {
+                cta.textContent = topFinish
+                    ? `Shop ${formatFinishLabel(topFinish)} ${card.label}`
+                    : `Shop ${card.label}`;
+            }
+
+            if (tags) {
+                tags.replaceChildren(...(card.finishes || []).slice(0, 3).map((finish) => {
+                    const tag = document.createElement('span');
+                    tag.textContent = formatFinishLabel(finish);
+                    return tag;
+                }));
+            }
+        });
     }
 
     const DEFAULT_GUIDE_FEED = {
