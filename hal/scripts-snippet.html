@@ -1,8 +1,42 @@
 <!-- Paste before </body> on the catalog site (or XOLogic footer scripts area). -->
-<script src="/data/js/header.js?v1" type="text/javascript"></script>
-<script src="/data/js/footer.js?v1" type="text/javascript"></script>
+<!-- Inline mobile nav: works even if /data/js/header.js fails to load. Keep this block. -->
+<script type="text/javascript">
+(function () {
+    if (window.__lxoCatalogHeaderBound) return;
+
+    function setMobileMenu(open) {
+        var header = document.querySelector('.trend-catalog-header');
+        var toggle = document.querySelector('.trend-catalog-menu-toggle');
+        var megaNav = document.querySelector('.sb-nav');
+        if (!header) return;
+        header.classList.toggle('is-open', open);
+        document.body.classList.toggle('catalog-header-open', open);
+        if (megaNav) megaNav.classList.toggle('is-open', open);
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            toggle.setAttribute('aria-label', open ? 'Close catalog menu' : 'Open catalog menu');
+        }
+    }
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.trend-catalog-menu-toggle')) return;
+        event.preventDefault();
+        event.stopPropagation();
+        var header = document.querySelector('.trend-catalog-header');
+        setMobileMenu(Boolean(header && !header.classList.contains('is-open')));
+    }, true);
+
+    window.__lxoCatalogHeaderBound = true;
+    window.__lxoCatalogHeaderJs = true;
+}());
+</script>
+<script src="/data/js/header.js?v3" type="text/javascript"></script>
+<script src="/data/js/trend-catalog.js?v3" defer></script>
+<script src="/data/js/footer.js?v3" type="text/javascript"></script>
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        Footer.load();
+        if (typeof Footer !== 'undefined' && Footer.load) {
+            Footer.load();
+        }
     });
 </script>

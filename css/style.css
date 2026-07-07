@@ -704,6 +704,8 @@ body.cart-open {
     background: transparent;
     padding: 10px;
     cursor: pointer;
+    position: relative;
+    z-index: 230;
 }
 
 .trend-catalog-menu-toggle span {
