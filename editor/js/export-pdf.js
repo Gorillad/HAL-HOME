@@ -1,6 +1,6 @@
 /**
  * Build Showroom homepage developer handoff: PDF + image files in a ZIP.
- * Requires html2canvas, jspdf, and JSZip.
+ * Requires showroom-capture.js, jspdf, and JSZip.
  */
 window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const {
@@ -20,6 +20,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         pdfFilename = 'showroom-homepage-brief.pdf',
         zipFilename = 'showroom-homepage-handoff.zip',
         guideMeta = {},
+        onProgress,
     } = options;
 
     const isGallery = spec?.design === 'gallery';
@@ -76,6 +77,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     if (typeof JSZip === 'undefined') {
         throw new Error('JSZip not loaded.');
     }
+    if (!window.ShowroomCapture?.captureElement || !window.ShowroomCapture?.isCapturable) {
+        throw new Error('Showroom capture utilities not loaded.');
+    }
+
+    const { captureElement, isCapturable } = window.ShowroomCapture;
 
     const doc = new JsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
     const margin = 48;
@@ -277,181 +283,6 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             doc.text(lines, margin, y);
             y += blockH + 6;
         });
-    }
-
-    function copyLoadedImageToClone(originalImg, cloneImg) {
-        if (!originalImg || !cloneImg) return;
-        if (!originalImg.complete || originalImg.naturalWidth <= 0) return;
-
-        try {
-            const canvas = document.createElement('canvas');
-            canvas.width = originalImg.naturalWidth;
-            canvas.height = originalImg.naturalHeight;
-            const context = canvas.getContext('2d');
-            if (!context) return;
-            context.drawImage(originalImg, 0, 0);
-            cloneImg.src = canvas.toDataURL('image/png');
-        } catch {
-            cloneImg.src = originalImg.currentSrc || originalImg.src;
-        }
-
-        cloneImg.hidden = false;
-        cloneImg.removeAttribute('hidden');
-    }
-
-    function inlineLoadedImagesForClone(sourceEl, clonedEl) {
-        if (!sourceEl || !clonedEl) return;
-
-        sourceEl.querySelectorAll('img[id]').forEach((originalImg) => {
-            const cloneImg = clonedEl.querySelector(`#${CSS.escape(originalImg.id)}`);
-            copyLoadedImageToClone(originalImg, cloneImg);
-        });
-
-        const sourceImages = [...sourceEl.querySelectorAll('img')];
-        const cloneImages = [...clonedEl.querySelectorAll('img')];
-        sourceImages.forEach((originalImg, index) => {
-            if (originalImg.id) return;
-            copyLoadedImageToClone(originalImg, cloneImages[index]);
-        });
-    }
-
-    const CAPTURE_COLOR_PROPS = [
-        'color',
-        'background-color',
-        'border-color',
-        'border-top-color',
-        'border-right-color',
-        'border-bottom-color',
-        'border-left-color',
-        'outline-color',
-    ];
-
-    function sanitizeCloneStylesheets(clonedDoc) {
-        [...clonedDoc.styleSheets].forEach((sheet) => {
-            let rules;
-            try {
-                rules = sheet.cssRules;
-            } catch {
-                return;
-            }
-
-            [...rules].forEach((rule) => {
-                if (!rule.style) return;
-                for (let index = rule.style.length - 1; index >= 0; index -= 1) {
-                    const prop = rule.style[index];
-                    const value = rule.style.getPropertyValue(prop);
-                    if (value && value.includes('color-mix(')) {
-                        rule.style.removeProperty(prop);
-                    }
-                }
-            });
-        });
-    }
-
-    function inlineComputedColors(sourceNode, cloneNode) {
-        if (!sourceNode || !cloneNode) return;
-
-        const computed = window.getComputedStyle(sourceNode);
-        CAPTURE_COLOR_PROPS.forEach((prop) => {
-            const value = computed.getPropertyValue(prop);
-            if (!value || value.includes('color-mix(')) return;
-            if (value === 'rgba(0, 0, 0, 0)' && prop !== 'background-color') return;
-            cloneNode.style.setProperty(prop, value);
-        });
-
-        const sourceChildren = [...sourceNode.children];
-        const cloneChildren = [...cloneNode.children];
-        sourceChildren.forEach((sourceChild, index) => {
-            inlineComputedColors(sourceChild, cloneChildren[index]);
-        });
-    }
-
-    function prepareCloneForCapture(clonedDoc, clonedEl, sourceEl) {
-        sanitizeCloneStylesheets(clonedDoc);
-
-        if (clonedEl) {
-            clonedEl.classList.add('is-pdf-export-capture');
-            clonedEl.style.transform = 'none';
-            clonedEl.style.boxShadow = 'none';
-            inlineComputedColors(sourceEl, clonedEl);
-            inlineLoadedImagesForClone(sourceEl, clonedEl);
-        }
-
-        const previewFrame = clonedDoc.getElementById('showroomPreview');
-        if (previewFrame) {
-            previewFrame.classList.add('is-pdf-export-capture');
-            previewFrame.style.transform = 'none';
-            previewFrame.style.boxShadow = 'none';
-        }
-
-        clonedDoc.querySelectorAll('.showroom-you-may-like-track').forEach((track) => {
-            track.style.overflow = 'visible';
-            track.scrollLeft = 0;
-        });
-        clonedDoc.querySelectorAll('.showroom-you-may-like-viewport').forEach((viewport) => {
-            viewport.style.overflow = 'visible';
-        });
-        clonedDoc.querySelectorAll('.showroom-hero-copy, .showroom-feature-card-overlay').forEach((panel) => {
-            panel.style.overflow = 'hidden';
-        });
-        clonedDoc.querySelectorAll(
-            '.showroom-spotlight-carousel-nav, .showroom-spotlight-carousel-dots',
-        ).forEach((control) => {
-            control.style.display = 'none';
-        });
-    }
-
-    async function waitForImagesInElement(el) {
-        if (!el) return;
-
-        const images = [...el.querySelectorAll('img[src]')];
-        await Promise.all(images.map((img) => {
-            if (img.complete && img.naturalWidth > 0) {
-                return Promise.resolve();
-            }
-
-            return new Promise((resolve) => {
-                img.addEventListener('load', resolve, { once: true });
-                img.addEventListener('error', resolve, { once: true });
-            });
-        }));
-    }
-
-    function isCapturable(el) {
-        if (!el || el.hidden) return false;
-        const style = window.getComputedStyle(el);
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        const rect = el.getBoundingClientRect();
-        return rect.width > 1 && rect.height > 1;
-    }
-
-    async function captureElement(el) {
-        if (!el) {
-            throw new Error('Nothing to capture for layout preview.');
-        }
-
-        if (document.fonts?.ready) {
-            await document.fonts.ready;
-        }
-
-        await waitForImagesInElement(el);
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-        const canvas = await html2canvas(el, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            logging: false,
-            backgroundColor: '#ffffff',
-            imageTimeout: 15000,
-            onclone: (clonedDoc, clonedEl) => prepareCloneForCapture(clonedDoc, clonedEl, el),
-        });
-
-        if (!canvas.width || !canvas.height) {
-            throw new Error('Layout capture failed.');
-        }
-
-        return canvas;
     }
 
     function writePreviewLabel(heading) {
@@ -1101,42 +932,60 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         throw new Error('Nothing to capture for hero preview.');
     }
 
+    const previewCaptureSteps = [];
     if (isCapturable(headerEl)) {
-        await appendCanvasPreview(await captureElement(headerEl), 'Preview — Header');
+        previewCaptureSteps.push({ el: headerEl, label: 'Preview — Header' });
     }
-
-    await appendCanvasPreview(await captureElement(heroTarget), 'Preview — Hero');
+    previewCaptureSteps.push({ el: heroTarget, label: 'Preview — Hero' });
 
     if (isSpotlight) {
-        for (const section of spotlightSections) {
-            if (!isCapturable(section.el)) continue;
-            await appendCanvasPreview(await captureElement(section.el), section.label);
-        }
+        spotlightSections.forEach((section) => {
+            if (isCapturable(section.el)) {
+                previewCaptureSteps.push({ el: section.el, label: section.label });
+            }
+        });
     } else {
         if (isGallery && isCapturable(galleryCatalogEl)) {
-            await appendCanvasPreview(await captureElement(galleryCatalogEl), 'Preview — Catalog Highlights');
+            previewCaptureSteps.push({ el: galleryCatalogEl, label: 'Preview — Catalog Highlights' });
         }
         if (!isGallery && isCapturable(categoriesEl)) {
-            await appendCanvasPreview(await captureElement(categoriesEl), 'Preview — Featured Categories');
+            previewCaptureSteps.push({ el: categoriesEl, label: 'Preview — Featured Categories' });
         }
         if (!isGallery && isCapturable(aboutEl)) {
-            await appendCanvasPreview(await captureElement(aboutEl), 'Preview — About Us');
+            previewCaptureSteps.push({ el: aboutEl, label: 'Preview — About Us' });
         }
         if (!isGallery && isCapturable(featureTilesEl)) {
-            await appendCanvasPreview(await captureElement(featureTilesEl), 'Preview — Feature Cards');
+            previewCaptureSteps.push({ el: featureTilesEl, label: 'Preview — Feature Cards' });
         }
         if (!isGallery && isCapturable(youMayLikeEl)) {
-            await appendCanvasPreview(await captureElement(youMayLikeEl), 'Preview — You May Like');
+            previewCaptureSteps.push({ el: youMayLikeEl, label: 'Preview — You May Like' });
         }
         if (!isGallery && isCapturable(getInspiredEl)) {
-            await appendCanvasPreview(await captureElement(getInspiredEl), 'Preview — Get Inspired');
+            previewCaptureSteps.push({ el: getInspiredEl, label: 'Preview — Get Inspired' });
         }
         if (isCapturable(footerEl)) {
-            await appendCanvasPreview(await captureElement(footerEl), 'Preview — Footer');
+            previewCaptureSteps.push({ el: footerEl, label: 'Preview — Footer' });
         }
         if (isCapturable(copyrightEl)) {
-            await appendCanvasPreview(await captureElement(copyrightEl), 'Preview — Copyright');
+            previewCaptureSteps.push({ el: copyrightEl, label: 'Preview — Copyright' });
         }
+    }
+
+    for (let stepIndex = 0; stepIndex < previewCaptureSteps.length; stepIndex += 1) {
+        const step = previewCaptureSteps[stepIndex];
+        if (typeof onProgress === 'function') {
+            onProgress({
+                phase: 'capture',
+                current: stepIndex + 1,
+                total: previewCaptureSteps.length,
+                label: step.label.replace(/^Preview — /, ''),
+            });
+        }
+        await appendCanvasPreview(await captureElement(step.el), step.label);
+    }
+
+    if (typeof onProgress === 'function') {
+        onProgress({ phase: 'packaging', current: previewCaptureSteps.length, total: previewCaptureSteps.length });
     }
 
     // ——— Uploaded asset pages ———

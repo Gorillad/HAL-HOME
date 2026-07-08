@@ -325,13 +325,18 @@ function initShowroomDesignTabs() {
         }
 
         if (designNote) {
-            designNote.textContent = `${label} selected — double-click the template name or use Open ${label} editor below.`;
+            designNote.textContent = `${label} selected — double-click the preview or template name, or use Open ${label} editor below.`;
         }
     }
 
     function openActiveEditor(design) {
         applyDesign(design);
         if (editorBtn?.href) window.location.assign(editorBtn.href);
+    }
+
+    function getActiveDesign() {
+        const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
+        return activeTab?.dataset.showroomDesign || 'classic';
     }
 
     function setActiveDesign(design) {
@@ -376,6 +381,18 @@ function initShowroomDesignTabs() {
     tabs.forEach((tab) => {
         tab.title = 'Double-click to open in editor';
     });
+
+    const previewSurface = card.querySelector('.home-templates-showroom-preview') ||
+        card.querySelector('.template-preview-frame') ||
+        viewsContainer;
+    if (previewSurface) {
+        previewSurface.title = 'Double-click to open in editor';
+        previewSurface.addEventListener('dblclick', (e) => {
+            if (e.target.closest('.showroom-design-tab')) return;
+            e.preventDefault();
+            openActiveEditor(getActiveDesign());
+        });
+    }
 
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
     if (activeTab?.dataset.showroomDesign) {
@@ -426,13 +443,18 @@ function initDesignerDesignTabs() {
         }
 
         if (designNote) {
-            designNote.textContent = `${label} selected — double-click the template name or use Open ${label} editor below.`;
+            designNote.textContent = `${label} selected — double-click the preview or template name, or use Open ${label} editor below.`;
         }
     }
 
     function openActiveEditor(design) {
         applyDesign(design);
         if (editorBtn?.href) window.location.assign(editorBtn.href);
+    }
+
+    function getActiveDesign() {
+        const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
+        return activeTab?.dataset.designerDesign || 'gallery';
     }
 
     function setActiveDesign(design) {
@@ -477,6 +499,18 @@ function initDesignerDesignTabs() {
     tabs.forEach((tab) => {
         tab.title = 'Double-click to open in editor';
     });
+
+    const previewSurface = card.querySelector('.template-preview--designer') ||
+        card.querySelector('.template-preview-frame') ||
+        viewsContainer;
+    if (previewSurface) {
+        previewSurface.title = 'Double-click to open in editor';
+        previewSurface.addEventListener('dblclick', (e) => {
+            if (e.target.closest('.showroom-design-tab')) return;
+            e.preventDefault();
+            openActiveEditor(getActiveDesign());
+        });
+    }
 
     const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
     if (activeTab?.dataset.designerDesign) {

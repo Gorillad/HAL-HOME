@@ -555,14 +555,22 @@
     };
 
     const exportBtn = document.getElementById('exportPdfBtn');
+    const clientReviewBtn = document.getElementById('shareReviewBtn');
+    const reviewExportProgress = document.getElementById('reviewExportProgress');
+    const reviewExportProgressLabel = document.getElementById('reviewExportProgressLabel');
+    const reviewExportProgressPercent = document.getElementById('reviewExportProgressPercent');
+    const reviewExportProgressBar = document.getElementById('reviewExportProgressBar');
+    const reviewExportProgressFill = document.getElementById('reviewExportProgressFill');
     const resetBtn = document.getElementById('resetDraftBtn');
     const statusEl = document.getElementById('editorStatus');
     const evolvedToast = document.getElementById('evolvedToast');
     const EXPORT_BTN_LABEL = 'Export handoff';
+    const CLIENT_REVIEW_BTN_LABEL = 'Share for review';
     const EXPORT_BTN_SUCCESS_LABEL = 'Evolved 🕺';
     let evolvedToastHideTimer = null;
     let evolvedToastRemoveTimer = null;
     let exportInProgress = false;
+    let captureBusy = false;
     const previewRoot = document.getElementById('showroomPreview');
     const heroRoot = document.getElementById('showroomHeroSection');
     const galleryHeroLayoutRoot = document.getElementById('showroomGalleryHeroLayout');
@@ -992,12 +1000,14 @@
     function setExportLoading(isLoading) {
         const btn = getExportButton();
         if (!btn) return;
+        captureBusy = isLoading;
         if (isLoading) {
             btn.disabled = true;
             btn.classList.remove('is-evolved');
             btn.classList.add('is-exporting');
             btn.setAttribute('aria-busy', 'true');
             btn.innerHTML = '<span class="export-spinner" aria-hidden="true"></span><span class="export-btn-text">Building handoff…</span>';
+            if (clientReviewBtn) clientReviewBtn.disabled = true;
             setStatus('Building PDF, images, and assets…');
             return;
         }
@@ -1006,6 +1016,209 @@
         btn.removeAttribute('aria-busy');
         btn.textContent = EXPORT_BTN_LABEL;
         btn.removeAttribute('aria-label');
+        if (clientReviewBtn) clientReviewBtn.disabled = false;
+    }
+
+    function setCaptureButtonsDisabled(isDisabled) {
+        if (clientReviewBtn) clientReviewBtn.disabled = isDisabled;
+        const exportButton = getExportButton();
+        if (exportButton && (isDisabled || !exportInProgress)) {
+            exportButton.disabled = isDisabled;
+        }
+    }
+
+    function setReviewExportProgress(percent, label) {
+        if (!reviewExportProgress || !reviewExportProgressFill) return;
+        const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+        reviewExportProgress.hidden = false;
+        reviewExportProgressFill.style.width = `${clamped}%`;
+        if (reviewExportProgressBar) {
+            reviewExportProgressBar.setAttribute('aria-valuenow', String(clamped));
+        }
+        if (reviewExportProgressPercent) {
+            reviewExportProgressPercent.textContent = `${clamped}%`;
+        }
+        if (label && reviewExportProgressLabel) {
+            reviewExportProgressLabel.textContent = label;
+        }
+    }
+
+    function resetReviewExportProgress() {
+        if (!reviewExportProgress || !reviewExportProgressFill) return;
+        reviewExportProgress.hidden = true;
+        reviewExportProgressFill.style.width = '0%';
+        if (reviewExportProgressBar) {
+            reviewExportProgressBar.setAttribute('aria-valuenow', '0');
+        }
+        if (reviewExportProgressPercent) {
+            reviewExportProgressPercent.textContent = '0%';
+        }
+        if (reviewExportProgressLabel) {
+            reviewExportProgressLabel.textContent = 'Preparing review package…';
+        }
+    }
+
+    function handleCaptureProgress(progress, exportKind) {
+        if (!progress) return;
+        if (exportKind === 'review') {
+            if (progress.phase === 'complete') {
+                setReviewExportProgress(100, 'Review package ready — download starting…');
+                setStatus('Client review ZIP downloaded');
+                return;
+            }
+            if (progress.phase === 'packaging') {
+                setReviewExportProgress(94, 'Packaging review ZIP…');
+                setStatus('Packaging client review ZIP…');
+                return;
+            }
+            if (progress.phase === 'start') {
+                const total = progress.total || 1;
+                setReviewExportProgress(5, `Getting ready — ${total} section${total === 1 ? '' : 's'} to capture…`);
+                setStatus('Preparing homepage screenshots for client review…');
+                return;
+            }
+            if (progress.phase === 'capture-start') {
+                const label = progress.label || 'section';
+                const current = progress.current || 1;
+                const total = progress.total || 1;
+                const percent = 6 + Math.round(((current - 1) / total) * 84);
+                setReviewExportProgress(
+                    percent,
+                    `Capturing ${label} (${current} of ${total})…`,
+                );
+                setStatus(`Capturing ${label} (${current}/${total})…`);
+                return;
+            }
+            const label = progress.label || 'section';
+            const current = progress.current || 0;
+            const total = progress.total || 1;
+            const percent = 8 + Math.round((current / total) * 84);
+            setReviewExportProgress(
+                percent,
+                `Capturing ${label} (${current} of ${total})…`,
+            );
+            setStatus(`Capturing ${label} (${current}/${total})…`);
+            return;
+        }
+        if (progress.phase === 'packaging') {
+            setStatus('Building PDF and handoff ZIP…');
+            return;
+        }
+        const label = progress.label || 'section';
+        setStatus(`Capturing ${label} (${progress.current}/${progress.total})…`);
+    }
+
+    function setClientReviewLoading(isLoading) {
+        if (!clientReviewBtn) return;
+        captureBusy = isLoading;
+        if (isLoading) {
+            clientReviewBtn.classList.add('is-exporting');
+            clientReviewBtn.setAttribute('aria-busy', 'true');
+            clientReviewBtn.innerHTML = '<span class="export-spinner" aria-hidden="true"></span><span class="export-btn-text">Building review…</span>';
+            setCaptureButtonsDisabled(true);
+            setReviewExportProgress(2, 'Preparing homepage for capture…');
+            setStatus('Preparing homepage screenshots for client review…');
+            return;
+        }
+        clientReviewBtn.classList.remove('is-exporting');
+        clientReviewBtn.removeAttribute('aria-busy');
+        clientReviewBtn.textContent = CLIENT_REVIEW_BTN_LABEL;
+        setCaptureButtonsDisabled(false);
+        resetReviewExportProgress();
+    }
+
+    function getReviewHeaderElement() {
+        if (templateDesign === 'spotlight') return showroomHeaderSpotlight;
+        if (templateDesign === 'gallery') return showroomHeaderGallery;
+        return showroomHeaderClassic || headerRoot;
+    }
+
+    function buildClientReviewSections() {
+        const sections = [];
+        const pushSection = (id, label, el) => {
+            if (el) sections.push({ id, label, el });
+        };
+
+        if (templateDesign === 'spotlight') {
+            pushSection('header', 'Header', showroomHeaderSpotlight);
+            pushSection('hero', 'Hero', showroomHeroSpotlight);
+            pushSection('on-sale', 'On Sale', spotlightOnSaleRoot);
+            pushSection('shop-by-room', 'Shop by Room', spotlightShopByRoomRoot);
+            pushSection('about-us', 'About Us', spotlightAboutRoot);
+            pushSection('categories', 'Categories', spotlightCategoryRoot);
+            pushSection('brands', 'Brands', spotlightBrandsRoot);
+            pushSection('newsletter', 'Newsletter', spotlightNewsletterRoot);
+            pushSection('footer', 'Footer', spotlightFooterRoot);
+            return sections;
+        }
+
+        if (templateDesign === 'gallery') {
+            pushSection('header', 'Header', showroomHeaderGallery || headerRoot);
+            pushSection('hero', 'Hero', galleryHeroLayoutRoot);
+            pushSection('catalog-highlights', 'Catalog Highlights', galleryCatalogRoot);
+            pushSection('footer', 'Footer', classicFooterRoot);
+            pushSection('copyright', 'Copyright', classicCopyrightRoot);
+            return sections;
+        }
+
+        pushSection('header', 'Header', getReviewHeaderElement());
+        pushSection('hero', 'Hero', heroRoot);
+        pushSection('featured-categories', 'Featured Categories', categoriesRoot);
+        pushSection('about-us', 'About Us', aboutRoot);
+        pushSection('feature-cards', 'Feature Cards', featureTilesRoot);
+        if (state.sketchSectionVisible) {
+            pushSection('sketch-section', 'Sketch Section', sketchRoot);
+        }
+        pushSection('you-may-like', 'You May Like', youMayLikeRoot);
+        pushSection('get-inspired', 'Get Inspired', getInspiredRoot);
+        pushSection('footer', 'Footer', footerRoot);
+        return sections;
+    }
+
+    function slugifyClientReviewFilename(text) {
+        return String(text || 'showroom')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .slice(0, 48) || 'showroom';
+    }
+
+    async function preparePreviewForCapture() {
+        if (templateDesign === 'gallery') {
+            ensureGalleryImageDefaults();
+            readClassicFooterLinksFromEditor();
+            readForm();
+        } else if (templateDesign === 'spotlight') {
+            readSpotlightExportForm();
+        } else {
+            readYouMayLikeFieldsFromEditor();
+            readGetInspiredFieldsFromEditor();
+            readMainNavFromEditor();
+            readForm();
+        }
+        syncPreview();
+
+        const prevTransform = previewRoot.style.transform;
+        const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
+        const prevScrollLeft = previewWrap ? previewWrap.scrollLeft : 0;
+        previewRoot.style.transform = 'none';
+        previewRoot.classList.add('is-pdf-export-capture');
+        if (previewScaler) previewScaler.style.height = '';
+        if (previewWrap) {
+            previewWrap.scrollTop = 0;
+            previewWrap.scrollLeft = 0;
+        }
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+        return function restorePreviewAfterCapture() {
+            previewRoot.style.transform = prevTransform;
+            previewRoot.classList.remove('is-pdf-export-capture');
+            if (previewWrap) {
+                previewWrap.scrollTop = prevScrollTop;
+                previewWrap.scrollLeft = prevScrollLeft;
+            }
+            fitPreviewScale();
+        };
     }
 
     function clampPreviewScroll() {
@@ -5386,34 +5599,13 @@
     }
 
     if (exportBtn) exportBtn.addEventListener('click', async () => {
+        if (captureBusy) return;
         exportInProgress = true;
         setExportLoading(true);
         let exportSucceeded = false;
-        if (templateDesign === 'gallery') {
-            ensureGalleryImageDefaults();
-            readClassicFooterLinksFromEditor();
-            readForm();
-        } else if (templateDesign === 'spotlight') {
-            readSpotlightExportForm();
-        } else {
-            readYouMayLikeFieldsFromEditor();
-            readGetInspiredFieldsFromEditor();
-            readMainNavFromEditor();
-            readForm();
-        }
-        syncPreview();
-        const prevTransform = previewRoot.style.transform;
-        const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
-        const prevScrollLeft = previewWrap ? previewWrap.scrollLeft : 0;
-        previewRoot.style.transform = 'none';
-        previewRoot.classList.add('is-pdf-export-capture');
-        if (previewScaler) previewScaler.style.height = '';
-        if (previewWrap) {
-            previewWrap.scrollTop = 0;
-            previewWrap.scrollLeft = 0;
-        }
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        let restorePreviewAfterCapture = null;
         try {
+            restorePreviewAfterCapture = await preparePreviewForCapture();
             const handoffAssets = await buildHandoffAssetsForExport();
             const handoffLogoDataUrl = await resolveHandoffLogoDataUrl(handoffAssets);
             const handoffSpec = templateDesign === 'gallery'
@@ -5559,7 +5751,7 @@
                 : [];
 
             await window.exportShowroomHandoff({
-                headerEl: templateDesign === 'spotlight' ? showroomHeaderSpotlight : headerRoot,
+                headerEl: getReviewHeaderElement(),
                 heroEl: templateDesign === 'gallery'
                     ? galleryHeroLayoutRoot
                     : templateDesign === 'spotlight'
@@ -5589,6 +5781,7 @@
                     design: templateDesign,
                     logoDataUrl: handoffLogoDataUrl,
                 },
+                onProgress: (progress) => handleCaptureProgress(progress, 'handoff'),
             });
             exportSucceeded = true;
             setStatus('Handoff ZIP downloaded');
@@ -5597,14 +5790,10 @@
             const detail = err && err.message ? ` — ${err.message}` : '';
             setStatus(`Export failed${detail}`);
         } finally {
-            previewRoot.style.transform = prevTransform;
-            previewRoot.classList.remove('is-pdf-export-capture');
-            if (previewWrap) {
-                previewWrap.scrollTop = prevScrollTop;
-                previewWrap.scrollLeft = prevScrollLeft;
-            }
-            fitPreviewScale();
+            if (restorePreviewAfterCapture) restorePreviewAfterCapture();
             exportInProgress = false;
+            captureBusy = false;
+            if (clientReviewBtn) clientReviewBtn.disabled = false;
             if (exportSucceeded) {
                 setExportSuccess();
             } else if (state.handoffExported) {
@@ -5612,6 +5801,40 @@
             } else {
                 setExportLoading(false);
             }
+        }
+    });
+
+    if (clientReviewBtn) clientReviewBtn.addEventListener('click', async () => {
+        if (captureBusy || exportInProgress) return;
+        setClientReviewLoading(true);
+        let restorePreviewAfterCapture = null;
+        try {
+            restorePreviewAfterCapture = await preparePreviewForCapture();
+            setReviewExportProgress(6, 'Starting section captures…');
+            if (typeof window.exportShowroomClientReview !== 'function') {
+                throw new Error('Client review export not loaded.');
+            }
+            await window.exportShowroomClientReview({
+                sections: buildClientReviewSections(),
+                meta: {
+                    companyName: getHandoffCompanyName(),
+                    templateLabel: TEMPLATE_DESIGNS[templateDesign],
+                    design: templateDesign,
+                },
+                zipFilename: `${slugifyClientReviewFilename(getHandoffCompanyName())}-client-review.zip`,
+                onProgress: (progress) => handleCaptureProgress(progress, 'review'),
+            });
+            handleCaptureProgress({ phase: 'complete' }, 'review');
+        } catch (err) {
+            console.error(err);
+            const detail = err && err.message ? ` — ${err.message}` : '';
+            setStatus(`Review export failed${detail}`);
+            if (reviewExportProgressLabel) {
+                reviewExportProgressLabel.textContent = `Review export failed${detail}`;
+            }
+        } finally {
+            if (restorePreviewAfterCapture) restorePreviewAfterCapture();
+            setClientReviewLoading(false);
         }
     });
 

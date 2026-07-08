@@ -84,15 +84,36 @@
                     <p class="editor-chrome-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
                 </div>
             </div>
-            <div class="editor-chrome-actions">
-                <span class="editor-status" id="editorStatus" aria-live="polite"></span>
-                <button type="button" class="btn btn-secondary btn-sm" id="resetDraftBtn" style="display:none">Reset to defaults</button>
-                <button type="button" class="btn btn-primary" id="exportPdfBtn">Export handoff</button>
-                <span class="editor-evolved-toast" id="evolvedToast" hidden>
-                    <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
-                    <span class="editor-evolved-label">Evolved</span>
-                    <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
-                </span>
+            <div class="editor-export-actions">
+                <div class="editor-export-buttons">
+                    <span class="editor-status" id="editorStatus" aria-live="polite"></span>
+                    <button type="button" class="btn btn-secondary btn-sm" id="resetDraftBtn" style="display:none">Reset to defaults</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="shareReviewBtn" title="Screenshots + client feedback form for review">Share for review</button>
+                    <button type="button" class="btn btn-primary" id="exportPdfBtn" title="PDF brief + developer spec for web team">Export handoff</button>
+                    <span class="editor-evolved-toast" id="evolvedToast" hidden>
+                        <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                        <span class="editor-evolved-label">Evolved</span>
+                        <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                    </span>
+                </div>
+                <div class="editor-review-progress" id="reviewExportProgress" hidden>
+                    <div class="editor-review-progress-head">
+                        <span class="editor-review-progress-label" id="reviewExportProgressLabel">Preparing review package…</span>
+                        <span class="editor-review-progress-percent" id="reviewExportProgressPercent">0%</span>
+                    </div>
+                    <div
+                        class="editor-review-progress-track"
+                        id="reviewExportProgressBar"
+                        role="progressbar"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow="0"
+                        aria-labelledby="reviewExportProgressLabel"
+                    >
+                        <div class="editor-review-progress-fill" id="reviewExportProgressFill"></div>
+                    </div>
+                </div>
+                <p class="editor-export-help"><strong>Share for review</strong> builds a ZIP with one client page (<code>Homepage-Review.html</code>) plus an internal <code>agent/</code> folder — clients fill out the form, download a PDF, and email it to their onboarding agent at <a href="mailto:clientservices@xologic.com">clientservices@xologic.com</a>. <strong>Export handoff</strong> builds the developer PDF and spec package for your web team.</p>
             </div>
         </div>
 
@@ -1599,7 +1620,9 @@
     <script src="vendor/jspdf.umd.min.js"></script>
     <script src="vendor/jszip.min.js"></script>
     <script src="js/export-showroom-guide.js"></script>
+    <script src="js/showroom-capture.js"></script>
     <script src="js/export-pdf.js"></script>
+    <script src="js/export-client-review.js"></script>
     <script src="js/spotlight-template.js?v=2"></script>
     <script src="js/editor-progress-dock.js"></script>
     <script src="js/showroom-editor.js?v=3"></script>

@@ -6419,10 +6419,12 @@ body.home-page .home-templates-showroom-spotlight {
 
 body.home-page .home-templates-showroom-preview {
     position: relative;
+    cursor: pointer;
 }
 
 body.home-page .home-templates-showroom-preview .template-preview-frame {
     position: relative;
+    cursor: pointer;
 }
 
 body.home-page .home-templates-showroom-preview .showroom-design-views {
@@ -6592,6 +6594,11 @@ body.home-page .home-page-templates .template-preview {
 
 body.home-page .home-page-templates .template-preview--signature {
     background: #1a1a1a;
+}
+
+body.home-page .home-page-templates .template-preview--designer,
+body.home-page .home-page-templates .template-preview--designer .template-preview-frame {
+    cursor: pointer;
 }
 
 body.home-page .template-preview-frame {
