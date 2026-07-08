@@ -299,10 +299,9 @@
 
   <div class="review-browser-tip">
     <div class="review-browser-tip-inner">
-      <strong>How to open this file:</strong> Unzip the package, then open <strong>Homepage-Review.html</strong> in your web browser.
-      <strong>Google Chrome</strong> is recommended (also works in Microsoft Edge, Firefox, and Safari).
-      Do not open it in Word, Preview, or Adobe Acrobat — those apps cannot run the feedback form.
-      If double-click opens the wrong program, right-click the file → <em>Open with</em> → Chrome.
+      <strong>Seeing code or plain text?</strong> You opened this file in Notepad or another text editor.
+      Close this window, go back to the ZIP folder, and double-click <strong>START-REVIEW-IN-CHROME.bat</strong> (Windows) or <strong>START-REVIEW-IN-CHROME.command</strong> (Mac).
+      That launcher opens this page in Google Chrome automatically.
     </div>
   </div>
 
@@ -732,6 +731,142 @@
 </html>`;
     }
 
+    function toWindowsCrlf(text) {
+        return String(text || '').replace(/\r?\n/g, '\r\n');
+    }
+
+    function buildWindowsChromeLauncherBat() {
+        return toWindowsCrlf(`@echo off
+setlocal EnableExtensions
+set "REVIEW=%~dp0Homepage-Review.html"
+
+if not exist "%REVIEW%" (
+  echo Could not find Homepage-Review.html in this folder.
+  pause
+  exit /b 1
+)
+
+if exist "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" (
+  start "" "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%"
+  exit /b 0
+)
+
+if exist "%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome.exe" (
+  start "" "%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%"
+  exit /b 0
+)
+
+if exist "%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe" (
+  start "" "%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%"
+  exit /b 0
+)
+
+if exist "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" (
+  start "" "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" "%REVIEW%"
+  exit /b 0
+)
+
+if exist "%ProgramFiles%\\Microsoft\\Edge\\Application\\msedge.exe" (
+  start "" "%ProgramFiles%\\Microsoft\\Edge\\Application\\msedge.exe" "%REVIEW%"
+  exit /b 0
+)
+
+echo.
+echo  Google Chrome was not found on this computer.
+echo  Install Chrome, or right-click Homepage-Review.html
+echo  and choose Open with -^> Google Chrome.
+echo.
+pause
+exit /b 1
+`);
+    }
+
+    function buildWindowsChromeLauncherVbs() {
+        return `Set fso = CreateObject("Scripting.FileSystemObject")
+Set shell = CreateObject("WScript.Shell")
+folder = fso.GetParentFolderName(WScript.ScriptFullName)
+reviewHtml = folder & "\\Homepage-Review.html"
+
+If Not fso.FileExists(reviewHtml) Then
+  MsgBox "Could not find Homepage-Review.html in this folder.", vbCritical, "LogicX Homepage Review"
+  WScript.Quit 1
+End If
+
+chromePaths = Array( _
+  shell.ExpandEnvironmentStrings("%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe"), _
+  shell.ExpandEnvironmentStrings("%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome.exe"), _
+  shell.ExpandEnvironmentStrings("%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe") _
+)
+
+For Each chromePath In chromePaths
+  If fso.FileExists(chromePath) Then
+    shell.Run Chr(34) & chromePath & Chr(34) & " " & Chr(34) & reviewHtml & Chr(34), 1, False
+    WScript.Quit 0
+  End If
+Next
+
+edgePaths = Array( _
+  shell.ExpandEnvironmentStrings("%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe"), _
+  shell.ExpandEnvironmentStrings("%ProgramFiles%\\Microsoft\\Edge\\Application\\msedge.exe") _
+)
+
+For Each edgePath In edgePaths
+  If fso.FileExists(edgePath) Then
+    shell.Run Chr(34) & edgePath & Chr(34) & " " & Chr(34) & reviewHtml & Chr(34), 1, False
+    WScript.Quit 0
+  End If
+Next
+
+MsgBox "Install Google Chrome, or right-click Homepage-Review.html and choose Open with -> Google Chrome.", vbInformation, "LogicX Homepage Review"
+`;
+    }
+
+    function buildWindowsEdgeLauncherBat() {
+        return toWindowsCrlf(`@echo off
+setlocal EnableExtensions
+set "REVIEW=%~dp0Homepage-Review.html"
+
+if not exist "%REVIEW%" (
+  echo Could not find Homepage-Review.html in this folder.
+  pause
+  exit /b 1
+)
+
+if exist "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" (
+  start "" "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" "%REVIEW%"
+  exit /b 0
+)
+if exist "%ProgramFiles%\\Microsoft\\Edge\\Application\\msedge.exe" (
+  start "" "%ProgramFiles%\\Microsoft\\Edge\\Application\\msedge.exe" "%REVIEW%"
+  exit /b 0
+)
+
+echo Could not find Microsoft Edge.
+pause
+exit /b 1
+`);
+    }
+
+    function buildMacChromeLauncherCommand() {
+        return `#!/bin/bash
+DIR="$(cd "$(dirname "$0")" && pwd)"
+HTML="$DIR/Homepage-Review.html"
+
+if [ ! -f "$HTML" ]; then
+  echo "Could not find Homepage-Review.html in this folder."
+  exit 1
+fi
+
+if [ -d "/Applications/Google Chrome.app" ]; then
+  open -a "Google Chrome" "$HTML"
+elif [ -d "/Applications/Microsoft Edge.app" ]; then
+  open -a "Microsoft Edge" "$HTML"
+else
+  open "$HTML"
+fi
+`;
+    }
+
     function buildOpenFirstText(reviewData) {
         return [
             `${reviewData.companyName} — Homepage Review`,
@@ -739,15 +874,21 @@
             '',
             'OPEN THIS FILE IN A WEB BROWSER',
             '',
+            'Windows (most work computers):',
             '1. Unzip the entire package first.',
-            '2. Double-click Homepage-Review.html',
-            '   - Recommended: Google Chrome',
-            '   - Also works: Microsoft Edge, Firefox, Safari',
-            '3. If the wrong app opens, right-click Homepage-Review.html',
-            '   → Open with → Google Chrome (or Edge).',
+            '2. Double-click START-REVIEW-IN-CHROME.bat',
+            '   (or START-REVIEW-IN-CHROME.vbs if your PC blocks .bat files)',
+            '3. Do NOT double-click Homepage-Review.html if it opens in Notepad.',
             '',
-            'Do NOT open in Word, Preview, or Adobe Acrobat.',
-            'Those programs cannot run the interactive feedback form.',
+            'Mac:',
+            '1. Unzip the package.',
+            '2. Double-click START-REVIEW-IN-CHROME.command',
+            '   (If blocked: right-click -> Open, or right-click Homepage-Review.html -> Open With -> Chrome)',
+            '',
+            'Manual fallback (any computer):',
+            'Right-click Homepage-Review.html -> Open with -> Google Chrome',
+            '',
+            'Do NOT open in Notepad, Word, Preview, or Adobe Acrobat.',
             '',
             'HOW FEEDBACK WORKS',
             '- You type your answers on the Homepage-Review.html page.',
@@ -767,15 +908,20 @@
             '==========================================',
             '',
             'PACKAGE LAYOUT',
-            '- Homepage-Review.html — send this to the client (only file they need to open).',
+            '- START-REVIEW-IN-CHROME.bat — double-click this on Windows (opens Chrome automatically).',
+            '- START-REVIEW-IN-CHROME.vbs — Windows alternate launcher (no black window).',
+            '- START-REVIEW-IN-CHROME.command — double-click this on Mac.',
+            '- Homepage-Review.html — the feedback form (do not open if it launches Notepad).',
             '- agent/ — internal LogicX tools, screenshots, and reference files.',
             '',
             'FOR THE CLIENT',
-            '1. Unzip this package and open Homepage-Review.html in Google Chrome (or Edge, Firefox, Safari).',
-            '2. See OPEN-FIRST.txt if double-click opens the wrong program.',
-            '3. Enter all feedback on the web page — the PDF is a read-only summary, not an editable form.',
-            '4. Click "Download feedback PDF" (or "Print or save as PDF" as a fallback).',
-            '5. Email the PDF back to their LogicX onboarding agent at ' + CLIENT_SERVICES_EMAIL + '.',
+            '1. Unzip this package.',
+            '2. Windows: double-click START-REVIEW-IN-CHROME.bat (not the .html file).',
+            '3. Mac: double-click START-REVIEW-IN-CHROME.command.',
+            '4. See START-HERE.txt if the wrong program opens (e.g. Notepad).',
+            '5. Enter all feedback on the web page — the PDF is a read-only summary, not an editable form.',
+            '6. Click "Download feedback PDF" (or "Print or save as PDF" as a fallback).',
+            '7. Email the PDF back to their LogicX onboarding agent at ' + CLIENT_SERVICES_EMAIL + '.',
             '',
             'The client can ignore the agent folder entirely.',
             '',
@@ -803,6 +949,7 @@
             '- Client emails the PDF to ' + CLIENT_SERVICES_EMAIL + ' (JSON backup acceptable if PDF fails).',
             '',
             'ONBOARDING AGENT',
+            '- Tell clients to double-click START-REVIEW-IN-CHROME.bat (Windows) or .command (Mac).',
             '- Share the ZIP or only Homepage-Review.html with the client.',
             '- When the PDF returns, route it to web development.',
             '- Use agent-summary.html + review-data.json only if you have structured JSON.',
@@ -926,7 +1073,11 @@
 
         await bundleVendorScript(zip, 'vendor/jspdf.umd.min.js', 'agent/lib/jspdf.umd.min.js');
 
-        zip.file('OPEN-FIRST.txt', buildOpenFirstText(reviewData));
+        zip.file('START-HERE.txt', buildOpenFirstText(reviewData));
+        zip.file('START-REVIEW-IN-CHROME.bat', buildWindowsChromeLauncherBat());
+        zip.file('START-REVIEW-IN-CHROME.vbs', buildWindowsChromeLauncherVbs());
+        zip.file('START-REVIEW-IN-EDGE.bat', buildWindowsEdgeLauncherBat());
+        zip.file('START-REVIEW-IN-CHROME.command', buildMacChromeLauncherCommand());
         zip.file('Homepage-Review.html', buildClientReviewHtml(reviewData, jspdfInlineScript));
         agentFolder.file('README.txt', buildAgentReadmeText(reviewData));
         agentFolder.file('REVIEW-README.txt', buildReadmeText(reviewData));
