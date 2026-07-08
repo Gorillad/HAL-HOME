@@ -6,8 +6,6 @@
 (function () {
     'use strict';
 
-    const CLIENT_SERVICES_EMAIL = 'clientservices@xologic.com';
-
     function escapeHtml(text) {
         return String(text ?? '')
             .replace(/&/g, '&amp;')
@@ -208,55 +206,13 @@
         doc.text('Generated ' + generatedDate, pageW / 2, 356, { align: 'center' });
         doc.setTextColor(201, 169, 110);
         doc.setFontSize(9);
-        doc.text('Fill in the form fields, save this PDF, and email it back.', pageW / 2, pageH - 72, { align: 'center' });
-
-        // Instructions
-        addPage(20);
-        drawGoldRule(y);
-        y += 18;
-        writeLines('How to open and complete this review', { bold: true, size: 16, gap: 12 });
-        const calloutY = y;
-        const calloutPad = 16;
-        const calloutInnerW = contentW - calloutPad * 2;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        const calloutLines = doc.splitTextToSize(
-            'Open this PDF in Microsoft Edge, Preview (Mac), or Adobe Acrobat Reader. '
-            + 'Click each box to type your feedback, then save the file and email it back.',
-            calloutInnerW,
-        );
-        const calloutH = calloutLines.length * 14 + calloutPad * 2 + 6;
-        drawSoftPanel(margin, calloutY, contentW, calloutH);
-        doc.setTextColor(34, 47, 54);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9);
-        doc.text('QUICK START', margin + calloutPad, calloutY + calloutPad + 2);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(74, 86, 96);
-        doc.text(calloutLines, margin + calloutPad, calloutY + calloutPad + 18);
-        y = calloutY + calloutH + 18;
-        writeLines(
-            'This PDF has fillable boxes you can type into — just like a paper form, but digital. '
-            + 'No web browser required.',
-            { size: 11, gap: 10 },
-        );
-        writeLines('1. Open this PDF in Adobe Acrobat Reader, Preview (Mac), or Microsoft Edge.', { size: 10, gap: 6 });
-        writeLines('2. Click each box to enter your name, email, and feedback for every homepage section.', { size: 10, gap: 6 });
-        writeLines('3. Choose a rating for each section and add notes where you want changes.', { size: 10, gap: 6 });
-        writeLines('4. When finished, choose File → Save or Save As and keep the same PDF file.', { size: 10, gap: 6 });
-        writeLines('5. Email the saved PDF to your LogicX onboarding agent:', { size: 10, gap: 4 });
-        writeLines(CLIENT_SERVICES_EMAIL, { bold: true, size: 11, gap: 12 });
-        writeLines(
-            'Tip: If boxes do not let you type, try opening the PDF in Adobe Acrobat Reader (free) or Microsoft Edge.',
-            { size: 9, color: [90, 104, 114], gap: 8 },
-        );
+        doc.text('Fill in the fields · Save · Return to your onboarding agent', pageW / 2, pageH - 72, { align: 'center' });
 
         // Contact + overall fields
-        addPage(20);
+        addPage(12);
         drawGoldRule(y);
-        y += 18;
-        writeLines('Your contact information', { bold: true, size: 14, gap: 12 });
+        y += 14;
+        writeLines('Your feedback', { bold: true, size: 13, gap: 10 });
         writeLines('Your name', { bold: true, size: 10, gap: 4 });
         const nameFieldY = y;
         y += 22;
@@ -267,10 +223,10 @@
         y += 22;
         addTextField('reviewer_email', margin, emailFieldY, fieldColW, 18, false);
 
-        y += 10;
+        y += 14;
         const overallPanelY = y;
         const overallPanelPad = 14;
-        const overallFieldH = 72;
+        const overallFieldH = 108;
         const overallPanelH = overallPanelPad * 2 + 28 + overallFieldH;
         drawSoftPanel(margin, overallPanelY, fieldColW + overallPanelPad * 2, overallPanelH);
         doc.setFont('helvetica', 'bold');
@@ -348,24 +304,10 @@
     function buildStartHereText(reviewData, pdfFilename) {
         return [
             `${reviewData.companyName} — Homepage Review`,
-            '==========================================',
             '',
-            'FOR THE CLIENT',
+            `Open ${pdfFilename}, fill in the boxes (ratings + notes per section), save, and return to your onboarding agent.`,
             '',
-            `1. Open ${pdfFilename} (double-click — opens in your PDF app).`,
-            '2. Click the boxes in the PDF to type your feedback.',
-            '3. Save the PDF when you are done (File → Save or Save As).',
-            '4. Email the saved PDF to your LogicX onboarding agent:',
-            '   ' + CLIENT_SERVICES_EMAIL,
-            '',
-            'RECOMMENDED APPS',
-            '- Windows: Microsoft Edge or Adobe Acrobat Reader (free)',
-            '- Mac: Preview or Adobe Acrobat Reader',
-            '',
-            'You can ignore the agent folder — that is for the LogicX team only.',
-            '',
-            `Reference: ${reviewData.packageId}`,
-            `Template: ${reviewData.templateLabel}`,
+            `Ref ${reviewData.packageId} · ${reviewData.templateLabel}`,
         ].join('\n');
     }
 
@@ -381,8 +323,7 @@
             '- agent-summary.html — optional JSON summary viewer.',
             '',
             'CLIENT WORKFLOW',
-            '- Client opens the PDF, fills in form fields, saves, and emails it back.',
-            '- Client emails the completed PDF to ' + CLIENT_SERVICES_EMAIL + '.',
+            '- Client fills the PDF, saves, and returns it to their onboarding agent.',
             '',
             'ONBOARDING AGENT',
             '- Send the ZIP or only the PDF to the client.',
@@ -439,7 +380,7 @@
         <label for="review-file"><strong>Load review-data.json</strong></label>
         <input type="file" id="review-file" accept="application/json,.json">
       </div>
-      <p class="muted" style="margin:0.75rem 0 0;">Clients complete the fillable PDF and email it to ${escapeHtml(CLIENT_SERVICES_EMAIL)}. Use this tool with the JSON template from the agent folder for structured dev handoff.</p>
+      <p class="muted" style="margin:0.75rem 0 0;">Load review-data.json from the agent folder for structured dev handoff.</p>
     </div>
 
     <div id="summary-content" hidden>
