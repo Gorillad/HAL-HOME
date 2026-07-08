@@ -29,8 +29,18 @@
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
+        link.rel = 'noopener';
+        link.style.display = 'none';
+        document.body.appendChild(link);
         link.click();
-        URL.revokeObjectURL(url);
+        window.setTimeout(function () {
+            if (link.parentNode) link.parentNode.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 250);
+    }
+
+    function sanitizeInlineScript(scriptText) {
+        return String(scriptText || '').replace(/<\/script>/gi, '<\\/script>');
     }
 
     function buildPackageId() {
@@ -63,7 +73,7 @@
         };
     }
 
-    function buildClientReviewHtml(reviewData) {
+    function buildClientReviewHtml(reviewData, jspdfInlineScript) {
         const companyName = escapeHtml(reviewData.companyName);
         const templateLabel = escapeHtml(reviewData.templateLabel);
         const packageId = escapeHtml(reviewData.packageId);
@@ -237,7 +247,42 @@
     }
     .btn-primary { background: var(--gold); color: #1a252b; }
     .btn-primary:disabled { opacity: 0.7; cursor: wait; }
+    .btn-secondary { background: #eef2f6; color: var(--charcoal); border: 1px solid var(--border); }
     .review-save-status { color: var(--muted); font-size: 0.9rem; }
+    .review-browser-tip {
+      max-width: 920px;
+      margin: 1rem auto 0;
+      padding: 0 1.5rem;
+    }
+    .review-browser-tip-inner {
+      background: #fff8e8;
+      border: 1px solid #e8d4a8;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .review-browser-tip-inner strong { color: var(--charcoal); }
+    .review-workflow-note {
+      margin: 0.75rem 0 0;
+      padding: 0.75rem 0.9rem;
+      border-radius: 8px;
+      background: #eef6ff;
+      border: 1px solid #c8ddf5;
+      font-size: 0.9rem;
+    }
+    @media print {
+      .review-browser-tip,
+      .review-actions,
+      .review-workflow-note { display: none !important; }
+      body { background: #fff; }
+      .review-section { break-inside: avoid; page-break-inside: avoid; }
+      .review-status-group input { display: none; }
+      .review-status-group label::after {
+        content: " — " attr(data-print-value);
+        font-weight: 600;
+      }
+    }
     @media (max-width: 640px) {
       .review-contact { grid-template-columns: 1fr; }
     }
@@ -252,12 +297,23 @@
     </div>
   </header>
 
+  <div class="review-browser-tip">
+    <div class="review-browser-tip-inner">
+      <strong>How to open this file:</strong> Unzip the package, then open <strong>Homepage-Review.html</strong> in your web browser.
+      <strong>Google Chrome</strong> is recommended (also works in Microsoft Edge, Firefox, and Safari).
+      Do not open it in Word, Preview, or Adobe Acrobat — those apps cannot run the feedback form.
+      If double-click opens the wrong program, right-click the file → <em>Open with</em> → Chrome.
+    </div>
+  </div>
+
   <div class="review-intro">
-    <p><strong>Thank you for reviewing your homepage design.</strong> Scroll through each section below, compare the screenshot to what you want, and leave notes where you'd like updates.</p>
+    <p><strong>Thank you for reviewing your homepage design.</strong> This page is your feedback form — enter all notes here in your browser before you submit.</p>
+    <p class="review-workflow-note"><strong>Important:</strong> You edit your answers <em>on this page</em>, not in the PDF. The PDF is a read-only summary you email back when finished (like printing a completed form).</p>
     <ol>
       <li>Mark each section as <em>Looks good</em>, <em>Needs changes</em>, or <em>Not sure</em>.</li>
       <li>Add notes with as much detail as you can — wording, colors, photos, links, etc.</li>
-      <li>Click <strong>Download feedback PDF</strong>, save the file, and email it back to your LogicX onboarding agent at <a href="mailto:${escapeHtml(CLIENT_SERVICES_EMAIL)}">${escapeHtml(CLIENT_SERVICES_EMAIL)}</a>.</li>
+      <li>Click <strong>Download feedback PDF</strong> and email the file to your LogicX onboarding agent at <a href="mailto:${escapeHtml(CLIENT_SERVICES_EMAIL)}">${escapeHtml(CLIENT_SERVICES_EMAIL)}</a>.</li>
+      <li>If PDF download does not work in your browser, use <strong>Print or save as PDF</strong> instead, or download the JSON backup and mention that in your email.</li>
     </ol>
     <p style="margin:0.75rem 0 0;color:var(--muted);font-size:0.9rem;">You only need this page — the <strong>agent</strong> folder is for your LogicX team and can be ignored.</p>
   </div>
@@ -284,10 +340,12 @@
 
   <div class="review-actions">
     <button type="button" class="btn-primary" id="save-review-btn">Download feedback PDF</button>
+    <button type="button" class="btn-secondary" id="print-review-btn">Print or save as PDF</button>
+    <button type="button" class="btn-secondary" id="save-json-btn">Download feedback backup (JSON)</button>
     <span class="review-save-status" id="save-status" aria-live="polite"></span>
   </div>
 
-  <script src="agent/lib/jspdf.umd.min.js"></script>
+  <script>${sanitizeInlineScript(jspdfInlineScript)}</script>
   <script id="review-data-embedded" type="application/json">${JSON.stringify(reviewData)}</script>
   <script>
     (function () {
@@ -345,7 +403,7 @@
 
       async function buildFeedbackPdf(data) {
         const JsPDF = window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : window.jsPDF;
-        if (!JsPDF) throw new Error('PDF library not loaded. Keep the agent folder next to this file and try again.');
+        if (!JsPDF) throw new Error('PDF library missing from this file. Use Print or save as PDF instead.');
 
         const doc = new JsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
         const margin = 48;
@@ -452,14 +510,36 @@
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
+        link.rel = 'noopener';
+        link.style.display = 'none';
+        document.body.appendChild(link);
         link.click();
-        URL.revokeObjectURL(url);
+        window.setTimeout(function () {
+          if (link.parentNode) link.parentNode.removeChild(link);
+          URL.revokeObjectURL(url);
+        }, 250);
       }
 
       function finishPdfDownload(data, pdfBlob) {
         var filename = slugify(data.companyName) + '-homepage-feedback.pdf';
         downloadBlob(pdfBlob, filename);
         saveStatus.textContent = 'PDF downloaded — email this file to your LogicX onboarding agent.';
+      }
+
+      function preparePrintLabels() {
+        document.querySelectorAll('.review-status-group label').forEach(function (label) {
+          const input = label.querySelector('input[type="radio"]');
+          if (!input) return;
+          label.setAttribute('data-print-value', input.value === 'approved' ? 'Looks good' : input.value === 'changes' ? 'Needs changes' : input.value === 'unsure' ? 'Not sure' : 'No response');
+        });
+        document.querySelectorAll('.review-status-group').forEach(function (group) {
+          const checked = group.querySelector('input[type="radio"]:checked');
+          group.querySelectorAll('label').forEach(function (label) {
+            const input = label.querySelector('input[type="radio"]');
+            if (!input) return;
+            label.style.fontWeight = checked && input === checked ? '700' : '400';
+          });
+        });
       }
 
       saveBtn.addEventListener('click', async function () {
@@ -470,10 +550,23 @@
           const pdfBlob = await buildFeedbackPdf(data);
           finishPdfDownload(data, pdfBlob);
         } catch (err) {
-          saveStatus.textContent = 'Could not create PDF. ' + (err && err.message ? err.message : 'Please try again.');
+          saveStatus.textContent = 'Could not create PDF automatically. Use Print or save as PDF, or download the JSON backup. ' + (err && err.message ? err.message : '');
         } finally {
           saveBtn.disabled = false;
         }
+      });
+
+      document.getElementById('print-review-btn').addEventListener('click', function () {
+        preparePrintLabels();
+        saveStatus.textContent = 'Opening print dialog — choose Save as PDF if available.';
+        window.print();
+      });
+
+      document.getElementById('save-json-btn').addEventListener('click', function () {
+        const data = collectReviewData();
+        const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        downloadBlob(jsonBlob, slugify(data.companyName) + '-homepage-feedback.json');
+        saveStatus.textContent = 'JSON backup downloaded — attach this file if PDF export fails.';
       });
     })();
   </script>
@@ -639,6 +732,35 @@
 </html>`;
     }
 
+    function buildOpenFirstText(reviewData) {
+        return [
+            `${reviewData.companyName} — Homepage Review`,
+            '==========================================',
+            '',
+            'OPEN THIS FILE IN A WEB BROWSER',
+            '',
+            '1. Unzip the entire package first.',
+            '2. Double-click Homepage-Review.html',
+            '   - Recommended: Google Chrome',
+            '   - Also works: Microsoft Edge, Firefox, Safari',
+            '3. If the wrong app opens, right-click Homepage-Review.html',
+            '   → Open with → Google Chrome (or Edge).',
+            '',
+            'Do NOT open in Word, Preview, or Adobe Acrobat.',
+            'Those programs cannot run the interactive feedback form.',
+            '',
+            'HOW FEEDBACK WORKS',
+            '- You type your answers on the Homepage-Review.html page.',
+            '- The PDF is a finished summary to email back — not an editable form.',
+            '- If PDF download fails, use "Print or save as PDF" in the browser.',
+            '',
+            'SUBMIT',
+            `Email your PDF (or JSON backup) to ${CLIENT_SERVICES_EMAIL}`,
+            '',
+            `Reference: ${reviewData.packageId}`,
+        ].join('\n');
+    }
+
     function buildReadmeText(reviewData) {
         return [
             `${reviewData.companyName} — Homepage Client Review`,
@@ -649,10 +771,11 @@
             '- agent/ — internal LogicX tools, screenshots, and reference files.',
             '',
             'FOR THE CLIENT',
-            '1. Unzip this package and double-click Homepage-Review.html.',
-            '2. Review each homepage section screenshot and leave feedback.',
-            '3. Click "Download feedback PDF" and save the PDF file.',
-            '4. Email the PDF back to their LogicX onboarding agent at ' + CLIENT_SERVICES_EMAIL + '.',
+            '1. Unzip this package and open Homepage-Review.html in Google Chrome (or Edge, Firefox, Safari).',
+            '2. See OPEN-FIRST.txt if double-click opens the wrong program.',
+            '3. Enter all feedback on the web page — the PDF is a read-only summary, not an editable form.',
+            '4. Click "Download feedback PDF" (or "Print or save as PDF" as a fallback).',
+            '5. Email the PDF back to their LogicX onboarding agent at ' + CLIENT_SERVICES_EMAIL + '.',
             '',
             'The client can ignore the agent folder entirely.',
             '',
@@ -669,13 +792,15 @@
             'PACKAGE LAYOUT',
             '- ../Homepage-Review.html — client feedback form (screenshots embedded).',
             '- previews/ — section PNG captures for reference.',
-            '- lib/jspdf.umd.min.js — PDF library used by the client form.',
+            '- lib/jspdf.umd.min.js — PDF library (also embedded in Homepage-Review.html for offline use).',
             '- agent-summary.html — load review-data.json for dev handoff summary.',
             '- review-data.json — structured template (optional; client workflow uses PDF).',
             '',
             'CLIENT WORKFLOW',
-            '- Client opens Homepage-Review.html, fills in feedback, downloads a PDF.',
-            '- Client emails the PDF to ' + CLIENT_SERVICES_EMAIL + ' (not JSON).',
+            '- Client opens Homepage-Review.html in Chrome (recommended) or any modern browser.',
+            '- Client enters feedback on the HTML page, then downloads a PDF summary.',
+            '- PDF is read-only — not a fillable Acrobat form. HTML page is the editing surface.',
+            '- Client emails the PDF to ' + CLIENT_SERVICES_EMAIL + ' (JSON backup acceptable if PDF fails).',
             '',
             'ONBOARDING AGENT',
             '- Share the ZIP or only Homepage-Review.html with the client.',
@@ -789,13 +914,20 @@
         const agentFolder = zip.folder('agent');
         const previewsFolder = agentFolder.folder('previews');
 
+        const jspdfResponse = await fetch('vendor/jspdf.umd.min.js');
+        if (!jspdfResponse.ok) {
+            throw new Error('Could not load PDF library for the review package.');
+        }
+        const jspdfInlineScript = await jspdfResponse.text();
+
         for (const section of capturedSections) {
             previewsFolder.file(`${section.id}.png`, dataUrlToBlob(section.dataUrl));
         }
 
         await bundleVendorScript(zip, 'vendor/jspdf.umd.min.js', 'agent/lib/jspdf.umd.min.js');
 
-        zip.file('Homepage-Review.html', buildClientReviewHtml(reviewData));
+        zip.file('OPEN-FIRST.txt', buildOpenFirstText(reviewData));
+        zip.file('Homepage-Review.html', buildClientReviewHtml(reviewData, jspdfInlineScript));
         agentFolder.file('README.txt', buildAgentReadmeText(reviewData));
         agentFolder.file('REVIEW-README.txt', buildReadmeText(reviewData));
         agentFolder.file('agent-summary.html', buildAgentSummaryHtml());
