@@ -456,14 +456,19 @@
         URL.revokeObjectURL(url);
       }
 
+      function finishPdfDownload(data, pdfBlob) {
+        var filename = slugify(data.companyName) + '-homepage-feedback.pdf';
+        downloadBlob(pdfBlob, filename);
+        saveStatus.textContent = 'PDF downloaded — email this file to your LogicX onboarding agent.';
+      }
+
       saveBtn.addEventListener('click', async function () {
         saveBtn.disabled = true;
         saveStatus.textContent = 'Building your feedback PDF…';
         try {
           const data = collectReviewData();
           const pdfBlob = await buildFeedbackPdf(data);
-          downloadBlob(pdfBlob, slugify(data.companyName) + '-homepage-feedback.pdf');
-          saveStatus.textContent = 'PDF downloaded — email this file to your LogicX onboarding agent.';
+          finishPdfDownload(data, pdfBlob);
         } catch (err) {
           saveStatus.textContent = 'Could not create PDF. ' + (err && err.message ? err.message : 'Please try again.');
         } finally {

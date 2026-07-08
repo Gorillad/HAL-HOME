@@ -566,6 +566,7 @@
     const evolvedToast = document.getElementById('evolvedToast');
     const EXPORT_BTN_LABEL = 'Export handoff';
     const CLIENT_REVIEW_BTN_LABEL = 'Share for review';
+    const CLIENT_REVIEW_BTN_SUCCESS_LABEL = 'Level up 🍄';
     const EXPORT_BTN_SUCCESS_LABEL = 'Evolved 🕺';
     let evolvedToastHideTimer = null;
     let evolvedToastRemoveTimer = null;
@@ -801,6 +802,7 @@
         reviewedSections: [],
         previewTheme: 'light',
         handoffExported: false,
+        reviewExported: false,
     };
 
     function createGetInspiredItem(data = {}, index = 0) {
@@ -978,6 +980,40 @@
         btn.setAttribute('aria-label', 'Handoff exported successfully');
     }
 
+    function renderClientReviewButtonAsLevelUp() {
+        if (!clientReviewBtn) return;
+        clientReviewBtn.disabled = false;
+        clientReviewBtn.classList.remove('is-exporting');
+        clientReviewBtn.classList.add('is-evolved');
+        clientReviewBtn.removeAttribute('aria-busy');
+        clientReviewBtn.textContent = CLIENT_REVIEW_BTN_SUCCESS_LABEL;
+        clientReviewBtn.setAttribute('aria-label', 'Client review package exported successfully');
+    }
+
+    function setClientReviewSuccess() {
+        renderClientReviewButtonAsLevelUp();
+        state.reviewExported = true;
+        saveState({ silent: true });
+    }
+
+    function resetClientReviewButton() {
+        if (!clientReviewBtn) return;
+        clientReviewBtn.disabled = false;
+        clientReviewBtn.classList.remove('is-exporting', 'is-evolved');
+        clientReviewBtn.removeAttribute('aria-busy');
+        clientReviewBtn.textContent = CLIENT_REVIEW_BTN_LABEL;
+        clientReviewBtn.removeAttribute('aria-label');
+    }
+
+    function applyClientReviewButtonState() {
+        if (captureBusy) return;
+        if (state.reviewExported) {
+            renderClientReviewButtonAsLevelUp();
+            return;
+        }
+        resetClientReviewButton();
+    }
+
     function setExportSuccess() {
         renderExportButtonAsEvolved();
         state.handoffExported = true;
@@ -1112,6 +1148,8 @@
         if (!clientReviewBtn) return;
         captureBusy = isLoading;
         if (isLoading) {
+            clientReviewBtn.disabled = true;
+            clientReviewBtn.classList.remove('is-evolved');
             clientReviewBtn.classList.add('is-exporting');
             clientReviewBtn.setAttribute('aria-busy', 'true');
             clientReviewBtn.innerHTML = '<span class="export-spinner" aria-hidden="true"></span><span class="export-btn-text">Building review…</span>';
@@ -1122,7 +1160,13 @@
         }
         clientReviewBtn.classList.remove('is-exporting');
         clientReviewBtn.removeAttribute('aria-busy');
-        clientReviewBtn.textContent = CLIENT_REVIEW_BTN_LABEL;
+        if (state.reviewExported) {
+            renderClientReviewButtonAsLevelUp();
+        } else {
+            clientReviewBtn.classList.remove('is-evolved');
+            clientReviewBtn.textContent = CLIENT_REVIEW_BTN_LABEL;
+            clientReviewBtn.removeAttribute('aria-label');
+        }
         setCaptureButtonsDisabled(false);
         resetReviewExportProgress();
     }
@@ -1638,6 +1682,7 @@
         Object.assign(state, baseline, {
             reviewedSections: [],
             handoffExported: false,
+            reviewExported: false,
             previewTheme: baseline.previewTheme === 'dark' ? 'dark' : 'light',
         });
         return true;
@@ -1655,6 +1700,7 @@
 
         populateForm(state);
         resetExportButton();
+        resetClientReviewButton();
 
         if (templateDesign === 'gallery') {
             finishGalleryEditorInit();
@@ -5808,6 +5854,7 @@
         if (captureBusy || exportInProgress) return;
         setClientReviewLoading(true);
         let restorePreviewAfterCapture = null;
+        let reviewExportSucceeded = false;
         try {
             restorePreviewAfterCapture = await preparePreviewForCapture();
             setReviewExportProgress(6, 'Starting section captures…');
@@ -5825,6 +5872,8 @@
                 onProgress: (progress) => handleCaptureProgress(progress, 'review'),
             });
             handleCaptureProgress({ phase: 'complete' }, 'review');
+            reviewExportSucceeded = true;
+            setStatus('Client review ZIP downloaded');
         } catch (err) {
             console.error(err);
             const detail = err && err.message ? ` — ${err.message}` : '';
@@ -5834,7 +5883,21 @@
             }
         } finally {
             if (restorePreviewAfterCapture) restorePreviewAfterCapture();
-            setClientReviewLoading(false);
+            captureBusy = false;
+            if (reviewExportSucceeded) {
+                setClientReviewSuccess();
+                resetReviewExportProgress();
+                if (window.triggerOneUp) {
+                    window.triggerOneUp(clientReviewBtn, null, { placement: 'right' });
+                }
+                setCaptureButtonsDisabled(false);
+            } else if (state.reviewExported) {
+                renderClientReviewButtonAsLevelUp();
+                resetReviewExportProgress();
+                setCaptureButtonsDisabled(false);
+            } else {
+                setClientReviewLoading(false);
+            }
         }
     });
 
@@ -6131,6 +6194,9 @@
             if (restored.handoffExported) {
                 state.handoffExported = true;
             }
+            if (restored.reviewExported) {
+                state.reviewExported = true;
+            }
             if (templateDesign === 'gallery') {
                 finishGalleryEditorInit({ restoredDraft: true });
             } else if (templateDesign === 'spotlight') {
@@ -6160,6 +6226,7 @@
         }
 
         applyExportButtonState();
+        applyClientReviewButtonState();
         initResetBtn();
 
         window.addEventListener('pagehide', flushSessionToStorage);

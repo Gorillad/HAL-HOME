@@ -1,4 +1,4 @@
-# Trend Catalog Guide Images
+# Trends Catalog Guide Images
 
 Hero and inline editorial images for Inspiration Lighting Guides. Naming: `{guide-id}.png` (hero), `{guide-id}-01.png` (inline), etc.
 

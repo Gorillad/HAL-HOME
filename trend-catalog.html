@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trend Catalog | LogicX</title>
-    <meta name="description" content="Search lighting products, browse curated catalog departments, and connect with LogicX expert help.">
+    <title>Trends Catalog | LogicX</title>
+    <meta name="description" content="What's hot in lighting — trending fixtures, finishes, and customer-favorite looks curated by LogicX experts.">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-chrome-192x192.png">
@@ -14,18 +14,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/trend-catalog-mega-menu.css" rel="stylesheet">
+    <link href="shared/footer/footer.css" rel="stylesheet">
 </head>
 <body class="trend-catalog-page">
-    <header class="site-nav site-nav--dark trend-catalog-header" aria-label="Trend Catalog navigation">
+    <header class="site-nav site-nav--dark trend-catalog-header" aria-label="Trends Catalog navigation">
         <div class="trend-catalog-header-inner">
             <a href="index.html" class="site-nav-logo trend-catalog-logo" aria-label="LogicX home">
                 <img src="images/logos/logicxo-gold.png" alt="LogicX">
             </a>
 
             <form class="trend-catalog-search" role="search" action="https://www.catalog.logicxo.com/catalog" method="get">
-                <label class="visually-hidden" for="trendCatalogSearch">Search Trend Catalog</label>
-                <input type="search" id="trendCatalogSearch" name="itemNumVal" placeholder="Search by item #, SKU, keyword, or brand" autocomplete="off">
-                <button type="submit" aria-label="Search Trend Catalog">
+                <label class="visually-hidden" for="trendCatalogSearch">Search Trends Catalog</label>
+                <input type="search" id="trendCatalogSearch" name="itemNumVal" placeholder="Search trending looks, item #, SKU, or brand" autocomplete="off">
+                <button type="submit" aria-label="Search Trends Catalog">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>
                 </button>
             </form>
@@ -79,7 +80,7 @@
         </div>
     </header>
 
-    <nav class="sb-nav trend-catalog-mega-nav" id="trendMegaMenu" aria-label="Trend Catalog departments">
+    <nav class="sb-nav trend-catalog-mega-nav" id="trendMegaMenu" aria-label="Trends Catalog departments">
         <ul class="sb-menu">
             <li>
                 <a href="https://www.catalog.logicxo.com/lighting-fixtures">Lighting</a>
@@ -487,16 +488,16 @@
         <section class="trend-catalog-hero">
             <div class="trend-catalog-shell">
                 <div class="trend-catalog-hero-copy">
-                    <div class="trend-catalog-kicker">Trend Catalog</div>
-                    <h1>Browse lighting products with showroom-ready guidance.</h1>
-                    <p>Our experts analyze online buying signals, showroom data, and lighting industry research to surface the trends worth your attention. Choose with confidence, because the wrong fixture can compromise the perfect luminance experience.</p>
+                    <div class="trend-catalog-kicker">Trends Catalog</div>
+                    <h1>What&apos;s hot in lighting — curated for customers who want the next look.</h1>
+                    <p>Trend-driven picks across chandeliers, pendants, bath, and outdoor — refreshed from showroom signals, search behavior, and industry research so you stay ahead of what shoppers are buying now.</p>
                     <div class="trend-catalog-hero-actions">
-                        <a href="https://www.catalog.logicxo.com/lighting-fixtures" class="trend-catalog-primary-link">Open full catalog</a>
-                        <a href="#trendMegaMenu" class="trend-catalog-secondary-link">Browse departments</a>
+                        <a href="https://www.catalog.logicxo.com/lighting-fixtures" class="trend-catalog-primary-link">Shop what&apos;s trending</a>
+                        <a href="#trendMegaMenu" class="trend-catalog-secondary-link">Browse hot categories</a>
                     </div>
                 </div>
 
-                <div class="trend-catalog-hero-gallery" aria-label="Lighting inspiration for the Trend Catalog">
+                <div class="trend-catalog-hero-gallery" aria-label="Trending lighting inspiration for the Trends Catalog">
                     <a href="https://www.catalog.logicxo.com/lighting-fixtures" class="trend-catalog-hero-frame trend-catalog-hero-frame--main" data-label="Showroom hero" aria-label="Browse all lighting fixtures">
                         <img src="images/trend-catalog/Screenshot%202026-07-03%20232524.png" alt="Layered lighting in a finished showroom space" onerror="this.remove();">
                     </a>
@@ -524,10 +525,10 @@
             <div class="trend-catalog-shell">
                 <div class="trend-mega-menu-head">
                     <div>
-                        <p class="trend-catalog-kicker">Featured Shortcuts</p>
-                        <h2 id="trendMegaMenuTitle">Popular catalog paths</h2>
+                        <p class="trend-catalog-kicker">What&apos;s Hot</p>
+                        <h2 id="trendMegaMenuTitle">Trending lighting for customers</h2>
                     </div>
-                    <a href="https://www.catalog.logicxo.com/lighting-fixtures">View all products</a>
+                    <a href="https://www.catalog.logicxo.com/lighting-fixtures">Shop all trending products</a>
                 </div>
                 <div class="trend-mega-menu-grid">
                     <a href="https://www.catalog.logicxo.com/lighting-fixtures/chandeliers" class="trend-mega-card trend-category-card" data-trend-category="chandeliers">
@@ -562,19 +563,235 @@
             </div>
         </section>
 
+        <section id="trends-catalog-spotlight" class="home-trends-catalog" aria-labelledby="trends-catalog-spotlight-title">
+            <div class="home-trends-catalog-inner trend-catalog-shell">
+                <header class="home-trends-catalog-header">
+                    <p class="home-trends-catalog-eyebrow">
+                        <span class="home-trends-catalog-eyebrow-line" aria-hidden="true"></span>
+                        Trends Catalog · Updated weekly
+                    </p>
+                    <h2 id="trends-catalog-spotlight-title">What&apos;s hot in lighting — backed by search data, not guesswork.</h2>
+                    <p class="home-trends-catalog-lead">Our experts track Google search trends, top customer questions, and showroom buying patterns — then connect you to trending fixtures and the exact bulbs that complete the look.</p>
+                </header>
+
+                <div class="home-trends-paths">
+                    <article class="home-trends-path-card">
+                        <p class="home-trends-path-kicker">Trending now</p>
+                        <h3>Hot categories &amp; finishes</h3>
+                        <p>Live trend cards for chandeliers, pendants, bath, and outdoor — refreshed from what shoppers are searching and buying.</p>
+                        <a href="#trendMegaMenu" class="home-trends-path-link">See what&apos;s hot →</a>
+                    </article>
+                    <article class="home-trends-path-card home-trends-path-card--featured">
+                        <p class="home-trends-path-kicker">Top search question</p>
+                        <h3>Best bulbs for chandeliers?</h3>
+                        <p>The #1 lighting question we answer: color temperature, base size, shape, and dimmable LED picks for every vibe.</p>
+                        <a href="guides/chandelier-bulb-temperature.html" class="home-trends-path-link">Read the bulb guide →</a>
+                    </article>
+                    <article class="home-trends-path-card">
+                        <p class="home-trends-path-kicker">Shop the look</p>
+                        <h3>Catalog picks by mood</h3>
+                        <p>Jump straight to warm dining glow, crystal sparkle, modern crisp, or vintage candlelight — pre-filtered for your project.</p>
+                        <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120?limitRange=0" class="home-trends-path-link" target="_blank" rel="noopener noreferrer">Shop chandelier bulbs →</a>
+                    </article>
+                </div>
+
+                <section class="home-kelvin-atmosphere" aria-labelledby="home-kelvin-atmosphere-title">
+                    <header class="home-kelvin-atmosphere-head">
+                        <p class="home-trends-vibes-label">Color temperature · Kelvin scale</p>
+                        <h3 id="home-kelvin-atmosphere-title">Warm candlelight to cool daylight — pick the atmosphere, then the bulb.</h3>
+                        <p class="home-kelvin-atmosphere-lead">Kelvin (K) describes how warm or cool light <em>looks</em> — not heat, not brightness. Lumens control brightness; Kelvin controls mood. Match Kelvin to the room&apos;s job: comfort and flattering glow for living and dining, slightly crisper white for kitchens and baths, and reserve cool tones for task zones — never your chandelier.</p>
+                    </header>
+
+                    <figure class="home-kelvin-scale-wrap" aria-labelledby="home-kelvin-scale-caption">
+                        <figcaption id="home-kelvin-scale-caption" class="home-kelvin-scale-caption">Kelvin spectrum — decorative lighting sweet spot at 2700K</figcaption>
+                        <div class="guide-kelvin-scale home-kelvin-scale" role="img" aria-label="Kelvin scale from 2200K amber vintage through 2700K chandelier sweet spot to 5000K daylight blue">
+                            <div class="guide-kelvin-scale-bar"></div>
+                            <div class="guide-kelvin-scale-marker home-kelvin-marker home-kelvin-marker--2200" style="left: 8%;">
+                                <span class="guide-kelvin-scale-marker-pin"></span>
+                                <span class="guide-kelvin-scale-marker-label">2200K<br>Mood</span>
+                            </div>
+                            <div class="guide-kelvin-scale-marker home-kelvin-marker home-kelvin-marker--sweet" style="left: 28%;">
+                                <span class="guide-kelvin-scale-marker-pin guide-kelvin-scale-marker-pin--sweet"></span>
+                                <span class="guide-kelvin-scale-marker-label">2700K<br>Sweet spot</span>
+                            </div>
+                            <div class="guide-kelvin-scale-marker home-kelvin-marker" style="left: 44%;">
+                                <span class="guide-kelvin-scale-marker-pin"></span>
+                                <span class="guide-kelvin-scale-marker-label">3000K<br>Crisp</span>
+                            </div>
+                            <div class="guide-kelvin-scale-marker home-kelvin-marker home-kelvin-marker--cool" style="left: 64%;">
+                                <span class="guide-kelvin-scale-marker-pin"></span>
+                                <span class="guide-kelvin-scale-marker-label">4000K<br>Task</span>
+                            </div>
+                            <div class="guide-kelvin-scale-marker home-kelvin-marker home-kelvin-marker--cool" style="left: 84%;">
+                                <span class="guide-kelvin-scale-marker-pin"></span>
+                                <span class="guide-kelvin-scale-marker-label">5000K+<br>Daylight</span>
+                            </div>
+                            <div class="guide-kelvin-scale-stops">
+                                <span>Warm amber</span>
+                                <span>Soft white</span>
+                                <span>Neutral</span>
+                                <span>Cool blue</span>
+                            </div>
+                        </div>
+                    </figure>
+
+                    <div class="home-kelvin-spec-grid" aria-label="Bulb color temperatures by room and effect">
+                        <article class="home-kelvin-spec home-kelvin-spec--2200">
+                            <div class="home-kelvin-spec-top">
+                                <span class="home-kelvin-spec-k">2200K</span>
+                                <span class="home-kelvin-spec-name">Vintage candlelight</span>
+                            </div>
+                            <p class="home-kelvin-spec-effect"><strong>Effect:</strong> Deep amber glow — intimate, restaurant-style, low visual energy.</p>
+                            <p class="home-kelvin-spec-why"><strong>Why choose it:</strong> Maximum mood on decorative fixtures; pairs with warm-dim LEDs that shift amber as you dim.</p>
+                            <p class="home-kelvin-spec-rooms"><strong>Best in your home:</strong> Mood dining, bar areas, accent sconces, vintage filament fixtures.</p>
+                            <p class="home-kelvin-spec-bulb"><strong>Bulb pick:</strong> Amber filament LED · candelabra (E12) · dimmable</p>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=2200K%20filament%20E12&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · vintage candelabra (E12) · 2200K</a>
+                            </div>
+                        </article>
+
+                        <article class="home-kelvin-spec home-kelvin-spec--2700 home-kelvin-spec--featured">
+                            <div class="home-kelvin-spec-badge">Chandelier sweet spot</div>
+                            <div class="home-kelvin-spec-top">
+                                <span class="home-kelvin-spec-k">2700K</span>
+                                <span class="home-kelvin-spec-name">Soft warm white</span>
+                            </div>
+                            <p class="home-kelvin-spec-effect"><strong>Effect:</strong> Classic incandescent warmth — flatters skin, food, wood, brass, and crystal sparkle.</p>
+                            <p class="home-kelvin-spec-why"><strong>Why choose it:</strong> The #1 designer spec for chandeliers and dining — comfortable for hours, never clinical.</p>
+                            <p class="home-kelvin-spec-rooms"><strong>Best in your home:</strong> Dining room chandelier, living room, primary bedroom, entry statement fixtures.</p>
+                            <p class="home-kelvin-spec-bulb"><strong>Bulb pick:</strong> Dimmable LED · candelabra (E12) · CRI 90+ · 4–6W per arm</p>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=E12%202700K%20dimmable%20LED&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · candelabra (E12) · 2700K dimmable</a>
+                            </div>
+                        </article>
+
+                        <article class="home-kelvin-spec home-kelvin-spec--3000">
+                            <div class="home-kelvin-spec-top">
+                                <span class="home-kelvin-spec-k">3000K</span>
+                                <span class="home-kelvin-spec-name">Modern warm white</span>
+                            </div>
+                            <p class="home-kelvin-spec-effect"><strong>Effect:</strong> Slightly cleaner warm white — sharper edges, still inviting, less yellow than 2700K.</p>
+                            <p class="home-kelvin-spec-why"><strong>Why choose it:</strong> When you want clarity without going cold — good for open plans where kitchen and dining share sightlines.</p>
+                            <p class="home-kelvin-spec-rooms"><strong>Best in your home:</strong> Kitchen pendants, bath vanity, transitional chandeliers, home office accents.</p>
+                            <p class="home-kelvin-spec-bulb"><strong>Bulb pick:</strong> 3000K dimmable LED · medium or candelabra base · consistent across the room</p>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=3000K%20dimmable%20LED%20chandelier&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · 3000K chandelier bulbs</a>
+                            </div>
+                        </article>
+
+                        <article class="home-kelvin-spec home-kelvin-spec--crystal">
+                            <div class="home-kelvin-spec-top">
+                                <span class="home-kelvin-spec-k">2700K + shape</span>
+                                <span class="home-kelvin-spec-name">Crystal sparkle</span>
+                            </div>
+                            <p class="home-kelvin-spec-effect"><strong>Effect:</strong> Maximum refracted fire — visible filament + clear glass makes crystal and cut glass come alive.</p>
+                            <p class="home-kelvin-spec-why"><strong>Why choose it:</strong> Kelvin sets warmth; bulb shape and clear glass set sparkle. Frosted bulbs mute crystal — avoid them here.</p>
+                            <p class="home-kelvin-spec-rooms"><strong>Best in your home:</strong> Crystal chandeliers, candelabra arms, formal dining, powder room statement pieces.</p>
+                            <p class="home-kelvin-spec-bulb"><strong>Bulb pick:</strong> Clear filament E12 · 2700K · dimmable · CRI 90+</p>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=E12%20candelabra%20filament%20clear%202700K&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · clear candelabra (E12) filament</a>
+                            </div>
+                        </article>
+
+                        <article class="home-kelvin-spec home-kelvin-spec--avoid">
+                            <div class="home-kelvin-spec-top">
+                                <span class="home-kelvin-spec-k">4000K – 5000K+</span>
+                                <span class="home-kelvin-spec-name">Cool &amp; daylight — skip for chandeliers</span>
+                            </div>
+                            <p class="home-kelvin-spec-effect"><strong>Effect:</strong> Showroom-clean to blue-white — high alertness, low warmth. Flattened wood, brass, and skin tones.</p>
+                            <p class="home-kelvin-spec-why"><strong>Why avoid it here:</strong> One cool bulb in a warm chandelier reads instantly wrong — the &ldquo;dentist office&rdquo; dining room mistake.</p>
+                            <p class="home-kelvin-spec-rooms"><strong>Where it belongs:</strong> Garage, laundry, workshop, security lighting — task zones, not atmosphere rooms.</p>
+                            <p class="home-kelvin-spec-bulb"><strong>Pro rule:</strong> Keep every bulb in a fixture — and ideally the whole room — at the same Kelvin.</p>
+                            <a href="guides/chandelier-bulb-temperature.html#kelvin-explained" class="home-kelvin-spec-guide-link">Read why 2700K wins for dining →</a>
+                        </article>
+                    </div>
+
+                    <p class="home-kelvin-footnote">Brightness is lumens, color is Kelvin, accuracy is CRI — a 2700K bulb and a 5000K bulb can match in lumens but feel completely different. For decorative fixtures, spec <strong>2700K · dimmable · CRI 90+</strong> unless the room calls for 3000K.</p>
+                </section>
+
+                <div class="home-trends-feature">
+                    <a href="guides/chandelier-bulb-temperature.html" class="home-trends-feature-media">
+                        <img src="images/trend-catalog/chandelier-bulb-temperature.png" alt="Warm candle-style bulbs in a sculptural chandelier" width="640" height="427" loading="lazy">
+                    </a>
+                    <div class="home-trends-feature-copy">
+                        <p class="home-trends-feature-kicker">Featured guide · Bulbs · 10 min read</p>
+                        <h3>What color temperature is best for chandeliers?</h3>
+                        <p class="home-trends-feature-answer"><strong>2700K warm white</strong>, dimmable LED, <strong>CRI 90+</strong> — the designer standard for dining rooms, crystal, and warm metal fixtures.</p>
+                        <p>Learn how Kelvin changes the mood, which E12 shapes fit your fixture style, and which bulbs to avoid so your chandelier never feels like a dentist&apos;s office.</p>
+                        <div class="home-trends-feature-actions">
+                            <a href="guides/chandelier-bulb-temperature.html" class="btn btn-primary btn-sm">Read full guide</a>
+                        </div>
+                        <div class="catalog-shop-dual">
+                            <p class="catalog-shop-dual-note">Find bulbs two ways in the catalog:</p>
+                            <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter · LED · 120V · 5W</a>
+                            <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=E12%202700K%20dimmable%20LED&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search by keyword · candelabra (E12) · 2700K dimmable</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-trends-vibes" aria-label="Shop lighting by vibe">
+                    <p class="home-trends-vibes-label">Shop by vibe</p>
+                    <p class="catalog-shop-dual-intro">Browse by catalog filters for the widest selection, or search by keyword when you know the socket size (like candelabra E12), Kelvin, or bulb style you need.</p>
+                    <div class="home-trends-vibes-grid">
+                        <article class="home-trends-vibe-card">
+                            <strong>Warm dining glow</strong>
+                            <span>2700K · flattering · cozy dinner-party ready</span>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=E12%202700K%20dimmable%20LED&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · candelabra (E12) · 2700K dimmable</a>
+                            </div>
+                        </article>
+                        <article class="home-trends-vibe-card">
+                            <strong>Crystal sparkle</strong>
+                            <span>Clear candelabra (E12) filament · 2700K · max refracted fire</span>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=E12%20candelabra%20filament%20clear%202700K&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · clear candelabra (E12) filament</a>
+                            </div>
+                        </article>
+                        <article class="home-trends-vibe-card">
+                            <strong>Modern crisp</strong>
+                            <span>3000K · open kitchens &amp; transitional spaces</span>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=3000K%20dimmable%20LED%20chandelier&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · 3000K chandelier bulbs</a>
+                            </div>
+                        </article>
+                        <article class="home-trends-vibe-card">
+                            <strong>Vintage candlelight</strong>
+                            <span>2200K amber · restaurant &amp; mood lighting</span>
+                            <div class="catalog-shop-dual">
+                                <a href="https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120/wattage-5w?limitRange=0" class="catalog-shop-option catalog-shop-option--filter" target="_blank" rel="noopener noreferrer">Browse by filter</a>
+                                <a href="https://www.catalog.logicxo.com/catalog?itemNumVal=2200K%20filament%20E12&limitRange=0" class="catalog-shop-option catalog-shop-option--keyword" target="_blank" rel="noopener noreferrer">Search · vintage candelabra (E12) · 2200K</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <p class="home-trends-catalog-foot">
+                    Research from top Google lighting searches, customer questions, and LogicX showroom data.
+                    <a href="#inspiration-guides">Browse all lighting guides →</a>
+                </p>
+            </div>
+        </section>
+
         <section id="inspiration-guides" class="trend-guides-section" aria-labelledby="trendGuidesTitle" data-inspiration-guides>
             <div class="trend-catalog-shell">
                 <div class="trend-guides-head">
                     <div>
-                        <p class="trend-catalog-kicker" data-guide-eyebrow>Inspiration - Lighting Guides</p>
-                        <h2 id="trendGuidesTitle" data-guide-title>Research-backed lighting advice for better decisions.</h2>
-                        <p data-guide-intro>Our team studies customer questions, online search behavior, showroom insights, and lighting industry trends to help shoppers choose with confidence.</p>
+                        <p class="trend-catalog-kicker" data-guide-eyebrow>Trends &amp; Inspiration</p>
+                        <h2 id="trendGuidesTitle" data-guide-title>What&apos;s trending in lighting — guides backed by real customer questions.</h2>
+                        <p data-guide-intro>Our team tracks what shoppers ask, search, and buy each week to spotlight the trends, finishes, and layouts lighting customers care about right now.</p>
                     </div>
                     <span data-guide-updated>Updated weekly</span>
                 </div>
+                <p class="trend-guides-data-note">Research from Google search trends, top customer questions, and LogicX showroom buying patterns.</p>
 
-                <div class="trend-guides-layout">
-                    <article class="trend-guide-feature" data-guide-feature></article>
+                <div class="trend-guides-layout trend-guides-layout--questions-only">
                     <aside class="trend-guide-questions" aria-label="This week's lighting questions">
                         <div class="trend-guide-questions-head">
                             <span>Weekly Research</span>
@@ -590,6 +807,98 @@
         </section>
     </main>
 
+    <footer class="site-footer trend-catalog-footer" aria-label="Site footer">
+        <div class="site-footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="footer-logo">LogicX</span>
+                    <p class="footer-tagline">Your home for what&apos;s hot in lighting — trending looks, customer-favorite finishes, and fresh picks refreshed weekly.</p>
+                    <div class="footer-social" aria-label="Social media">
+                        <a href="#" class="footer-social-link" aria-label="X (formerly Twitter)" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="#" class="footer-social-link" aria-label="Instagram" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <nav class="footer-col" aria-label="Quick links">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">LogicX Home</a></li>
+                        <li><a href="trend-catalog.html">Trends Catalog</a></li>
+                        <li><a href="https://www.catalog.logicxo.com/lighting-fixtures">Shop Products</a></li>
+                        <li><a href="#inspiration-guides">Lighting Guides</a></li>
+                        <li><a href="request-a-quote.html">Request a Quote</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-col" aria-label="Resources">
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="https://support.logicxo.com/">Knowledge Base</a></li>
+                        <li><a href="editor/knowledge-base.html">Editor Guide</a></li>
+                        <li><a href="https://www.catalog.logicxo.com/catalog">Search Catalog</a></li>
+                    </ul>
+                </nav>
+                <div class="footer-col footer-contact">
+                    <h3 class="footer-heading">Contact</h3>
+                    <ul class="footer-contact-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <a href="mailto:hello@logicxo.com">hello@logicxo.com</a>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <a href="mailto:support@logicxo.com">support@logicxo.com</a>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <a href="tel:+18005551234">(800) 555-1234</a>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>123 Lighting Way<br>Suite 400, Anytown, USA</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span>Mon–Fri, 8am–6pm CT</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-newsletter">
+                    <h3 class="footer-heading">Stay in the Loop</h3>
+                    <p class="footer-newsletter-copy">Trend alerts, hot new arrivals, and what customers are buying — straight to your inbox.</p>
+                    <form id="footerNewsletter" class="footer-newsletter-form" novalidate>
+                        <label class="visually-hidden" for="footerEmail">Email address</label>
+                        <input type="email" id="footerEmail" name="email" placeholder="you@company.com" autocomplete="email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                    <p id="footerNewsletterMsg" class="footer-newsletter-msg" role="status" hidden></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; <span id="footerYear">2026</span> LogicX. All rights reserved.</p>
+                <ul class="footer-legal">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Preferences</a></li>
+                </ul>
+                <button type="button" id="footerBackToTop" class="footer-top-link">
+                    Back to top
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="shared/footer/footer.js" defer></script>
     <script src="js/trend-catalog.js" defer></script>
 </body>
 </html>

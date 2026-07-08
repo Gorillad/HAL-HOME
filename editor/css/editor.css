@@ -448,7 +448,8 @@
     border-top-color: #222f36;
 }
 
-.btn-primary.is-evolved {
+.btn-primary.is-evolved,
+.btn-secondary.is-evolved {
     background: linear-gradient(135deg, #0a0f14 0%, #101820 100%);
     border-color: rgba(94, 231, 255, 0.35);
     color: #e8f7ff;

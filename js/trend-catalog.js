@@ -1,5 +1,7 @@
 (function initTrendCatalogPage() {
     function boot() {
+        if (window.Footer) Footer.load();
+
         const header = document.querySelector('.trend-catalog-header');
         const menuToggle = document.querySelector('.trend-catalog-menu-toggle');
         const actions = document.getElementById('trendCatalogActions');
@@ -270,6 +272,58 @@
         return `https://www.catalog.logicxo.com/catalog?itemNumVal=${encodeURIComponent(keywords)}&limitRange=0`;
     }
 
+    const CATALOG_LED_BULB_BASE = 'https://www.catalog.logicxo.com/lighting-fixtures/light-bulbs/led-bulbs/100-120';
+
+    function buildLedBulbCatalogUrl(wattageSlug) {
+        const wattagePath = wattageSlug ? `/wattage-${wattageSlug}` : '';
+        return `${CATALOG_LED_BULB_BASE}${wattagePath}?limitRange=0`;
+    }
+
+    const CHANDELIER_BULB_SHOP = {
+        warm2700: {
+            filterUrl: buildLedBulbCatalogUrl('5w'),
+            filterLabel: 'Browse by filter · LED · 120V · 5W',
+            keyword: 'E12 2700K dimmable LED',
+            keywordLabel: 'Search · candelabra (E12) · 2700K dimmable',
+        },
+        crystalFilament: {
+            filterUrl: buildLedBulbCatalogUrl('5w'),
+            filterLabel: 'Browse by filter · LED · 120V · 5W',
+            keyword: 'E12 candelabra filament clear 2700K',
+            keywordLabel: 'Search · clear candelabra (E12) filament',
+        },
+        modern3000: {
+            filterUrl: buildLedBulbCatalogUrl('5w'),
+            filterLabel: 'Browse by filter · LED · 120V · 5W',
+            keyword: '3000K dimmable LED chandelier',
+            keywordLabel: 'Search · 3000K chandelier bulbs',
+        },
+        vintage2200: {
+            filterUrl: buildLedBulbCatalogUrl('5w'),
+            filterLabel: 'Browse by filter · LED · 120V · 5W',
+            keyword: '2200K filament E12',
+            keywordLabel: 'Search · vintage candelabra (E12) · 2200K',
+        },
+        allLed: {
+            filterUrl: buildLedBulbCatalogUrl(''),
+            filterLabel: 'Browse all LED bulbs · 120V',
+            keyword: 'chandelier bulbs',
+            keywordLabel: 'Search · chandelier bulbs',
+        },
+    };
+
+    function getChandelierBulbKeywordUrl(key) {
+        return buildCatalogSearchUrl(CHANDELIER_BULB_SHOP[key].keyword);
+    }
+
+    const CHANDELIER_BULB_CATALOG_URLS = {
+        warm2700: CHANDELIER_BULB_SHOP.warm2700.filterUrl,
+        crystalFilament: CHANDELIER_BULB_SHOP.crystalFilament.filterUrl,
+        modern3000: CHANDELIER_BULB_SHOP.modern3000.filterUrl,
+        vintage2200: CHANDELIER_BULB_SHOP.vintage2200.filterUrl,
+        allLed: CHANDELIER_BULB_SHOP.allLed.filterUrl,
+    };
+
     function buildTrendUrl(config, card, options = {}) {
         if (!options.forceSearch && config.baseUrl) {
             return buildFinishUrl(config.baseUrl, card.finishes);
@@ -500,26 +554,12 @@
 
     const DEFAULT_GUIDE_FEED = {
         updatedLabel: 'Updated weekly',
-        eyebrow: 'Inspiration - Lighting Guides',
-        title: 'Research-backed lighting advice for better decisions.',
-        intro: 'Our team studies customer questions, online search behavior, showroom insights, and lighting industry trends to help shoppers choose fixtures, finishes, bulbs, and layouts with confidence.',
+        eyebrow: 'Trends & Inspiration',
+        title: "What's trending in lighting — guides backed by real customer questions.",
+        intro: 'Our team tracks what shoppers ask, search, and buy each week to spotlight the trends, finishes, and layouts lighting customers care about right now.',
         featuredTitle: 'Featured Guide',
         questionTitle: "This week's most asked lighting questions",
         guides: [{
-            category: 'Dining Room',
-            title: 'How to Choose the Right Size Chandelier for Your Dining Room',
-            question: 'What size chandelier do I need for my dining table?',
-            summary: 'Room and table formulas, hanging height, and FAQ — the pro sizing guide for dining chandeliers.',
-            readTime: '8 min read',
-            articleUrl: 'guides/dining-room-chandelier-size.html',
-            image: 'images/trend-catalog/dining-room-chandelier-size.png',
-            url: 'guides/dining-room-chandelier-size.html',
-            featured: true,
-            productLinks: [{
-                label: 'Shop Chandeliers',
-                url: 'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
-            }],
-        }, {
             id: 'chandelier-bulb-temperature',
             category: 'Bulbs',
             title: 'What Color Temperature Is Best for Chandeliers? The Complete Bulb Guide',
@@ -529,10 +569,24 @@
             articleUrl: 'guides/chandelier-bulb-temperature.html',
             image: 'images/trend-catalog/chandelier-bulb-temperature.png',
             url: 'guides/chandelier-bulb-temperature.html',
+            featured: true,
             productLinks: [{
-                label: 'Search Chandelier Bulbs',
-                url: 'https://www.catalog.logicxo.com/catalog?itemNumVal=chandelier%20bulbs&limitRange=0',
+                label: CHANDELIER_BULB_SHOP.warm2700.filterLabel,
+                url: CHANDELIER_BULB_SHOP.warm2700.filterUrl,
             }, {
+                label: CHANDELIER_BULB_SHOP.warm2700.keywordLabel,
+                url: getChandelierBulbKeywordUrl('warm2700'),
+            }],
+        }, {
+            category: 'Dining Room',
+            title: 'How to Choose the Right Size Chandelier for Your Dining Room',
+            question: 'What size chandelier do I need for my dining table?',
+            summary: 'Room and table formulas, hanging height, and FAQ — the pro sizing guide for dining chandeliers.',
+            readTime: '8 min read',
+            articleUrl: 'guides/dining-room-chandelier-size.html',
+            image: 'images/trend-catalog/dining-room-chandelier-size.png',
+            url: 'guides/dining-room-chandelier-size.html',
+            productLinks: [{
                 label: 'Shop Chandeliers',
                 url: 'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
             }],
