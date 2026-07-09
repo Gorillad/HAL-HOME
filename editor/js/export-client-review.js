@@ -77,6 +77,20 @@
         };
     }
 
+    function buildReviewDataForAgentJson(reviewData) {
+        return {
+            ...reviewData,
+            sections: reviewData.sections.map((section) => ({
+                id: section.id,
+                label: section.label,
+                previewFile: section.previewFile,
+                status: section.status,
+                notes: section.notes,
+                priority: section.priority,
+            })),
+        };
+    }
+
     function buildStartHereText(reviewData, pdfFilename) {
         return [
             `${reviewData.companyName} — Homepage Review`,
@@ -324,7 +338,7 @@
 
         const getReviewCaptureOptions = (sectionId) => {
             const captureOptions = {
-                scale: 1.5,
+                scale: 1.35,
                 timeoutMs: 60000,
                 imageTimeout: 12000,
             };
@@ -380,7 +394,15 @@
         const reviewData = buildReviewData(reviewMeta, capturedSections);
         const pdfFilename = pdfFilenameOption
             || `${slugify(reviewMeta.companyName)}-homepage-review.pdf`;
-        const pdfBlob = await buildClientReviewPdf(reviewData);
+
+        let pdfBlob;
+        try {
+            pdfBlob = await buildClientReviewPdf(reviewData);
+        } catch (pdfErr) {
+            console.error('Review PDF build failed', pdfErr);
+            throw new Error(`PDF build failed — ${pdfErr.message || pdfErr}`);
+        }
+
         const htmlContent = buildClientReviewHtml(reviewData);
 
         if (typeof onProgress === 'function') {
@@ -401,11 +423,21 @@
         zip.file('START-HERE.txt', buildStartHereText(reviewData, pdfFilename));
         agentFolder.file('README.txt', buildAgentReadmeText(reviewData, pdfFilename));
         agentFolder.file('agent-summary.html', buildAgentSummaryHtml());
-        agentFolder.file('review-data.json', JSON.stringify(reviewData, null, 2));
+        agentFolder.file('review-data.json', JSON.stringify(buildReviewDataForAgentJson(reviewData), null, 2));
 
         const resolvedZipName = zipFilename
             || `${slugify(reviewMeta.companyName)}-client-review.zip`;
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        let zipBlob;
+        try {
+            zipBlob = await zip.generateAsync({
+                type: 'blob',
+                compression: 'DEFLATE',
+                compressionOptions: { level: 6 },
+            });
+        } catch (zipErr) {
+            console.error('Review ZIP packaging failed', zipErr);
+            throw new Error(`ZIP packaging failed — ${zipErr.message || zipErr}`);
+        }
         downloadBlob(zipBlob, resolvedZipName);
 
         return { zipBlob, reviewData, pdfBlob };

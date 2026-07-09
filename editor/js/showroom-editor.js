@@ -1107,6 +1107,11 @@
                 setStatus('Packaging client review ZIP…');
                 return;
             }
+            if (progress.phase === 'pdf') {
+                setReviewExportProgress(90, 'Building review PDF…');
+                setStatus('Building client review PDF…');
+                return;
+            }
             if (progress.phase === 'start') {
                 const total = progress.total || 1;
                 setReviewExportProgress(5, `Getting ready — ${total} section${total === 1 ? '' : 's'} to capture…`);

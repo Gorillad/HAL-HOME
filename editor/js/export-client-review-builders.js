@@ -88,7 +88,7 @@
             doc.setDrawColor(210, 214, 220);
             doc.setLineWidth(0.75);
             doc.rect(x - pad, yPos - pad, width + pad * 2, height + pad * 2);
-            doc.addImage(dataUrl, format, x, yPos, width, height, undefined, 'SLOW');
+            doc.addImage(dataUrl, format, x, yPos, width, height, undefined, 'FAST');
         }
 
         function writeLines(text, options) {
@@ -156,7 +156,11 @@
             if (doc.AcroFormAppearance?.RadioButton?.Circle) {
                 radioGroup.setAppearance(doc.AcroFormAppearance.RadioButton.Circle);
             }
-            doc.addField(radioGroup);
+            try {
+                doc.addField(radioGroup);
+            } catch (fieldErr) {
+                console.warn('Review PDF radio field skipped', groupName, fieldErr);
+            }
             return ry + 6;
         }
 
@@ -198,7 +202,15 @@
             doc.setFontSize(13);
             doc.text((index + 1) + '. ' + section.label, edge, 36);
 
-            drawFramedImage(imageSrc, detectImageFormat(imageSrc), drawX, drawY, drawW, drawH);
+            try {
+                drawFramedImage(imageSrc, detectImageFormat(imageSrc), drawX, drawY, drawW, drawH);
+            } catch (imageErr) {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                doc.setTextColor(120, 132, 142);
+                doc.text('Screenshot preview unavailable for this section.', edge, drawY + 20);
+                console.warn('Review PDF preview failed for section', section.id, imageErr);
+            }
 
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8);
@@ -367,7 +379,7 @@
         const sectionBlocks = reviewData.sections.map((section, index) => {
             const sid = escapeHtml(section.id);
             const label = escapeHtml(section.label);
-            const preview = escapeHtml(section.previewDataUrl || section.previewFile);
+            const preview = escapeHtml(section.previewFile || `agent/previews/${section.id}.png`);
             return `
 <section class="review-section" id="section-${sid}">
   <div class="review-section-head"><h2>${index + 1}. ${label}</h2></div>
