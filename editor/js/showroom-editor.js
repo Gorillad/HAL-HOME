@@ -5928,6 +5928,9 @@
             if (reviewExportProgressLabel) {
                 reviewExportProgressLabel.textContent = `Review export failed${detail}`;
             }
+            if (reviewExportProgress) {
+                reviewExportProgress.hidden = false;
+            }
         } finally {
             if (restorePreviewAfterCapture) restorePreviewAfterCapture();
             captureBusy = false;

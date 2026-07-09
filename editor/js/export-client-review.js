@@ -397,7 +397,7 @@
 
         let pdfBlob;
         try {
-            pdfBlob = await buildClientReviewPdf(reviewData);
+            pdfBlob = buildClientReviewPdf(reviewData);
         } catch (pdfErr) {
             console.error('Review PDF build failed', pdfErr);
             throw new Error(`PDF build failed — ${pdfErr.message || pdfErr}`);
@@ -429,11 +429,7 @@
             || `${slugify(reviewMeta.companyName)}-client-review.zip`;
         let zipBlob;
         try {
-            zipBlob = await zip.generateAsync({
-                type: 'blob',
-                compression: 'DEFLATE',
-                compressionOptions: { level: 6 },
-            });
+            zipBlob = await zip.generateAsync({ type: 'blob' });
         } catch (zipErr) {
             console.error('Review ZIP packaging failed', zipErr);
             throw new Error(`ZIP packaging failed — ${zipErr.message || zipErr}`);
@@ -444,6 +440,9 @@
     };
 
     function dataUrlToBlob(dataUrl) {
+        if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.includes(',')) {
+            throw new Error('Invalid screenshot data for ZIP packaging.');
+        }
         const commaIndex = dataUrl.indexOf(',');
         const header = dataUrl.slice(0, commaIndex);
         const base64 = dataUrl.slice(commaIndex + 1);

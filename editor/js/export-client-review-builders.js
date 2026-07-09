@@ -21,18 +21,6 @@
         return String(dataUrl || '').startsWith('data:image/jpeg') ? 'JPEG' : 'PNG';
     }
 
-    function loadImageMetrics(dataUrl) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve({
-                width: img.naturalWidth,
-                height: img.naturalHeight,
-            });
-            img.onerror = () => reject(new Error('Image failed to load.'));
-            img.src = dataUrl;
-        });
-    }
-
     function fitImageInBox(imgW, imgH, boxW, boxH) {
         if (!imgW || !imgH) {
             return { width: boxW, height: boxH };
@@ -44,7 +32,7 @@
         };
     }
 
-    async function buildClientReviewPdf(reviewData) {
+    function buildClientReviewPdf(reviewData) {
         const JsPDF = window.jspdf?.jsPDF || window.jsPDF;
         if (!JsPDF) {
             throw new Error('PDF library not loaded.');
@@ -55,7 +43,6 @@
         let pageW = doc.internal.pageSize.getWidth();
         let pageH = doc.internal.pageSize.getHeight();
         let contentW = pageW - margin * 2;
-        const fieldColW = Math.min(contentW * 0.55, 300);
         let y = margin;
 
         function syncPageMetrics() {
@@ -65,7 +52,7 @@
         }
 
         function addPage(extraTopSpace) {
-            doc.addPage('letter', 'p');
+            doc.addPage();
             syncPageMetrics();
             y = margin + (extraTopSpace || 0);
         }
@@ -83,12 +70,11 @@
             doc.line(margin, ruleY, margin + 56, ruleY);
         }
 
-        function drawFramedImage(dataUrl, format, x, yPos, width, height) {
-            const pad = 1;
-            doc.setDrawColor(210, 214, 220);
-            doc.setLineWidth(0.75);
-            doc.rect(x - pad, yPos - pad, width + pad * 2, height + pad * 2);
-            doc.addImage(dataUrl, format, x, yPos, width, height, undefined, 'FAST');
+        function ensureSpace(needed, bottomMargin) {
+            const bottom = bottomMargin == null ? margin : bottomMargin;
+            if (y + needed > pageH - bottom) {
+                addPage();
+            }
         }
 
         function writeLines(text, options) {
@@ -99,9 +85,7 @@
             const maxWidth = opts.maxWidth || contentW;
             const lines = doc.splitTextToSize(String(text || ''), maxWidth);
             const blockH = lines.length * Math.ceil(size * 1.35);
-            if (y + blockH + gap > pageH - margin) {
-                addPage();
-            }
+            ensureSpace(blockH + gap);
             doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
             doc.setFontSize(size);
             doc.setTextColor(color[0], color[1], color[2]);
@@ -109,167 +93,225 @@
             y += blockH + gap;
         }
 
-        function addTextField(fieldName, x, fieldY, width, height, multiline) {
-            if (typeof doc.AcroFormTextField !== 'function') return;
-            const field = new doc.AcroFormTextField();
-            field.fieldName = fieldName;
-            field.x = x;
-            field.y = fieldY;
-            field.width = width;
-            field.height = height;
-            field.multiline = !!multiline;
-            field.showWhenPrinted = true;
-            field.value = '';
-            doc.addField(field);
+        function drawFieldBox(x, fieldY, width, height) {
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(168, 178, 188);
+            doc.setLineWidth(0.85);
+            doc.rect(x, fieldY, width, height, 'FD');
         }
 
-        function addRadioGroup(groupName, choices, x, startY) {
-            doc.setFontSize(12);
-            if (typeof doc.AcroFormRadioButton !== 'function') {
-                let ry = startY;
-                choices.forEach((choice) => {
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(10);
-                    doc.text('( ) ' + choice.label, x, ry + 9);
-                    ry += 18;
-                });
-                return ry + 4;
-            }
+        function getTextWidth(text, fontSize) {
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            return doc.getTextWidth(String(text || ''));
+        }
 
-            const radioGroup = new doc.AcroFormRadioButton();
-            radioGroup.fieldName = groupName;
-
-            let ry = startY;
-            choices.forEach((choice) => {
-                const option = radioGroup.createOption(choice.value);
-                option.x = x;
-                option.y = ry;
-                option.width = 11;
-                option.height = 11;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(34, 47, 54);
-                doc.text(choice.label, x + 16, ry + 9);
-                ry += 18;
-            });
-
-            if (doc.AcroFormAppearance?.RadioButton?.Circle) {
-                radioGroup.setAppearance(doc.AcroFormAppearance.RadioButton.Circle);
-            }
+        function addTextField(fieldName, x, fieldY, width, height, multiline) {
+            drawFieldBox(x, fieldY, width, height);
+            if (typeof doc.AcroFormTextField !== 'function') return;
             try {
+                const inset = 3;
+                const field = new doc.AcroFormTextField();
+                field.fieldName = fieldName;
+                field.x = x + inset;
+                field.y = fieldY + inset;
+                field.width = Math.max(12, width - inset * 2);
+                field.height = Math.max(12, height - inset * 2);
+                field.multiline = !!multiline;
+                field.showWhenPrinted = true;
+                field.value = '';
+                if (doc.AcroFormAppearance?.TextField?.default) {
+                    field.setAppearance(doc.AcroFormAppearance.TextField.default);
+                }
+                doc.addField(field);
+            } catch (fieldErr) {
+                console.warn('Review PDF text field skipped', fieldName, fieldErr);
+            }
+        }
+
+        function addRadioGroupRow(groupName, choices, startY, layout) {
+            const opts = layout || {};
+            const rowPad = opts.rowPad == null ? 12 : opts.rowPad;
+            const rowW = contentW - rowPad * 2;
+            const rowX = margin + rowPad;
+            const radioSize = 11;
+            const labelGap = 5;
+            const colGap = opts.colGap == null ? 18 : opts.colGap;
+            const fontSize = opts.fontSize || 9;
+            const rowH = opts.rowHeight || 22;
+
+            const optionWidths = choices.map((choice) => (
+                radioSize + labelGap + getTextWidth(choice.label, fontSize) + 6
+            ));
+            const totalWidth = optionWidths.reduce((sum, width) => sum + width, 0)
+                + colGap * Math.max(0, choices.length - 1);
+            const useRow = totalWidth <= rowW;
+            let nextY = startY;
+
+            function drawFallbackOption(x, ry, label) {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(fontSize);
+                doc.setTextColor(34, 47, 54);
+                doc.circle(x + 5.5, ry + 5.5, 5, 'S');
+                doc.text(label, x + radioSize + labelGap, ry + 9);
+            }
+
+            if (!useRow) {
+                let ry = startY;
+                if (typeof doc.AcroFormRadioButton !== 'function') {
+                    choices.forEach((choice) => {
+                        drawFallbackOption(rowX, ry, choice.label);
+                        ry += 18;
+                    });
+                    return ry + 4;
+                }
+
+                try {
+                    const radioGroup = new doc.AcroFormRadioButton();
+                    radioGroup.fieldName = groupName;
+                    choices.forEach((choice) => {
+                        const option = radioGroup.createOption(choice.value);
+                        option.x = rowX;
+                        option.y = ry;
+                        option.width = radioSize;
+                        option.height = radioSize;
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(fontSize);
+                        doc.setTextColor(34, 47, 54);
+                        doc.text(choice.label, rowX + radioSize + labelGap, ry + 9);
+                        ry += 18;
+                    });
+                    if (doc.AcroFormAppearance?.RadioButton?.Circle) {
+                        radioGroup.setAppearance(doc.AcroFormAppearance.RadioButton.Circle);
+                    }
+                    doc.addField(radioGroup);
+                } catch (fieldErr) {
+                    console.warn('Review PDF radio field skipped', groupName, fieldErr);
+                    choices.forEach((choice) => {
+                        drawFallbackOption(rowX, ry, choice.label);
+                        ry += 18;
+                    });
+                }
+                return ry + 6;
+            }
+
+            let cursorX = rowX + Math.max(0, (rowW - totalWidth) / 2);
+            const ry = startY;
+
+            if (typeof doc.AcroFormRadioButton !== 'function') {
+                choices.forEach((choice, index) => {
+                    drawFallbackOption(cursorX, ry, choice.label);
+                    cursorX += optionWidths[index] + colGap;
+                });
+                return startY + rowH + 6;
+            }
+
+            try {
+                const radioGroup = new doc.AcroFormRadioButton();
+                radioGroup.fieldName = groupName;
+
+                choices.forEach((choice, index) => {
+                    const option = radioGroup.createOption(choice.value);
+                    option.x = cursorX;
+                    option.y = ry;
+                    option.width = radioSize;
+                    option.height = radioSize;
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(fontSize);
+                    doc.setTextColor(34, 47, 54);
+                    doc.text(choice.label, cursorX + radioSize + labelGap, ry + 9);
+                    cursorX += optionWidths[index] + colGap;
+                });
+
+                if (doc.AcroFormAppearance?.RadioButton?.Circle) {
+                    radioGroup.setAppearance(doc.AcroFormAppearance.RadioButton.Circle);
+                }
                 doc.addField(radioGroup);
+                nextY = startY + rowH + 6;
             } catch (fieldErr) {
                 console.warn('Review PDF radio field skipped', groupName, fieldErr);
+                cursorX = rowX + Math.max(0, (rowW - totalWidth) / 2);
+                choices.forEach((choice, index) => {
+                    drawFallbackOption(cursorX, ry, choice.label);
+                    cursorX += optionWidths[index] + colGap;
+                });
+                nextY = startY + rowH + 6;
             }
-            return ry + 6;
+
+            return nextY;
         }
 
-        async function appendSectionScreenshotPage(section, index) {
-            const imageSrc = section.previewDataUrl || '';
-            if (!imageSrc) return;
+        function appendSectionPage(section, index) {
+            addPage();
+            writeLines((index + 1) + '. ' + section.label, { bold: true, size: 14, gap: 8 });
 
-            let imgW = section.captureWidth;
-            let imgH = section.captureHeight;
-            if (!imgW || !imgH) {
+            const imageSrc = section.previewDataUrl || '';
+            if (imageSrc) {
+                const imgW = section.captureWidth || 1400;
+                const imgH = section.captureHeight || 900;
+                const maxImageH = 210;
+                const { width: drawW, height: drawH } = fitImageInBox(imgW, imgH, contentW, maxImageH);
                 try {
-                    ({ width: imgW, height: imgH } = await loadImageMetrics(imageSrc));
-                } catch {
-                    imgW = 1400;
-                    imgH = 900;
+                    ensureSpace(drawH + 14);
+                    const drawX = margin + (contentW - drawW) / 2;
+                    doc.setDrawColor(210, 214, 220);
+                    doc.setLineWidth(0.75);
+                    doc.rect(drawX - 1, y - 1, drawW + 2, drawH + 2);
+                    doc.addImage(imageSrc, detectImageFormat(imageSrc), drawX, y, drawW, drawH, undefined, 'FAST');
+                    y += drawH + 14;
+                } catch (imageErr) {
+                    writeLines('Screenshot preview unavailable for this section.', {
+                        size: 9,
+                        color: [120, 132, 142],
+                        gap: 8,
+                    });
+                    console.warn('Review PDF preview failed for section', section.id, imageErr);
                 }
             }
 
-            const useLandscape = imgW / imgH >= 0.85;
-            doc.addPage('letter', useLandscape ? 'l' : 'p');
-            syncPageMetrics();
-
-            const edge = 36;
-            const headerH = 52;
-            const captionH = 18;
-            const boxW = pageW - edge * 2;
-            const boxH = pageH - edge - headerH - captionH - edge;
-            const { width: drawW, height: drawH } = fitImageInBox(imgW, imgH, boxW, boxH);
-            const drawX = edge + (boxW - drawW) / 2;
-            const drawY = headerH + edge + Math.max(0, (boxH - drawH) / 2);
-
-            doc.setFillColor(34, 47, 54);
-            doc.rect(0, 0, pageW, headerH, 'F');
-            doc.setTextColor(201, 169, 110);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(8);
-            doc.text('LOGICX SHOWROOM · SECTION PREVIEW', edge, 18);
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(13);
-            doc.text((index + 1) + '. ' + section.label, edge, 36);
-
-            try {
-                drawFramedImage(imageSrc, detectImageFormat(imageSrc), drawX, drawY, drawW, drawH);
-            } catch (imageErr) {
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(10);
-                doc.setTextColor(120, 132, 142);
-                doc.text('Screenshot preview unavailable for this section.', edge, drawY + 20);
-                console.warn('Review PDF preview failed for section', section.id, imageErr);
-            }
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(120, 132, 142);
-            doc.text('Current design — ' + section.label, edge, pageH - edge);
-        }
-
-        function appendSectionFeedbackPage(section, index) {
-            addPage(8);
-            drawGoldRule(y);
-            y += 14;
-            writeLines((index + 1) + '. ' + section.label + ' — your feedback', { bold: true, size: 13, gap: 10 });
-
-            const panelX = margin;
-            const panelPad = 14;
             const panelW = contentW;
             const panelStartY = y;
-            const notesFieldH = 88;
-            const panelH = panelPad * 2 + 150 + notesFieldH + 70;
-            drawSoftPanel(panelX, panelStartY, panelW, panelH);
+            const notesFieldH = 84;
+            const panelH = 28 + 52 + notesFieldH + 52;
+            drawSoftPanel(margin, panelStartY, panelW, panelH);
 
-            y = panelStartY + panelPad;
-            writeLines('Your feedback', { bold: true, size: 10, gap: 6, indent: panelPad, maxWidth: panelW - panelPad * 2 });
-
-            y = addRadioGroup(
+            y = panelStartY + 12;
+            writeLines('Your feedback', { bold: true, size: 10, gap: 6, maxWidth: panelW - 24 });
+            y = addRadioGroupRow(
                 pdfFieldName('status', section.id),
                 [
                     { value: 'approved', label: 'Looks good' },
                     { value: 'changes', label: 'Needs changes' },
                     { value: 'unsure', label: 'Not sure' },
                 ],
-                margin + panelPad,
                 y,
+                { rowPad: 12, fontSize: 9, colGap: 22 },
             );
 
-            writeLines('Notes or suggested updates', { bold: true, size: 10, gap: 4, indent: panelPad, maxWidth: panelW - panelPad * 2 });
+            writeLines('Notes or suggested updates', { bold: true, size: 10, gap: 4, maxWidth: panelW - 24 });
             const notesY = y;
             y += notesFieldH + 8;
             addTextField(
                 pdfFieldName('notes', section.id),
-                margin + panelPad,
+                margin + 12,
                 notesY,
-                panelW - panelPad * 2,
+                panelW - 24,
                 notesFieldH,
                 true,
             );
 
-            writeLines('Priority (if changes needed)', { bold: true, size: 10, gap: 4, indent: panelPad, maxWidth: panelW - panelPad * 2 });
-            y = addRadioGroup(
+            writeLines('Priority (if changes needed)', { bold: true, size: 10, gap: 4, maxWidth: panelW - 24 });
+            y = addRadioGroupRow(
                 pdfFieldName('priority', section.id),
                 [
                     { value: 'normal', label: 'Normal' },
-                    { value: 'high', label: 'High — must fix before launch' },
-                    { value: 'low', label: 'Low — nice to have' },
+                    { value: 'high', label: 'High' },
+                    { value: 'low', label: 'Low' },
                 ],
-                margin + panelPad,
                 y,
+                { rowPad: 12, fontSize: 9, colGap: 36 },
             );
-            y = panelStartY + panelH + 12;
+            y = panelStartY + panelH + 8;
         }
 
         const generatedDate = new Date(reviewData.generatedAt).toLocaleDateString('en-US', {
@@ -319,49 +361,56 @@
         doc.text('Generated ' + generatedDate, pageW / 2, 356, { align: 'center' });
         doc.setTextColor(201, 169, 110);
         doc.setFontSize(9);
-        doc.text('Use Homepage-Review.html for the best form experience', pageW / 2, pageH - 72, { align: 'center' });
+        doc.text('Open Homepage-Review.html for the best form experience', pageW / 2, pageH - 72, { align: 'center' });
 
         addPage(12);
         drawGoldRule(y);
         y += 14;
         writeLines('Your feedback', { bold: true, size: 13, gap: 10 });
-        writeLines('Your name', { bold: true, size: 10, gap: 4 });
-        const nameFieldY = y;
-        y += 22;
-        addTextField('reviewer_name', margin, nameFieldY, fieldColW, 18, false);
-        writeLines('Your email', { bold: true, size: 10, gap: 6 });
-        const emailFieldY = y;
-        y += 22;
-        addTextField('reviewer_email', margin, emailFieldY, fieldColW, 18, false);
 
-        y += 14;
+        const contactFieldW = Math.min(contentW, 420);
+        const contactFieldX = margin + (contentW - contactFieldW) / 2;
+        const singleLineFieldH = 22;
+
+        writeLines('Your name', { bold: true, size: 10, gap: 4, indent: contactFieldX - margin, maxWidth: contactFieldW });
+        const nameFieldY = y;
+        y += singleLineFieldH + 10;
+        addTextField('reviewer_name', contactFieldX, nameFieldY, contactFieldW, singleLineFieldH, false);
+
+        writeLines('Your email', { bold: true, size: 10, gap: 4, indent: contactFieldX - margin, maxWidth: contactFieldW });
+        const emailFieldY = y;
+        y += singleLineFieldH + 14;
+        addTextField('reviewer_email', contactFieldX, emailFieldY, contactFieldW, singleLineFieldH, false);
+
+        y += 8;
         const overallPanelY = y;
         const overallPanelPad = 14;
         const overallFieldH = 108;
+        const overallPanelW = contactFieldW + overallPanelPad * 2;
+        const overallPanelX = contactFieldX - overallPanelPad;
         const overallPanelH = overallPanelPad * 2 + 28 + overallFieldH;
-        drawSoftPanel(margin, overallPanelY, fieldColW + overallPanelPad * 2, overallPanelH);
+        drawSoftPanel(overallPanelX, overallPanelY, overallPanelW, overallPanelH);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10);
         doc.setTextColor(34, 47, 54);
-        doc.text('Overall comments', margin + overallPanelPad, overallPanelY + overallPanelPad + 2);
+        doc.text('Overall comments', contactFieldX, overallPanelY + overallPanelPad + 2);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.setTextColor(120, 132, 142);
-        doc.text('(optional)', margin + overallPanelPad + 98, overallPanelY + overallPanelPad + 2);
+        doc.text('(optional)', contactFieldX + 98, overallPanelY + overallPanelPad + 2);
         addTextField(
             'overall_notes',
-            margin + overallPanelPad,
+            contactFieldX,
             overallPanelY + overallPanelPad + 22,
-            fieldColW,
+            contactFieldW,
             overallFieldH,
             true,
         );
 
         const sections = Array.isArray(reviewData.sections) ? reviewData.sections : [];
-        for (let index = 0; index < sections.length; index += 1) {
-            await appendSectionScreenshotPage(sections[index], index);
-            appendSectionFeedbackPage(sections[index], index);
-        }
+        sections.forEach((section, index) => {
+            appendSectionPage(section, index);
+        });
 
         return doc.output('blob');
     }
