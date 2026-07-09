@@ -52,7 +52,53 @@
         return '@echo off\r\nsetlocal EnableExtensions\r\nset "REVIEW=%~dp0Homepage-Review.html"\r\nif not exist "%REVIEW%" (echo Could not find Homepage-Review.html & pause & exit /b 1)\r\nif exist "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" (start "" "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%" & exit /b 0)\r\nif exist "%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe" (start "" "%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%" & exit /b 0)\r\nif exist "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" (start "" "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" "%REVIEW%" & exit /b 0)\r\nstart "" "%REVIEW%"\r\n';
     }
 
+    function buildClientNavCatalog(navCatalog) {
+        return (Array.isArray(navCatalog) ? navCatalog : []).map((category) => ({
+            id: category.id,
+            label: category.label || 'Category',
+            subcategories: (category.subcategories || []).map((sub) => ({
+                id: sub.id,
+                label: sub.label || 'Link',
+            })),
+        }));
+    }
+
     function buildReviewData(meta, sections) {
+        const navCatalog = buildClientNavCatalog(meta.navCatalog);
+        const mappedSections = sections
+            .filter((section) => !String(section.id || '').startsWith('nav-'))
+            .map((section) => ({
+                id: section.id,
+                label: section.label,
+                previewFile: `agent/previews/${section.id}.png`,
+                previewDataUrl: section.previewDataUrl || section.dataUrl || '',
+                captureWidth: section.captureWidth || 0,
+                captureHeight: section.captureHeight || 0,
+                status: null,
+                notes: '',
+                priority: 'normal',
+            }));
+
+        if (navCatalog.length) {
+            const navSection = {
+                id: 'main-navigation',
+                label: 'Main navigation',
+                previewFile: null,
+                previewDataUrl: '',
+                captureWidth: 0,
+                captureHeight: 0,
+                status: null,
+                notes: '',
+                priority: 'normal',
+            };
+            const headerIdx = mappedSections.findIndex((section) => section.id === 'header');
+            if (headerIdx >= 0) {
+                mappedSections.splice(headerIdx + 1, 0, navSection);
+            } else {
+                mappedSections.unshift(navSection);
+            }
+        }
+
         return {
             packageId: meta.packageId,
             companyName: meta.companyName,
@@ -63,17 +109,8 @@
             reviewerName: '',
             reviewerEmail: '',
             overallNotes: '',
-            sections: sections.map((section) => ({
-                id: section.id,
-                label: section.label,
-                previewFile: `agent/previews/${section.id}.png`,
-                previewDataUrl: section.previewDataUrl || section.dataUrl || '',
-                captureWidth: section.captureWidth || 0,
-                captureHeight: section.captureHeight || 0,
-                status: null,
-                notes: '',
-                priority: 'normal',
-            })),
+            navCatalog,
+            sections: mappedSections,
         };
     }
 
@@ -91,13 +128,20 @@
         };
     }
 
+    function mergeCaptureOptions(section, getReviewCaptureOptions) {
+        return {
+            ...getReviewCaptureOptions(section.id),
+            ...(section.captureOptions || {}),
+        };
+    }
+
     function buildStartHereText(reviewData, pdfFilename) {
         return [
             `${reviewData.companyName} — Homepage Review`,
             '',
             'BEST EXPERIENCE (recommended)',
             '1. Double-click START-REVIEW-IN-CHROME.bat (Windows) or open Homepage-Review.html in Chrome.',
-            '2. Review each section — use the radio buttons and notes boxes.',
+            '2. Review each section below — including main navigation categories and subcategories.',
             '3. Click Print or save as PDF, then return the PDF to your onboarding agent.',
             '',
             'ALTERNATIVE',
@@ -321,6 +365,7 @@
             companyName: meta.companyName || 'Your Showroom',
             templateLabel: meta.templateLabel || 'Showroom',
             design: meta.design || 'classic',
+            navCatalog: meta.navCatalog || [],
         };
 
         const capturableSections = sections.filter((section) => isCapturable(section.el));
@@ -367,7 +412,10 @@
                     label: section.label,
                 });
             }
-            const dataUrl = await captureElementAsDataUrl(section.el, getReviewCaptureOptions(section.id));
+            const dataUrl = await captureElementAsDataUrl(
+                section.el,
+                mergeCaptureOptions(section, getReviewCaptureOptions),
+            );
             const { width: captureWidth, height: captureHeight } = await loadCaptureMetrics(dataUrl);
             capturedSections.push({
                 id: section.id,

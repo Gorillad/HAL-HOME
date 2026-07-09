@@ -84,36 +84,33 @@
                     <p class="editor-chrome-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
                 </div>
             </div>
-            <div class="editor-export-actions">
-                <div class="editor-export-buttons">
-                    <span class="editor-status" id="editorStatus" aria-live="polite"></span>
-                    <button type="button" class="btn btn-secondary btn-sm" id="resetDraftBtn" style="display:none">Reset to defaults</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="shareReviewBtn" title="ZIP with HTML feedback form, PDF backup, and section screenshots">Share for review</button>
-                    <button type="button" class="btn btn-primary" id="exportPdfBtn" title="PDF brief + developer spec for web team">Export handoff</button>
-                    <span class="editor-evolved-toast" id="evolvedToast" hidden>
-                        <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
-                        <span class="editor-evolved-label">Evolved</span>
-                        <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
-                    </span>
-                </div>
-                <div class="editor-review-progress" id="reviewExportProgress" hidden>
-                    <div class="editor-review-progress-head">
-                        <span class="editor-review-progress-label" id="reviewExportProgressLabel">Preparing review package…</span>
-                        <span class="editor-review-progress-percent" id="reviewExportProgressPercent">0%</span>
-                    </div>
-                    <div
-                        class="editor-review-progress-track"
-                        id="reviewExportProgressBar"
-                        role="progressbar"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        aria-valuenow="0"
-                        aria-labelledby="reviewExportProgressLabel"
-                    >
-                        <div class="editor-review-progress-fill" id="reviewExportProgressFill"></div>
-                    </div>
-                </div>
-                <p class="editor-export-help"><strong>Share for review</strong> — ZIP with an HTML feedback form (radio buttons + notes), fillable PDF backup, and section screenshots. <strong>Export handoff</strong> — developer brief and spec package.</p>
+            <div class="editor-chrome-actions editor-showroom-actions">
+                <span class="editor-status" id="editorStatus" aria-live="polite"></span>
+                <button type="button" class="btn btn-secondary" id="resetDraftBtn" style="display:none">Reset to defaults</button>
+                <button type="button" class="btn btn-secondary" id="shareReviewBtn" title="ZIP with HTML feedback form, PDF backup, and section screenshots">Share for review</button>
+                <button type="button" class="btn btn-primary" id="exportPdfBtn" title="PDF brief + developer spec for web team">Export handoff</button>
+                <span class="editor-evolved-toast" id="evolvedToast" hidden>
+                    <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                    <span class="editor-evolved-label">Evolved</span>
+                    <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
+                </span>
+            </div>
+        </div>
+        <div class="editor-review-progress" id="reviewExportProgress" hidden>
+            <div class="editor-review-progress-head">
+                <span class="editor-review-progress-label" id="reviewExportProgressLabel">Preparing review package…</span>
+                <span class="editor-review-progress-percent" id="reviewExportProgressPercent">0%</span>
+            </div>
+            <div
+                class="editor-review-progress-track"
+                id="reviewExportProgressBar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                aria-labelledby="reviewExportProgressLabel"
+            >
+                <div class="editor-review-progress-fill" id="reviewExportProgressFill"></div>
             </div>
         </div>
 
@@ -143,7 +140,7 @@
     <div class="editor-layout">
         <aside class="editor-panel" id="editorPanel" aria-label="Editor controls">
             <h2>Homepage content</h2>
-            <p class="editor-panel-lead">Configure the Showroom homepage template. Your draft saves automatically in this browser. Export includes all homepage sections and assets in a ZIP with PDF brief and JSON spec.</p>
+            <p class="editor-panel-lead">Configure the Showroom homepage template. Your draft saves automatically in this browser.</p>
 
             <details class="editor-accordion editor-panel-section" id="editor-company-info" open>
                 <summary class="editor-accordion-head">Company Info</summary>

@@ -1182,10 +1182,42 @@
         return showroomHeaderClassic || headerRoot;
     }
 
+    function buildNavCatalogForReview() {
+        if (templateDesign === 'gallery') {
+            const links = (state.galleryMainNavLinks || []).filter((link) => link.label || link.url);
+            if (!links.length) return [];
+            return [{
+                id: 'gallery-main-nav',
+                label: 'Main navigation',
+                url: '',
+                subcategories: links.map((link) => ({
+                    id: link.id,
+                    label: link.label || 'Link',
+                    url: link.url || '',
+                })),
+            }];
+        }
+
+        return (state.mainNavItems || [])
+            .map((item) => ({
+                id: item.id,
+                label: item.label || 'Category',
+                url: item.url || '',
+                subcategories: (item.subcategories || [])
+                    .filter((sub) => sub.visible !== false)
+                    .map((sub) => ({
+                        id: sub.id,
+                        label: sub.label || 'Link',
+                        url: sub.url || '',
+                    })),
+            }))
+            .filter((item) => item.label);
+    }
+
     function buildClientReviewSections() {
         const sections = [];
-        const pushSection = (id, label, el) => {
-            if (el) sections.push({ id, label, el });
+        const pushSection = (id, label, el, extra) => {
+            if (el) sections.push({ id, label, el, ...(extra || {}) });
         };
 
         if (templateDesign === 'spotlight') {
@@ -3342,7 +3374,7 @@
                         : `<span class="showroom-main-nav-label">${label}</span>`;
 
                     return (
-                        `<li class="showroom-main-nav-item has-dropdown">
+                        `<li class="showroom-main-nav-item has-dropdown" data-nav-id="${escapeHtml(item.id)}">
                             <div class="showroom-main-nav-trigger" aria-haspopup="true">
                                 ${triggerLabel}
                             </div>
@@ -5913,6 +5945,7 @@
                     companyName: reviewCompanyName,
                     templateLabel: TEMPLATE_DESIGNS[templateDesign],
                     design: templateDesign,
+                    navCatalog: buildNavCatalogForReview(),
                 },
                 pdfFilename: reviewFilenames.pdfFilename,
                 zipFilename: reviewFilenames.zipFilename,
@@ -6122,10 +6155,6 @@
         syncGalleryPreview();
         scheduleFitPreviewScale();
 
-        if (options.restoredDraft) {
-            setStatus('Draft restored');
-        }
-
         applyPreviewTheme();
     }
 
@@ -6180,10 +6209,6 @@
         }
         applyTemplateDesignUI();
         syncPreview();
-
-        if (options.restoredDraft) {
-            setStatus('Draft restored');
-        }
 
         applyPreviewTheme();
     }
@@ -6248,11 +6273,11 @@
                 state.reviewExported = true;
             }
             if (templateDesign === 'gallery') {
-                finishGalleryEditorInit({ restoredDraft: true });
+                finishGalleryEditorInit();
             } else if (templateDesign === 'spotlight') {
-                finishSpotlightEditorInit({ restoredDraft: true });
+                finishSpotlightEditorInit();
             } else {
-                finishClassicEditorInit({ restoredDraft: true });
+                finishClassicEditorInit();
             }
         } else if (baselineWasStored) {
             populateForm(defaultsPayload);

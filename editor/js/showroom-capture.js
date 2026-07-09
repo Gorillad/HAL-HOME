@@ -92,7 +92,31 @@
         });
     }
 
-    function prepareCloneForCapture(clonedDoc, clonedEl, sourceEl) {
+    function applyNavDropdownCaptureMode(clonedDoc, expandNavCategoryId) {
+        if (!expandNavCategoryId) return;
+
+        const previewFrame = clonedDoc.getElementById('showroomPreview');
+        if (previewFrame) {
+            previewFrame.classList.add('is-nav-dropdown-capture');
+        }
+
+        clonedDoc.querySelectorAll('.showroom-main-nav-item').forEach((navItem) => {
+            const navId = navItem.getAttribute('data-nav-id');
+            const dropdown = navItem.querySelector('.showroom-main-nav-dropdown');
+            if (!dropdown) return;
+
+            if (navId === expandNavCategoryId) {
+                navItem.classList.add('is-capture-expanded');
+                dropdown.style.removeProperty('display');
+            } else {
+                navItem.classList.remove('is-capture-expanded');
+                dropdown.style.setProperty('display', 'none', 'important');
+            }
+        });
+    }
+
+    function prepareCloneForCapture(clonedDoc, clonedEl, sourceEl, captureOptions) {
+        const options = captureOptions || {};
         sanitizeCloneStylesheets(clonedDoc);
 
         if (clonedEl) {
@@ -132,9 +156,13 @@
         ).forEach((control) => {
             control.style.display = 'none';
         });
-        clonedDoc.querySelectorAll('.showroom-main-nav-dropdown').forEach((dropdown) => {
-            dropdown.style.display = 'none';
-        });
+        if (options.expandNavCategoryId) {
+            applyNavDropdownCaptureMode(clonedDoc, options.expandNavCategoryId);
+        } else {
+            clonedDoc.querySelectorAll('.showroom-main-nav-dropdown').forEach((dropdown) => {
+                dropdown.style.display = 'none';
+            });
+        }
         clonedDoc.querySelectorAll('[hidden]').forEach((node) => {
             node.style.setProperty('display', 'none', 'important');
         });
@@ -279,7 +307,7 @@
             logging: false,
             backgroundColor: '#ffffff',
             imageTimeout,
-            onclone: (clonedDoc, clonedEl) => prepareCloneForCapture(clonedDoc, clonedEl, el),
+            onclone: (clonedDoc, clonedEl) => prepareCloneForCapture(clonedDoc, clonedEl, el, options),
         });
 
         let timeoutId;

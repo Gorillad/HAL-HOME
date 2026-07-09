@@ -381,7 +381,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
             : `<span class="showroom-main-nav-label">${label}</span>`;
 
         return (
-            `<li class="showroom-main-nav-item has-dropdown">
+            `<li class="showroom-main-nav-item has-dropdown" data-nav-id="${escapeHtml(item.id)}">
                 <div class="showroom-main-nav-trigger" aria-haspopup="true">
                     ${triggerLabel}
                     <i class="fa-solid fa-chevron-down showroom-main-nav-caret" aria-hidden="true"></i>
@@ -1665,10 +1665,6 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         bindEvents();
 
         applyPreviewTheme();
-
-        if (options.restoredDraft) {
-            ctx.setStatus('Draft restored');
-        }
     }
 
     function integrate(context) {

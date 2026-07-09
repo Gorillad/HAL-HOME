@@ -32,6 +32,46 @@
         };
     }
 
+    const PDF_RADIO_BLUE = '#2563eb';
+    const PDF_RADIO_BLUE_RGB = [37, 99, 235];
+
+    function createBlueRadioAppearance(AcroFormAppearance) {
+        const circle = AcroFormAppearance?.RadioButton?.Circle;
+        if (!circle) return null;
+
+        function tintSelectedAppearance(xobj) {
+            if (!xobj?.stream) return xobj;
+            const lines = xobj.stream.split('\n');
+            const patched = [];
+            let dotFillCount = 0;
+
+            lines.forEach((line) => {
+                if (line === 'f') {
+                    dotFillCount += 1;
+                    if (dotFillCount >= 2) {
+                        patched.push('0.145 0.388 0.922 rg');
+                    }
+                }
+                patched.push(line);
+            });
+
+            xobj.stream = patched.join('\n');
+            return xobj;
+        }
+
+        return {
+            createAppearanceStream: circle.createAppearanceStream.bind(circle),
+            getCA: circle.getCA.bind(circle),
+            YesNormal(formObject) {
+                return tintSelectedAppearance(circle.YesNormal(formObject));
+            },
+            YesPushDown(formObject) {
+                return tintSelectedAppearance(circle.YesPushDown(formObject));
+            },
+            OffPushDown: circle.OffPushDown,
+        };
+    }
+
     function buildClientReviewPdf(reviewData) {
         const JsPDF = window.jspdf?.jsPDF || window.jsPDF;
         if (!JsPDF) {
@@ -129,16 +169,33 @@
             }
         }
 
+        function drawBlueRadioOutline(x, ry, size) {
+            const cx = x + size / 2;
+            const cy = ry + size / 2;
+            const radius = Math.max(2, (size - 2.5) / 2);
+            doc.setDrawColor(PDF_RADIO_BLUE_RGB[0], PDF_RADIO_BLUE_RGB[1], PDF_RADIO_BLUE_RGB[2]);
+            doc.setLineWidth(1);
+            doc.circle(cx, cy, radius, 'S');
+        }
+
+        function drawRadioLabel(x, ry, size, label, fontSize) {
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            doc.setTextColor(34, 47, 54);
+            doc.text(label, x + size + 5, ry + size - 3);
+        }
+
         function addRadioGroupRow(groupName, choices, startY, layout) {
             const opts = layout || {};
             const rowPad = opts.rowPad == null ? 12 : opts.rowPad;
             const rowW = contentW - rowPad * 2;
             const rowX = margin + rowPad;
-            const radioSize = 11;
+            const radioSize = 14;
             const labelGap = 5;
             const colGap = opts.colGap == null ? 18 : opts.colGap;
             const fontSize = opts.fontSize || 9;
-            const rowH = opts.rowHeight || 22;
+            const rowH = opts.rowHeight || 24;
+            const blueAppearance = createBlueRadioAppearance(doc.AcroFormAppearance);
 
             const optionWidths = choices.map((choice) => (
                 radioSize + labelGap + getTextWidth(choice.label, fontSize) + 6
@@ -146,99 +203,230 @@
             const totalWidth = optionWidths.reduce((sum, width) => sum + width, 0)
                 + colGap * Math.max(0, choices.length - 1);
             const useRow = totalWidth <= rowW;
-            let nextY = startY;
 
             function drawFallbackOption(x, ry, label) {
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(fontSize);
-                doc.setTextColor(34, 47, 54);
-                doc.circle(x + 5.5, ry + 5.5, 5, 'S');
-                doc.text(label, x + radioSize + labelGap, ry + 9);
+                drawBlueRadioOutline(x, ry, radioSize);
+                drawRadioLabel(x, ry, radioSize, label, fontSize);
             }
 
-            if (!useRow) {
-                let ry = startY;
+            function placeInteractiveRadios(getOptionLayout) {
                 if (typeof doc.AcroFormRadioButton !== 'function') {
-                    choices.forEach((choice) => {
-                        drawFallbackOption(rowX, ry, choice.label);
-                        ry += 18;
-                    });
-                    return ry + 4;
+                    return false;
                 }
 
                 try {
                     const radioGroup = new doc.AcroFormRadioButton();
                     radioGroup.fieldName = groupName;
-                    choices.forEach((choice) => {
+                    radioGroup.showWhenPrinted = true;
+                    radioGroup.color = PDF_RADIO_BLUE;
+                    doc.addField(radioGroup);
+
+                    choices.forEach((choice, index) => {
+                        const position = getOptionLayout(index);
+                        drawBlueRadioOutline(position.x, position.y, radioSize);
+
                         const option = radioGroup.createOption(choice.value);
-                        option.x = rowX;
-                        option.y = ry;
+                        option.x = position.x;
+                        option.y = position.y;
                         option.width = radioSize;
                         option.height = radioSize;
-                        doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(fontSize);
-                        doc.setTextColor(34, 47, 54);
-                        doc.text(choice.label, rowX + radioSize + labelGap, ry + 9);
-                        ry += 18;
+                        option.color = PDF_RADIO_BLUE;
+                        option.showWhenPrinted = true;
+                        drawRadioLabel(position.x, position.y, radioSize, choice.label, fontSize);
                     });
-                    if (doc.AcroFormAppearance?.RadioButton?.Circle) {
-                        radioGroup.setAppearance(doc.AcroFormAppearance.RadioButton.Circle);
+
+                    const appearance = blueAppearance || doc.AcroFormAppearance?.RadioButton?.Circle;
+                    if (appearance) {
+                        radioGroup.setAppearance(appearance);
                     }
-                    doc.addField(radioGroup);
+                    return true;
                 } catch (fieldErr) {
                     console.warn('Review PDF radio field skipped', groupName, fieldErr);
-                    choices.forEach((choice) => {
-                        drawFallbackOption(rowX, ry, choice.label);
-                        ry += 18;
+                    return false;
+                }
+            }
+
+            if (!useRow) {
+                const placed = placeInteractiveRadios((index) => ({
+                    x: rowX,
+                    y: startY + index * 18,
+                }));
+                if (!placed) {
+                    choices.forEach((choice, index) => {
+                        drawFallbackOption(rowX, startY + index * 18, choice.label);
                     });
                 }
-                return ry + 6;
+                return startY + choices.length * 18 + 4;
             }
 
-            let cursorX = rowX + Math.max(0, (rowW - totalWidth) / 2);
             const ry = startY;
+            const startX = rowX + Math.max(0, (rowW - totalWidth) / 2);
+            let cursorX = startX;
+            const placed = placeInteractiveRadios((index) => {
+                const position = { x: cursorX, y: ry };
+                cursorX += optionWidths[index] + colGap;
+                return position;
+            });
 
-            if (typeof doc.AcroFormRadioButton !== 'function') {
+            if (!placed) {
+                cursorX = startX;
                 choices.forEach((choice, index) => {
                     drawFallbackOption(cursorX, ry, choice.label);
                     cursorX += optionWidths[index] + colGap;
                 });
-                return startY + rowH + 6;
             }
 
-            try {
-                const radioGroup = new doc.AcroFormRadioButton();
-                radioGroup.fieldName = groupName;
+            return startY + rowH + 6;
+        }
 
-                choices.forEach((choice, index) => {
-                    const option = radioGroup.createOption(choice.value);
-                    option.x = cursorX;
-                    option.y = ry;
-                    option.width = radioSize;
-                    option.height = radioSize;
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(fontSize);
-                    doc.setTextColor(34, 47, 54);
-                    doc.text(choice.label, cursorX + radioSize + labelGap, ry + 9);
-                    cursorX += optionWidths[index] + colGap;
-                });
+        const FEEDBACK_PANEL_PAD_X = 20;
+        const FEEDBACK_PANEL_PAD_Y = 18;
+        const FEEDBACK_NOTES_FIELD_H = 84;
 
-                if (doc.AcroFormAppearance?.RadioButton?.Circle) {
-                    radioGroup.setAppearance(doc.AcroFormAppearance.RadioButton.Circle);
+        function appendFeedbackPanel(sectionId) {
+            const panelX = margin;
+            const panelW = contentW;
+            const contentWidth = panelW - FEEDBACK_PANEL_PAD_X * 2;
+            const panelH = FEEDBACK_PANEL_PAD_Y
+                + 16 + 8 + 28 + 10
+                + 16 + 6 + FEEDBACK_NOTES_FIELD_H + 10
+                + 16 + 6 + 28
+                + FEEDBACK_PANEL_PAD_Y;
+
+            ensureSpace(panelH + 10, margin);
+            const panelStartY = y;
+            drawSoftPanel(panelX, panelStartY, panelW, panelH);
+
+            y = panelStartY + FEEDBACK_PANEL_PAD_Y;
+            writeLines('Your feedback', {
+                bold: true,
+                size: 10,
+                gap: 8,
+                maxWidth: contentWidth,
+                indent: FEEDBACK_PANEL_PAD_X,
+            });
+            y = addRadioGroupRow(
+                pdfFieldName('status', sectionId),
+                [
+                    { value: 'approved', label: 'Looks good' },
+                    { value: 'changes', label: 'Needs changes' },
+                    { value: 'unsure', label: 'Not sure' },
+                ],
+                y,
+                { rowPad: FEEDBACK_PANEL_PAD_X, fontSize: 9, colGap: 22, rowHeight: 24 },
+            );
+            y += 6;
+
+            writeLines('Notes or suggested updates', {
+                bold: true,
+                size: 10,
+                gap: 6,
+                maxWidth: contentWidth,
+                indent: FEEDBACK_PANEL_PAD_X,
+            });
+            const notesY = y;
+            y += FEEDBACK_NOTES_FIELD_H + 10;
+            addTextField(
+                pdfFieldName('notes', sectionId),
+                panelX + FEEDBACK_PANEL_PAD_X,
+                notesY,
+                contentWidth,
+                FEEDBACK_NOTES_FIELD_H,
+                true,
+            );
+
+            writeLines('Priority (if changes needed)', {
+                bold: true,
+                size: 10,
+                gap: 6,
+                maxWidth: contentWidth,
+                indent: FEEDBACK_PANEL_PAD_X,
+            });
+            y = addRadioGroupRow(
+                pdfFieldName('priority', sectionId),
+                [
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'high', label: 'High' },
+                    { value: 'low', label: 'Low' },
+                ],
+                y,
+                { rowPad: FEEDBACK_PANEL_PAD_X, fontSize: 9, colGap: 36, rowHeight: 24 },
+            );
+            y = panelStartY + panelH + 10;
+        }
+
+        function appendMainNavigationPage(section, index) {
+            const navCatalog = Array.isArray(reviewData.navCatalog) ? reviewData.navCatalog : [];
+            if (!navCatalog.length) return;
+
+            addPage();
+            writeLines((index + 1) + '. ' + section.label, { bold: true, size: 14, gap: 6 });
+            writeLines(
+                'Review each parent category and subcategory below. Approve if they match your website, or note what should change.',
+                { size: 9, color: [90, 104, 114], gap: 10 },
+            );
+
+            const colGap = 16;
+            const colW = (contentW - colGap) / 2;
+            let col = 0;
+            let rowY = y;
+            let rowMaxH = 0;
+
+            navCatalog.forEach((category) => {
+                const label = String(category.label || 'Category');
+                const subs = Array.isArray(category.subcategories) ? category.subcategories : [];
+                const subLines = subs.length
+                    ? subs.map((sub) => String(sub.label || 'Link'))
+                    : ['No subcategories configured'];
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9.5);
+                doc.setTextColor(34, 47, 54);
+                const titleLines = doc.splitTextToSize(label, colW - 8);
+                const bodyLines = doc.splitTextToSize(subLines.join('\n'), colW - 8);
+                const blockH = titleLines.length * 12 + bodyLines.length * 11 + 14;
+
+                if (col === 0) {
+                    ensureSpace(blockH + 8, margin);
+                    rowY = y;
+                    rowMaxH = 0;
+                } else if (rowY + blockH > pageH - margin - 180) {
+                    y = rowY + rowMaxH + 10;
+                    col = 0;
+                    ensureSpace(blockH + 8, margin);
+                    rowY = y;
+                    rowMaxH = 0;
                 }
-                doc.addField(radioGroup);
-                nextY = startY + rowH + 6;
-            } catch (fieldErr) {
-                console.warn('Review PDF radio field skipped', groupName, fieldErr);
-                cursorX = rowX + Math.max(0, (rowW - totalWidth) / 2);
-                choices.forEach((choice, index) => {
-                    drawFallbackOption(cursorX, ry, choice.label);
-                    cursorX += optionWidths[index] + colGap;
-                });
-                nextY = startY + rowH + 6;
+
+                const x = margin + col * (colW + colGap);
+                doc.setFillColor(255, 250, 242);
+                doc.setDrawColor(216, 222, 228);
+                doc.setLineWidth(0.6);
+                doc.rect(x, rowY, colW, blockH, 'FD');
+
+                let textY = rowY + 12;
+                doc.text(titleLines, x + 8, textY);
+                textY += titleLines.length * 12 + 2;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8.5);
+                doc.setTextColor(90, 104, 114);
+                doc.text(bodyLines, x + 8, textY);
+
+                rowMaxH = Math.max(rowMaxH, blockH);
+                if (col === 0) {
+                    col = 1;
+                } else {
+                    y = rowY + rowMaxH + 10;
+                    col = 0;
+                }
+            });
+
+            if (col === 1) {
+                y = rowY + rowMaxH + 10;
             }
 
-            return nextY;
+            y += 6;
+            appendFeedbackPanel(section.id);
         }
 
         function appendSectionPage(section, index) {
@@ -269,49 +457,7 @@
                 }
             }
 
-            const panelW = contentW;
-            const panelStartY = y;
-            const notesFieldH = 84;
-            const panelH = 28 + 52 + notesFieldH + 52;
-            drawSoftPanel(margin, panelStartY, panelW, panelH);
-
-            y = panelStartY + 12;
-            writeLines('Your feedback', { bold: true, size: 10, gap: 6, maxWidth: panelW - 24 });
-            y = addRadioGroupRow(
-                pdfFieldName('status', section.id),
-                [
-                    { value: 'approved', label: 'Looks good' },
-                    { value: 'changes', label: 'Needs changes' },
-                    { value: 'unsure', label: 'Not sure' },
-                ],
-                y,
-                { rowPad: 12, fontSize: 9, colGap: 22 },
-            );
-
-            writeLines('Notes or suggested updates', { bold: true, size: 10, gap: 4, maxWidth: panelW - 24 });
-            const notesY = y;
-            y += notesFieldH + 8;
-            addTextField(
-                pdfFieldName('notes', section.id),
-                margin + 12,
-                notesY,
-                panelW - 24,
-                notesFieldH,
-                true,
-            );
-
-            writeLines('Priority (if changes needed)', { bold: true, size: 10, gap: 4, maxWidth: panelW - 24 });
-            y = addRadioGroupRow(
-                pdfFieldName('priority', section.id),
-                [
-                    { value: 'normal', label: 'Normal' },
-                    { value: 'high', label: 'High' },
-                    { value: 'low', label: 'Low' },
-                ],
-                y,
-                { rowPad: 12, fontSize: 9, colGap: 36 },
-            );
-            y = panelStartY + panelH + 8;
+            appendFeedbackPanel(section.id);
         }
 
         const generatedDate = new Date(reviewData.generatedAt).toLocaleDateString('en-US', {
@@ -409,6 +555,10 @@
 
         const sections = Array.isArray(reviewData.sections) ? reviewData.sections : [];
         sections.forEach((section, index) => {
+            if (section.id === 'main-navigation') {
+                appendMainNavigationPage(section, index);
+                return;
+            }
             appendSectionPage(section, index);
         });
 
@@ -425,9 +575,58 @@
             day: 'numeric',
         });
 
+        const navCatalog = Array.isArray(reviewData.navCatalog) ? reviewData.navCatalog : [];
+
+        function buildNavCatalogGrid() {
+            return navCatalog.map((category) => {
+                const label = escapeHtml(category.label);
+                const subs = (category.subcategories || []);
+                const subsHtml = subs.length
+                    ? subs.map((sub) => `<li>${escapeHtml(sub.label || 'Link')}</li>`).join('')
+                    : '<li class="review-nav-guide-empty">No subcategories configured</li>';
+                return `<div class="review-nav-guide-category">
+      <h3>${label}</h3>
+      <ul class="review-nav-guide-subs">${subsHtml}</ul>
+    </div>`;
+            }).join('');
+        }
+
+        function buildFeedbackFieldset(sid, label, notesPlaceholder) {
+            const placeholder = notesPlaceholder
+                || 'Tell us what you\'d like changed, or what you love about this section.';
+            return `<fieldset class="review-feedback">
+    <legend>Your feedback</legend>
+    <div class="review-status-group" role="radiogroup" aria-label="Status for ${label}">
+      <label><input type="radio" name="status-${sid}" value="approved"> Looks good</label>
+      <label><input type="radio" name="status-${sid}" value="changes"> Needs changes</label>
+      <label><input type="radio" name="status-${sid}" value="unsure"> Not sure</label>
+    </div>
+    <label class="review-notes-label" for="notes-${sid}">Notes or suggested updates</label>
+    <textarea id="notes-${sid}" rows="4" placeholder="${escapeHtml(placeholder)}"></textarea>
+    <p class="review-priority-label">Priority (if changes needed)</p>
+    <div class="review-priority-group" role="radiogroup" aria-label="Priority for ${label}">
+      <label><input type="radio" name="priority-${sid}" value="normal" checked> Normal</label>
+      <label><input type="radio" name="priority-${sid}" value="high"> High — must fix before launch</label>
+      <label><input type="radio" name="priority-${sid}" value="low"> Low — nice to have</label>
+    </div>
+  </fieldset>`;
+        }
+
         const sectionBlocks = reviewData.sections.map((section, index) => {
             const sid = escapeHtml(section.id);
             const label = escapeHtml(section.label);
+
+            if (section.id === 'main-navigation') {
+                if (!navCatalog.length) return '';
+                return `
+<section class="review-section review-section--main-nav" id="section-${sid}">
+  <div class="review-section-head"><h2>${index + 1}. ${label}</h2></div>
+  <p class="review-nav-intro">Review each parent category and subcategory below. Approve if they match your website, or note what should change.</p>
+  <div class="review-nav-guide-grid">${buildNavCatalogGrid()}</div>
+  ${buildFeedbackFieldset(sid, label, 'Note any category or subcategory names to add, remove, rename, or reorder.')}
+</section>`;
+            }
+
             const preview = escapeHtml(section.previewFile || `agent/previews/${section.id}.png`);
             return `
 <section class="review-section" id="section-${sid}">
@@ -436,22 +635,7 @@
     <img src="${preview}" alt="Preview of ${label}" loading="lazy">
     <figcaption>Current design — ${label}</figcaption>
   </figure>
-  <fieldset class="review-feedback">
-    <legend>Your feedback</legend>
-    <div class="review-status-group" role="radiogroup" aria-label="Status for ${label}">
-      <label><input type="radio" name="status-${sid}" value="approved"> Looks good</label>
-      <label><input type="radio" name="status-${sid}" value="changes"> Needs changes</label>
-      <label><input type="radio" name="status-${sid}" value="unsure"> Not sure</label>
-    </div>
-    <label class="review-notes-label" for="notes-${sid}">Notes or suggested updates</label>
-    <textarea id="notes-${sid}" rows="4" placeholder="Tell us what you'd like changed, or what you love about this section."></textarea>
-    <p class="review-priority-label">Priority (if changes needed)</p>
-    <div class="review-priority-group" role="radiogroup" aria-label="Priority for ${label}">
-      <label><input type="radio" name="priority-${sid}" value="normal" checked> Normal</label>
-      <label><input type="radio" name="priority-${sid}" value="high"> High — must fix before launch</label>
-      <label><input type="radio" name="priority-${sid}" value="low"> Low — nice to have</label>
-    </div>
-  </fieldset>
+  ${buildFeedbackFieldset(sid, label)}
 </section>`;
         }).join('\n');
 
@@ -486,6 +670,13 @@
     fieldset.review-feedback legend { font-weight: 700; padding: 0 0.35rem; }
     .review-status-group, .review-priority-group { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; margin: 0.75rem 0 1rem; }
     .review-status-group label, .review-priority-group label { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-weight: 500; }
+    .review-nav-intro { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.95rem; }
+    .review-nav-guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .review-nav-guide-category { background: #fffaf2; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
+    .review-nav-guide-category h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+    .review-nav-guide-subs { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: 0.9rem; }
+    .review-nav-guide-empty { color: var(--muted); font-style: italic; list-style: none; margin-left: -1.1rem; }
+    .review-section--main-nav .review-section-head h2 { color: #1a3347; }
     .review-actions { padding: 1.5rem; margin-bottom: 2.5rem; }
     .review-actions button { font: inherit; font-weight: 600; border: none; border-radius: 8px; padding: 0.75rem 1.25rem; cursor: pointer; background: var(--gold); color: #1a252b; }
     @media print { .review-actions { display: none; } .review-section { break-inside: avoid; page-break-inside: avoid; } }
