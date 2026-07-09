@@ -43,7 +43,7 @@
     const GET_INSPIRED_CARD_COUNT = 8;
     const GET_INSPIRED_DEFAULT_ITEM_NUMBERS = ['1001', '1002', '1003', '1004', '1005', '1006', '1007', '1008'];
     const DEFAULT_FOOTER_EMAIL = 'hello@aldervaanlighting.com';
-    const DEFAULT_FOOTER_COMPANY = 'Aldervaan Lighting';
+    const DEFAULT_FOOTER_COMPANY = TEMPLATE_DESIGNS[templateDesign] || 'Showroom';
     const DEFAULT_FOOTER_ADDRESS = '123 Lighting Way\nSuite 400, Anytown, USA';
     const DEFAULT_FOOTER_PHONE = '(800) 555-1234';
     const DEFAULT_CLASSIC_FOOTER_ABOUT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
@@ -1219,12 +1219,45 @@
         return sections;
     }
 
-    function slugifyClientReviewFilename(text) {
+    function slugifyExportBasename(text) {
         return String(text || 'showroom')
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '')
             .slice(0, 48) || 'showroom';
+    }
+
+    function getHandoffCompanyName() {
+        const fromCompanyInfo = fields.footerCompanyName
+            ? fields.footerCompanyName.value.trim()
+            : String(state.footerCompanyName || '').trim();
+        if (fromCompanyInfo) return fromCompanyInfo;
+
+        if (templateDesign === 'gallery') {
+            const fromClassicFooter = fields.classicFooterCompanyName
+                ? fields.classicFooterCompanyName.value.trim()
+                : String(state.classicFooterCompanyName || '').trim();
+            if (fromClassicFooter) return fromClassicFooter;
+        }
+        if (templateDesign === 'spotlight') {
+            const fromSpotlightFooter = String(state.spotlightFooterCompanyName || '').trim();
+            if (fromSpotlightFooter) return fromSpotlightFooter;
+        }
+        return DEFAULT_FOOTER_COMPANY;
+    }
+
+    function buildExportFilenames(companyName, kind) {
+        const slug = slugifyExportBasename(companyName);
+        if (kind === 'review') {
+            return {
+                pdfFilename: `${slug}-homepage-review.pdf`,
+                zipFilename: `${slug}-client-review.zip`,
+            };
+        }
+        return {
+            pdfFilename: `${slug}-homepage-handoff.pdf`,
+            zipFilename: `${slug}-homepage-handoff.zip`,
+        };
     }
 
     async function preparePreviewForCapture() {
@@ -1774,9 +1807,20 @@
     function loadState() {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) return JSON.parse(raw);
+            if (raw) return normalizeLegacyCompanyDefaults(JSON.parse(raw));
         } catch { /* ignore */ }
         return null;
+    }
+
+    function normalizeLegacyCompanyDefaults(data) {
+        if (!data || typeof data !== 'object') return data;
+        if (data.footerCompanyName === 'Aldervaan Lighting') {
+            data.footerCompanyName = DEFAULT_FOOTER_COMPANY;
+        }
+        if (data.classicFooterCompanyName === 'Aldervaan Lighting') {
+            data.classicFooterCompanyName = DEFAULT_FOOTER_COMPANY;
+        }
+        return data;
     }
 
     function ensureGalleryImageDefaults() {
@@ -5054,7 +5098,10 @@
         if (fields.footerLinkedinUrl) fields.footerLinkedinUrl.value = state.footerLinkedinUrl;
         if (fields.footerLinkedinVisible) fields.footerLinkedinVisible.checked = state.footerLinkedinVisible;
         renderFooterLinksEditors();
-        if (fields.footerCompanyName) fields.footerCompanyName.value = state.footerCompanyName;
+        if (fields.footerCompanyName) {
+            fields.footerCompanyName.placeholder = DEFAULT_FOOTER_COMPANY;
+            fields.footerCompanyName.value = state.footerCompanyName;
+        }
         if (fields.footerAddress) fields.footerAddress.value = state.footerAddress;
         if (fields.footerPhone) fields.footerPhone.value = state.footerPhone;
         if (fields.footerCopyrightName) fields.footerCopyrightName.value = state.footerCopyrightName;
@@ -5572,16 +5619,6 @@
         return resolveImageDataUrlForExport(state.headerLogoImage);
     }
 
-    function getHandoffCompanyName() {
-        if (templateDesign === 'gallery') {
-            return state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
-        }
-        if (templateDesign === 'spotlight') {
-            return state.spotlightFooterCompanyName || DEFAULT_FOOTER_COMPANY;
-        }
-        return state.footerCompanyName || DEFAULT_FOOTER_COMPANY;
-    }
-
     async function buildHandoffAssetsForExport() {
         if (templateDesign === 'gallery') {
             return buildGalleryHandoffAssetsForExport();
@@ -5654,6 +5691,8 @@
             restorePreviewAfterCapture = await preparePreviewForCapture();
             const handoffAssets = await buildHandoffAssetsForExport();
             const handoffLogoDataUrl = await resolveHandoffLogoDataUrl(handoffAssets);
+            const exportCompanyName = getHandoffCompanyName();
+            const handoffFilenames = buildExportFilenames(exportCompanyName, 'handoff');
             const handoffSpec = templateDesign === 'gallery'
                 ? buildGalleryHandoffSpec()
                 : templateDesign === 'spotlight'
@@ -5819,10 +5858,10 @@
                 previewEl: previewRoot,
                 spec: handoffSpec,
                 assets: handoffAssets,
-                pdfFilename: 'showroom-homepage-brief.pdf',
-                zipFilename: 'showroom-homepage-handoff.zip',
+                pdfFilename: handoffFilenames.pdfFilename,
+                zipFilename: handoffFilenames.zipFilename,
                 guideMeta: {
-                    companyName: getHandoffCompanyName(),
+                    companyName: exportCompanyName,
                     templateLabel: TEMPLATE_DESIGNS[templateDesign],
                     design: templateDesign,
                     logoDataUrl: handoffLogoDataUrl,
@@ -5861,14 +5900,17 @@
             if (typeof window.exportShowroomClientReview !== 'function') {
                 throw new Error('Client review export not loaded.');
             }
+            const reviewCompanyName = getHandoffCompanyName();
+            const reviewFilenames = buildExportFilenames(reviewCompanyName, 'review');
             await window.exportShowroomClientReview({
                 sections: buildClientReviewSections(),
                 meta: {
-                    companyName: getHandoffCompanyName(),
+                    companyName: reviewCompanyName,
                     templateLabel: TEMPLATE_DESIGNS[templateDesign],
                     design: templateDesign,
                 },
-                zipFilename: `${slugifyClientReviewFilename(getHandoffCompanyName())}-client-review.zip`,
+                pdfFilename: reviewFilenames.pdfFilename,
+                zipFilename: reviewFilenames.zipFilename,
                 onProgress: (progress) => handleCaptureProgress(progress, 'review'),
             });
             handleCaptureProgress({ phase: 'complete' }, 'review');

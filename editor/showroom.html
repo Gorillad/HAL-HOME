@@ -88,7 +88,7 @@
                 <div class="editor-export-buttons">
                     <span class="editor-status" id="editorStatus" aria-live="polite"></span>
                     <button type="button" class="btn btn-secondary btn-sm" id="resetDraftBtn" style="display:none">Reset to defaults</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="shareReviewBtn" title="Screenshots + client feedback form for review">Share for review</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="shareReviewBtn" title="ZIP with HTML feedback form, PDF backup, and section screenshots">Share for review</button>
                     <button type="button" class="btn btn-primary" id="exportPdfBtn" title="PDF brief + developer spec for web team">Export handoff</button>
                     <span class="editor-evolved-toast" id="evolvedToast" hidden>
                         <span class="editor-evolved-icon" aria-hidden="true">🤖</span>
@@ -113,7 +113,7 @@
                         <div class="editor-review-progress-fill" id="reviewExportProgressFill"></div>
                     </div>
                 </div>
-                <p class="editor-export-help"><strong>Share for review</strong> — client PDF with section screenshots and fillable feedback. <strong>Export handoff</strong> — developer brief and spec package.</p>
+                <p class="editor-export-help"><strong>Share for review</strong> — ZIP with an HTML feedback form (radio buttons + notes), fillable PDF backup, and section screenshots. <strong>Export handoff</strong> — developer brief and spec package.</p>
             </div>
         </div>
 
@@ -151,7 +151,7 @@
                     <p class="editor-field-hint">These details appear in the footer and throughout the export handoff.</p>
                     <div class="editor-field">
                         <label for="fieldFooterCompanyName">Company name</label>
-                        <input type="text" id="fieldFooterCompanyName" name="footerCompanyName" autocomplete="off" placeholder="Acme Lighting Co.">
+                        <input type="text" id="fieldFooterCompanyName" name="footerCompanyName" autocomplete="off" placeholder="Company name">
                     </div>
                     <div class="editor-field">
                         <label for="fieldFooterPhone">Phone number</label>
@@ -1623,6 +1623,7 @@
     <script src="js/export-showroom-guide.js"></script>
     <script src="js/showroom-capture.js"></script>
     <script src="js/export-pdf.js"></script>
+    <script src="js/export-client-review-builders.js"></script>
     <script src="js/export-client-review.js"></script>
     <script src="js/spotlight-template.js?v=2"></script>
     <script src="js/editor-progress-dock.js"></script>

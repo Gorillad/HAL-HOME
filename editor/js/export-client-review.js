@@ -6,25 +6,12 @@
 (function () {
     'use strict';
 
-    function escapeHtml(text) {
-        return String(text ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-    }
-
     function slugify(text) {
         return String(text || 'showroom')
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-+|-+$/g, '')
             .slice(0, 48) || 'showroom';
-    }
-
-    function pdfFieldName(prefix, id) {
-        return String(prefix + '_' + String(id || 'field').replace(/[^a-zA-Z0-9_]/g, '_'))
-            .slice(0, 48);
     }
 
     function downloadBlob(blob, filename) {
@@ -49,8 +36,20 @@
         return 'REV-' + Date.now().toString(36).toUpperCase().slice(-6);
     }
 
-    function detectImageFormat(dataUrl) {
-        return String(dataUrl || '').startsWith('data:image/jpeg') ? 'JPEG' : 'PNG';
+    function loadCaptureMetrics(dataUrl) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve({
+                width: img.naturalWidth,
+                height: img.naturalHeight,
+            });
+            img.onerror = () => resolve({ width: 0, height: 0 });
+            img.src = dataUrl;
+        });
+    }
+
+    function buildWindowsChromeLauncherBat() {
+        return '@echo off\r\nsetlocal EnableExtensions\r\nset "REVIEW=%~dp0Homepage-Review.html"\r\nif not exist "%REVIEW%" (echo Could not find Homepage-Review.html & pause & exit /b 1)\r\nif exist "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" (start "" "%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%" & exit /b 0)\r\nif exist "%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe" (start "" "%LOCALAPPDATA%\\Google\\Chrome\\Application\\chrome.exe" "%REVIEW%" & exit /b 0)\r\nif exist "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" (start "" "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe" "%REVIEW%" & exit /b 0)\r\nstart "" "%REVIEW%"\r\n';
     }
 
     function buildReviewData(meta, sections) {
@@ -69,6 +68,8 @@
                 label: section.label,
                 previewFile: `agent/previews/${section.id}.png`,
                 previewDataUrl: section.previewDataUrl || section.dataUrl || '',
+                captureWidth: section.captureWidth || 0,
+                captureHeight: section.captureHeight || 0,
                 status: null,
                 notes: '',
                 priority: 'normal',
@@ -76,236 +77,17 @@
         };
     }
 
-    function buildClientReviewPdf(reviewData) {
-        const JsPDF = window.jspdf?.jsPDF || window.jsPDF;
-        if (!JsPDF) {
-            throw new Error('PDF library not loaded.');
-        }
-
-        const doc = new JsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
-        const margin = 48;
-        const pageW = doc.internal.pageSize.getWidth();
-        const pageH = doc.internal.pageSize.getHeight();
-        const contentW = pageW - margin * 2;
-        const fieldColW = Math.min(contentW * 0.55, 300);
-        let y = margin;
-
-        function addPage(extraTopSpace) {
-            doc.addPage();
-            y = margin + (extraTopSpace || 0);
-        }
-
-        function drawSoftPanel(x, panelY, width, height) {
-            doc.setFillColor(255, 249, 238);
-            doc.setDrawColor(221, 198, 152);
-            doc.setLineWidth(0.6);
-            doc.rect(x, panelY, width, height, 'FD');
-        }
-
-        function drawGoldRule(ruleY) {
-            doc.setDrawColor(201, 169, 110);
-            doc.setLineWidth(1);
-            doc.line(margin, ruleY, margin + 56, ruleY);
-        }
-
-        function ensureSpace(needed, bottomMargin) {
-            const bottom = bottomMargin == null ? margin : bottomMargin;
-            if (y + needed > pageH - bottom) {
-                addPage();
-            }
-        }
-
-        function writeLines(text, options) {
-            const opts = options || {};
-            const size = opts.size || 10;
-            const gap = opts.gap == null ? 8 : opts.gap;
-            const color = opts.color || [34, 47, 54];
-            const lines = doc.splitTextToSize(String(text || ''), contentW);
-            const blockH = lines.length * Math.ceil(size * 1.35);
-            ensureSpace(blockH + gap);
-            doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
-            doc.setFontSize(size);
-            doc.setTextColor(color[0], color[1], color[2]);
-            doc.text(lines, margin, y);
-            y += blockH + gap;
-        }
-
-        function addTextField(fieldName, x, fieldY, width, height, multiline) {
-            if (typeof doc.AcroFormTextField !== 'function') return;
-            const field = new doc.AcroFormTextField();
-            field.fieldName = fieldName;
-            field.x = x;
-            field.y = fieldY;
-            field.width = width;
-            field.height = height;
-            field.multiline = !!multiline;
-            field.showWhenPrinted = true;
-            field.value = '';
-            doc.addField(field);
-        }
-
-        function addComboField(fieldName, x, fieldY, width, height, options) {
-            if (typeof doc.AcroFormComboBox !== 'function') return;
-            const field = new doc.AcroFormComboBox();
-            field.fieldName = fieldName;
-            field.x = x;
-            field.y = fieldY;
-            field.width = width;
-            field.height = height;
-            field.showWhenPrinted = true;
-            field.setOptions(options);
-            field.value = options[0] || '';
-            doc.addField(field);
-        }
-
-        const generatedDate = new Date(reviewData.generatedAt).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-
-        // Cover page
-        doc.setFillColor(26, 37, 43);
-        doc.rect(0, 0, pageW, pageH, 'F');
-        doc.setFillColor(34, 47, 54);
-        doc.rect(0, pageH * 0.38, pageW, pageH * 0.62, 'F');
-        doc.setDrawColor(201, 169, 110);
-        doc.setLineWidth(2);
-        doc.line(margin, 96, margin + 72, 96);
-        doc.setTextColor(201, 169, 110);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.text('LOGICX SHOWROOM', margin, 82);
-        doc.setTextColor(255, 255, 255);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-        doc.text('Homepage Review Package', margin, 118);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(26);
-        doc.text(String(reviewData.templateLabel || 'Showroom'), pageW / 2, 200, { align: 'center' });
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(12);
-        doc.setTextColor(200, 208, 216);
-        doc.text('Client feedback form', pageW / 2, 228, { align: 'center' });
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10);
-        doc.setTextColor(160, 170, 180);
-        doc.text('PREPARED FOR', pageW / 2, 272, { align: 'center' });
-        doc.setFontSize(18);
-        doc.setTextColor(255, 255, 255);
-        doc.text(
-            doc.splitTextToSize(String(reviewData.companyName || 'Your Showroom'), pageW - margin * 2),
-            pageW / 2,
-            292,
-            { align: 'center' },
-        );
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(180, 188, 196);
-        doc.text('Package ' + String(reviewData.packageId || ''), pageW / 2, 340, { align: 'center' });
-        doc.text('Generated ' + generatedDate, pageW / 2, 356, { align: 'center' });
-        doc.setTextColor(201, 169, 110);
-        doc.setFontSize(9);
-        doc.text('Fill in the fields · Save · Return to your onboarding agent', pageW / 2, pageH - 72, { align: 'center' });
-
-        // Contact + overall fields
-        addPage(12);
-        drawGoldRule(y);
-        y += 14;
-        writeLines('Your feedback', { bold: true, size: 13, gap: 10 });
-        writeLines('Your name', { bold: true, size: 10, gap: 4 });
-        const nameFieldY = y;
-        y += 22;
-        addTextField('reviewer_name', margin, nameFieldY, fieldColW, 18, false);
-
-        writeLines('Your email', { bold: true, size: 10, gap: 6 });
-        const emailFieldY = y;
-        y += 22;
-        addTextField('reviewer_email', margin, emailFieldY, fieldColW, 18, false);
-
-        y += 14;
-        const overallPanelY = y;
-        const overallPanelPad = 14;
-        const overallFieldH = 108;
-        const overallPanelH = overallPanelPad * 2 + 28 + overallFieldH;
-        drawSoftPanel(margin, overallPanelY, fieldColW + overallPanelPad * 2, overallPanelH);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10);
-        doc.setTextColor(34, 47, 54);
-        doc.text('Overall comments', margin + overallPanelPad, overallPanelY + overallPanelPad + 2);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(120, 132, 142);
-        doc.text('(optional)', margin + overallPanelPad + 98, overallPanelY + overallPanelPad + 2);
-        const overallFieldY = overallPanelY + overallPanelPad + 22;
-        addTextField('overall_notes', margin + overallPanelPad, overallFieldY, fieldColW, overallFieldH, true);
-        y = overallPanelY + overallPanelH + 8;
-
-        const sections = Array.isArray(reviewData.sections) ? reviewData.sections : [];
-        const statusOptions = ['', 'Looks good', 'Needs changes', 'Not sure'];
-        const priorityOptions = ['Normal', 'High — must fix before launch', 'Low — nice to have'];
-
-        sections.forEach(function (section, index) {
-            addPage();
-            writeLines((index + 1) + '. ' + section.label, { bold: true, size: 14, gap: 8 });
-
-            const imageSrc = section.previewDataUrl || '';
-            const imageBoxH = 210;
-            if (imageSrc) {
-                try {
-                    ensureSpace(imageBoxH + 12);
-                    doc.addImage(imageSrc, detectImageFormat(imageSrc), margin, y, contentW, imageBoxH, undefined, 'FAST');
-                    y += imageBoxH + 14;
-                } catch (err) {
-                    writeLines('Screenshot preview unavailable for this section.', { size: 9, color: [120, 120, 120], gap: 8 });
-                }
-            }
-
-            writeLines('Your rating', { bold: true, size: 10, gap: 4 });
-            const statusFieldY = y;
-            y += 20;
-            addComboField(
-                pdfFieldName('status', section.id),
-                margin,
-                statusFieldY,
-                contentW * 0.45,
-                16,
-                statusOptions,
-            );
-
-            writeLines('Notes or suggested updates', { bold: true, size: 10, gap: 4 });
-            const notesFieldY = y;
-            y += 92;
-            addTextField(
-                pdfFieldName('notes', section.id),
-                margin,
-                notesFieldY,
-                contentW,
-                84,
-                true,
-            );
-
-            writeLines('Priority (if changes needed)', { bold: true, size: 10, gap: 4 });
-            const priorityFieldY = y;
-            y += 20;
-            addComboField(
-                pdfFieldName('priority', section.id),
-                margin,
-                priorityFieldY,
-                contentW * 0.55,
-                16,
-                priorityOptions,
-            );
-        });
-
-        return doc.output('blob');
-    }
-
     function buildStartHereText(reviewData, pdfFilename) {
         return [
             `${reviewData.companyName} — Homepage Review`,
             '',
-            `Open ${pdfFilename}, fill in the boxes (ratings + notes per section), save, and return to your onboarding agent.`,
+            'BEST EXPERIENCE (recommended)',
+            '1. Double-click START-REVIEW-IN-CHROME.bat (Windows) or open Homepage-Review.html in Chrome.',
+            '2. Review each section — use the radio buttons and notes boxes.',
+            '3. Click Print or save as PDF, then return the PDF to your onboarding agent.',
+            '',
+            'ALTERNATIVE',
+            `Open ${pdfFilename} — fillable PDF with section previews and radio buttons.`,
             '',
             `Ref ${reviewData.packageId} · ${reviewData.templateLabel}`,
         ].join('\n');
@@ -317,17 +99,20 @@
             '====================================',
             '',
             'PACKAGE LAYOUT',
-            `- ../${pdfFilename} — fillable PDF for the client (only file they need).`,
+            '- ../Homepage-Review.html — primary client form (radio buttons + notes).',
+            '- ../START-REVIEW-IN-CHROME.bat — Windows launcher for the HTML form.',
+            `- ../${pdfFilename} — fillable PDF backup (landscape previews + radio feedback pages).`,
             '- previews/ — section PNG captures.',
             '- review-data.json — structured template at export time.',
             '- agent-summary.html — optional JSON summary viewer.',
             '',
             'CLIENT WORKFLOW',
-            '- Client fills the PDF, saves, and returns it to their onboarding agent.',
+            '- Client opens Homepage-Review.html, fills in feedback, prints/saves as PDF, and returns it.',
+            '- PDF-only clients can use the fillable PDF instead.',
             '',
             'ONBOARDING AGENT',
-            '- Send the ZIP or only the PDF to the client.',
-            '- When the PDF returns, route it to web development.',
+            '- Send the ZIP; tell clients to start with Homepage-Review.html or the .bat launcher.',
+            '- When feedback returns, route to web development.',
             '- Use agent-summary.html + review-data.json for structured reference if needed.',
             '',
             `Package ID: ${reviewData.packageId}`,
@@ -499,15 +284,21 @@
             sections = [],
             meta = {},
             zipFilename,
+            pdfFilename: pdfFilenameOption,
             onProgress,
         } = options;
 
         if (!window.ShowroomCapture?.captureElementAsDataUrl || !window.ShowroomCapture?.isCapturable) {
             throw new Error('Showroom capture utilities not loaded.');
         }
+        if (!window.ExportClientReviewBuilders?.buildClientReviewPdf) {
+            throw new Error('Client review builders not loaded.');
+        }
         if (typeof JSZip === 'undefined') {
             throw new Error('JSZip not loaded.');
         }
+
+        const { buildClientReviewPdf, buildClientReviewHtml } = window.ExportClientReviewBuilders;
 
         const { captureElementAsDataUrl, isCapturable } = window.ShowroomCapture;
         const packageId = meta.packageId || buildPackageId();
@@ -533,7 +324,7 @@
 
         const getReviewCaptureOptions = (sectionId) => {
             const captureOptions = {
-                scale: 1.35,
+                scale: 1.5,
                 timeoutMs: 60000,
                 imageTimeout: 12000,
             };
@@ -563,11 +354,14 @@
                 });
             }
             const dataUrl = await captureElementAsDataUrl(section.el, getReviewCaptureOptions(section.id));
+            const { width: captureWidth, height: captureHeight } = await loadCaptureMetrics(dataUrl);
             capturedSections.push({
                 id: section.id,
                 label: section.label,
                 dataUrl,
                 previewDataUrl: dataUrl,
+                captureWidth,
+                captureHeight,
             });
             if (typeof onProgress === 'function') {
                 onProgress({
@@ -584,8 +378,10 @@
         }
 
         const reviewData = buildReviewData(reviewMeta, capturedSections);
-        const pdfFilename = `${slugify(reviewMeta.companyName)}-homepage-review.pdf`;
-        const pdfBlob = buildClientReviewPdf(reviewData);
+        const pdfFilename = pdfFilenameOption
+            || `${slugify(reviewMeta.companyName)}-homepage-review.pdf`;
+        const pdfBlob = await buildClientReviewPdf(reviewData);
+        const htmlContent = buildClientReviewHtml(reviewData);
 
         if (typeof onProgress === 'function') {
             onProgress({ phase: 'packaging', current: capturableSections.length, total: capturableSections.length });
@@ -599,6 +395,8 @@
             previewsFolder.file(`${section.id}.png`, dataUrlToBlob(section.dataUrl));
         }
 
+        zip.file('Homepage-Review.html', htmlContent);
+        zip.file('START-REVIEW-IN-CHROME.bat', buildWindowsChromeLauncherBat());
         zip.file(pdfFilename, pdfBlob);
         zip.file('START-HERE.txt', buildStartHereText(reviewData, pdfFilename));
         agentFolder.file('README.txt', buildAgentReadmeText(reviewData, pdfFilename));

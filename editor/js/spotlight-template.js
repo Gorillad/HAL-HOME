@@ -115,7 +115,7 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
     const DEFAULT_SPOTLIGHT_FOOTER_COPYRIGHT_BG = '#1a3347';
     const DEFAULT_SPOTLIGHT_FOOTER_COPYRIGHT_TEXT = '#a8b8c6';
 
-    const DEFAULT_FOOTER_COMPANY_NAME = 'XOLogic Software';
+    const DEFAULT_FOOTER_COMPANY_NAME = 'Spotlight';
     const FOOTER_ADA_POPUP = 'ada-compliance::ADA Compliance::600px';
 
     const SPOTLIGHT_FOOTER_SOCIAL_LINKS = [
