@@ -1,0 +1,71 @@
+/* SCERA footer */
+
+.scera-footer {
+    background: var(--scera-surface);
+    border-top: 2px solid var(--scera-gold-dark);
+    padding: 36px 0 28px;
+}
+
+.scera-footer__inner {
+    max-width: var(--scera-content-w);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 32px;
+}
+
+.scera-footer__brand p {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--scera-text-muted);
+    max-width: 36ch;
+}
+
+.scera-footer__logo img {
+    max-height: calc(var(--scera-header-logo-h, 64px) * 0.72);
+    width: auto;
+}
+
+.scera-footer__heading {
+    margin: 0 0 14px;
+    font-family: var(--font-headline);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--scera-gold);
+}
+
+.scera-footer__links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+}
+
+.scera-footer__links li + li {
+    margin-top: 8px;
+}
+
+.scera-footer__links a {
+    color: var(--scera-text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.scera-footer__links a:hover {
+    color: var(--scera-gold-light);
+}
+
+.scera-footer__legal {
+    max-width: var(--scera-content-w);
+    margin: 28px auto 0;
+    padding: 18px 24px 0;
+    border-top: 1px solid var(--scera-rule);
+    font-size: 12px;
+    color: var(--scera-text-muted);
+    text-align: center;
+    letter-spacing: 0.04em;
+}

@@ -185,12 +185,15 @@
 
     var previewFrame       = document.getElementById('woolFullSiteFrame');
     var previewWrap        = document.getElementById('woolFullSitePreviewWrap');
+    var sceraPreviewFrame = document.getElementById('sceraFullSiteFrame');
+    var sceraPreviewWrap  = document.getElementById('sceraFullSitePreviewWrap');
     var previewScaler      = document.getElementById('previewScaler');
     var editorStatus       = document.getElementById('editorStatus');
     var exportBtn          = document.getElementById('exportHandoffBtn');
     var resetBtn           = document.getElementById('resetDraftBtn');
     var saveToast          = document.getElementById('saveToast');
     var woolFieldPanel     = document.getElementById('woolFieldPanel');
+    var sceraFieldPanel    = document.getElementById('sceraFieldPanel');
     var designerScaffold   = document.getElementById('designerScaffold');
     var scaffoldPreview    = document.getElementById('designerScaffoldPreview');
     var previewLabel       = document.getElementById('designerPreviewLabel');
@@ -553,20 +556,32 @@
         });
 
         // Template name badge
-        var names = { woolf: 'The Woolf', gallery: 'SCERA', curator: 'Geneva', canvas: 'Sundance' };
+        var names = { woolf: 'The Woolf', scera: 'SCERA', geneva: 'Geneva', sundance: 'Sundance', cardiff: 'Cardiff' };
         var name = names[slug] || slug;
         if (templateNameEl) templateNameEl.textContent = name;
         if (previewLabel) previewLabel.textContent = name;
 
         if (slug === 'woolf') {
             if (woolFieldPanel) woolFieldPanel.hidden = false;
+            if (sceraFieldPanel) sceraFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = true;
             if (previewWrap) previewWrap.hidden = false;
+            if (sceraPreviewWrap) sceraPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = true;
+        } else if (slug === 'scera') {
+            if (woolFieldPanel) woolFieldPanel.hidden = true;
+            if (sceraFieldPanel) sceraFieldPanel.hidden = false;
+            if (designerScaffold) designerScaffold.hidden = true;
+            if (previewWrap) previewWrap.hidden = true;
+            if (sceraPreviewWrap) sceraPreviewWrap.hidden = false;
+            if (scaffoldPreview) scaffoldPreview.hidden = true;
+            if (exportBtn) exportBtn.disabled = true;
         } else {
             if (woolFieldPanel) woolFieldPanel.hidden = true;
+            if (sceraFieldPanel) sceraFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = false;
             if (previewWrap) previewWrap.hidden = true;
+            if (sceraPreviewWrap) sceraPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = false;
             var scaffoldTitle = document.getElementById('scaffoldTemplateName');
             if (scaffoldTitle) scaffoldTitle.textContent = name + ' — coming soon';
@@ -2093,9 +2108,25 @@
 
     // ── Init ─────────────────────────────────────────────────────────
 
+    function initSceraPreview() {
+        if (!sceraPreviewFrame || slug !== 'scera') return;
+        sceraPreviewFrame.addEventListener('load', function () {
+            if (typeof window.__fitFullSite === 'function') window.__fitFullSite();
+        });
+        if (typeof window.__fitFullSite === 'function') {
+            window.requestAnimationFrame(window.__fitFullSite);
+        }
+    }
+
     function init() {
         initRouting();
         scaleIframe();
+
+        if (slug === 'scera') {
+            initSceraPreview();
+            if (window.SceraEditor) window.SceraEditor.init();
+            return;
+        }
 
         if (slug !== 'woolf') return;
 

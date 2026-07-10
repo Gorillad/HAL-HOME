@@ -415,9 +415,10 @@ function initDesignerDesignTabs() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const designLabels = {
-        gallery: 'SCERA',
-        curator: 'Geneva',
-        canvas: 'Sundance',
+        scera: 'SCERA',
+        geneva: 'Geneva',
+        sundance: 'Sundance',
+        cardiff: 'Cardiff',
         woolf: 'The Woolf',
     };
 
@@ -454,7 +455,7 @@ function initDesignerDesignTabs() {
 
     function getActiveDesign() {
         const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
-        return activeTab?.dataset.designerDesign || 'gallery';
+        return activeTab?.dataset.designerDesign || 'scera';
     }
 
     function setActiveDesign(design) {

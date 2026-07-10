@@ -4421,8 +4421,9 @@ body.cart-open {
 }
 
 .mock-hero--editorial { height: 48px; background: linear-gradient(135deg, #2b3a42 30%, #7a9eb5 100%); }
-.mock-hero--curator { height: 44px; background: linear-gradient(120deg, #3d4a3e 25%, #8fa888 100%); }
-.mock-hero--canvas { height: 52px; background: linear-gradient(160deg, #4a3d52 20%, #b8a0c4 90%); }
+.mock-hero--geneva { height: 44px; background: linear-gradient(120deg, #3d4a3e 25%, #8fa888 100%); }
+.mock-hero--sundance { height: 52px; background: linear-gradient(160deg, #4a3d52 20%, #b8a0c4 90%); }
+.mock-hero--cardiff { height: 48px; background: linear-gradient(125deg, #1f3a4a 15%, #4a7c9b 55%, #8eb8d4 100%); }
 .mock-hero--woolf { height: 50px; background: linear-gradient(100deg, #081525 0%, #0d2137 50%, #1a3d6b 80%, #004fa3 100%); }
 .mock-hero--luxury { height: 56px; background: linear-gradient(135deg, #1a252b 20%, #c9a962 80%); }
 
@@ -4524,22 +4525,41 @@ body.cart-open {
     height: 36px;
 }
 
-.mock-designer-canvas {
+.mock-designer-sundance {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.mock-designer-canvas span {
+.mock-designer-sundance span {
     display: block;
     height: 14px;
     border-radius: 3px;
     background: #ebe6ef;
 }
 
-.mock-designer-canvas span:nth-child(1) { width: 100%; }
-.mock-designer-canvas span:nth-child(2) { width: 85%; }
-.mock-designer-canvas span:nth-child(3) { width: 60%; height: 22px; }
+.mock-designer-sundance span:nth-child(1) { width: 100%; }
+.mock-designer-sundance span:nth-child(2) { width: 85%; }
+.mock-designer-sundance span:nth-child(3) { width: 60%; height: 22px; }
+
+.mock-designer-cardiff {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.mock-designer-cardiff span {
+    display: block;
+    height: 28px;
+    border-radius: 3px;
+    background: #d8e6ef;
+}
+
+.mock-designer-cardiff span:nth-child(1) {
+    grid-column: span 2;
+    height: 34px;
+    background: #b8cedc;
+}
 
 .mock-woolf-layout {
     display: grid;
@@ -7345,14 +7365,23 @@ body.home-page .home-page-templates .mock-showroom--spotlight .mock-spotlight-st
 }
 
 body.home-page .home-page-templates .mock-hero--editorial,
-body.home-page .home-page-templates .mock-hero--curator,
-body.home-page .home-page-templates .mock-hero--canvas,
+body.home-page .home-page-templates .mock-hero--geneva,
+body.home-page .home-page-templates .mock-hero--sundance,
+body.home-page .home-page-templates .mock-hero--cardiff,
 body.home-page .home-page-templates .mock-hero--woolf {
     height: clamp(72px, 9vw, 100px);
 }
 
 body.home-page .home-page-templates .mock-collections span {
     height: clamp(52px, 6.5vw, 72px);
+}
+
+body.home-page .home-page-templates .mock-designer-cardiff span {
+    height: clamp(40px, 5vw, 56px);
+}
+
+body.home-page .home-page-templates .mock-designer-cardiff span:nth-child(1) {
+    height: clamp(48px, 6vw, 64px);
 }
 
 body.home-page .home-page-templates .mock-woolf-layout span {

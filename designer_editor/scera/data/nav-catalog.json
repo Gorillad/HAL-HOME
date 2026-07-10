@@ -1,0 +1,225 @@
+{
+  "categories": [
+    {
+      "id": "lighting",
+      "label": "Lighting",
+      "href": "/catalog/lighting",
+      "columns": [
+        {
+          "head": "Ceiling Lights",
+          "links": [
+            { "label": "Chandeliers", "href": "/catalog/lighting/ceiling-lights/chandeliers" },
+            { "label": "Pendants", "href": "/catalog/lighting/ceiling-lights/pendants" },
+            { "label": "Mini Pendants", "href": "/catalog/lighting/ceiling-lights/mini-pendants" },
+            { "label": "Flush Mounts", "href": "/catalog/lighting/ceiling-lights/flush-mounts" },
+            { "label": "Semi-Flush Mounts", "href": "/catalog/lighting/ceiling-lights/semi-flush-mounts" },
+            { "label": "Track Lighting", "href": "/catalog/lighting/ceiling-lights/track-lighting" },
+            { "label": "More Ceiling Lights", "href": "/catalog/lighting/ceiling-lights/more" }
+          ]
+        },
+        {
+          "head": "Wall Lights",
+          "links": [
+            { "label": "Wall Sconces", "href": "/catalog/lighting/wall-lights/wall-sconces" },
+            { "label": "Bathroom Vanity Lights", "href": "/catalog/lighting/wall-lights/bathroom-vanity-lights" },
+            { "label": "Picture Lights", "href": "/catalog/lighting/wall-lights/picture-lights" },
+            { "label": "Swing Arm / Wall Lamps", "href": "/catalog/lighting/wall-lights/swing-arm-wall-lamps" },
+            { "label": "Cabinet Lighting", "href": "/catalog/lighting/wall-lights/cabinet-lighting" },
+            { "label": "Spot Lights", "href": "/catalog/lighting/wall-lights/spot-lights" }
+          ]
+        },
+        {
+          "head": "Outdoor Lighting",
+          "links": [
+            { "label": "Outdoor Wall Lights", "href": "/catalog/lighting/outdoor-lighting/outdoor-wall-lights" },
+            { "label": "Outdoor Pendants", "href": "/catalog/lighting/outdoor-lighting/outdoor-pendants" },
+            { "label": "Outdoor Chandeliers", "href": "/catalog/lighting/outdoor-lighting/outdoor-chandeliers" },
+            { "label": "Outdoor Ceiling Lights", "href": "/catalog/lighting/outdoor-lighting/outdoor-ceiling-lights" },
+            { "label": "Pathway Lighting", "href": "/catalog/lighting/outdoor-lighting/pathway-lighting" },
+            { "label": "Landscape Lighting", "href": "/catalog/lighting/outdoor-lighting/landscape-lighting" },
+            { "label": "Outdoor Accessories", "href": "/catalog/lighting/outdoor-lighting/outdoor-accessories" },
+            { "label": "More Outdoor", "href": "/catalog/lighting/outdoor-lighting/more" }
+          ]
+        },
+        {
+          "head": "Lamps",
+          "links": [
+            { "label": "Table Lamps", "href": "/catalog/lighting/lamps/table-lamps" },
+            { "label": "Floor Lamps", "href": "/catalog/lighting/lamps/floor-lamps" },
+            { "label": "Desk Lamps", "href": "/catalog/lighting/lamps/desk-lamps" },
+            { "label": "Task Lamps", "href": "/catalog/lighting/lamps/task-lamps" }
+          ]
+        },
+        {
+          "head": "Accessories",
+          "links": [
+            { "label": "Light Bulbs", "href": "/catalog/lighting/accessories/light-bulbs" },
+            { "label": "Dimmers & Switches", "href": "/catalog/lighting/accessories/dimmers-switches" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fans",
+      "label": "Fans",
+      "href": "/catalog/fans",
+      "columns": [
+        {
+          "head": "Fans",
+          "links": [
+            { "label": "Indoor Ceiling Fans", "href": "/catalog/fans/indoor-ceiling-fans" },
+            { "label": "Outdoor Fans", "href": "/catalog/fans/outdoor-fans" },
+            { "label": "Portable Fans", "href": "/catalog/fans/portable-fans" },
+            { "label": "Wall Fans", "href": "/catalog/fans/wall-fans" }
+          ]
+        },
+        {
+          "head": "Fans",
+          "links": [
+            { "label": "Belt Fans", "href": "/catalog/fans/belt-fans" },
+            { "label": "Fandeliers", "href": "/catalog/fans/fandeliers" },
+            { "label": "Huggers", "href": "/catalog/fans/huggers" },
+            { "label": "More Fans", "href": "/catalog/fans/more" }
+          ]
+        },
+        {
+          "head": "Fan Accessories",
+          "links": [
+            { "label": "Fan Light Kits", "href": "/catalog/fans/fan-light-kits" },
+            { "label": "Fandeliers", "href": "/catalog/fans/fandeliers" },
+            { "label": "Dual Motor Fans", "href": "/catalog/fans/dual-motor-fans" },
+            { "label": "Fan Accessories", "href": "/catalog/fans/fan-accessories" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "furniture-decor",
+      "label": "Furniture & Decor",
+      "href": "/catalog/furniture-decor",
+      "columns": [
+        {
+          "head": "Home Decor",
+          "links": [
+            { "label": "Area Rugs", "href": "/catalog/furniture-decor/home-decor/area-rugs" },
+            { "label": "Vases", "href": "/catalog/furniture-decor/home-decor/vases" },
+            { "label": "Wall Accents", "href": "/catalog/furniture-decor/home-decor/wall-accents" },
+            { "label": "Sculptures", "href": "/catalog/furniture-decor/home-decor/sculptures" },
+            { "label": "Decorative Objects & Figurines", "href": "/catalog/furniture-decor/home-decor/decorative-objects-figurines" },
+            { "label": "Decorative Bowls", "href": "/catalog/furniture-decor/home-decor/decorative-bowls" },
+            { "label": "More Home Decor", "href": "/catalog/furniture-decor/home-decor/more" }
+          ]
+        },
+        {
+          "head": "Furniture",
+          "links": [
+            { "label": "End & Side Tables", "href": "/catalog/furniture-decor/furniture/end-side-tables" },
+            { "label": "Console Tables", "href": "/catalog/furniture-decor/furniture/console-tables" },
+            { "label": "Ottomans & Stools", "href": "/catalog/furniture-decor/furniture/ottomans-stools" },
+            { "label": "Coffee Tables", "href": "/catalog/furniture-decor/furniture/coffee-tables" },
+            { "label": "Chairs", "href": "/catalog/furniture-decor/furniture/chairs" },
+            { "label": "Cabinets", "href": "/catalog/furniture-decor/furniture/cabinets" },
+            { "label": "More Furniture", "href": "/catalog/furniture-decor/furniture/more" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outdoor",
+      "label": "Outdoor",
+      "href": "/catalog/outdoor",
+      "columns": [
+        {
+          "head": "Patio & Outdoor Furniture",
+          "links": [
+            { "label": "Outdoor Chairs", "href": "/catalog/outdoor/patio-outdoor-furniture/outdoor-chairs" },
+            { "label": "Other Outdoor Furniture", "href": "/catalog/outdoor/patio-outdoor-furniture/other-outdoor-furniture" },
+            { "label": "Outdoor Ottomans & Stools", "href": "/catalog/outdoor/patio-outdoor-furniture/outdoor-ottomans-stools" },
+            { "label": "Outdoor Tables", "href": "/catalog/outdoor/patio-outdoor-furniture/outdoor-tables" }
+          ]
+        },
+        {
+          "head": "Outdoor Decor",
+          "links": [
+            { "label": "Bird Feeders", "href": "/catalog/outdoor/outdoor-decor/bird-feeders" },
+            { "label": "Outdoor Door Bells", "href": "/catalog/outdoor/outdoor-decor/outdoor-door-bells" },
+            { "label": "Outdoor Lanterns", "href": "/catalog/outdoor/outdoor-decor/outdoor-lanterns" },
+            { "label": "More Outdoor Decor", "href": "/catalog/outdoor/outdoor-decor/more" }
+          ]
+        },
+        {
+          "head": "Outdoor Lighting",
+          "links": [
+            { "label": "Outdoor Wall Lights", "href": "/catalog/outdoor/outdoor-lighting/outdoor-wall-lights" },
+            { "label": "Outdoor Pendants / Chandeliers", "href": "/catalog/outdoor/outdoor-lighting/outdoor-pendants-chandeliers" },
+            { "label": "Outdoor Ceiling Lights", "href": "/catalog/outdoor/outdoor-lighting/outdoor-ceiling-lights" },
+            { "label": "Post Lights & Accessories", "href": "/catalog/outdoor/outdoor-lighting/post-lights-accessories" },
+            { "label": "Pathway Lighting", "href": "/catalog/outdoor/outdoor-lighting/pathway-lighting" },
+            { "label": "Landscape Lighting", "href": "/catalog/outdoor/outdoor-lighting/landscape-lighting" },
+            { "label": "More Outdoor Lighting", "href": "/catalog/outdoor/outdoor-lighting/more" }
+          ]
+        },
+        {
+          "head": "Outdoor Fans",
+          "links": [
+            { "label": "Outdoor Fans", "href": "/catalog/outdoor/outdoor-fans" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shop-by-room",
+      "label": "Shop by Room",
+      "href": "/shop-by-room",
+      "columns": [
+        {
+          "head": "Interior",
+          "links": [
+            { "label": "Bathroom", "href": "/shop-by-room/bathroom" },
+            { "label": "Bedroom", "href": "/shop-by-room/bedroom" },
+            { "label": "Dining Room", "href": "/shop-by-room/dining-room" },
+            { "label": "Kitchen", "href": "/shop-by-room/kitchen" },
+            { "label": "Living Room", "href": "/shop-by-room/living-room" },
+            { "label": "Office/Den", "href": "/shop-by-room/office-den" },
+            { "label": "Entry/Foyer", "href": "/shop-by-room/entry-foyer" },
+            { "label": "Outdoor/Patio", "href": "/shop-by-room/outdoor-patio" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "brands",
+      "label": "Brands",
+      "href": "/brands",
+      "columns": [
+        {
+          "head": "Popular Brands",
+          "links": [
+            { "label": "Visual Comfort & Co. Architectural Collection", "href": "/brands/visual-comfort-co-architectural-collection" },
+            { "label": "Visual Comfort & Co. Fan Collection", "href": "/brands/visual-comfort-co-fan-collection" },
+            { "label": "Visual Comfort & Co. Modern Collection", "href": "/brands/visual-comfort-co-modern-collection" },
+            { "label": "Visual Comfort & Co. Signature Collection", "href": "/brands/visual-comfort-co-signature-collection" },
+            { "label": "Visual Comfort & Co. Studio Collection", "href": "/brands/visual-comfort-co-studio-collection" },
+            { "label": "Visual Comfort RL", "href": "/brands/visual-comfort-rl" },
+            { "label": "WAC US", "href": "/brands/wac-us" },
+            { "label": "Hinkley", "href": "/brands/hinkley" }
+          ]
+        },
+        {
+          "head": "Popular Brands",
+          "links": [
+            { "label": "Lib & Co.", "href": "/brands/lib-co" },
+            { "label": "Fine Art Handcrafted Lighting", "href": "/brands/fine-art-handcrafted-lighting" },
+            { "label": "Hubbardton Forge", "href": "/brands/hubbardton-forge" },
+            { "label": "Hammerton", "href": "/brands/hammerton" },
+            { "label": "Quoizel", "href": "/brands/quoizel" },
+            { "label": "Nora", "href": "/brands/nora" },
+            { "label": "Eurofase", "href": "/brands/eurofase" },
+            { "label": "Progress", "href": "/brands/progress" },
+            { "label": "More Brands", "href": "/brands/more" }
+          ]
+        }
+      ]
+    }
+  ]
+}

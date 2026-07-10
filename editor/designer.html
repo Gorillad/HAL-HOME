@@ -140,7 +140,22 @@
             pointer-events: none;
             transition: opacity 0.4s;
         }
-        .designer-iframe-loading.is-hidden { opacity: 0; }
+        .editor-logo-preview--scera {
+            background: #12100e;
+            min-height: 72px;
+        }
+        .editor-logo-preview--hero {
+            background: #12100e;
+            min-height: 100px;
+            aspect-ratio: 3 / 2;
+            height: auto;
+        }
+        .editor-logo-preview--hero-tile {
+            background: #12100e;
+            min-height: 72px;
+            aspect-ratio: 16 / 9;
+            height: auto;
+        }
 
         /* Field panel scrollbar */
         .designer-field-panel {
@@ -393,7 +408,8 @@
         #woolFullSite[hidden] { display: none !important; }
 
         /* Full Site preview iframe — height is fitted dynamically to content */
-        #woolFullSiteFrame {
+        #woolFullSiteFrame,
+        #sceraFullSiteFrame {
             display: block;
             width: 100%;
             height: 3200px; /* fallback; overridden once content height is measured */
@@ -486,8 +502,11 @@
 <body class="editor-page">
     <script>
         (function () {
-            const allowed = { gallery: true, curator: true, canvas: true, woolf: true };
-            const param = new URLSearchParams(window.location.search).get('design');
+            const allowed = { scera: true, geneva: true, sundance: true, cardiff: true, woolf: true };
+            let param = new URLSearchParams(window.location.search).get('design');
+            if (param === 'gallery') param = 'scera'; /* legacy Designer slug */
+            if (param === 'curator') param = 'geneva';
+            if (param === 'canvas') param = 'sundance';
             const slug = allowed[param] ? param : 'woolf';
             document.body.classList.add('editor-page--designer', `editor-page--${slug}`);
             window.__designerSlug = slug;
@@ -1597,15 +1616,220 @@
 
             </div><!-- /#woolFieldPanel -->
 
-            <!-- Scaffold shown for non-Woolf designs -->
+            <!-- SCERA field panel -->
+            <div class="designer-field-panel" id="sceraFieldPanel" hidden>
+
+                <div class="designer-section-tabs" id="sceraSectionTabs" role="tablist" aria-label="SCERA sections">
+                    <button type="button" class="designer-section-tab is-active" role="tab" data-scera-section="header" aria-selected="true">Header</button>
+                    <button type="button" class="designer-section-tab" role="tab" data-scera-section="section1" aria-selected="false">Section 1</button>
+                </div>
+
+                <div id="sceraPanelHeader">
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Logo</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label">Header logo</label>
+                            <div class="editor-logo-widget">
+                                <div class="editor-logo-preview editor-logo-preview--scera" id="sf-logo-preview">
+                                    <img id="sf-logo-thumb" src="" alt="Logo preview" hidden>
+                                    <span class="editor-logo-preview-empty" id="sf-logo-thumb-empty">Preview</span>
+                                </div>
+                                <div class="editor-logo-actions">
+                                    <label class="editor-logo-file-label" for="sf-logo-file">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Upload image
+                                        <input type="file" id="sf-logo-file" accept="image/*" style="display:none">
+                                    </label>
+                                    <button type="button" class="editor-logo-remove-btn" id="sf-logo-remove" hidden>✕ Remove</button>
+                                </div>
+                            </div>
+                            <p class="editor-field-hint">Horizontal PNG or SVG on a dark background. Also updates the footer logo.</p>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="sf-logo-url">Logo link URL</label>
+                            <input type="text" id="sf-logo-url" data-scera-field="logoUrl" class="editor-field-input" placeholder="/">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="sf-logo-size">Logo height</label>
+                            <div class="editor-range-row">
+                                <input type="range" id="sf-logo-size" data-scera-field="logoSize" min="56" max="120" step="1" value="88">
+                                <span class="editor-range-value" id="sf-logo-size-val">88px</span>
+                            </div>
+                            <div class="editor-range-scale">
+                                <span>56px</span>
+                                <span>120px</span>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Top bar &amp; search</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="sf-top-bar-copy">Announcement line</label>
+                            <input type="text" id="sf-top-bar-copy" data-scera-field="topBarCopy" class="editor-field-input" placeholder="Complimentary design consultation · White-glove delivery">
+                            <p class="editor-field-hint">Centered message in the slim strip above the logo.</p>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="sf-search-placeholder">Search placeholder</label>
+                            <input type="text" id="sf-search-placeholder" data-scera-field="searchPlaceholder" class="editor-field-input" placeholder="Find a fixture…">
+                        </div>
+                    </div>
+                </details>
+
+                </div><!-- /#sceraPanelHeader -->
+
+                <div id="sceraPanelSection1" hidden>
+                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 1 — Strong static hero · Art Deco editorial layout (XO paste slot)</p>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Primary hero image</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Large lifestyle photo (left)</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--hero" id="sf-hero-primary-preview">
+                                        <img id="sf-hero-primary-thumb" src="" alt="Primary hero preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-hero-primary-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-hero-primary-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-hero-primary-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-hero-primary-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                                <p class="editor-field-hint">Recommended ~740×500 px or larger. Landscape lifestyle shot.</p>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-primary-alt">Image alt text</label>
+                                <input type="text" id="sf-hero-primary-alt" data-scera-field="heroPrimaryAlt" class="editor-field-input" placeholder="Art Deco Chrysler Building facade at golden hour">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Primary hero copy</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-eyebrow">Eyebrow</label>
+                                <input type="text" id="sf-hero-eyebrow" data-scera-field="heroEyebrow" class="editor-field-input" placeholder="Designer Lighting &amp; Fine Fixtures">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-headline-1">Headline line 1</label>
+                                <input type="text" id="sf-hero-headline-1" data-scera-field="heroHeadline1" class="editor-field-input" placeholder="Where Light">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-headline-2">Headline line 2</label>
+                                <input type="text" id="sf-hero-headline-2" data-scera-field="heroHeadline2" class="editor-field-input" placeholder="Becomes">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-headline-3">Headline line 3</label>
+                                <input type="text" id="sf-hero-headline-3" data-scera-field="heroHeadline3" class="editor-field-input" placeholder="Sculpture">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-copy">Supporting copy</label>
+                                <textarea id="sf-hero-copy" data-scera-field="heroCopy" class="editor-field-input" rows="3" placeholder="Explore curated chandeliers, pendants, and architectural fixtures from the makers and designers trusted by interior professionals worldwide."></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-cta-label">Button label</label>
+                                <input type="text" id="sf-hero-cta-label" data-scera-field="heroCtaLabel" class="editor-field-input" placeholder="Shop the Collection">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-cta-url">Button link URL</label>
+                                <input type="text" id="sf-hero-cta-url" data-scera-field="heroCtaUrl" class="editor-field-input" placeholder="/catalog/lighting">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Top collection tile</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Tile image</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--hero-tile" id="sf-hero-tile1-preview">
+                                        <img id="sf-hero-tile1-thumb" src="" alt="Top tile preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-hero-tile1-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-hero-tile1-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-hero-tile1-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-hero-tile1-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-tile1-heading">Heading</label>
+                                <input type="text" id="sf-hero-tile1-heading" data-scera-field="heroTile1Heading" class="editor-field-input" placeholder="Chandeliers">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-tile1-tag">Tagline</label>
+                                <input type="text" id="sf-hero-tile1-tag" data-scera-field="heroTile1Tag" class="editor-field-input" placeholder="Shop statement pieces">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-tile1-url">Link URL</label>
+                                <input type="text" id="sf-hero-tile1-url" data-scera-field="heroTile1Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Bottom collection tile</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Tile image</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--hero-tile" id="sf-hero-tile2-preview">
+                                        <img id="sf-hero-tile2-thumb" src="" alt="Bottom tile preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-hero-tile2-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-hero-tile2-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-hero-tile2-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-hero-tile2-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-tile2-heading">Heading</label>
+                                <input type="text" id="sf-hero-tile2-heading" data-scera-field="heroTile2Heading" class="editor-field-input" placeholder="Pendants">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-tile2-tag">Tagline</label>
+                                <input type="text" id="sf-hero-tile2-tag" data-scera-field="heroTile2Tag" class="editor-field-input" placeholder="Shop sculpted light">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-hero-tile2-url">Link URL</label>
+                                <input type="text" id="sf-hero-tile2-url" data-scera-field="heroTile2Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/pendants">
+                            </div>
+                        </div>
+                    </details>
+                </div><!-- /#sceraPanelSection1 -->
+
+                <p class="editor-panel-lead" style="padding:12px 16px 16px;font-size:0.82rem;opacity:0.7;margin:0;">Catalog and footer fields are next.</p>
+            </div>
+
+            <!-- Scaffold shown for non-Woolf / non-SCERA designs -->
             <div class="designer-editor-scaffold" id="designerScaffold" hidden>
                 <h3 class="editor-panel-subhead" id="scaffoldTemplateName" style="margin-top:0"></h3>
                 <p class="editor-panel-lead">This template editor is being built. The Woolf template is live now — select it from the nav above to start editing.</p>
                 <ul class="designer-scaffold-list">
                     <li><strong>The Woolf</strong> — full industrial e-commerce homepage (available now)</li>
-                    <li><strong>SCERA</strong> — editorial hero &amp; dual collection highlights</li>
+                    <li><strong>SCERA</strong> — editorial hero &amp; dual collection highlights (preview live)</li>
                     <li><strong>Geneva</strong> — curated project showcase grid</li>
                     <li><strong>Sundance</strong> — mosaic hero and studio story blocks</li>
+                    <li><strong>Cardiff</strong> — split hero and brand-forward category bands</li>
                 </ul>
             </div>
 
@@ -1619,7 +1843,7 @@
                 <span class="editor-preview-scale-hint" id="previewScaleHint" style="font-size:0.72em;opacity:0.5;margin-left:8px;"></span>
             </p>
 
-            <!-- Woolf iframe preview -->
+            <!-- Woolf / SCERA iframe preview -->
             <div class="editor-preview-scaler" id="previewScaler">
                 <div class="designer-iframe-wrap" id="woolFullSitePreviewWrap" hidden>
                     <iframe
@@ -1630,7 +1854,16 @@
                     ></iframe>
                 </div>
 
-                <!-- Scaffold preview for non-Woolf designs -->
+                <div class="designer-iframe-wrap" id="sceraFullSitePreviewWrap" hidden>
+                    <iframe
+                        id="sceraFullSiteFrame"
+                        src="../designer_editor/scera/index.html"
+                        title="SCERA — Full site preview"
+                        scrolling="yes"
+                    ></iframe>
+                </div>
+
+                <!-- Scaffold preview for designs without a live shell -->
                 <div class="editor-preview-frame designer-preview-scaffold" id="designerScaffoldPreview" hidden>
                     <div class="designer-preview-scaffold-inner">
                         <p class="designer-preview-scaffold-eyebrow">Designer template</p>
@@ -1654,6 +1887,7 @@
     <script src="js/shop-categories-editor.js"></script>
     <script src="js/shop-brands-editor.js"></script>
     <script src="js/catalog-library-editor.js"></script>
+    <script src="js/scera-editor.js"></script>
     <script src="js/designer-editor.js?v=3"></script>
     <!-- section-editor-base provides the shared draft persistence helpers
          (designerSaveCombined / designerLoadCombined) used by the editor. -->
@@ -1663,18 +1897,33 @@
     <!-- Full Site preview: fit the iframe to its content height (same-origin). -->
     <script>
         (function () {
-            var frame = document.getElementById('woolFullSiteFrame');
-            if (!frame) return;
-            function fit() {
+            var frames = [
+                document.getElementById('woolFullSiteFrame'),
+                document.getElementById('sceraFullSiteFrame'),
+            ].filter(Boolean);
+
+            function fitFrame(frame) {
+                if (!frame) return;
                 try {
                     var h = frame.contentDocument.documentElement.scrollHeight;
                     if (h > 400) frame.style.height = h + 'px';
                 } catch (e) { /* cross-origin or not ready; keep CSS fallback height */ }
             }
-            frame.addEventListener('load', fit);
-            // The section nav calls this after un-hiding the Full Site wrap so the
-            // height is measured while the iframe is actually visible.
-            window.__fitFullSite = fit;
+
+            function fitActive() {
+                var slug = window.__designerSlug || 'woolf';
+                if (slug === 'scera') {
+                    fitFrame(document.getElementById('sceraFullSiteFrame'));
+                } else {
+                    fitFrame(document.getElementById('woolFullSiteFrame'));
+                }
+            }
+
+            frames.forEach(function (frame) {
+                frame.addEventListener('load', function () { fitFrame(frame); });
+            });
+
+            window.__fitFullSite = fitActive;
         }());
     </script>
 </body>

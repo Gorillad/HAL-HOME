@@ -1,0 +1,81 @@
+/* SCERA — Art Deco luxury lighting base tokens */
+:root {
+    --scera-bg: #12100e;
+    --scera-surface: #1a1714;
+    --scera-surface-raised: #221e1a;
+    --scera-gold: #c9a96e;
+    --scera-gold-light: #e0c992;
+    --scera-gold-dark: #9a7d4a;
+    --scera-text: #f4efe6;
+    --scera-text-muted: #b8aea0;
+    --scera-rule: rgba(201, 169, 110, 0.45);
+    --scera-content-w: 1479px;
+    --scera-header-logo-h: 88px;
+    --scera-hero-gap: 22px;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-headline: 'Josefin Sans', 'DM Sans', sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--scera-bg);
+    color: var(--scera-text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+}
+
+.scera-content-column {
+    width: 100%;
+    max-width: var(--scera-content-w);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.scera-deco-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 0 24px;
+    color: var(--scera-gold);
+    font-family: var(--font-headline);
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+}
+
+.scera-deco-rule::before,
+.scera-deco-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--scera-rule) 20%, var(--scera-rule) 80%, transparent);
+}
+
+.scera-deco-rule span {
+    flex-shrink: 0;
+}

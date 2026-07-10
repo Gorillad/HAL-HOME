@@ -35,7 +35,7 @@ Use `npm start` (not a static file server) — cart checkout requires the Node A
 │   └── template-defaults.json # Default showroom editor content
 ├── editor/                    # In-browser homepage editors
 │   ├── showroom.html          # Showroom plan — McQueen, Classic, Spotlight
-│   ├── designer.html          # Designer plan — Gallery, Curator, Canvas (scaffold)
+│   ├── designer.html          # Designer plan — SCERA, Geneva, Sundance, Cardiff, Woolf
 │   ├── knowledge-base.html
 │   ├── css/editor.css
 │   ├── js/
@@ -98,11 +98,13 @@ Open http://localhost:4242/editor/designer.html — Designer plan templates with
 
 | Template | URL |
 |----------|-----|
-| Gallery | `?design=gallery` |
-| Curator | `?design=curator` |
-| Canvas | `?design=canvas` |
+| SCERA | `?design=scera` |
+| Geneva | `?design=geneva` |
+| Sundance | `?design=sundance` |
+| Cardiff | `?design=cardiff` |
+| The Woolf | `?design=woolf` |
 
-Linked from the **Designer** column on the homepage. Not the same as Showroom Classic (`showroom.html?design=gallery`).
+Linked from the **Designer** column on the homepage. Not the same as Showroom Classic (`showroom.html?design=gallery`). Legacy Designer slugs (`gallery`, `curator`, `canvas`) redirect to the names above.
 
 Handoff will target seven XOLogic dashboard slots (Meta data JavaScript, Header, Footer, Section 1–3, Slideshow) with assets under `/data/` on client FTP. See `hal/README.md` for the catalog embed pattern.
 
