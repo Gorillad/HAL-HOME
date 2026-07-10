@@ -13,6 +13,9 @@
         logoSize: 88,
         topBarCopy: 'Complimentary design consultation · White-glove delivery',
         searchPlaceholder: 'Find a fixture…',
+        headerAccountUrl: '/account',
+        headerWishlistUrl: '/wishlist',
+        headerCartUrl: '/cart',
 
         heroPrimarySrc: 'data/images/hero/chrysler-building.jpg',
         heroPrimaryAlt: 'Art Deco Chrysler Building facade at golden hour',
@@ -21,7 +24,7 @@
         heroHeadline2: 'Becomes',
         heroHeadline3: 'Sculpture',
         heroCopy: 'Explore curated chandeliers, pendants, and architectural fixtures from the makers and designers trusted by interior professionals worldwide.',
-        heroCtaLabel: 'Shop the Collection',
+        heroCtaLabel: 'Explore the Collection',
         heroCtaUrl: '/catalog/lighting',
         heroTile1Src: 'data/images/collections/chandelier.jpg',
         heroTile1Heading: 'Chandeliers',
@@ -32,6 +35,31 @@
         heroTile2Tag: 'Shop sculpted light',
         heroTile2Url: '/catalog/lighting/ceiling-lights/pendants',
 
+        trust1Label: 'White-Glove Delivery',
+        trust1Detail: 'Insured freight and careful handling on every order',
+        trust2Label: 'Design Consultation',
+        trust2Detail: 'Complimentary guidance from lighting specialists',
+        trust3Label: 'Authorized Brands',
+        trust3Detail: 'Curated makers trusted by interior professionals',
+
+        tradeCopy: 'Interior designers and trade professionals — enjoy exclusive pricing, project support, and white-glove service.',
+        tradeCtaLabel: 'Explore Trade Benefits',
+        tradeCtaUrl: '/trade',
+
+        brandsEyebrow: 'Featuring Leading Makers',
+        brand1Label: 'Visual Comfort & Co.',
+        brand1Url: '/brands/visual-comfort-co-signature-collection',
+        brand2Label: 'Hubbardton Forge',
+        brand2Url: '/brands/hubbardton-forge',
+        brand3Label: 'Hinkley',
+        brand3Url: '/brands/hinkley',
+        brand4Label: 'Hammerton',
+        brand4Url: '/brands/hammerton',
+        brand5Label: 'Fine Art Handcrafted',
+        brand5Url: '/brands/fine-art-handcrafted-lighting',
+        brand6Label: 'WAC US',
+        brand6Url: '/brands/wac-us',
+
         s2RuleLabel: 'Featured Collections',
         s2Heading: 'Signature Pieces',
         s2Subtitle: 'Museum-quality fixtures and designer silhouettes — curated for spaces that command attention.',
@@ -39,18 +67,34 @@
         s2Tile1Label: 'Art Deco Chandeliers',
         s2Tile1Url: '/catalog/lighting/ceiling-lights/chandeliers',
         s2Tile1Alt: 'Art Deco chandeliers at Cafe Americain, Amsterdam',
+        s2Tile1Detail: 'Cafe Americain · Amsterdam',
         s2Tile2Src: 'data/images/collections/Art+Deco+Light+Fixture+-+Disney.webp',
         s2Tile2Label: 'Architectural Classics',
         s2Tile2Url: '/catalog/lighting/ceiling-lights/chandeliers',
         s2Tile2Alt: 'Art Deco light fixture inspired by classic Hollywood design',
-        s2Tile3Src: 'data/images/collections/pendants.jpg',
+        s2Tile2Detail: 'Hollywood Regency · Statement forms',
+        s2Tile3Src: 'data/images/collections/n850a-lifestyle-300x300.jpg',
         s2Tile3Label: 'Designer Pendants',
         s2Tile3Url: '/catalog/lighting/ceiling-lights/pendants',
-        s2Tile3Alt: 'Sculpted pendant lights over a kitchen island',
-        s2Tile4Src: 'data/images/collections/chandelier.jpg',
+        s2Tile3Alt: 'Designer pendant in a refined kitchen setting',
+        s2Tile3Detail: 'Sculpted light · Island & dining',
+        s2Tile4Src: 'data/images/hero/gettyimages-802161384-612x612.jpg',
         s2Tile4Label: 'Statement Chandeliers',
         s2Tile4Url: '/catalog/lighting/ceiling-lights/chandeliers',
-        s2Tile4Alt: 'Crystal chandelier in a formal dining room',
+        s2Tile4Alt: 'Warm dining room with designer chandelier',
+        s2Tile4Detail: 'Formal dining · Grand foyer · Hospitality',
+
+        s2GalleryEyebrow: 'Project Gallery',
+        s2GalleryHeading: 'Spaces Brought to Light',
+        s2GalleryCopy: 'Completed residential and hospitality installations — every fixture chosen with architectural intention.',
+        s2GalleryCtaLabel: 'View the Gallery',
+        s2GalleryCtaUrl: '/gallery',
+        s2GalleryImg1Src: 'data/images/hero/48692_lou05qai8cpvyy8qzqim52wa0w8htzw4_97366dcd-5056-a36a-0bb3c63870b11723.jpg',
+        s2GalleryImg1Alt: 'Refined living space with layered designer lighting',
+        s2GalleryImg2Src: 'data/images/catalog/exterior.jpg',
+        s2GalleryImg2Alt: 'Architectural exterior with statement outdoor lighting',
+        s2GalleryImg3Src: 'data/images/catalog/fans.jpg',
+        s2GalleryImg3Alt: 'Designer ceiling fan in a curated residential interior',
 
         s3RuleLabel: 'The Atelier',
         s3Eyebrow: 'Our Story',
@@ -64,7 +108,7 @@
         s3CtaLabel: 'Request a Consultation',
         s3CtaUrl: '/contact',
 
-        reviewsEyebrow: 'Google Reviews',
+        reviewsEyebrow: 'Client Voices',
         reviewsHeading: 'What Our Customers Say',
         reviewsRating: '4.9',
         reviewsCount: 'Based on 127 reviews',
@@ -83,16 +127,17 @@
         expertEyebrow: 'Design Consultation',
         expertHeadline: 'Get Personalized Advice from a Lighting Expert',
         expertCopy: 'Our specialists help you choose scale, finish, and placement for every room — from statement chandeliers to layered accent light. Complimentary for residential projects and trade partners.',
-        expertCtaLabel: 'Book a Consultation',
+        expertCtaLabel: 'Request a Consultation',
         expertCtaUrl: '/contact',
         expertImg1Src: 'data/images/hero/primary.jpg',
-        expertImg1Alt: 'Lighting expert reviewing fixture selections with a client',
-        expertImg2Src: 'data/images/catalog/hall-lantern.jpg',
-        expertImg2Alt: 'Elegant hall lantern fixture in a curated showroom display',
-        expertImg3Src: 'data/images/hero/gettyimages-802161384-612x612.jpg',
-        expertImg3Alt: 'Warm interior with designer pendant lighting over a dining table',
+        expertImg1Alt: 'Lighting specialist reviewing fixture selections with a client',
+        expertImg2Src: 'data/images/catalog/bathroom.jpg',
+        expertImg2Alt: 'Vanity lighting in a refined residential bath',
+        expertImg3Src: 'data/images/catalog/hall-lantern.jpg',
+        expertImg3Alt: 'Statement hall lantern in an elegant foyer setting',
 
-        footerTagline: 'Art Deco inspired luxury lighting for residential and hospitality projects.',
+        footerTagline: 'Where every room is composed in light.',
+        footerCompanyHead: 'Avalon Lighting',
         footerCol1Head: 'Shop',
         footerCol1Link1Label: 'Chandeliers',
         footerCol1Link1Url: '/catalog/lighting/ceiling-lights/chandeliers',
@@ -111,8 +156,40 @@
         footerCol2Link3Url: '/contact',
         footerCol2Link4Label: 'Privacy',
         footerCol2Link4Url: '/privacy',
+        footerCol3Head: 'Visit Us',
+        footerLocation: 'Avalon Lighting Showroom\n123 Madison Avenue\nNew York, NY 10016',
+        footerHours: 'Mon–Fri 10am–6pm\nSat 11am–5pm\nSun by appointment',
+        footerPhone: '(212) 555-0198',
+        footerEmail: 'hello@avalonlighting.com',
         footerCopyright: '© 2026 Avalon Lighting. All rights reserved.',
+        footerLegal1Label: 'Privacy Policy',
+        footerLegal1Url: '/privacy',
+        footerLegal2Label: 'Terms & Conditions',
+        footerLegal2Url: '/terms',
+        footerLegal3Label: 'Accessibility',
+        footerLegal3Url: '/accessibility',
+        footerSocialLabel: 'Follow Us',
+        footerYoutubeUrl: 'https://www.youtube.com/',
+        footerLinkedinUrl: 'https://www.linkedin.com/',
+        footerInstagramUrl: 'https://www.instagram.com/',
+        footerFacebookUrl: 'https://www.facebook.com/',
+        footerXUrl: 'https://x.com/',
+        footerTiktokUrl: 'https://www.tiktok.com/',
+
+        newsletterHeading: 'Design Notes',
+        newsletterCopy: 'New arrivals, project inspiration, and trade announcements — delivered with restraint.',
+        newsletterPlaceholder: 'Email address',
+        newsletterBtnLabel: 'Subscribe',
     };
+
+    var FOOTER_SOCIAL_LINKS = [
+        { wrap: 'avalonFooterSocialYoutubeWrap', link: 'avalonFooterSocialYoutube', key: 'footerYoutubeUrl' },
+        { wrap: 'avalonFooterSocialLinkedinWrap', link: 'avalonFooterSocialLinkedin', key: 'footerLinkedinUrl' },
+        { wrap: 'avalonFooterSocialInstagramWrap', link: 'avalonFooterSocialInstagram', key: 'footerInstagramUrl' },
+        { wrap: 'avalonFooterSocialFacebookWrap', link: 'avalonFooterSocialFacebook', key: 'footerFacebookUrl' },
+        { wrap: 'avalonFooterSocialXWrap', link: 'avalonFooterSocialX', key: 'footerXUrl' },
+        { wrap: 'avalonFooterSocialTiktokWrap', link: 'avalonFooterSocialTiktok', key: 'footerTiktokUrl' },
+    ];
 
     var IMAGE_SLOTS = [
         {
@@ -163,6 +240,27 @@
             thumbImg: 'sf-s2-tile4-thumb',
             thumbEmpty: 'sf-s2-tile4-thumb-empty',
             removeBtn: 'sf-s2-tile4-remove',
+        },
+        {
+            field: 's2GalleryImg1Src',
+            fileInput: 'sf-s2-gallery-img1-file',
+            thumbImg: 'sf-s2-gallery-img1-thumb',
+            thumbEmpty: 'sf-s2-gallery-img1-thumb-empty',
+            removeBtn: 'sf-s2-gallery-img1-remove',
+        },
+        {
+            field: 's2GalleryImg2Src',
+            fileInput: 'sf-s2-gallery-img2-file',
+            thumbImg: 'sf-s2-gallery-img2-thumb',
+            thumbEmpty: 'sf-s2-gallery-img2-thumb-empty',
+            removeBtn: 'sf-s2-gallery-img2-remove',
+        },
+        {
+            field: 's2GalleryImg3Src',
+            fileInput: 'sf-s2-gallery-img3-file',
+            thumbImg: 'sf-s2-gallery-img3-thumb',
+            thumbEmpty: 'sf-s2-gallery-img3-thumb-empty',
+            removeBtn: 'sf-s2-gallery-img3-remove',
         },
         {
             field: 'expertImg1Src',
@@ -309,6 +407,17 @@
         if (el) el.setAttribute('placeholder', draft.searchPlaceholder || DEFAULTS.searchPlaceholder);
     }
 
+    function applyHeaderUtils() {
+        var account = qsel('#avalonHeaderAccountLink');
+        if (account) account.setAttribute('href', draft.headerAccountUrl || DEFAULTS.headerAccountUrl);
+
+        var wishlist = qsel('#avalonHeaderWishlistLink');
+        if (wishlist) wishlist.setAttribute('href', draft.headerWishlistUrl || DEFAULTS.headerWishlistUrl);
+
+        var cart = qsel('#avalonHeaderCartLink');
+        if (cart) cart.setAttribute('href', draft.headerCartUrl || DEFAULTS.headerCartUrl);
+    }
+
     function applyHero() {
         var primaryImg = qsel('#avalonHeroPrimaryImg');
         if (primaryImg) {
@@ -360,6 +469,55 @@
         if (tile2Tag) tile2Tag.textContent = draft.heroTile2Tag || DEFAULTS.heroTile2Tag;
     }
 
+    function applyTrust() {
+        [1, 2, 3].forEach(function (n) {
+            var label = qsel('#avalonTrust' + n + 'Label');
+            var detail = qsel('#avalonTrust' + n + 'Detail');
+            var labelKey = 'trust' + n + 'Label';
+            var detailKey = 'trust' + n + 'Detail';
+            if (label) label.textContent = draft[labelKey] || DEFAULTS[labelKey];
+            if (detail) detail.textContent = draft[detailKey] || DEFAULTS[detailKey];
+        });
+    }
+
+    function applyTrade() {
+        var copy = qsel('#avalonTradeCopy');
+        if (copy) copy.textContent = draft.tradeCopy || DEFAULTS.tradeCopy;
+
+        var cta = qsel('#avalonTradeCta');
+        if (cta) {
+            cta.textContent = draft.tradeCtaLabel || DEFAULTS.tradeCtaLabel;
+            cta.setAttribute('href', draft.tradeCtaUrl || DEFAULTS.tradeCtaUrl);
+        }
+    }
+
+    function applyBrandLink(n) {
+        var labelKey = 'brand' + n + 'Label';
+        var urlKey = 'brand' + n + 'Url';
+        var link = qsel('#avalonBrand' + n + 'Link');
+        if (!link) return;
+        var label = String(draft[labelKey] !== undefined && draft[labelKey] !== null
+            ? draft[labelKey]
+            : DEFAULTS[labelKey] || '').trim();
+        var url = String(draft[urlKey] !== undefined && draft[urlKey] !== null
+            ? draft[urlKey]
+            : DEFAULTS[urlKey] || '').trim();
+        link.textContent = label;
+        link.classList.toggle('is-hidden', !label);
+        if (url) link.setAttribute('href', url);
+        else link.removeAttribute('href');
+    }
+
+    function applyBrands() {
+        var eyebrow = qsel('#avalonBrandsEyebrow');
+        if (eyebrow) eyebrow.textContent = draft.brandsEyebrow || DEFAULTS.brandsEyebrow;
+        [1, 2, 3, 4, 5, 6].forEach(applyBrandLink);
+
+        if (iframeDoc && iframeDoc.defaultView && typeof iframeDoc.defaultView.__avalonBrandsRefresh === 'function') {
+            iframeDoc.defaultView.__avalonBrandsRefresh();
+        }
+    }
+
     function applySection2() {
         var rule = qsel('#avalonS2RuleLabel');
         if (rule) rule.textContent = draft.s2RuleLabel || DEFAULTS.s2RuleLabel;
@@ -375,6 +533,7 @@
             var labelKey = 's2Tile' + n + 'Label';
             var urlKey = 's2Tile' + n + 'Url';
             var altKey = 's2Tile' + n + 'Alt';
+            var detailKey = 's2Tile' + n + 'Detail';
 
             var img = qsel('#avalonS2Tile' + n + 'Img');
             if (img) {
@@ -387,6 +546,36 @@
 
             var label = qsel('#avalonS2Tile' + n + 'Label');
             if (label) label.textContent = draft[labelKey] || DEFAULTS[labelKey];
+
+            var detail = qsel('#avalonS2Tile' + n + 'Detail');
+            if (detail) detail.textContent = draft[detailKey] || DEFAULTS[detailKey];
+        });
+
+        applyBrands();
+
+        var galleryEyebrow = qsel('#avalonS2GalleryEyebrow');
+        if (galleryEyebrow) galleryEyebrow.textContent = draft.s2GalleryEyebrow || DEFAULTS.s2GalleryEyebrow;
+
+        var galleryHeading = qsel('#avalonS2GalleryHeading');
+        if (galleryHeading) galleryHeading.textContent = draft.s2GalleryHeading || DEFAULTS.s2GalleryHeading;
+
+        var galleryCopy = qsel('#avalonS2GalleryCopy');
+        if (galleryCopy) galleryCopy.textContent = draft.s2GalleryCopy || DEFAULTS.s2GalleryCopy;
+
+        var galleryCta = qsel('#avalonS2GalleryCta');
+        if (galleryCta) {
+            galleryCta.textContent = draft.s2GalleryCtaLabel || DEFAULTS.s2GalleryCtaLabel;
+            galleryCta.setAttribute('href', draft.s2GalleryCtaUrl || DEFAULTS.s2GalleryCtaUrl);
+        }
+
+        [1, 2, 3].forEach(function (n) {
+            var img = qsel('#avalonS2GalleryImg' + n);
+            var srcKey = 's2GalleryImg' + n + 'Src';
+            var altKey = 's2GalleryImg' + n + 'Alt';
+            if (img) {
+                img.src = draft[srcKey] || DEFAULTS[srcKey];
+                img.alt = draft[altKey] || DEFAULTS[altKey];
+            }
         });
     }
 
@@ -497,9 +686,42 @@
         el.setAttribute('href', draft[urlKey] || DEFAULTS[urlKey]);
     }
 
+    function applyFooterSocialLink(entry) {
+        var url = (draft[entry.key] !== undefined && draft[entry.key] !== null)
+            ? String(draft[entry.key]).trim()
+            : String(DEFAULTS[entry.key] || '').trim();
+        var wrap = qsel('#' + entry.wrap);
+        var link = qsel('#' + entry.link);
+        if (wrap) wrap.classList.toggle('is-hidden', !url);
+        if (link) {
+            if (url) link.setAttribute('href', url);
+            else link.removeAttribute('href');
+        }
+    }
+
+    function applyFooterLegalLink(n) {
+        var labelKey = 'footerLegal' + n + 'Label';
+        var urlKey = 'footerLegal' + n + 'Url';
+        var el = qsel('#avalonFooterLegal' + n);
+        if (!el) return;
+        var label = String(draft[labelKey] !== undefined && draft[labelKey] !== null
+            ? draft[labelKey]
+            : DEFAULTS[labelKey] || '').trim();
+        var url = String(draft[urlKey] !== undefined && draft[urlKey] !== null
+            ? draft[urlKey]
+            : DEFAULTS[urlKey] || '').trim();
+        el.textContent = label;
+        el.classList.toggle('is-hidden', !label);
+        if (url) el.setAttribute('href', url);
+        else el.removeAttribute('href');
+    }
+
     function applyFooter() {
         var tagline = qsel('#avalonFooterTagline');
         if (tagline) tagline.textContent = draft.footerTagline || DEFAULTS.footerTagline;
+
+        var companyHead = qsel('#avalonFooterCompanyHead');
+        if (companyHead) companyHead.textContent = draft.footerCompanyHead || DEFAULTS.footerCompanyHead;
 
         var col1Head = qsel('#avalonFooterCol1Head');
         if (col1Head) col1Head.textContent = draft.footerCol1Head || DEFAULTS.footerCol1Head;
@@ -507,28 +729,80 @@
         var col2Head = qsel('#avalonFooterCol2Head');
         if (col2Head) col2Head.textContent = draft.footerCol2Head || DEFAULTS.footerCol2Head;
 
+        var col3Head = qsel('#avalonFooterCol3Head');
+        if (col3Head) col3Head.textContent = draft.footerCol3Head || DEFAULTS.footerCol3Head;
+
+        var location = qsel('#avalonFooterLocation');
+        if (location) location.textContent = draft.footerLocation || DEFAULTS.footerLocation;
+
+        var hours = qsel('#avalonFooterHours');
+        if (hours) hours.textContent = draft.footerHours || DEFAULTS.footerHours;
+
+        var phone = draft.footerPhone || DEFAULTS.footerPhone;
+        var phoneEl = qsel('#avalonFooterPhone');
+        if (phoneEl) {
+            phoneEl.textContent = phone;
+            var digits = String(phone).replace(/\D/g, '');
+            if (digits.length === 10) digits = '1' + digits;
+            if (digits) phoneEl.setAttribute('href', 'tel:+' + digits);
+            else phoneEl.removeAttribute('href');
+        }
+
+        var email = (draft.footerEmail || DEFAULTS.footerEmail || '').trim();
+        var emailEl = qsel('#avalonFooterEmail');
+        if (emailEl) {
+            emailEl.textContent = email;
+            if (email) emailEl.setAttribute('href', 'mailto:' + email);
+            else emailEl.removeAttribute('href');
+        }
+
         var i;
         for (i = 1; i <= 4; i++) {
             applyFooterLink(1, i);
             applyFooterLink(2, i);
         }
 
+        var socialLabel = qsel('#avalonFooterSocialLabel');
+        if (socialLabel) socialLabel.textContent = draft.footerSocialLabel || DEFAULTS.footerSocialLabel;
+
+        FOOTER_SOCIAL_LINKS.forEach(applyFooterSocialLink);
+
         var copyright = qsel('#avalonFooterCopyright');
         if (copyright) copyright.textContent = draft.footerCopyright || DEFAULTS.footerCopyright;
+
+        [1, 2, 3].forEach(applyFooterLegalLink);
+    }
+
+    function applyNewsletter() {
+        var heading = qsel('#avalonNewsletterHeading');
+        if (heading) heading.textContent = draft.newsletterHeading || DEFAULTS.newsletterHeading;
+
+        var copy = qsel('#avalonNewsletterCopy');
+        if (copy) copy.textContent = draft.newsletterCopy || DEFAULTS.newsletterCopy;
+
+        var input = qsel('#avalonNewsletterInput');
+        if (input) input.setAttribute('placeholder', draft.newsletterPlaceholder || DEFAULTS.newsletterPlaceholder);
+
+        var btn = qsel('#avalonNewsletterBtn');
+        if (btn) btn.textContent = draft.newsletterBtnLabel || DEFAULTS.newsletterBtnLabel;
     }
 
     function applyAll() {
         if (!iframeDoc) return;
         applyLogo();
         applyLogoLink();
+        applyHeaderUtils();
         applyTopBarCopy();
         applySearchPlaceholder();
         applyHero();
+        applyTrust();
+        applyTrade();
         applySection2();
         applySection3();
         applyReviews();
         applyExpert();
         applyFooter();
+        applyNewsletter();
         if (typeof window.__fitFullSite === 'function') window.__fitFullSite();
     }
 

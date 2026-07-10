@@ -5,17 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Luxury Lighting &amp; Fine Fixtures | Avalon</title>
   <meta name="description" content="Avalon — Art Deco inspired luxury lighting for distinguished interiors. Chandeliers, pendants, and curated collections.">
+  <meta property="og:title" content="Luxury Lighting &amp; Fine Fixtures | Avalon">
+  <meta property="og:description" content="Art Deco inspired luxury lighting — curated chandeliers, pendants, and designer fixtures for distinguished interiors.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Josefin+Sans:ital,wght@0,200;0,300;1,200&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="data/css/base.css">
   <link rel="stylesheet" href="data/css/header.css">
   <link rel="stylesheet" href="data/css/hero.css">
+  <link rel="stylesheet" href="data/css/promo.css">
+  <link rel="stylesheet" href="data/css/brands.css">
   <link rel="stylesheet" href="data/css/catalog.css">
   <link rel="stylesheet" href="data/css/story.css">
   <link rel="stylesheet" href="data/css/reviews.css">
   <link rel="stylesheet" href="data/css/expert.css">
   <link rel="stylesheet" href="data/css/footer.css">
+  <link rel="stylesheet" href="data/css/motion.css">
 </head>
 <body>
 
@@ -40,15 +47,15 @@
 
         <ul class="avalon-header-utils" aria-label="Account utilities">
           <li>
-            <a href="/account" class="avalon-header-util">
+            <a href="/account" class="avalon-header-util" id="avalonHeaderAccountLink">
               <span class="avalon-header-util__icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </span>
-              <span class="avalon-header-util__label">Account</span>
+              <span class="avalon-header-util__label">Login</span>
             </a>
           </li>
           <li>
-            <a href="/wishlist" class="avalon-header-util">
+            <a href="/wishlist" class="avalon-header-util" id="avalonHeaderWishlistLink">
               <span class="avalon-header-util__icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               </span>
@@ -56,9 +63,10 @@
             </a>
           </li>
           <li>
-            <a href="/cart" class="avalon-header-util">
+            <a href="/cart" class="avalon-header-util avalon-header-util--cart" id="avalonHeaderCartLink" aria-label="Shopping cart">
               <span class="avalon-header-util__icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span class="avalon-header-util__badge" id="avalonHeaderCartCount" hidden>0</span>
               </span>
               <span class="avalon-header-util__label">Cart</span>
             </a>
@@ -213,16 +221,58 @@
             <a href="/shop-by-room" class="avalon-mega-nav__trigger" aria-expanded="false" aria-controls="avalon-mega-shop-by-room">Shop by Room</a>
             <div class="avalon-mega-panel" id="avalon-mega-shop-by-room" hidden>
               <div class="avalon-mega-panel__inner avalon-mega-panel__inner--shop-by-room">
-                <div class="avalon-mega-col">
-                  <h3 class="avalon-mega-col__head">Interior</h3>
-                  <a href="/shop-by-room/bathroom">Bathroom</a>
-                  <a href="/shop-by-room/bedroom">Bedroom</a>
-                  <a href="/shop-by-room/dining-room">Dining Room</a>
-                  <a href="/shop-by-room/kitchen">Kitchen</a>
-                  <a href="/shop-by-room/living-room">Living Room</a>
-                  <a href="/shop-by-room/office-den">Office/Den</a>
-                  <a href="/shop-by-room/entry-foyer">Entry/Foyer</a>
-                  <a href="/shop-by-room/outdoor-patio">Outdoor/Patio</a>
+                <div class="avalon-mega-room-section">
+                  <h3 class="avalon-mega-room-section__head">Interior</h3>
+                  <div class="avalon-mega-room-grid">
+                    <a class="avalon-mega-room-card" href="/shop-by-room/bathroom">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/bathroom.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Bathroom</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/bedroom">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/bedroom.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Bedroom</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/dining-room">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/dining-room.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Dining Room</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/kitchen">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/kitchen.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Kitchen</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/living-room">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/living-room.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Living Room</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/office-den">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/office-den.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Office / Den</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/entry-foyer">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/entry-foyer.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Entry / Foyer</span>
+                    </a>
+                    <a class="avalon-mega-room-card" href="/shop-by-room/outdoor-patio">
+                      <span class="avalon-mega-room-card__thumb">
+                        <img src="data/images/rooms/outdoor-patio.jpg" alt="" width="96" height="72" loading="lazy">
+                      </span>
+                      <span class="avalon-mega-room-card__label">Outdoor / Patio</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -279,13 +329,13 @@
                 <span class="avalon-hero-primary-headline-line" id="avalonHeroHeadline3">Sculpture</span>
               </div>
               <p class="avalon-hero-primary-copy" id="avalonHeroCopy">Explore curated chandeliers, pendants, and architectural fixtures from the makers and designers trusted by interior professionals worldwide.</p>
-              <a class="avalon-hero-primary-cta" id="avalonHeroCta" href="/catalog/lighting">Shop the Collection</a>
+              <a class="avalon-hero-primary-cta" id="avalonHeroCta" href="/catalog/lighting">Explore the Collection</a>
             </div>
           </div>
           <div class="avalon-hero-stack">
             <a class="avalon-hero-secondary-link" id="avalonHeroTile1Link" href="/catalog/lighting/ceiling-lights/chandeliers">
               <div class="avalon-hero-secondary">
-                <img id="avalonHeroTile1Img" src="data/images/collections/chandelier.jpg" alt="Crystal chandelier in a formal dining room">
+                <img id="avalonHeroTile1Img" src="data/images/collections/chandelier.jpg" alt="Crystal chandelier in a formal dining room" loading="lazy">
                 <div class="avalon-hero-secondary-overlay">
                   <h2 class="avalon-hero-secondary-heading" id="avalonHeroTile1Heading">Chandeliers</h2>
                   <p class="avalon-hero-secondary-tag" id="avalonHeroTile1Tag">Shop statement pieces</p>
@@ -295,7 +345,7 @@
             </a>
             <a class="avalon-hero-secondary-link" id="avalonHeroTile2Link" href="/catalog/lighting/ceiling-lights/pendants">
               <div class="avalon-hero-secondary">
-                <img id="avalonHeroTile2Img" src="data/images/collections/pendants.jpg" alt="Modern pendant lights over a kitchen island">
+                <img id="avalonHeroTile2Img" src="data/images/collections/pendants.jpg" alt="Modern pendant lights over a kitchen island" loading="lazy">
                 <div class="avalon-hero-secondary-overlay">
                   <h2 class="avalon-hero-secondary-heading" id="avalonHeroTile2Heading">Pendants</h2>
                   <p class="avalon-hero-secondary-tag" id="avalonHeroTile2Tag">Shop sculpted light</p>
@@ -308,8 +358,54 @@
       </div>
     </section>
 
+    <section class="avalon-trust" id="avalonTrustStrip" aria-label="Service promises">
+      <div class="avalon-trust__inner">
+        <ul class="avalon-trust__list">
+          <li class="avalon-trust__item">
+            <span class="avalon-trust__label" id="avalonTrust1Label">White-Glove Delivery</span>
+            <span class="avalon-trust__detail" id="avalonTrust1Detail">Insured freight and careful handling on every order</span>
+          </li>
+          <li class="avalon-trust__item">
+            <span class="avalon-trust__label" id="avalonTrust2Label">Design Consultation</span>
+            <span class="avalon-trust__detail" id="avalonTrust2Detail">Complimentary guidance from lighting specialists</span>
+          </li>
+          <li class="avalon-trust__item">
+            <span class="avalon-trust__label" id="avalonTrust3Label">Authorized Brands</span>
+            <span class="avalon-trust__detail" id="avalonTrust3Detail">Curated makers trusted by interior professionals</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="avalon-trade" id="avalonTradeBand" aria-label="Trade program">
+      <div class="avalon-trade__inner">
+        <p class="avalon-trade__copy" id="avalonTradeCopy">Interior designers and trade professionals — enjoy exclusive pricing, project support, and white-glove service.</p>
+        <a class="avalon-trade__cta" id="avalonTradeCta" href="/trade">Explore Trade Benefits</a>
+      </div>
+    </section>
+
     <section class="avalon-catalog" id="avalonSection2" aria-label="Featured collections">
       <div class="avalon-content-column">
+        <div class="avalon-brands" id="avalonBrandsStrip">
+          <div class="avalon-brands__inner">
+            <p class="avalon-brands__eyebrow" id="avalonBrandsEyebrow">Featuring Leading Makers</p>
+            <div class="avalon-brands__carousel" aria-label="Featured brand partners">
+              <div class="avalon-brands__viewport">
+                <div class="avalon-brands__marquee" id="avalonBrandsMarquee">
+                  <div class="avalon-brands__marquee-group" id="avalonBrandsMarqueeGroup">
+                    <a class="avalon-brands__link" id="avalonBrand1Link" href="/brands/visual-comfort-co-signature-collection">Visual Comfort &amp; Co.</a>
+                    <a class="avalon-brands__link" id="avalonBrand2Link" href="/brands/hubbardton-forge">Hubbardton Forge</a>
+                    <a class="avalon-brands__link" id="avalonBrand3Link" href="/brands/hinkley">Hinkley</a>
+                    <a class="avalon-brands__link" id="avalonBrand4Link" href="/brands/hammerton">Hammerton</a>
+                    <a class="avalon-brands__link" id="avalonBrand5Link" href="/brands/fine-art-handcrafted-lighting">Fine Art Handcrafted</a>
+                    <a class="avalon-brands__link" id="avalonBrand6Link" href="/brands/wac-us">WAC US</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="avalon-catalog-intro">
           <div class="avalon-deco-rule avalon-deco-rule--left" aria-hidden="true"><span id="avalonS2RuleLabel">Featured Collections</span></div>
           <h2 class="avalon-catalog-heading" id="avalonS2Heading">Signature Pieces</h2>
@@ -319,53 +415,73 @@
         <div class="avalon-s2-grid">
           <a class="avalon-s2-card avalon-s2-card--feature" id="avalonS2Tile1Link" href="/catalog/lighting/ceiling-lights/chandeliers">
             <div class="avalon-s2-card__frame">
-              <img id="avalonS2Tile1Img" src="data/images/collections/Art+Deco+Chandeliers+-+Cafe+Americain,+Amsterdam.webp" alt="Art Deco chandeliers at Cafe Americain, Amsterdam">
+              <img id="avalonS2Tile1Img" src="data/images/collections/Art+Deco+Chandeliers+-+Cafe+Americain,+Amsterdam.webp" alt="Art Deco chandeliers at Cafe Americain, Amsterdam" loading="lazy">
               <span class="avalon-s2-card__index" aria-hidden="true">01</span>
             </div>
             <div class="avalon-s2-card__meta">
               <h3 class="avalon-s2-card__title" id="avalonS2Tile1Label">Art Deco Chandeliers</h3>
-              <p class="avalon-s2-card__detail">Cafe Americain · Amsterdam</p>
+              <p class="avalon-s2-card__detail" id="avalonS2Tile1Detail">Cafe Americain · Amsterdam</p>
               <span class="avalon-s2-card__cta">Explore Collection</span>
             </div>
           </a>
 
           <a class="avalon-s2-card" id="avalonS2Tile2Link" href="/catalog/lighting/ceiling-lights/chandeliers">
             <div class="avalon-s2-card__frame">
-              <img id="avalonS2Tile2Img" src="data/images/collections/Art+Deco+Light+Fixture+-+Disney.webp" alt="Art Deco light fixture inspired by classic Hollywood design">
+              <img id="avalonS2Tile2Img" src="data/images/collections/Art+Deco+Light+Fixture+-+Disney.webp" alt="Art Deco light fixture inspired by classic Hollywood design" loading="lazy">
               <span class="avalon-s2-card__index" aria-hidden="true">02</span>
             </div>
             <div class="avalon-s2-card__meta">
               <h3 class="avalon-s2-card__title" id="avalonS2Tile2Label">Architectural Classics</h3>
-              <p class="avalon-s2-card__detail">Hollywood Regency · Statement forms</p>
+              <p class="avalon-s2-card__detail" id="avalonS2Tile2Detail">Hollywood Regency · Statement forms</p>
               <span class="avalon-s2-card__cta">Explore Collection</span>
             </div>
           </a>
 
           <a class="avalon-s2-card" id="avalonS2Tile3Link" href="/catalog/lighting/ceiling-lights/pendants">
             <div class="avalon-s2-card__frame">
-              <img id="avalonS2Tile3Img" src="data/images/collections/pendants.jpg" alt="Sculpted pendant lights over a kitchen island">
+              <img id="avalonS2Tile3Img" src="data/images/collections/n850a-lifestyle-300x300.jpg" alt="Designer pendant in a refined kitchen setting" loading="lazy">
               <span class="avalon-s2-card__index" aria-hidden="true">03</span>
             </div>
             <div class="avalon-s2-card__meta">
               <h3 class="avalon-s2-card__title" id="avalonS2Tile3Label">Designer Pendants</h3>
-              <p class="avalon-s2-card__detail">Sculpted light · Island &amp; dining</p>
+              <p class="avalon-s2-card__detail" id="avalonS2Tile3Detail">Sculpted light · Island &amp; dining</p>
               <span class="avalon-s2-card__cta">Explore Collection</span>
             </div>
           </a>
 
           <a class="avalon-s2-card avalon-s2-card--wide" id="avalonS2Tile4Link" href="/catalog/lighting/ceiling-lights/chandeliers">
             <div class="avalon-s2-card__frame">
-              <img id="avalonS2Tile4Img" src="data/images/collections/chandelier.jpg" alt="Crystal chandelier in a formal dining room">
+              <img id="avalonS2Tile4Img" src="data/images/hero/gettyimages-802161384-612x612.jpg" alt="Warm dining room with designer chandelier" loading="lazy">
               <span class="avalon-s2-card__index" aria-hidden="true">04</span>
             </div>
             <div class="avalon-s2-card__meta avalon-s2-card__meta--inline">
               <div>
                 <h3 class="avalon-s2-card__title" id="avalonS2Tile4Label">Statement Chandeliers</h3>
-                <p class="avalon-s2-card__detail">Formal dining · Grand foyer · Hospitality</p>
+                <p class="avalon-s2-card__detail" id="avalonS2Tile4Detail">Formal dining · Grand foyer · Hospitality</p>
               </div>
               <span class="avalon-s2-card__cta">Explore Collection</span>
             </div>
           </a>
+        </div>
+
+        <div class="avalon-s2-gallery" id="avalonS2Gallery">
+          <div class="avalon-s2-gallery__preview">
+            <figure class="avalon-s2-gallery__frame avalon-s2-gallery__frame--1">
+              <img id="avalonS2GalleryImg1" src="data/images/hero/48692_lou05qai8cpvyy8qzqim52wa0w8htzw4_97366dcd-5056-a36a-0bb3c63870b11723.jpg" alt="Refined living space with layered designer lighting" loading="lazy">
+            </figure>
+            <figure class="avalon-s2-gallery__frame avalon-s2-gallery__frame--2">
+              <img id="avalonS2GalleryImg2" src="data/images/catalog/exterior.jpg" alt="Architectural exterior with statement outdoor lighting" loading="lazy">
+            </figure>
+            <figure class="avalon-s2-gallery__frame avalon-s2-gallery__frame--3">
+              <img id="avalonS2GalleryImg3" src="data/images/catalog/fans.jpg" alt="Designer ceiling fan in a curated residential interior" loading="lazy">
+            </figure>
+          </div>
+          <div class="avalon-s2-gallery__content">
+            <p class="avalon-s2-gallery__eyebrow" id="avalonS2GalleryEyebrow">Project Gallery</p>
+            <h3 class="avalon-s2-gallery__heading" id="avalonS2GalleryHeading">Spaces Brought to Light</h3>
+            <p class="avalon-s2-gallery__copy" id="avalonS2GalleryCopy">Completed residential and hospitality installations — every fixture chosen with architectural intention.</p>
+            <a class="avalon-s2-gallery__cta" id="avalonS2GalleryCta" href="/gallery">View the Gallery</a>
+          </div>
         </div>
       </div>
     </section>
@@ -402,7 +518,7 @@
 
         <div class="avalon-reviews" id="avalonReviews" aria-label="Google reviews">
           <div class="avalon-reviews__intro">
-            <p class="avalon-reviews__eyebrow" id="avalonReviewsEyebrow">Google Reviews</p>
+            <p class="avalon-reviews__eyebrow" id="avalonReviewsEyebrow">Client Voices</p>
             <h2 class="avalon-reviews__heading" id="avalonReviewsHeading">What Our Customers Say</h2>
             <div class="avalon-reviews__aggregate">
               <div class="avalon-reviews__stars" aria-hidden="true">★★★★★</div>
@@ -473,18 +589,18 @@
             <h2 class="avalon-expert__headline" id="avalonExpertHeadline">Get Personalized Advice from a Lighting Expert</h2>
             <div class="avalon-expert__gold-line" aria-hidden="true"></div>
             <p class="avalon-expert__copy" id="avalonExpertCopy">Our specialists help you choose scale, finish, and placement for every room — from statement chandeliers to layered accent light. Complimentary for residential projects and trade partners.</p>
-            <a class="avalon-expert__cta" id="avalonExpertCta" href="/contact">Book a Consultation</a>
+            <a class="avalon-expert__cta" id="avalonExpertCta" href="/contact">Request a Consultation</a>
           </div>
 
           <div class="avalon-expert__gallery" aria-label="Consultation and fixture inspiration">
             <figure class="avalon-expert__figure">
-              <img id="avalonExpertImg1" src="data/images/hero/primary.jpg" alt="Lighting expert reviewing fixture selections with a client">
+              <img id="avalonExpertImg1" src="data/images/hero/primary.jpg" alt="Lighting specialist reviewing fixture selections with a client" loading="lazy">
             </figure>
             <figure class="avalon-expert__figure">
-              <img id="avalonExpertImg2" src="data/images/catalog/hall-lantern.jpg" alt="Elegant hall lantern fixture in a curated showroom display">
+              <img id="avalonExpertImg2" src="data/images/catalog/bathroom.jpg" alt="Vanity lighting in a refined residential bath" loading="lazy">
             </figure>
             <figure class="avalon-expert__figure">
-              <img id="avalonExpertImg3" src="data/images/hero/gettyimages-802161384-612x612.jpg" alt="Warm interior with designer pendant lighting over a dining table">
+              <img id="avalonExpertImg3" src="data/images/catalog/hall-lantern.jpg" alt="Statement hall lantern in an elegant foyer setting" loading="lazy">
             </figure>
           </div>
         </div>
@@ -494,13 +610,67 @@
 
   <footer class="avalon-footer" id="avalonSiteFooter" aria-label="Site footer">
     <div class="avalon-footer__rule-top" aria-hidden="true"></div>
-    <div class="avalon-footer__inner">
-      <div class="avalon-footer__brand">
-        <a href="/" class="avalon-footer__logo" id="avalonFooterLogoLink">
-          <img id="avalonFooterLogo" src="data/images/avalon-logo.png" alt="Avalon" width="160" height="48">
-        </a>
-        <p id="avalonFooterTagline">Art Deco inspired luxury lighting for residential and hospitality projects.</p>
+
+    <div class="avalon-footer__masthead">
+      <a href="/" class="avalon-footer__logo" id="avalonFooterLogoLink">
+        <img id="avalonFooterLogo" src="data/images/avalon-logo.png" alt="Avalon" width="200" height="64">
+      </a>
+      <p class="avalon-footer__company" id="avalonFooterCompanyHead">Avalon Lighting</p>
+      <p class="avalon-footer__tagline" id="avalonFooterTagline">Where every room is composed in light.</p>
+      <div class="avalon-footer__social" aria-label="Social media">
+        <p class="avalon-footer__social-label" id="avalonFooterSocialLabel">Follow Us</p>
+        <ul class="avalon-footer__social-list">
+          <li class="avalon-footer__social-item" id="avalonFooterSocialYoutubeWrap">
+            <a class="avalon-footer__social-link" id="avalonFooterSocialYoutube" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <img src="data/images/icons/social/youtube.svg" alt="" width="20" height="20">
+            </a>
+          </li>
+          <li class="avalon-footer__social-item" id="avalonFooterSocialLinkedinWrap">
+            <a class="avalon-footer__social-link" id="avalonFooterSocialLinkedin" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <img src="data/images/icons/social/linkedin.svg" alt="" width="20" height="20">
+            </a>
+          </li>
+          <li class="avalon-footer__social-item" id="avalonFooterSocialInstagramWrap">
+            <a class="avalon-footer__social-link" id="avalonFooterSocialInstagram" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <img src="data/images/icons/social/instagram.svg" alt="" width="20" height="20">
+            </a>
+          </li>
+          <li class="avalon-footer__social-item" id="avalonFooterSocialFacebookWrap">
+            <a class="avalon-footer__social-link" id="avalonFooterSocialFacebook" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <img src="data/images/icons/social/facebook.svg" alt="" width="20" height="20">
+            </a>
+          </li>
+          <li class="avalon-footer__social-item" id="avalonFooterSocialXWrap">
+            <a class="avalon-footer__social-link" id="avalonFooterSocialX" href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <img src="data/images/icons/social/x.svg" alt="" width="20" height="20">
+            </a>
+          </li>
+          <li class="avalon-footer__social-item" id="avalonFooterSocialTiktokWrap">
+            <a class="avalon-footer__social-link" id="avalonFooterSocialTiktok" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+              <img src="data/images/icons/social/tiktok.svg" alt="" width="20" height="20">
+            </a>
+          </li>
+        </ul>
       </div>
+    </div>
+
+    <div class="avalon-footer__divider" aria-hidden="true"></div>
+
+    <div class="avalon-footer__newsletter">
+      <div class="avalon-footer__newsletter-inner">
+        <h3 class="avalon-footer__newsletter-heading" id="avalonNewsletterHeading">Design Notes</h3>
+        <p class="avalon-footer__newsletter-copy" id="avalonNewsletterCopy">New arrivals, project inspiration, and trade announcements — delivered with restraint.</p>
+        <form class="avalon-footer__newsletter-form" action="#" method="post" aria-label="Newsletter signup">
+          <label class="avalon-footer__newsletter-label" for="avalonNewsletterInput">Email address</label>
+          <input type="email" class="avalon-footer__newsletter-input" id="avalonNewsletterInput" name="email" autocomplete="email" placeholder="Email address">
+          <button type="submit" class="avalon-footer__newsletter-btn" id="avalonNewsletterBtn">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="avalon-footer__divider" aria-hidden="true"></div>
+
+    <div class="avalon-footer__nav">
       <div class="avalon-footer__col">
         <h3 class="avalon-footer__heading" id="avalonFooterCol1Head">Shop</h3>
         <ul class="avalon-footer__links">
@@ -519,12 +689,49 @@
           <li><a id="avalonFooterCol2Link4" href="/privacy">Privacy</a></li>
         </ul>
       </div>
+      <div class="avalon-footer__col avalon-footer__col--contact">
+        <h3 class="avalon-footer__heading" id="avalonFooterCol3Head">Visit Us</h3>
+        <div class="avalon-footer__contact">
+          <div class="avalon-footer__contact-block">
+            <p class="avalon-footer__contact-label">Location</p>
+            <p class="avalon-footer__contact-text" id="avalonFooterLocation">Avalon Lighting Showroom
+123 Madison Avenue
+New York, NY 10016</p>
+          </div>
+          <div class="avalon-footer__contact-block">
+            <p class="avalon-footer__contact-label">Store Hours</p>
+            <p class="avalon-footer__contact-text" id="avalonFooterHours">Mon–Fri 10am–6pm
+Sat 11am–5pm
+Sun by appointment</p>
+          </div>
+          <div class="avalon-footer__contact-row">
+            <div class="avalon-footer__contact-block">
+              <p class="avalon-footer__contact-label">Phone</p>
+              <a class="avalon-footer__contact-link" id="avalonFooterPhone" href="tel:+12125550198">(212) 555-0198</a>
+            </div>
+            <div class="avalon-footer__contact-block">
+              <p class="avalon-footer__contact-label">Email</p>
+              <a class="avalon-footer__contact-link" id="avalonFooterEmail" href="mailto:hello@avalonlighting.com">hello@avalonlighting.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div class="avalon-footer__legal-wrap">
-      <p class="avalon-footer__legal" id="avalonFooterCopyright">© 2026 Avalon Lighting. All rights reserved.</p>
+      <div class="avalon-footer__legal-inner">
+        <p class="avalon-footer__legal" id="avalonFooterCopyright">© 2026 Avalon Lighting. All rights reserved.</p>
+        <nav class="avalon-footer__legal-nav" aria-label="Legal policies">
+          <a class="avalon-footer__legal-link" id="avalonFooterLegal1" href="/privacy">Privacy Policy</a>
+          <a class="avalon-footer__legal-link" id="avalonFooterLegal2" href="/terms">Terms &amp; Conditions</a>
+          <a class="avalon-footer__legal-link" id="avalonFooterLegal3" href="/accessibility">Accessibility</a>
+        </nav>
+      </div>
     </div>
   </footer>
 
   <script src="data/js/header.js"></script>
+  <script src="data/js/brands.js"></script>
+  <script src="data/js/motion.js"></script>
 </body>
 </html>

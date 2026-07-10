@@ -1,0 +1,154 @@
+/* Avalon — Featured brands strip (infinite marquee carousel) */
+
+.avalon-brands {
+    padding: 28px 0 8px;
+    background: var(--avalon-bg);
+}
+
+.avalon-brands__inner {
+    max-width: var(--avalon-content-w);
+    margin: 0 auto;
+    padding: 0 28px;
+    text-align: center;
+}
+
+.avalon-brands__eyebrow {
+    margin: 0 0 18px;
+    font-family: var(--font-headline);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--avalon-gold);
+}
+
+.avalon-brands__carousel {
+    position: relative;
+    width: 100%;
+}
+
+.avalon-brands__viewport {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        #000 6%,
+        #000 94%,
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        #000 6%,
+        #000 94%,
+        transparent 100%
+    );
+}
+
+.avalon-brands__marquee {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+}
+
+.avalon-brands__marquee.is-animated {
+    animation: avalonBrandsMarquee var(--avalon-brands-duration, 48s) linear infinite;
+}
+
+.avalon-brands__marquee.is-animated:hover {
+    animation-play-state: paused;
+}
+
+.avalon-brands__marquee-group {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.avalon-brands__link {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 8px 20px;
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--avalon-text-muted);
+    transition: color 0.2s;
+}
+
+.avalon-brands__link:not(.is-hidden)::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 14px;
+    margin-left: 20px;
+    background: rgba(201, 169, 110, 0.35);
+}
+
+.avalon-brands__link:hover {
+    color: var(--avalon-gold-light);
+}
+
+.avalon-brands__link.is-hidden {
+    display: none;
+}
+
+@keyframes avalonBrandsMarquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@media (max-width: 600px) {
+    .avalon-brands__link {
+        padding: 8px 14px;
+        font-size: 9px;
+        letter-spacing: 0.14em;
+    }
+
+    .avalon-brands__viewport {
+        -webkit-mask-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            #000 4%,
+            #000 96%,
+            transparent 100%
+        );
+        mask-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            #000 4%,
+            #000 96%,
+            transparent 100%
+        );
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .avalon-brands__marquee.is-animated {
+        animation: none;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+
+    .avalon-brands__marquee-group--clone {
+        display: none;
+    }
+
+    .avalon-brands__viewport {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+        mask-image: none;
+        scrollbar-width: none;
+    }
+
+    .avalon-brands__viewport::-webkit-scrollbar {
+        display: none;
+    }
+}

@@ -1,0 +1,103 @@
+/* Avalon — Service trust strip + trade program band */
+
+.avalon-trust {
+    background: var(--avalon-surface);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.15);
+}
+
+.avalon-trust__inner {
+    max-width: var(--avalon-content-w);
+    margin: 0 auto;
+    padding: 22px 28px;
+}
+
+.avalon-trust__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.avalon-trust__item {
+    text-align: center;
+    padding: 0 12px;
+}
+
+.avalon-trust__label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--avalon-gold);
+}
+
+.avalon-trust__detail {
+    display: block;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--avalon-text-muted);
+}
+
+.avalon-trade {
+    background: linear-gradient(90deg, rgba(201, 169, 110, 0.08) 0%, rgba(201, 169, 110, 0.14) 50%, rgba(201, 169, 110, 0.08) 100%);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.18);
+}
+
+.avalon-trade__inner {
+    max-width: var(--avalon-content-w);
+    margin: 0 auto;
+    padding: 18px 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px 28px;
+    text-align: center;
+}
+
+.avalon-trade__copy {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(15px, 1.5vw, 18px);
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.03em;
+    color: var(--avalon-text);
+}
+
+.avalon-trade__cta {
+    display: inline-block;
+    padding: 10px 22px;
+    font-family: var(--font-headline);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #12100e;
+    background: var(--avalon-gold);
+    border: 1px solid var(--avalon-gold-light);
+    white-space: nowrap;
+    transition: background 0.25s, color 0.25s;
+}
+
+.avalon-trade__cta:hover {
+    background: transparent;
+    color: var(--avalon-gold-light);
+}
+
+@media (max-width: 768px) {
+    .avalon-trust__list {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .avalon-trade__inner {
+        flex-direction: column;
+    }
+}

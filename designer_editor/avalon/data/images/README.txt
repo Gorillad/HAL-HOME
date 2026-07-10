@@ -26,6 +26,10 @@ catalog/
   fans.jpg
   hall-lantern.jpg
 
+icons/social/
+  youtube.svg, linkedin.svg, instagram.svg, facebook.svg, x.svg, tiktok.svg
+  Footer social links (gold icon buttons)
+
 Uploaded images in the editor will eventually replace these defaults and
 export as /data/images/... paths in the handoff package.
 

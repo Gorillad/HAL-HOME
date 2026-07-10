@@ -1,0 +1,208 @@
+/* Avalon Motion Pack — subtle editorial micro-interactions */
+
+:root {
+    --avalon-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --avalon-motion-duration: 0.6s;
+}
+
+/* ── 1. Hero headline entrance ───────────────────────────────── */
+
+html.avalon-motion-enabled:not(.avalon-hero-entered) .avalon-hero-primary-eyebrow,
+html.avalon-motion-enabled:not(.avalon-hero-entered) .avalon-hero-primary-rule,
+html.avalon-motion-enabled:not(.avalon-hero-entered) .avalon-hero-primary-headline-line,
+html.avalon-motion-enabled:not(.avalon-hero-entered) .avalon-hero-primary-copy,
+html.avalon-motion-enabled:not(.avalon-hero-entered) .avalon-hero-primary-cta {
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-eyebrow,
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-rule,
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-headline-line,
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-copy,
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-cta {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 0.55s var(--avalon-motion-ease),
+        transform 0.55s var(--avalon-motion-ease);
+}
+
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-eyebrow { transition-delay: 0ms; }
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-rule { transition-delay: 60ms; }
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-headline-line:nth-child(1) { transition-delay: 120ms; }
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-headline-line:nth-child(2) { transition-delay: 180ms; }
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-headline-line:nth-child(3) { transition-delay: 240ms; }
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-copy { transition-delay: 320ms; }
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-cta { transition-delay: 400ms; }
+
+html.avalon-motion-enabled:not(.avalon-hero-entered) .avalon-hero-primary-rule.avalon-motion-rule {
+    transform: scaleX(0) translateY(12px);
+    transform-origin: left center;
+}
+
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-rule.avalon-motion-rule {
+    transform: scaleX(1) translateY(0);
+}
+
+/* ── 2. Ken Burns — hero primary image ───────────────────────── */
+
+@keyframes avalonKenBurns {
+    from { transform: scale(1); }
+    to { transform: scale(1.04); }
+}
+
+.avalon-hero-primary.is-ken-burns > img {
+    animation: avalonKenBurns 22s ease-in-out infinite alternate;
+    will-change: transform;
+    transition: none;
+}
+
+.avalon-hero-primary.is-ken-burns > img.is-paused {
+    animation-play-state: paused;
+}
+
+/* ── 3. Scroll reveal ────────────────────────────────────────── */
+
+html.avalon-motion-enabled .avalon-motion-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity var(--avalon-motion-duration) var(--avalon-motion-ease),
+        transform var(--avalon-motion-duration) var(--avalon-motion-ease);
+    transition-delay: var(--motion-delay, 0ms);
+}
+
+html.avalon-motion-enabled .avalon-motion-reveal.is-motion-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── 4. Gold rule draw-in ────────────────────────────────────── */
+
+html.avalon-motion-enabled .avalon-motion-rule::before,
+html.avalon-motion-enabled .avalon-motion-rule::after {
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.9s var(--avalon-motion-ease);
+}
+
+html.avalon-motion-enabled .avalon-motion-rule.is-motion-visible::before,
+html.avalon-motion-enabled .avalon-motion-rule.is-motion-visible::after {
+    transform: scaleX(1);
+}
+
+html.avalon-motion-enabled .avalon-hero-primary-rule.avalon-motion-rule {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.7s var(--avalon-motion-ease);
+}
+
+html.avalon-motion-enabled .avalon-hero-primary-rule.avalon-motion-rule.is-motion-visible,
+html.avalon-motion-enabled.avalon-hero-entered .avalon-hero-primary-rule.avalon-motion-rule {
+    transform: scaleX(1);
+}
+
+/* ── 5. Header glass on scroll ───────────────────────────────── */
+
+.avalon-site-header {
+    transition:
+        background 0.35s ease,
+        border-color 0.35s ease,
+        box-shadow 0.35s ease,
+        backdrop-filter 0.35s ease;
+}
+
+.avalon-site-header.is-scrolled {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(18, 16, 14, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.22);
+}
+
+.avalon-site-header.is-scrolled .avalon-utility-bar {
+    border-bottom-color: rgba(201, 169, 110, 0.12);
+}
+
+.avalon-logo img {
+    transition: height 0.35s var(--avalon-motion-ease), max-height 0.35s var(--avalon-motion-ease);
+}
+
+.avalon-site-header.is-scrolled .avalon-logo img {
+    height: calc(var(--avalon-header-logo-h, 88px) * 0.82);
+    max-height: calc(var(--avalon-header-logo-h, 88px) * 0.82);
+}
+
+.avalon-header-toolbar__inner {
+    transition: padding 0.35s var(--avalon-motion-ease);
+}
+
+.avalon-site-header.is-scrolled .avalon-header-toolbar__inner {
+    padding-top: 12px;
+    padding-bottom: 10px;
+}
+
+/* ── 6. CTA gold shimmer ─────────────────────────────────────── */
+
+.avalon-motion-shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.avalon-motion-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+        105deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.28) 48%,
+        rgba(255, 255, 255, 0.38) 50%,
+        rgba(255, 255, 255, 0.28) 52%,
+        transparent 62%
+    );
+    transform: translateX(-130%);
+    pointer-events: none;
+}
+
+.avalon-motion-shimmer:hover::before {
+    transform: translateX(130%);
+    transition: transform 0.65s ease;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .avalon-hero-primary.is-ken-burns > img {
+        animation: none;
+    }
+
+    html.avalon-motion-enabled .avalon-motion-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    html.avalon-motion-enabled .avalon-motion-rule::before,
+    html.avalon-motion-enabled .avalon-motion-rule::after,
+    html.avalon-motion-enabled .avalon-hero-primary-rule.avalon-motion-rule {
+        transform: none;
+        transition: none;
+    }
+
+    .avalon-motion-shimmer::before {
+        display: none;
+    }
+
+    .avalon-site-header,
+    .avalon-logo img,
+    .avalon-header-toolbar__inner {
+        transition: none;
+    }
+}

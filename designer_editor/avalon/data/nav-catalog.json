@@ -174,15 +174,16 @@
       "columns": [
         {
           "head": "Interior",
+          "layout": "room-grid",
           "links": [
-            { "label": "Bathroom", "href": "/shop-by-room/bathroom" },
-            { "label": "Bedroom", "href": "/shop-by-room/bedroom" },
-            { "label": "Dining Room", "href": "/shop-by-room/dining-room" },
-            { "label": "Kitchen", "href": "/shop-by-room/kitchen" },
-            { "label": "Living Room", "href": "/shop-by-room/living-room" },
-            { "label": "Office/Den", "href": "/shop-by-room/office-den" },
-            { "label": "Entry/Foyer", "href": "/shop-by-room/entry-foyer" },
-            { "label": "Outdoor/Patio", "href": "/shop-by-room/outdoor-patio" }
+            { "label": "Bathroom", "href": "/shop-by-room/bathroom", "image": "data/images/rooms/bathroom.jpg" },
+            { "label": "Bedroom", "href": "/shop-by-room/bedroom", "image": "data/images/rooms/bedroom.jpg" },
+            { "label": "Dining Room", "href": "/shop-by-room/dining-room", "image": "data/images/rooms/dining-room.jpg" },
+            { "label": "Kitchen", "href": "/shop-by-room/kitchen", "image": "data/images/rooms/kitchen.jpg" },
+            { "label": "Living Room", "href": "/shop-by-room/living-room", "image": "data/images/rooms/living-room.jpg" },
+            { "label": "Office/Den", "href": "/shop-by-room/office-den", "image": "data/images/rooms/office-den.jpg" },
+            { "label": "Entry/Foyer", "href": "/shop-by-room/entry-foyer", "image": "data/images/rooms/entry-foyer.jpg" },
+            { "label": "Outdoor/Patio", "href": "/shop-by-room/outdoor-patio", "image": "data/images/rooms/outdoor-patio.jpg" }
           ]
         }
       ]
