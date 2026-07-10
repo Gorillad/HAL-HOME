@@ -1,14 +1,14 @@
-/* SCERA editorial hero — primary feature + dual collection stack */
+/* Avalon editorial hero — primary feature + dual collection stack */
 
-.scera-hero {
-    padding: var(--scera-hero-gap) 0 0;
-    background: var(--scera-bg);
+.avalon-hero {
+    padding: var(--avalon-hero-gap) 0 0;
+    background: var(--avalon-bg);
 }
 
-.scera-hero-layout {
+.avalon-hero-layout {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
-    gap: var(--scera-hero-gap);
+    gap: var(--avalon-hero-gap);
     width: 100%;
     min-height: 540px;
     height: clamp(460px, 42vw, 560px);
@@ -16,30 +16,30 @@
     box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.08);
 }
 
-.scera-hero-stack {
+.avalon-hero-stack {
     display: grid;
     grid-template-rows: 1fr 1fr;
-    gap: var(--scera-hero-gap);
+    gap: var(--avalon-hero-gap);
     min-height: 0;
 }
 
-.scera-hero-primary,
-.scera-hero-secondary {
+.avalon-hero-primary,
+.avalon-hero-secondary {
     position: relative;
     overflow: hidden;
     min-height: 0;
     background: linear-gradient(145deg, #2a2520 0%, #1a1714 55%, #0f0d0b 100%);
 }
 
-.scera-hero-primary img,
-.scera-hero-secondary img {
+.avalon-hero-primary img,
+.avalon-hero-secondary img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.scera-hero-primary::after {
+.avalon-hero-primary::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -49,7 +49,7 @@
     pointer-events: none;
 }
 
-.scera-hero-secondary::after {
+.avalon-hero-secondary::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -58,15 +58,15 @@
     transition: background 0.35s ease;
 }
 
-.scera-hero-secondary-link:hover .scera-hero-secondary img {
+.avalon-hero-secondary-link:hover .avalon-hero-secondary img {
     transform: scale(1.05);
 }
 
-.scera-hero-secondary-link:hover .scera-hero-secondary::after {
+.avalon-hero-secondary-link:hover .avalon-hero-secondary::after {
     background: linear-gradient(to top, rgba(18, 16, 14, 0.94) 0%, rgba(18, 16, 14, 0.45) 42%, transparent 74%);
 }
 
-.scera-hero-primary-overlay {
+.avalon-hero-primary-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -78,28 +78,28 @@
     pointer-events: none;
 }
 
-.scera-hero-primary-eyebrow {
+.avalon-hero-primary-eyebrow {
     margin: 0 0 16px;
     font-family: var(--font-headline);
     font-size: 10px;
     font-weight: 400;
     letter-spacing: 0.38em;
     text-transform: uppercase;
-    color: var(--scera-gold-light);
+    color: var(--avalon-gold-light);
 }
 
-.scera-hero-primary-rule {
+.avalon-hero-primary-rule {
     width: 56px;
     height: 1px;
     margin: 0 0 22px;
-    background: linear-gradient(90deg, var(--scera-gold-light), rgba(201, 169, 110, 0.15));
+    background: linear-gradient(90deg, var(--avalon-gold-light), rgba(201, 169, 110, 0.15));
 }
 
-.scera-hero-primary-headline {
+.avalon-hero-primary-headline {
     margin: 0;
 }
 
-.scera-hero-primary-headline-line {
+.avalon-hero-primary-headline-line {
     display: block;
     font-family: var(--font-headline);
     font-size: clamp(38px, 4.2vw, 56px);
@@ -111,11 +111,11 @@
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
 }
 
-.scera-hero-primary-headline-line:nth-child(2) {
-    color: var(--scera-gold-light);
+.avalon-hero-primary-headline-line:nth-child(2) {
+    color: var(--avalon-gold-light);
 }
 
-.scera-hero-primary-copy {
+.avalon-hero-primary-copy {
     margin: 22px 0 28px;
     max-width: 38ch;
     font-size: 15px;
@@ -124,10 +124,10 @@
     text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
 }
 
-.scera-hero-primary-cta {
+.avalon-hero-primary-cta {
     display: inline-block;
     padding: 14px 30px;
-    background: var(--scera-gold);
+    background: var(--avalon-gold);
     color: #12100e;
     font-family: var(--font-headline);
     font-size: 10px;
@@ -135,19 +135,19 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     text-decoration: none;
-    border: 1px solid var(--scera-gold-light);
+    border: 1px solid var(--avalon-gold-light);
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
     pointer-events: auto;
     transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-.scera-hero-primary-cta:hover {
-    background: var(--scera-gold-light);
+.avalon-hero-primary-cta:hover {
+    background: var(--avalon-gold-light);
     transform: translateY(-1px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
 }
 
-.scera-hero-secondary-link {
+.avalon-hero-secondary-link {
     display: block;
     height: 100%;
     min-height: 0;
@@ -155,11 +155,11 @@
     text-decoration: none;
 }
 
-.scera-hero-secondary-link .scera-hero-secondary {
+.avalon-hero-secondary-link .avalon-hero-secondary {
     height: 100%;
 }
 
-.scera-hero-secondary-overlay {
+.avalon-hero-secondary-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -171,7 +171,7 @@
     pointer-events: none;
 }
 
-.scera-hero-secondary-heading {
+.avalon-hero-secondary-heading {
     margin: 0;
     font-family: var(--font-headline);
     font-size: clamp(26px, 2.4vw, 36px);
@@ -183,16 +183,16 @@
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.45);
 }
 
-.scera-hero-secondary-tag {
+.avalon-hero-secondary-tag {
     margin: 10px 0 0;
     font-family: var(--font-headline);
     font-size: 10px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--scera-gold-light);
+    color: var(--avalon-gold-light);
 }
 
-.scera-hero-secondary-cta {
+.avalon-hero-secondary-cta {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -207,53 +207,53 @@
     transition: opacity 0.2s, gap 0.2s;
 }
 
-.scera-hero-secondary-cta::after {
+.avalon-hero-secondary-cta::after {
     content: '→';
     font-size: 12px;
     line-height: 1;
-    color: var(--scera-gold-light);
+    color: var(--avalon-gold-light);
     transition: transform 0.2s;
 }
 
-.scera-hero-secondary-link:hover .scera-hero-secondary-cta {
+.avalon-hero-secondary-link:hover .avalon-hero-secondary-cta {
     opacity: 1;
     gap: 12px;
 }
 
-.scera-hero-secondary-link:hover .scera-hero-secondary-cta::after {
+.avalon-hero-secondary-link:hover .avalon-hero-secondary-cta::after {
     transform: translateX(2px);
 }
 
 @media (max-width: 980px) {
-    .scera-hero-layout {
+    .avalon-hero-layout {
         grid-template-columns: 1fr;
         height: auto;
         min-height: 0;
     }
 
-    .scera-hero-primary {
+    .avalon-hero-primary {
         min-height: 420px;
     }
 
-    .scera-hero-stack {
+    .avalon-hero-stack {
         min-height: 360px;
     }
 
-    .scera-hero-primary-overlay {
+    .avalon-hero-primary-overlay {
         padding: 36px 32px;
     }
 }
 
 @media (max-width: 600px) {
-    .scera-hero-primary {
+    .avalon-hero-primary {
         min-height: 380px;
     }
 
-    .scera-hero-primary-overlay {
+    .avalon-hero-primary-overlay {
         padding: 28px 24px;
     }
 
-    .scera-hero-primary-headline-line {
+    .avalon-hero-primary-headline-line {
         letter-spacing: 0.12em;
     }
 }

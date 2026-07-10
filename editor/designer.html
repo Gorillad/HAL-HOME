@@ -140,7 +140,7 @@
             pointer-events: none;
             transition: opacity 0.4s;
         }
-        .editor-logo-preview--scera {
+        .editor-logo-preview--avalon {
             background: #12100e;
             min-height: 72px;
         }
@@ -154,6 +154,12 @@
             background: #12100e;
             min-height: 72px;
             aspect-ratio: 16 / 9;
+            height: auto;
+        }
+        .editor-logo-preview--catalog-tile {
+            background: #12100e;
+            min-height: 120px;
+            aspect-ratio: 3 / 4;
             height: auto;
         }
 
@@ -409,7 +415,7 @@
 
         /* Full Site preview iframe — height is fitted dynamically to content */
         #woolFullSiteFrame,
-        #sceraFullSiteFrame {
+        #avalonFullSiteFrame {
             display: block;
             width: 100%;
             height: 3200px; /* fallback; overridden once content height is measured */
@@ -502,9 +508,10 @@
 <body class="editor-page">
     <script>
         (function () {
-            const allowed = { scera: true, geneva: true, sundance: true, cardiff: true, woolf: true };
+            const allowed = { avalon: true, geneva: true, sundance: true, cardiff: true, woolf: true };
             let param = new URLSearchParams(window.location.search).get('design');
-            if (param === 'gallery') param = 'scera'; /* legacy Designer slug */
+            if (param === 'gallery') param = 'avalon'; /* legacy Designer slug */
+            if (param === 'scera') param = 'avalon'; /* legacy rename */
             if (param === 'curator') param = 'geneva';
             if (param === 'canvas') param = 'sundance';
             const slug = allowed[param] ? param : 'woolf';
@@ -1616,22 +1623,25 @@
 
             </div><!-- /#woolFieldPanel -->
 
-            <!-- SCERA field panel -->
-            <div class="designer-field-panel" id="sceraFieldPanel" hidden>
+            <!-- Avalon field panel -->
+            <div class="designer-field-panel" id="avalonFieldPanel" hidden>
 
-                <div class="designer-section-tabs" id="sceraSectionTabs" role="tablist" aria-label="SCERA sections">
-                    <button type="button" class="designer-section-tab is-active" role="tab" data-scera-section="header" aria-selected="true">Header</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-scera-section="section1" aria-selected="false">Section 1</button>
+                <div class="designer-section-tabs" id="avalonSectionTabs" role="tablist" aria-label="Avalon sections">
+                    <button type="button" class="designer-section-tab is-active" role="tab" data-avalon-section="header" aria-selected="true">Header</button>
+                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="section1" aria-selected="false">Section 1</button>
+                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="section2" aria-selected="false">Section 2</button>
+                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="section3" aria-selected="false">Section 3</button>
+                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="footer" aria-selected="false">Footer</button>
                 </div>
 
-                <div id="sceraPanelHeader">
+                <div id="avalonPanelHeader">
                 <details class="designer-group" open>
                     <summary class="designer-group-head">Logo</summary>
                     <div class="designer-group-body">
                         <div class="editor-field">
                             <label class="editor-field-label">Header logo</label>
                             <div class="editor-logo-widget">
-                                <div class="editor-logo-preview editor-logo-preview--scera" id="sf-logo-preview">
+                                <div class="editor-logo-preview editor-logo-preview--avalon" id="sf-logo-preview">
                                     <img id="sf-logo-thumb" src="" alt="Logo preview" hidden>
                                     <span class="editor-logo-preview-empty" id="sf-logo-thumb-empty">Preview</span>
                                 </div>
@@ -1648,12 +1658,12 @@
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="sf-logo-url">Logo link URL</label>
-                            <input type="text" id="sf-logo-url" data-scera-field="logoUrl" class="editor-field-input" placeholder="/">
+                            <input type="text" id="sf-logo-url" data-avalon-field="logoUrl" class="editor-field-input" placeholder="/">
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="sf-logo-size">Logo height</label>
                             <div class="editor-range-row">
-                                <input type="range" id="sf-logo-size" data-scera-field="logoSize" min="56" max="120" step="1" value="88">
+                                <input type="range" id="sf-logo-size" data-avalon-field="logoSize" min="56" max="120" step="1" value="88">
                                 <span class="editor-range-value" id="sf-logo-size-val">88px</span>
                             </div>
                             <div class="editor-range-scale">
@@ -1669,19 +1679,19 @@
                     <div class="designer-group-body">
                         <div class="editor-field">
                             <label class="editor-field-label" for="sf-top-bar-copy">Announcement line</label>
-                            <input type="text" id="sf-top-bar-copy" data-scera-field="topBarCopy" class="editor-field-input" placeholder="Complimentary design consultation · White-glove delivery">
+                            <input type="text" id="sf-top-bar-copy" data-avalon-field="topBarCopy" class="editor-field-input" placeholder="Complimentary design consultation · White-glove delivery">
                             <p class="editor-field-hint">Centered message in the slim strip above the logo.</p>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="sf-search-placeholder">Search placeholder</label>
-                            <input type="text" id="sf-search-placeholder" data-scera-field="searchPlaceholder" class="editor-field-input" placeholder="Find a fixture…">
+                            <input type="text" id="sf-search-placeholder" data-avalon-field="searchPlaceholder" class="editor-field-input" placeholder="Find a fixture…">
                         </div>
                     </div>
                 </details>
 
-                </div><!-- /#sceraPanelHeader -->
+                </div><!-- /#avalonPanelHeader -->
 
-                <div id="sceraPanelSection1" hidden>
+                <div id="avalonPanelSection1" hidden>
                     <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 1 — Strong static hero · Art Deco editorial layout (XO paste slot)</p>
 
                     <details class="designer-group" open>
@@ -1707,7 +1717,7 @@
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-primary-alt">Image alt text</label>
-                                <input type="text" id="sf-hero-primary-alt" data-scera-field="heroPrimaryAlt" class="editor-field-input" placeholder="Art Deco Chrysler Building facade at golden hour">
+                                <input type="text" id="sf-hero-primary-alt" data-avalon-field="heroPrimaryAlt" class="editor-field-input" placeholder="Art Deco Chrysler Building facade at golden hour">
                             </div>
                         </div>
                     </details>
@@ -1717,31 +1727,31 @@
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-eyebrow">Eyebrow</label>
-                                <input type="text" id="sf-hero-eyebrow" data-scera-field="heroEyebrow" class="editor-field-input" placeholder="Designer Lighting &amp; Fine Fixtures">
+                                <input type="text" id="sf-hero-eyebrow" data-avalon-field="heroEyebrow" class="editor-field-input" placeholder="Designer Lighting &amp; Fine Fixtures">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-headline-1">Headline line 1</label>
-                                <input type="text" id="sf-hero-headline-1" data-scera-field="heroHeadline1" class="editor-field-input" placeholder="Where Light">
+                                <input type="text" id="sf-hero-headline-1" data-avalon-field="heroHeadline1" class="editor-field-input" placeholder="Where Light">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-headline-2">Headline line 2</label>
-                                <input type="text" id="sf-hero-headline-2" data-scera-field="heroHeadline2" class="editor-field-input" placeholder="Becomes">
+                                <input type="text" id="sf-hero-headline-2" data-avalon-field="heroHeadline2" class="editor-field-input" placeholder="Becomes">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-headline-3">Headline line 3</label>
-                                <input type="text" id="sf-hero-headline-3" data-scera-field="heroHeadline3" class="editor-field-input" placeholder="Sculpture">
+                                <input type="text" id="sf-hero-headline-3" data-avalon-field="heroHeadline3" class="editor-field-input" placeholder="Sculpture">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-copy">Supporting copy</label>
-                                <textarea id="sf-hero-copy" data-scera-field="heroCopy" class="editor-field-input" rows="3" placeholder="Explore curated chandeliers, pendants, and architectural fixtures from the makers and designers trusted by interior professionals worldwide."></textarea>
+                                <textarea id="sf-hero-copy" data-avalon-field="heroCopy" class="editor-field-input" rows="3" placeholder="Explore curated chandeliers, pendants, and architectural fixtures from the makers and designers trusted by interior professionals worldwide."></textarea>
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-cta-label">Button label</label>
-                                <input type="text" id="sf-hero-cta-label" data-scera-field="heroCtaLabel" class="editor-field-input" placeholder="Shop the Collection">
+                                <input type="text" id="sf-hero-cta-label" data-avalon-field="heroCtaLabel" class="editor-field-input" placeholder="Shop the Collection">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-cta-url">Button link URL</label>
-                                <input type="text" id="sf-hero-cta-url" data-scera-field="heroCtaUrl" class="editor-field-input" placeholder="/catalog/lighting">
+                                <input type="text" id="sf-hero-cta-url" data-avalon-field="heroCtaUrl" class="editor-field-input" placeholder="/catalog/lighting">
                             </div>
                         </div>
                     </details>
@@ -1768,15 +1778,15 @@
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-tile1-heading">Heading</label>
-                                <input type="text" id="sf-hero-tile1-heading" data-scera-field="heroTile1Heading" class="editor-field-input" placeholder="Chandeliers">
+                                <input type="text" id="sf-hero-tile1-heading" data-avalon-field="heroTile1Heading" class="editor-field-input" placeholder="Chandeliers">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-tile1-tag">Tagline</label>
-                                <input type="text" id="sf-hero-tile1-tag" data-scera-field="heroTile1Tag" class="editor-field-input" placeholder="Shop statement pieces">
+                                <input type="text" id="sf-hero-tile1-tag" data-avalon-field="heroTile1Tag" class="editor-field-input" placeholder="Shop statement pieces">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-tile1-url">Link URL</label>
-                                <input type="text" id="sf-hero-tile1-url" data-scera-field="heroTile1Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
+                                <input type="text" id="sf-hero-tile1-url" data-avalon-field="heroTile1Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
                             </div>
                         </div>
                     </details>
@@ -1803,30 +1813,540 @@
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-tile2-heading">Heading</label>
-                                <input type="text" id="sf-hero-tile2-heading" data-scera-field="heroTile2Heading" class="editor-field-input" placeholder="Pendants">
+                                <input type="text" id="sf-hero-tile2-heading" data-avalon-field="heroTile2Heading" class="editor-field-input" placeholder="Pendants">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-tile2-tag">Tagline</label>
-                                <input type="text" id="sf-hero-tile2-tag" data-scera-field="heroTile2Tag" class="editor-field-input" placeholder="Shop sculpted light">
+                                <input type="text" id="sf-hero-tile2-tag" data-avalon-field="heroTile2Tag" class="editor-field-input" placeholder="Shop sculpted light">
                             </div>
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-tile2-url">Link URL</label>
-                                <input type="text" id="sf-hero-tile2-url" data-scera-field="heroTile2Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/pendants">
+                                <input type="text" id="sf-hero-tile2-url" data-avalon-field="heroTile2Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/pendants">
                             </div>
                         </div>
                     </details>
-                </div><!-- /#sceraPanelSection1 -->
+                </div><!-- /#avalonPanelSection1 -->
 
-                <p class="editor-panel-lead" style="padding:12px 16px 16px;font-size:0.82rem;opacity:0.7;margin:0;">Catalog and footer fields are next.</p>
+                <div id="avalonPanelSection2" hidden>
+                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 2 — Featured Collections / Signature Pieces (XO paste slot)</p>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Section heading</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-rule">Decorative rule label</label>
+                                <input type="text" id="sf-s2-rule" data-avalon-field="s2RuleLabel" class="editor-field-input" placeholder="Featured Collections">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-heading">Main heading</label>
+                                <input type="text" id="sf-s2-heading" data-avalon-field="s2Heading" class="editor-field-input" placeholder="Signature Pieces">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-subtitle">Supporting line</label>
+                                <textarea id="sf-s2-subtitle" data-avalon-field="s2Subtitle" class="editor-field-input" rows="2" placeholder="Museum-quality fixtures and designer silhouettes — curated for spaces that command attention."></textarea>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Collection 1</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Image</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--catalog-tile" id="sf-s2-tile1-preview">
+                                        <img id="sf-s2-tile1-thumb" src="" alt="Collection 1 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-s2-tile1-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-s2-tile1-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-s2-tile1-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-s2-tile1-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile1-label">Label</label>
+                                <input type="text" id="sf-s2-tile1-label" data-avalon-field="s2Tile1Label" class="editor-field-input" placeholder="Art Deco Chandeliers">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile1-url">Link URL</label>
+                                <input type="text" id="sf-s2-tile1-url" data-avalon-field="s2Tile1Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Collection 2</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Image</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--catalog-tile" id="sf-s2-tile2-preview">
+                                        <img id="sf-s2-tile2-thumb" src="" alt="Collection 2 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-s2-tile2-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-s2-tile2-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-s2-tile2-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-s2-tile2-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile2-label">Label</label>
+                                <input type="text" id="sf-s2-tile2-label" data-avalon-field="s2Tile2Label" class="editor-field-input" placeholder="Architectural Classics">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile2-url">Link URL</label>
+                                <input type="text" id="sf-s2-tile2-url" data-avalon-field="s2Tile2Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Collection 3</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Image</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--catalog-tile" id="sf-s2-tile3-preview">
+                                        <img id="sf-s2-tile3-thumb" src="" alt="Collection 3 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-s2-tile3-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-s2-tile3-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-s2-tile3-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-s2-tile3-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile3-label">Label</label>
+                                <input type="text" id="sf-s2-tile3-label" data-avalon-field="s2Tile3Label" class="editor-field-input" placeholder="Designer Pendants">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile3-url">Link URL</label>
+                                <input type="text" id="sf-s2-tile3-url" data-avalon-field="s2Tile3Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/pendants">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Collection 4</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Image</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--catalog-tile" id="sf-s2-tile4-preview">
+                                        <img id="sf-s2-tile4-thumb" src="" alt="Collection 4 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-s2-tile4-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-s2-tile4-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-s2-tile4-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-s2-tile4-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile4-label">Label</label>
+                                <input type="text" id="sf-s2-tile4-label" data-avalon-field="s2Tile4Label" class="editor-field-input" placeholder="Statement Chandeliers">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s2-tile4-url">Link URL</label>
+                                <input type="text" id="sf-s2-tile4-url" data-avalon-field="s2Tile4Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
+                            </div>
+                        </div>
+                    </details>
+                </div><!-- /#avalonPanelSection2 -->
+
+                <div id="avalonPanelSection3" hidden>
+                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 3 — Brand Story, Reviews &amp; Lighting Expert (XO paste slot)</p>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Section framing</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-rule">Decorative rule label</label>
+                                <input type="text" id="sf-s3-rule" data-avalon-field="s3RuleLabel" class="editor-field-input" placeholder="The Atelier">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Brand story (left)</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-eyebrow">Eyebrow</label>
+                                <input type="text" id="sf-s3-eyebrow" data-avalon-field="s3Eyebrow" class="editor-field-input" placeholder="Our Story">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-headline">Headline</label>
+                                <input type="text" id="sf-s3-headline" data-avalon-field="s3Headline" class="editor-field-input" placeholder="Light, Considered as Architecture">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-body">Story copy</label>
+                                <textarea id="sf-s3-body" data-avalon-field="s3Body" class="editor-field-input" rows="5" placeholder="Avalon was founded on a simple conviction…"></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-story-link-label">Story link label</label>
+                                <input type="text" id="sf-s3-story-link-label" data-avalon-field="s3StoryLinkLabel" class="editor-field-input" placeholder="Discover Avalon">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-story-link-url">Story link URL</label>
+                                <input type="text" id="sf-s3-story-link-url" data-avalon-field="s3StoryLinkUrl" class="editor-field-input" placeholder="/about">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Testimonial &amp; CTA (right)</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-testimonial-eyebrow">Eyebrow</label>
+                                <input type="text" id="sf-s3-testimonial-eyebrow" data-avalon-field="s3TestimonialEyebrow" class="editor-field-input" placeholder="From Our Clients">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-quote">Testimonial quote</label>
+                                <textarea id="sf-s3-quote" data-avalon-field="s3Quote" class="editor-field-input" rows="3" placeholder="Avalon helped us source fixtures…"></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-cite">Attribution</label>
+                                <input type="text" id="sf-s3-cite" data-avalon-field="s3Cite" class="editor-field-input" placeholder="— E. Whitmore, Interior Designer">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-cta-label">CTA button label</label>
+                                <input type="text" id="sf-s3-cta-label" data-avalon-field="s3CtaLabel" class="editor-field-input" placeholder="Request a Consultation">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-s3-cta-url">CTA link URL</label>
+                                <input type="text" id="sf-s3-cta-url" data-avalon-field="s3CtaUrl" class="editor-field-input" placeholder="/contact">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Google Reviews (below About Us)</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-reviews-eyebrow">Eyebrow</label>
+                                <input type="text" id="sf-reviews-eyebrow" data-avalon-field="reviewsEyebrow" class="editor-field-input" placeholder="Google Reviews">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-reviews-heading">Heading</label>
+                                <input type="text" id="sf-reviews-heading" data-avalon-field="reviewsHeading" class="editor-field-input" placeholder="What Our Customers Say">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-reviews-rating">Average rating</label>
+                                <input type="text" id="sf-reviews-rating" data-avalon-field="reviewsRating" class="editor-field-input" placeholder="4.9">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-reviews-count">Review count line</label>
+                                <input type="text" id="sf-reviews-count" data-avalon-field="reviewsCount" class="editor-field-input" placeholder="Based on 127 reviews">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-reviews-link-label">Link label</label>
+                                <input type="text" id="sf-reviews-link-label" data-avalon-field="reviewsLinkLabel" class="editor-field-input" placeholder="See all reviews on Google">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-reviews-link-url">Google reviews URL</label>
+                                <input type="text" id="sf-reviews-link-url" data-avalon-field="reviewsLinkUrl" class="editor-field-input" placeholder="https://www.google.com/maps">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Review 1</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review1-quote">Quote</label>
+                                <textarea id="sf-review1-quote" data-avalon-field="review1Quote" class="editor-field-input" rows="3" placeholder="Exceptional service and a stunning selection…"></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review1-author">Author</label>
+                                <input type="text" id="sf-review1-author" data-avalon-field="review1Author" class="editor-field-input" placeholder="Sarah M.">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review1-date">Date</label>
+                                <input type="text" id="sf-review1-date" data-avalon-field="review1Date" class="editor-field-input" placeholder="2 weeks ago">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group">
+                        <summary class="designer-group-head">Review 2</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review2-quote">Quote</label>
+                                <textarea id="sf-review2-quote" data-avalon-field="review2Quote" class="editor-field-input" rows="3" placeholder="Professional, knowledgeable team…"></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review2-author">Author</label>
+                                <input type="text" id="sf-review2-author" data-avalon-field="review2Author" class="editor-field-input" placeholder="James R., Architect">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review2-date">Date</label>
+                                <input type="text" id="sf-review2-date" data-avalon-field="review2Date" class="editor-field-input" placeholder="1 month ago">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group">
+                        <summary class="designer-group-head">Review 3</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review3-quote">Quote</label>
+                                <textarea id="sf-review3-quote" data-avalon-field="review3Quote" class="editor-field-input" rows="3" placeholder="The curation is unlike any lighting showroom…"></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review3-author">Author</label>
+                                <input type="text" id="sf-review3-author" data-avalon-field="review3Author" class="editor-field-input" placeholder="Elena K.">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-review3-date">Date</label>
+                                <input type="text" id="sf-review3-date" data-avalon-field="review3Date" class="editor-field-input" placeholder="3 weeks ago">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Lighting Expert CTA</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-eyebrow">Eyebrow</label>
+                                <input type="text" id="sf-expert-eyebrow" data-avalon-field="expertEyebrow" class="editor-field-input" placeholder="Design Consultation">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-headline">Headline</label>
+                                <input type="text" id="sf-expert-headline" data-avalon-field="expertHeadline" class="editor-field-input" placeholder="Get Personalized Advice from a Lighting Expert">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-copy">Supporting copy</label>
+                                <textarea id="sf-expert-copy" data-avalon-field="expertCopy" class="editor-field-input" rows="4" placeholder="Our specialists help you choose scale, finish, and placement…"></textarea>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-cta-label">Button label</label>
+                                <input type="text" id="sf-expert-cta-label" data-avalon-field="expertCtaLabel" class="editor-field-input" placeholder="Book a Consultation">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-cta-url">Button link URL</label>
+                                <input type="text" id="sf-expert-cta-url" data-avalon-field="expertCtaUrl" class="editor-field-input" placeholder="/contact">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Expert image 1</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Gallery image (left)</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--hero-tile" id="sf-expert-img1-preview">
+                                        <img id="sf-expert-img1-thumb" src="" alt="Expert image 1 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-expert-img1-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-expert-img1-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-expert-img1-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-expert-img1-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-img1-alt">Image alt text</label>
+                                <input type="text" id="sf-expert-img1-alt" data-avalon-field="expertImg1Alt" class="editor-field-input" placeholder="Lighting expert reviewing fixture selections with a client">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group">
+                        <summary class="designer-group-head">Expert image 2</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Gallery image (center)</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--hero-tile" id="sf-expert-img2-preview">
+                                        <img id="sf-expert-img2-thumb" src="" alt="Expert image 2 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-expert-img2-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-expert-img2-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-expert-img2-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-expert-img2-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-img2-alt">Image alt text</label>
+                                <input type="text" id="sf-expert-img2-alt" data-avalon-field="expertImg2Alt" class="editor-field-input" placeholder="Elegant hall lantern fixture in a curated showroom display">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group">
+                        <summary class="designer-group-head">Expert image 3</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label">Gallery image (right)</label>
+                                <div class="editor-logo-widget">
+                                    <div class="editor-logo-preview editor-logo-preview--hero-tile" id="sf-expert-img3-preview">
+                                        <img id="sf-expert-img3-thumb" src="" alt="Expert image 3 preview" hidden>
+                                        <span class="editor-logo-preview-empty" id="sf-expert-img3-thumb-empty">Preview</span>
+                                    </div>
+                                    <div class="editor-logo-actions">
+                                        <label class="editor-logo-file-label" for="sf-expert-img3-file">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            Upload image
+                                            <input type="file" id="sf-expert-img3-file" accept="image/*" style="display:none">
+                                        </label>
+                                        <button type="button" class="editor-logo-remove-btn" id="sf-expert-img3-remove" hidden>✕ Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-expert-img3-alt">Image alt text</label>
+                                <input type="text" id="sf-expert-img3-alt" data-avalon-field="expertImg3Alt" class="editor-field-input" placeholder="Warm interior with designer pendant lighting over a dining table">
+                            </div>
+                        </div>
+                    </details>
+                </div><!-- /#avalonPanelSection3 -->
+
+                <div id="avalonPanelFooter" hidden>
+                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Footer — Custom elegant footer (XO paste slot)</p>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Brand</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-tagline">Tagline</label>
+                                <textarea id="sf-footer-tagline" data-avalon-field="footerTagline" class="editor-field-input" rows="2" placeholder="Art Deco inspired luxury lighting for residential and hospitality projects."></textarea>
+                                <p class="editor-field-hint">Logo uses the same upload as Header.</p>
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Shop links</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-head">Column heading</label>
+                                <input type="text" id="sf-footer-col1-head" data-avalon-field="footerCol1Head" class="editor-field-input" placeholder="Shop">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link1-label">Link 1 label</label>
+                                <input type="text" id="sf-footer-col1-link1-label" data-avalon-field="footerCol1Link1Label" class="editor-field-input" placeholder="Chandeliers">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link1-url">Link 1 URL</label>
+                                <input type="text" id="sf-footer-col1-link1-url" data-avalon-field="footerCol1Link1Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/chandeliers">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link2-label">Link 2 label</label>
+                                <input type="text" id="sf-footer-col1-link2-label" data-avalon-field="footerCol1Link2Label" class="editor-field-input" placeholder="Pendants">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link2-url">Link 2 URL</label>
+                                <input type="text" id="sf-footer-col1-link2-url" data-avalon-field="footerCol1Link2Url" class="editor-field-input" placeholder="/catalog/lighting/ceiling-lights/pendants">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link3-label">Link 3 label</label>
+                                <input type="text" id="sf-footer-col1-link3-label" data-avalon-field="footerCol1Link3Label" class="editor-field-input" placeholder="Outdoor">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link3-url">Link 3 URL</label>
+                                <input type="text" id="sf-footer-col1-link3-url" data-avalon-field="footerCol1Link3Url" class="editor-field-input" placeholder="/catalog/outdoor">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link4-label">Link 4 label</label>
+                                <input type="text" id="sf-footer-col1-link4-label" data-avalon-field="footerCol1Link4Label" class="editor-field-input" placeholder="Brands">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col1-link4-url">Link 4 URL</label>
+                                <input type="text" id="sf-footer-col1-link4-url" data-avalon-field="footerCol1Link4Url" class="editor-field-input" placeholder="/brands">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Company links</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-head">Column heading</label>
+                                <input type="text" id="sf-footer-col2-head" data-avalon-field="footerCol2Head" class="editor-field-input" placeholder="Company">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link1-label">Link 1 label</label>
+                                <input type="text" id="sf-footer-col2-link1-label" data-avalon-field="footerCol2Link1Label" class="editor-field-input" placeholder="About Avalon">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link1-url">Link 1 URL</label>
+                                <input type="text" id="sf-footer-col2-link1-url" data-avalon-field="footerCol2Link1Url" class="editor-field-input" placeholder="/about">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link2-label">Link 2 label</label>
+                                <input type="text" id="sf-footer-col2-link2-label" data-avalon-field="footerCol2Link2Label" class="editor-field-input" placeholder="Trade Program">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link2-url">Link 2 URL</label>
+                                <input type="text" id="sf-footer-col2-link2-url" data-avalon-field="footerCol2Link2Url" class="editor-field-input" placeholder="/trade">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link3-label">Link 3 label</label>
+                                <input type="text" id="sf-footer-col2-link3-label" data-avalon-field="footerCol2Link3Label" class="editor-field-input" placeholder="Contact">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link3-url">Link 3 URL</label>
+                                <input type="text" id="sf-footer-col2-link3-url" data-avalon-field="footerCol2Link3Url" class="editor-field-input" placeholder="/contact">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link4-label">Link 4 label</label>
+                                <input type="text" id="sf-footer-col2-link4-label" data-avalon-field="footerCol2Link4Label" class="editor-field-input" placeholder="Privacy">
+                            </div>
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-col2-link4-url">Link 4 URL</label>
+                                <input type="text" id="sf-footer-col2-link4-url" data-avalon-field="footerCol2Link4Url" class="editor-field-input" placeholder="/privacy">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" open>
+                        <summary class="designer-group-head">Copyright</summary>
+                        <div class="designer-group-body">
+                            <div class="editor-field">
+                                <label class="editor-field-label" for="sf-footer-copyright">Copyright line</label>
+                                <input type="text" id="sf-footer-copyright" data-avalon-field="footerCopyright" class="editor-field-input" placeholder="© 2026 Avalon Lighting. All rights reserved.">
+                            </div>
+                        </div>
+                    </details>
+                </div><!-- /#avalonPanelFooter -->
             </div>
 
-            <!-- Scaffold shown for non-Woolf / non-SCERA designs -->
+            <!-- Scaffold shown for non-Woolf / non-Avalon designs -->
             <div class="designer-editor-scaffold" id="designerScaffold" hidden>
                 <h3 class="editor-panel-subhead" id="scaffoldTemplateName" style="margin-top:0"></h3>
                 <p class="editor-panel-lead">This template editor is being built. The Woolf template is live now — select it from the nav above to start editing.</p>
                 <ul class="designer-scaffold-list">
                     <li><strong>The Woolf</strong> — full industrial e-commerce homepage (available now)</li>
-                    <li><strong>SCERA</strong> — editorial hero &amp; dual collection highlights (preview live)</li>
+                    <li><strong>Avalon</strong> — editorial hero &amp; dual collection highlights (preview live)</li>
                     <li><strong>Geneva</strong> — curated project showcase grid</li>
                     <li><strong>Sundance</strong> — mosaic hero and studio story blocks</li>
                     <li><strong>Cardiff</strong> — split hero and brand-forward category bands</li>
@@ -1843,7 +2363,7 @@
                 <span class="editor-preview-scale-hint" id="previewScaleHint" style="font-size:0.72em;opacity:0.5;margin-left:8px;"></span>
             </p>
 
-            <!-- Woolf / SCERA iframe preview -->
+            <!-- Woolf / Avalon iframe preview -->
             <div class="editor-preview-scaler" id="previewScaler">
                 <div class="designer-iframe-wrap" id="woolFullSitePreviewWrap" hidden>
                     <iframe
@@ -1854,11 +2374,11 @@
                     ></iframe>
                 </div>
 
-                <div class="designer-iframe-wrap" id="sceraFullSitePreviewWrap" hidden>
+                <div class="designer-iframe-wrap" id="avalonFullSitePreviewWrap" hidden>
                     <iframe
-                        id="sceraFullSiteFrame"
-                        src="../designer_editor/scera/index.html"
-                        title="SCERA — Full site preview"
+                        id="avalonFullSiteFrame"
+                        src="../designer_editor/avalon/index.html"
+                        title="Avalon — Full site preview"
                         scrolling="yes"
                     ></iframe>
                 </div>
@@ -1887,7 +2407,7 @@
     <script src="js/shop-categories-editor.js"></script>
     <script src="js/shop-brands-editor.js"></script>
     <script src="js/catalog-library-editor.js"></script>
-    <script src="js/scera-editor.js"></script>
+    <script src="js/avalon-editor.js"></script>
     <script src="js/designer-editor.js?v=3"></script>
     <!-- section-editor-base provides the shared draft persistence helpers
          (designerSaveCombined / designerLoadCombined) used by the editor. -->
@@ -1899,7 +2419,7 @@
         (function () {
             var frames = [
                 document.getElementById('woolFullSiteFrame'),
-                document.getElementById('sceraFullSiteFrame'),
+                document.getElementById('avalonFullSiteFrame'),
             ].filter(Boolean);
 
             function fitFrame(frame) {
@@ -1912,8 +2432,8 @@
 
             function fitActive() {
                 var slug = window.__designerSlug || 'woolf';
-                if (slug === 'scera') {
-                    fitFrame(document.getElementById('sceraFullSiteFrame'));
+                if (slug === 'avalon') {
+                    fitFrame(document.getElementById('avalonFullSiteFrame'));
                 } else {
                     fitFrame(document.getElementById('woolFullSiteFrame'));
                 }

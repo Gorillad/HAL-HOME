@@ -35,7 +35,7 @@ Use `npm start` (not a static file server) — cart checkout requires the Node A
 │   └── template-defaults.json # Default showroom editor content
 ├── editor/                    # In-browser homepage editors
 │   ├── showroom.html          # Showroom plan — McQueen, Classic, Spotlight
-│   ├── designer.html          # Designer plan — SCERA, Geneva, Sundance, Cardiff, Woolf
+│   ├── designer.html          # Designer plan — Avalon, Geneva, Sundance, Cardiff, Woolf
 │   ├── knowledge-base.html
 │   ├── css/editor.css
 │   ├── js/
@@ -98,7 +98,7 @@ Open http://localhost:4242/editor/designer.html — Designer plan templates with
 
 | Template | URL |
 |----------|-----|
-| SCERA | `?design=scera` |
+| Avalon | `?design=avalon` |
 | Geneva | `?design=geneva` |
 | Sundance | `?design=sundance` |
 | Cardiff | `?design=cardiff` |

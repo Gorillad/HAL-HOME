@@ -1,0 +1,141 @@
+/* Avalon footer — elegant links, decorative lines, copyright */
+
+.avalon-footer {
+    background: var(--avalon-surface);
+    padding: 0 0 32px;
+}
+
+.avalon-footer__rule-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 24px 36px;
+}
+
+.avalon-footer__rule-top::before,
+.avalon-footer__rule-top::after {
+    content: '';
+    flex: 1;
+    max-width: 420px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--avalon-rule) 12%, var(--avalon-gold-light) 50%, var(--avalon-rule) 88%, transparent);
+}
+
+.avalon-footer__inner {
+    max-width: var(--avalon-content-w);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr 1fr;
+    gap: 40px 48px;
+}
+
+.avalon-footer__brand p {
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--avalon-text-muted);
+    max-width: 38ch;
+}
+
+.avalon-footer__logo {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.avalon-footer__logo img {
+    max-height: calc(var(--avalon-header-logo-h, 64px) * 0.68);
+    width: auto;
+}
+
+.avalon-footer__col {
+    padding-top: 4px;
+}
+
+.avalon-footer__heading {
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(201, 169, 110, 0.28);
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--avalon-gold);
+}
+
+.avalon-footer__links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+}
+
+.avalon-footer__links li + li {
+    margin-top: 10px;
+}
+
+.avalon-footer__links a {
+    color: var(--avalon-text-muted);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+}
+
+.avalon-footer__links a:hover {
+    color: var(--avalon-gold-light);
+}
+
+.avalon-footer__legal-wrap {
+    max-width: var(--avalon-content-w);
+    margin: 36px auto 0;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.avalon-footer__legal-wrap::before,
+.avalon-footer__legal-wrap::after {
+    content: '';
+    flex: 1;
+    max-width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.35) 50%, transparent);
+}
+
+.avalon-footer__legal {
+    margin: 0;
+    flex-shrink: 0;
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--avalon-text-muted);
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .avalon-footer__inner {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .avalon-footer__brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 560px) {
+    .avalon-footer__inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .avalon-footer__legal-wrap::before,
+    .avalon-footer__legal-wrap::after {
+        display: none;
+    }
+}

@@ -1,0 +1,154 @@
+/* Avalon — Lighting expert consultation CTA */
+
+.avalon-expert {
+    padding: 64px 0 72px;
+    background: linear-gradient(180deg, var(--avalon-bg) 0%, var(--avalon-surface) 100%);
+    border-top: 1px solid rgba(201, 169, 110, 0.15);
+}
+
+.avalon-expert__split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 48px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.avalon-expert__eyebrow {
+    margin: 0 0 14px;
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--avalon-gold-light);
+}
+
+.avalon-expert__headline {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    max-width: 18ch;
+}
+
+.avalon-expert__gold-line {
+    width: 48px;
+    height: 1px;
+    margin: 22px 0;
+    background: linear-gradient(90deg, var(--avalon-gold-light), rgba(201, 169, 110, 0.2));
+}
+
+.avalon-expert__copy {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--avalon-text-muted);
+    max-width: 42ch;
+}
+
+.avalon-expert__cta {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 14px 32px;
+    background: var(--avalon-gold);
+    color: #12100e;
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--avalon-gold-light);
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.avalon-expert__cta:hover {
+    background: transparent;
+    color: var(--avalon-gold-light);
+    border-color: rgba(201, 169, 110, 0.55);
+}
+
+.avalon-expert__gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    align-items: stretch;
+}
+
+.avalon-expert__figure {
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(201, 169, 110, 0.22);
+    background: var(--avalon-surface-raised);
+    aspect-ratio: 3 / 4;
+}
+
+.avalon-expert__figure:nth-child(2) {
+    margin-top: 28px;
+}
+
+.avalon-expert__figure:nth-child(3) {
+    margin-top: 14px;
+}
+
+.avalon-expert__figure img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.avalon-expert__figure:hover img {
+    transform: scale(1.04);
+}
+
+.avalon-expert__figure::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(201, 169, 110, 0.12);
+}
+
+@media (max-width: 900px) {
+    .avalon-expert__split {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+
+    .avalon-expert__headline {
+        max-width: none;
+    }
+
+    .avalon-expert__copy {
+        max-width: none;
+    }
+
+    .avalon-expert__figure:nth-child(2),
+    .avalon-expert__figure:nth-child(3) {
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .avalon-expert {
+        padding: 48px 0 56px;
+    }
+
+    .avalon-expert__gallery {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .avalon-expert__figure:first-child {
+        grid-column: 1 / -1;
+        aspect-ratio: 16 / 9;
+    }
+}

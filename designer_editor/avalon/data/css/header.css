@@ -1,43 +1,43 @@
-/* SCERA header — toolbar row + mega menu nav */
+/* Avalon header — toolbar row + mega menu nav */
 
-.scera-site-header {
+.avalon-site-header {
     position: relative;
     z-index: 20;
-    background: var(--scera-bg);
+    background: var(--avalon-bg);
 }
 
 /* ── Utility strip ───────────────────────────────────────────── */
 
-.scera-utility-bar {
-    background: linear-gradient(180deg, #1e1b18 0%, var(--scera-surface) 100%);
+.avalon-utility-bar {
+    background: linear-gradient(180deg, #1e1b18 0%, var(--avalon-surface) 100%);
     border-bottom: 1px solid rgba(201, 169, 110, 0.18);
 }
 
-.scera-utility-bar__inner {
-    max-width: var(--scera-content-w);
+.avalon-utility-bar__inner {
+    max-width: var(--avalon-content-w);
     margin: 0 auto;
     padding: 9px 28px;
     text-align: center;
 }
 
-.scera-utility-bar__copy {
+.avalon-utility-bar__copy {
     margin: 0;
     font-family: var(--font-headline);
     font-size: 10px;
     font-weight: 300;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--scera-gold-light);
+    color: var(--avalon-gold-light);
 }
 
 /* ── Toolbar: logo · search · account ──────────────────────── */
 
-.scera-header-toolbar {
-    background: var(--scera-bg);
+.avalon-header-toolbar {
+    background: var(--avalon-bg);
 }
 
-.scera-header-toolbar__inner {
-    max-width: var(--scera-content-w);
+.avalon-header-toolbar__inner {
+    max-width: var(--avalon-content-w);
     margin: 0 auto;
     padding: 20px 28px 16px;
     display: grid;
@@ -46,7 +46,7 @@
     gap: 24px;
 }
 
-.scera-logo {
+.avalon-logo {
     display: inline-flex;
     align-items: center;
     flex-shrink: 0;
@@ -54,16 +54,16 @@
     justify-self: start;
 }
 
-.scera-logo img {
+.avalon-logo img {
     width: auto;
     max-width: min(320px, 36vw);
-    height: var(--scera-header-logo-h, 88px);
-    max-height: var(--scera-header-logo-h, 88px);
+    height: var(--avalon-header-logo-h, 88px);
+    max-height: var(--avalon-header-logo-h, 88px);
     object-fit: contain;
     object-position: left center;
 }
 
-.scera-search {
+.avalon-search {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -75,7 +75,7 @@
     background: rgba(0, 0, 0, 0.28);
 }
 
-.scera-search-label {
+.avalon-search-label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -87,29 +87,29 @@
     border: 0;
 }
 
-.scera-search-input {
+.avalon-search-input {
     flex: 1;
     min-width: 0;
     border: 0;
     background: transparent;
-    color: var(--scera-text);
+    color: var(--avalon-text);
     font-family: var(--font-body);
     font-size: 14px;
     outline: none;
 }
 
-.scera-search-input::placeholder {
-    color: var(--scera-text-muted);
+.avalon-search-input::placeholder {
+    color: var(--avalon-text-muted);
 }
 
-.scera-search-icon {
+.avalon-search-icon {
     flex-shrink: 0;
-    color: var(--scera-gold);
+    color: var(--avalon-gold);
     font-size: 15px;
     line-height: 1;
 }
 
-.scera-header-utils {
+.avalon-header-utils {
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
@@ -121,7 +121,7 @@
     justify-self: end;
 }
 
-.scera-header-util {
+.avalon-header-util {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -132,39 +132,39 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     text-decoration: none;
-    color: var(--scera-text-muted);
+    color: var(--avalon-text-muted);
     white-space: nowrap;
     transition: color 0.2s;
 }
 
-.scera-header-util__icon {
+.avalon-header-util__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--scera-gold);
+    color: var(--avalon-gold);
     line-height: 0;
     transition: color 0.2s;
 }
 
-.scera-header-util__label {
+.avalon-header-util__label {
     line-height: 1;
 }
 
-.scera-header-util:hover,
-.scera-header-util:hover .scera-header-util__icon {
-    color: var(--scera-gold-light);
+.avalon-header-util:hover,
+.avalon-header-util:hover .avalon-header-util__icon {
+    color: var(--avalon-gold-light);
 }
 
 /* ── Mega menu nav bar ─────────────────────────────────────── */
 
-.scera-mega-nav {
+.avalon-mega-nav {
     position: relative;
-    background: var(--scera-surface-raised);
+    background: var(--avalon-surface-raised);
     border-top: 1px solid rgba(201, 169, 110, 0.2);
 }
 
-.scera-mega-nav__inner {
-    max-width: var(--scera-content-w);
+.avalon-mega-nav__inner {
+    max-width: var(--avalon-content-w);
     margin: 0 auto;
     padding: 0 12px;
     overflow-x: auto;
@@ -173,7 +173,7 @@
     scrollbar-color: rgba(201, 169, 110, 0.35) transparent;
 }
 
-.scera-mega-nav__list {
+.avalon-mega-nav__list {
     display: flex;
     flex-wrap: nowrap;
     align-items: stretch;
@@ -186,12 +186,12 @@
     list-style: none;
 }
 
-.scera-mega-nav__item {
+.avalon-mega-nav__item {
     position: static;
     flex: 0 0 auto;
 }
 
-.scera-mega-nav__trigger {
+.avalon-mega-nav__trigger {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -203,13 +203,13 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     text-decoration: none;
-    color: var(--scera-text);
+    color: var(--avalon-text);
     border-bottom: 2px solid transparent;
     white-space: nowrap;
     transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 
-.scera-mega-nav__trigger::after {
+.avalon-mega-nav__trigger::after {
     content: '';
     width: 0;
     height: 0;
@@ -220,36 +220,36 @@
     margin-top: 2px;
 }
 
-.scera-mega-nav__item:not([data-has-mega]) .scera-mega-nav__trigger::after {
+.avalon-mega-nav__item:not([data-has-mega]) .avalon-mega-nav__trigger::after {
     display: none;
 }
 
-.scera-mega-nav__item:hover .scera-mega-nav__trigger,
-.scera-mega-nav__item:focus-within .scera-mega-nav__trigger,
-.scera-mega-nav__item.is-open .scera-mega-nav__trigger {
-    color: var(--scera-gold-light);
-    border-bottom-color: var(--scera-gold);
+.avalon-mega-nav__item:hover .avalon-mega-nav__trigger,
+.avalon-mega-nav__item:focus-within .avalon-mega-nav__trigger,
+.avalon-mega-nav__item.is-open .avalon-mega-nav__trigger {
+    color: var(--avalon-gold-light);
+    border-bottom-color: var(--avalon-gold);
     background: rgba(201, 169, 110, 0.06);
 }
 
-.scera-mega-panel {
+.avalon-mega-panel {
     position: absolute;
     left: 0;
     right: 0;
     top: 100%;
     z-index: 30;
     background: linear-gradient(180deg, #1c1916 0%, #141210 100%);
-    border-top: 2px solid var(--scera-gold-dark);
+    border-top: 2px solid var(--avalon-gold-dark);
     border-bottom: 1px solid rgba(201, 169, 110, 0.25);
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
-.scera-mega-panel[hidden] {
+.avalon-mega-panel[hidden] {
     display: none;
 }
 
-.scera-mega-panel__inner {
-    max-width: var(--scera-content-w);
+.avalon-mega-panel__inner {
+    max-width: var(--avalon-content-w);
     margin: 0 auto;
     padding: 28px 28px 32px;
     display: grid;
@@ -257,37 +257,37 @@
     gap: 8px 32px;
 }
 
-.scera-mega-panel__inner--lighting {
+.avalon-mega-panel__inner--lighting {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 12px 28px;
 }
 
-.scera-mega-panel__inner--fans {
+.avalon-mega-panel__inner--fans {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px 28px;
 }
 
-.scera-mega-panel__inner--furniture-decor {
+.avalon-mega-panel__inner--furniture-decor {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px 28px;
 }
 
-.scera-mega-panel__inner--outdoor {
+.avalon-mega-panel__inner--outdoor {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px 28px;
 }
 
-.scera-mega-panel__inner--shop-by-room {
+.avalon-mega-panel__inner--shop-by-room {
     grid-template-columns: minmax(0, 280px);
     gap: 12px 28px;
 }
 
-.scera-mega-panel__inner--brands {
+.avalon-mega-panel__inner--brands {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px 28px;
 }
 
-.scera-mega-col__head {
+.avalon-mega-col__head {
     margin: 0 0 12px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(201, 169, 110, 0.28);
@@ -296,87 +296,87 @@
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--scera-gold);
+    color: var(--avalon-gold);
 }
 
-.scera-mega-col a {
+.avalon-mega-col a {
     display: block;
     padding: 5px 0;
     font-size: 14px;
     line-height: 1.45;
-    color: var(--scera-text-muted);
+    color: var(--avalon-text-muted);
     text-decoration: none;
     transition: color 0.15s;
 }
 
-.scera-mega-col a:hover {
-    color: var(--scera-gold-light);
+.avalon-mega-col a:hover {
+    color: var(--avalon-gold-light);
 }
 
-.scera-mega-panel__note {
-    max-width: var(--scera-content-w);
+.avalon-mega-panel__note {
+    max-width: var(--avalon-content-w);
     margin: 0 auto;
     padding: 0 28px 18px;
     font-size: 12px;
-    color: var(--scera-text-muted);
+    color: var(--avalon-text-muted);
     font-style: italic;
 }
 
-.scera-header-rule {
+.avalon-header-rule {
     height: 2px;
     background: linear-gradient(
         90deg,
         transparent 0%,
-        var(--scera-gold-dark) 18%,
-        var(--scera-gold-light) 50%,
-        var(--scera-gold-dark) 82%,
+        var(--avalon-gold-dark) 18%,
+        var(--avalon-gold-light) 50%,
+        var(--avalon-gold-dark) 82%,
         transparent 100%
     );
     opacity: 0.85;
 }
 
 @media (max-width: 980px) {
-    .scera-header-toolbar__inner {
+    .avalon-header-toolbar__inner {
         grid-template-columns: 1fr;
         justify-items: center;
         text-align: center;
         gap: 16px;
     }
 
-    .scera-logo {
+    .avalon-logo {
         justify-self: center;
     }
 
-    .scera-logo img {
+    .avalon-logo img {
         object-position: center center;
     }
 
-    .scera-search {
+    .avalon-search {
         max-width: min(100%, 480px);
     }
 
-    .scera-header-utils {
+    .avalon-header-utils {
         justify-self: center;
         justify-content: center;
     }
 
-    .scera-mega-nav__list {
+    .avalon-mega-nav__list {
         justify-content: flex-start;
     }
 
-    .scera-mega-nav__trigger {
+    .avalon-mega-nav__trigger {
         padding: 12px 14px;
     }
 
-    .scera-mega-panel__inner--lighting {
+    .avalon-mega-panel__inner--lighting {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .scera-mega-panel__inner--fans {
+    .avalon-mega-panel__inner--fans {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .scera-mega-panel__inner--outdoor {
+    .avalon-mega-panel__inner--outdoor {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

@@ -415,7 +415,7 @@ function initDesignerDesignTabs() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const designLabels = {
-        scera: 'SCERA',
+        avalon: 'Avalon',
         geneva: 'Geneva',
         sundance: 'Sundance',
         cardiff: 'Cardiff',
@@ -423,7 +423,7 @@ function initDesignerDesignTabs() {
     };
 
     function applyDesign(design) {
-        const label = designLabels[design] || 'SCERA';
+        const label = designLabels[design] || 'Avalon';
 
         tabs.forEach((item) => {
             const isActive = item.dataset.designerDesign === design;
@@ -455,7 +455,7 @@ function initDesignerDesignTabs() {
 
     function getActiveDesign() {
         const activeTab = tabs.find((tab) => tab.classList.contains('is-active'));
-        return activeTab?.dataset.designerDesign || 'scera';
+        return activeTab?.dataset.designerDesign || 'avalon';
     }
 
     function setActiveDesign(design) {

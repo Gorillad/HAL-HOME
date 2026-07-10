@@ -1,17 +1,17 @@
-/* SCERA — Art Deco luxury lighting base tokens */
+/* Avalon — Art Deco luxury lighting base tokens */
 :root {
-    --scera-bg: #12100e;
-    --scera-surface: #1a1714;
-    --scera-surface-raised: #221e1a;
-    --scera-gold: #c9a96e;
-    --scera-gold-light: #e0c992;
-    --scera-gold-dark: #9a7d4a;
-    --scera-text: #f4efe6;
-    --scera-text-muted: #b8aea0;
-    --scera-rule: rgba(201, 169, 110, 0.45);
-    --scera-content-w: 1479px;
-    --scera-header-logo-h: 88px;
-    --scera-hero-gap: 22px;
+    --avalon-bg: #12100e;
+    --avalon-surface: #1a1714;
+    --avalon-surface-raised: #221e1a;
+    --avalon-gold: #c9a96e;
+    --avalon-gold-light: #e0c992;
+    --avalon-gold-dark: #9a7d4a;
+    --avalon-text: #f4efe6;
+    --avalon-text-muted: #b8aea0;
+    --avalon-rule: rgba(201, 169, 110, 0.45);
+    --avalon-content-w: 1479px;
+    --avalon-header-logo-h: 88px;
+    --avalon-hero-gap: 22px;
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-headline: 'Josefin Sans', 'DM Sans', sans-serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
@@ -29,8 +29,8 @@ html {
 
 body {
     margin: 0;
-    background: var(--scera-bg);
-    color: var(--scera-text);
+    background: var(--avalon-bg);
+    color: var(--avalon-text);
     font-family: var(--font-body);
     font-size: 15px;
     line-height: 1.5;
@@ -46,36 +46,36 @@ a {
     color: inherit;
 }
 
-.scera-content-column {
+.avalon-content-column {
     width: 100%;
-    max-width: var(--scera-content-w);
+    max-width: var(--avalon-content-w);
     margin-left: auto;
     margin-right: auto;
     padding-left: 24px;
     padding-right: 24px;
 }
 
-.scera-deco-rule {
+.avalon-deco-rule {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 14px;
     padding: 0 24px;
-    color: var(--scera-gold);
+    color: var(--avalon-gold);
     font-family: var(--font-headline);
     font-size: 10px;
     letter-spacing: 0.35em;
     text-transform: uppercase;
 }
 
-.scera-deco-rule::before,
-.scera-deco-rule::after {
+.avalon-deco-rule::before,
+.avalon-deco-rule::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--scera-rule) 20%, var(--scera-rule) 80%, transparent);
+    background: linear-gradient(90deg, transparent, var(--avalon-rule) 20%, var(--avalon-rule) 80%, transparent);
 }
 
-.scera-deco-rule span {
+.avalon-deco-rule span {
     flex-shrink: 0;
 }

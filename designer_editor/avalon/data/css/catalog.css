@@ -1,0 +1,267 @@
+/* Avalon Section 2 — Featured Collections / Signature Pieces (editorial mosaic) */
+
+.avalon-catalog {
+    padding: calc(var(--avalon-hero-gap) + 20px) 0 64px;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201, 169, 110, 0.06) 0%, transparent 70%),
+        var(--avalon-bg);
+}
+
+.avalon-catalog-intro {
+    max-width: 640px;
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+.avalon-deco-rule--left {
+    justify-content: center;
+}
+
+.avalon-catalog-heading {
+    margin: 0;
+    padding-top: 24px;
+    font-family: var(--font-display);
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--avalon-gold-light);
+}
+
+.avalon-catalog-subtitle {
+    margin: 16px 0 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--avalon-text-muted);
+}
+
+/* ── Bento mosaic grid ─────────────────────────────────────── */
+
+.avalon-s2-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr 1fr;
+    grid-template-rows: repeat(2, minmax(200px, 260px));
+    gap: var(--avalon-hero-gap);
+    width: 100%;
+}
+
+.avalon-s2-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    text-decoration: none;
+    color: inherit;
+    background: var(--avalon-surface);
+    border: 1px solid rgba(201, 169, 110, 0.18);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.avalon-s2-card:hover {
+    border-color: rgba(201, 169, 110, 0.45);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+    transform: translateY(-2px);
+}
+
+.avalon-s2-card--feature {
+    grid-row: 1 / 3;
+    grid-column: 1;
+}
+
+.avalon-s2-card--wide {
+    grid-column: 2 / 4;
+    grid-row: 2;
+}
+
+.avalon-s2-card--wide .avalon-s2-card__frame {
+    flex: 1.2;
+}
+
+.avalon-s2-card__frame {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #1a1714;
+}
+
+/* Art Deco corner brackets on featured card */
+.avalon-s2-card--feature .avalon-s2-card__frame::before,
+.avalon-s2-card--feature .avalon-s2-card__frame::after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    border-color: var(--avalon-gold);
+    border-style: solid;
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.avalon-s2-card--feature .avalon-s2-card__frame::before {
+    top: 14px;
+    left: 14px;
+    border-width: 1px 0 0 1px;
+}
+
+.avalon-s2-card--feature .avalon-s2-card__frame::after {
+    bottom: 14px;
+    right: 14px;
+    border-width: 0 1px 1px 0;
+}
+
+.avalon-s2-card--feature:hover .avalon-s2-card__frame::before,
+.avalon-s2-card--feature:hover .avalon-s2-card__frame::after {
+    opacity: 1;
+}
+
+.avalon-s2-card__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.avalon-s2-card:hover .avalon-s2-card__frame img {
+    transform: scale(1.04);
+}
+
+.avalon-s2-card__index {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 2;
+    font-family: var(--font-headline);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--avalon-gold-light);
+    opacity: 0.85;
+}
+
+.avalon-s2-card__meta {
+    flex-shrink: 0;
+    padding: 18px 20px 20px;
+    border-top: 1px solid rgba(201, 169, 110, 0.12);
+    background: linear-gradient(180deg, var(--avalon-surface) 0%, var(--avalon-surface-raised) 100%);
+}
+
+.avalon-s2-card__meta--inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.avalon-s2-card__title {
+    margin: 0;
+    font-family: var(--font-headline);
+    font-size: clamp(14px, 1.2vw, 17px);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.avalon-s2-card--feature .avalon-s2-card__title {
+    font-size: clamp(16px, 1.5vw, 20px);
+    letter-spacing: 0.16em;
+}
+
+.avalon-s2-card__detail {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--avalon-text-muted);
+}
+
+.avalon-s2-card__meta--inline .avalon-s2-card__detail {
+    margin-top: 4px;
+}
+
+.avalon-s2-card__cta {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--font-headline);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--avalon-gold);
+    transition: color 0.2s, letter-spacing 0.2s;
+}
+
+.avalon-s2-card__meta--inline .avalon-s2-card__cta {
+    margin-top: 0;
+    flex-shrink: 0;
+}
+
+.avalon-s2-card__cta::after {
+    content: ' →';
+    color: var(--avalon-gold-light);
+}
+
+.avalon-s2-card:hover .avalon-s2-card__cta {
+    color: var(--avalon-gold-light);
+    letter-spacing: 0.32em;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .avalon-s2-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+    }
+
+    .avalon-s2-card--feature {
+        grid-row: auto;
+        grid-column: 1 / 3;
+        min-height: 420px;
+    }
+
+    .avalon-s2-card--wide {
+        grid-column: 1 / 3;
+        grid-row: auto;
+    }
+
+    .avalon-s2-card:not(.avalon-s2-card--feature):not(.avalon-s2-card--wide) {
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 600px) {
+    .avalon-catalog-intro {
+        text-align: left;
+        margin-bottom: 28px;
+    }
+
+    .avalon-deco-rule--left {
+        justify-content: flex-start;
+    }
+
+    .avalon-s2-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .avalon-s2-card--feature,
+    .avalon-s2-card--wide {
+        grid-column: 1;
+        min-height: 0;
+    }
+
+    .avalon-s2-card {
+        min-height: 300px;
+    }
+
+    .avalon-s2-card__meta--inline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .avalon-s2-card__meta--inline .avalon-s2-card__cta {
+        margin-top: 10px;
+    }
+}

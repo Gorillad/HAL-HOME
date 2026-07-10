@@ -1,4 +1,4 @@
-SCERA navigation catalog
+Avalon navigation catalog
 ========================
 
 `nav-catalog.json` defines the main nav and mega menu structure.
