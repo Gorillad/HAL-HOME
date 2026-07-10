@@ -553,7 +553,7 @@
         });
 
         // Template name badge
-        var names = { woolf: 'The Woolf', gallery: 'Gallery', curator: 'Curator', canvas: 'Canvas' };
+        var names = { woolf: 'The Woolf', gallery: 'SCERA', curator: 'Geneva', canvas: 'Sundance' };
         var name = names[slug] || slug;
         if (templateNameEl) templateNameEl.textContent = name;
         if (previewLabel) previewLabel.textContent = name;

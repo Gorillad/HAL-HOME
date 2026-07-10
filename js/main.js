@@ -415,14 +415,14 @@ function initDesignerDesignTabs() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const designLabels = {
-        gallery: 'Gallery',
-        curator: 'Curator',
-        canvas: 'Canvas',
+        gallery: 'SCERA',
+        curator: 'Geneva',
+        canvas: 'Sundance',
         woolf: 'The Woolf',
     };
 
     function applyDesign(design) {
-        const label = designLabels[design] || 'Gallery';
+        const label = designLabels[design] || 'SCERA';
 
         tabs.forEach((item) => {
             const isActive = item.dataset.designerDesign === design;
