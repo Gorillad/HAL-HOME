@@ -1,17 +1,20 @@
 /**
- * Avalon header — mega menu hover / keyboard behavior.
+ * Avalon header — mega menu hover / keyboard behavior (re-init after nav rebuild).
  */
 (function () {
     'use strict';
 
-    var nav = document.getElementById('avalonMegaNav');
-    if (!nav) return;
-
-    var items = nav.querySelectorAll('.avalon-mega-nav__item[data-has-mega]');
+    var nav = null;
+    var docListenersBound = false;
     var closeTimer = null;
 
+    function getNav() {
+        return document.getElementById('avalonMegaNav');
+    }
+
     function closeAll() {
-        items.forEach(function (item) {
+        if (!nav) return;
+        nav.querySelectorAll('.avalon-mega-nav__item[data-has-mega]').forEach(function (item) {
             item.classList.remove('is-open');
             var panel = item.querySelector('.avalon-mega-panel');
             var trigger = item.querySelector('.avalon-mega-nav__trigger');
@@ -29,30 +32,51 @@
         if (trigger) trigger.setAttribute('aria-expanded', 'true');
     }
 
-    items.forEach(function (item) {
-        var trigger = item.querySelector('.avalon-mega-nav__trigger');
-        if (!trigger) return;
+    function bindDocListeners() {
+        if (docListenersBound) return;
+        docListenersBound = true;
 
-        item.addEventListener('mouseenter', function () {
-            clearTimeout(closeTimer);
-            openItem(item);
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeAll();
         });
 
-        item.addEventListener('mouseleave', function () {
-            closeTimer = setTimeout(closeAll, 120);
+        document.addEventListener('click', function (e) {
+            if (nav && !nav.contains(e.target)) closeAll();
         });
+    }
 
-        trigger.addEventListener('focus', function () {
-            clearTimeout(closeTimer);
-            openItem(item);
+    function initMegaNav() {
+        nav = getNav();
+        if (!nav) return;
+
+        bindDocListeners();
+
+        nav.querySelectorAll('.avalon-mega-nav__item[data-has-mega]').forEach(function (item) {
+            var trigger = item.querySelector('.avalon-mega-nav__trigger');
+            if (!trigger || trigger.dataset.megaBound === '1') return;
+            trigger.dataset.megaBound = '1';
+
+            item.addEventListener('mouseenter', function () {
+                clearTimeout(closeTimer);
+                openItem(item);
+            });
+
+            item.addEventListener('mouseleave', function () {
+                closeTimer = setTimeout(closeAll, 120);
+            });
+
+            trigger.addEventListener('focus', function () {
+                clearTimeout(closeTimer);
+                openItem(item);
+            });
         });
-    });
+    }
 
-    nav.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeAll();
-    });
+    window.__avalonMegaNavInit = initMegaNav;
 
-    document.addEventListener('click', function (e) {
-        if (!nav.contains(e.target)) closeAll();
-    });
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMegaNav);
+    } else {
+        initMegaNav();
+    }
 })();

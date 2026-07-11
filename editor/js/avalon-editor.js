@@ -17,6 +17,13 @@
         headerWishlistUrl: '/wishlist',
         headerCartUrl: '/cart',
 
+        colorGold: '#c9a96e',
+        colorGoldLight: '#e0c992',
+        colorGoldDark: '#9a7d4a',
+        colorButtonText: '#12100e',
+        colorButtonHoverBg: '#e0c992',
+        colorButtonHoverText: '#12100e',
+
         heroPrimarySrc: 'data/images/hero/chrysler-building.jpg',
         heroPrimaryAlt: 'Art Deco Chrysler Building facade at golden hour',
         heroEyebrow: 'Designer Lighting & Fine Fixtures',
@@ -302,13 +309,6 @@
     var logoSizeVal = null;
     var topBarCopyInput = null;
     var searchPlaceholderInput = null;
-    var panelHeader = null;
-    var panelSection1 = null;
-    var panelSection2 = null;
-    var panelSection3 = null;
-    var panelFooter = null;
-    var sectionTabs = null;
-
     function $(id) { return document.getElementById(id); }
 
     function scheduleSave() {
@@ -787,8 +787,40 @@
         if (btn) btn.textContent = draft.newsletterBtnLabel || DEFAULTS.newsletterBtnLabel;
     }
 
+    function applyColors() {
+        if (!iframeDoc) return;
+        var styleId = '__avalon-designer-colors__';
+        var el = iframeDoc.getElementById(styleId);
+        if (!el) {
+            el = iframeDoc.createElement('style');
+            el.id = styleId;
+            iframeDoc.head.appendChild(el);
+        }
+        function cv(key) {
+            return draft[key] !== undefined && draft[key] !== null ? draft[key] : DEFAULTS[key];
+        }
+        el.textContent = ''
+            + ':root {'
+            + '--avalon-gold: ' + cv('colorGold') + ';'
+            + '--avalon-gold-light: ' + cv('colorGoldLight') + ';'
+            + '--avalon-gold-dark: ' + cv('colorGoldDark') + ';'
+            + '--avalon-btn-bg: ' + cv('colorGold') + ';'
+            + '--avalon-btn-text: ' + cv('colorButtonText') + ';'
+            + '--avalon-btn-border: ' + cv('colorGoldLight') + ';'
+            + '--avalon-btn-hover-bg: ' + cv('colorButtonHoverBg') + ';'
+            + '--avalon-btn-hover-text: ' + cv('colorButtonHoverText') + ';'
+            + '}';
+    }
+
+    function applyNav() {
+        if (!iframeDoc || !window.AvalonNavEditor || !draft.navCatalog) return;
+        window.AvalonNavEditor.applyToDocument(iframeDoc, draft.navCatalog);
+    }
+
     function applyAll() {
         if (!iframeDoc) return;
+        applyColors();
+        applyNav();
         applyLogo();
         applyLogoLink();
         applyHeaderUtils();
@@ -855,6 +887,60 @@
         }
     }
 
+    function normalizeHexColor(value) {
+        if (!value) return '';
+        var v = String(value).trim();
+        if (v.charAt(0) !== '#') v = '#' + v;
+        return /^#[0-9a-fA-F]{6}$/.test(v) ? v.toLowerCase() : '';
+    }
+
+    function populateColorFields() {
+        var panel = $('avalonFieldPanel');
+        if (!panel) return;
+        panel.querySelectorAll('[data-avalon-color]').forEach(function (el) {
+            var key = el.dataset.avalonColor;
+            if (!key || DEFAULTS[key] === undefined) return;
+            var val = draft[key] !== undefined && draft[key] !== null ? draft[key] : DEFAULTS[key];
+            el.value = val;
+        });
+        panel.querySelectorAll('[data-avalon-color-hex]').forEach(function (el) {
+            var key = el.dataset.avalonColorHex;
+            if (!key || DEFAULTS[key] === undefined) return;
+            el.value = draft[key] !== undefined && draft[key] !== null ? draft[key] : DEFAULTS[key];
+        });
+    }
+
+    function bindColorFields() {
+        var panel = $('avalonFieldPanel');
+        if (!panel) return;
+
+        panel.querySelectorAll('[data-avalon-color]').forEach(function (picker) {
+            picker.addEventListener('input', function () {
+                var key = picker.dataset.avalonColor;
+                if (!key) return;
+                draft[key] = picker.value;
+                var hex = panel.querySelector('[data-avalon-color-hex="' + key + '"]');
+                if (hex) hex.value = picker.value;
+                applyColors();
+                scheduleSave();
+            });
+        });
+
+        panel.querySelectorAll('[data-avalon-color-hex]').forEach(function (hexInput) {
+            hexInput.addEventListener('input', function () {
+                var key = hexInput.dataset.avalonColorHex;
+                if (!key) return;
+                var norm = normalizeHexColor(hexInput.value);
+                if (!norm) return;
+                draft[key] = norm;
+                var picker = panel.querySelector('[data-avalon-color="' + key + '"]');
+                if (picker) picker.value = norm;
+                applyColors();
+                scheduleSave();
+            });
+        });
+    }
+
     function populatePanel() {
         if (logoUrlInput) logoUrlInput.value = draft.logoUrl || DEFAULTS.logoUrl;
         if (logoSizeInput) logoSizeInput.value = String(draft.logoSize || DEFAULTS.logoSize);
@@ -874,6 +960,8 @@
         IMAGE_SLOTS.forEach(function (slot) {
             updateImageThumb(slot, draft[slot.field]);
         });
+
+        populateColorFields();
     }
 
     function bindImageSlot(slot) {
@@ -912,26 +1000,16 @@
         }
     }
 
-    function bindSectionTabs() {
-        if (!sectionTabs) return;
-        sectionTabs.addEventListener('click', function (e) {
-            var btn = e.target.closest('[data-avalon-section]');
-            if (!btn) return;
-            var section = btn.getAttribute('data-avalon-section');
-            sectionTabs.querySelectorAll('.designer-section-tab').forEach(function (tab) {
-                var active = tab === btn;
-                tab.classList.toggle('is-active', active);
-                tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    function bindAvalonSidebar() {
+        var panel = $('avalonFieldPanel');
+        if (!panel) return;
+
+        panel.querySelectorAll('[data-avalon-scroll]').forEach(function (details) {
+            details.addEventListener('toggle', function () {
+                if (!details.open) return;
+                var sel = details.getAttribute('data-avalon-scroll');
+                if (sel) scrollPreviewTo(sel);
             });
-            if (panelHeader) panelHeader.hidden = section !== 'header';
-            if (panelSection1) panelSection1.hidden = section !== 'section1';
-            if (panelSection2) panelSection2.hidden = section !== 'section2';
-            if (panelSection3) panelSection3.hidden = section !== 'section3';
-            if (panelFooter) panelFooter.hidden = section !== 'footer';
-            if (section === 'section1') scrollPreviewTo('.avalon-hero');
-            if (section === 'section2') scrollPreviewTo('#avalonSection2');
-            if (section === 'section3') scrollPreviewTo('#avalonSection3');
-            if (section === 'footer') scrollPreviewTo('#avalonSiteFooter');
         });
     }
 
@@ -977,7 +1055,8 @@
         }
 
         IMAGE_SLOTS.forEach(bindImageSlot);
-        bindSectionTabs();
+        bindColorFields();
+        bindAvalonSidebar();
     }
 
     function initPreview() {
@@ -1009,13 +1088,6 @@
         logoSizeVal = $('sf-logo-size-val');
         topBarCopyInput = $('sf-top-bar-copy');
         searchPlaceholderInput = $('sf-search-placeholder');
-        panelHeader = $('avalonPanelHeader');
-        panelSection1 = $('avalonPanelSection1');
-        panelSection2 = $('avalonPanelSection2');
-        panelSection3 = $('avalonPanelSection3');
-        panelFooter = $('avalonPanelFooter');
-        sectionTabs = $('avalonSectionTabs');
-
         draft = Object.assign({}, DEFAULTS);
         window.__avalonDraft = draft;
 
@@ -1027,8 +1099,21 @@
                 Object.keys(DEFAULTS).forEach(function (key) {
                     if (saved[key] !== undefined && saved[key] !== null) draft[key] = saved[key];
                 });
+                if (saved.navCatalog) draft.navCatalog = saved.navCatalog;
+            }
+            if (!draft.navCatalog && window.AvalonNavEditor) {
+                draft.navCatalog = window.AvalonNavEditor.migrateFromDraft(saved || {});
             }
             populatePanel();
+            if (window.AvalonNavEditor) {
+                window.AvalonNavEditor.init({
+                    mount: $('avalonNavEditorMount'),
+                    getNav: function () { return draft.navCatalog; },
+                    setNav: function (nav) { draft.navCatalog = nav; },
+                    getIframeDoc: function () { return iframeDoc; },
+                    onUpdate: function () { scheduleSave(); },
+                });
+            }
             draftReady = true;
             onReady();
         });

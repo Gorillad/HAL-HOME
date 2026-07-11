@@ -222,16 +222,16 @@
     font-weight: 600;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: #12100e;
-    background: var(--avalon-gold);
-    border: 1px solid var(--avalon-gold-light);
+    color: var(--avalon-btn-text, #12100e);
+    background: var(--avalon-btn-bg, var(--avalon-gold));
+    border: 1px solid var(--avalon-btn-border, var(--avalon-gold-light));
     cursor: pointer;
     transition: background 0.25s, color 0.25s;
 }
 
 .avalon-footer__newsletter-btn:hover {
     background: transparent;
-    color: var(--avalon-gold-light);
+    color: var(--avalon-btn-hover-bg, var(--avalon-gold-light));
 }
 
 /* ── Divider + navigation band ───────────────────────────────── */

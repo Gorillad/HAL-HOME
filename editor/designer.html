@@ -103,6 +103,36 @@
             border-top: 1px solid var(--editor-border, #2a2a2a);
         }
 
+        /* Avalon major sections & nested sub-groups */
+        .designer-group--major {
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+        }
+        .designer-group--major > .designer-group-head {
+            font-size: 0.72rem;
+            color: var(--editor-text, #ddd);
+        }
+        .avalon-nested-groups {
+            padding-top: 4px;
+            gap: 8px;
+        }
+        .designer-subgroup {
+            border: 1px solid var(--editor-border, #2a2a2a);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .designer-subgroup > .designer-group-head {
+            padding: 8px 12px;
+            font-size: 0.68rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .designer-subgroup > .designer-group-body {
+            padding: 10px 12px 12px;
+            border-top: 1px solid var(--editor-border, #2a2a2a);
+        }
+        .avalon-panel-full-site .avalon-panel-section > .editor-panel-lead--compact {
+            display: none;
+        }
+
         /* Color pair input (swatch + hex) */
         .editor-color-pair {
             display: flex;
@@ -1626,17 +1656,13 @@
             <!-- Avalon field panel -->
             <div class="designer-field-panel" id="avalonFieldPanel" hidden>
 
-                <div class="designer-section-tabs" id="avalonSectionTabs" role="tablist" aria-label="Avalon sections">
-                    <button type="button" class="designer-section-tab is-active" role="tab" data-avalon-section="header" aria-selected="true">Header</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="section1" aria-selected="false">Section 1</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="section2" aria-selected="false">Section 2</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="section3" aria-selected="false">Section 3</button>
-                    <button type="button" class="designer-section-tab" role="tab" data-avalon-section="footer" aria-selected="false">Footer</button>
-                </div>
+                <p class="editor-panel-lead editor-panel-lead--compact avalon-sidebar-lead" style="padding:12px 16px 8px;margin:0;">Expand a section below to edit the header, hero, collections, and footer.</p>
 
-                <div id="avalonPanelHeader">
-                <details class="designer-group" open>
-                    <summary class="designer-group-head">Logo</summary>
+                <div id="avalonPanelFullSite" class="avalon-panel-full-site">
+
+                <div id="avalonPanelHeader" class="avalon-panel-section">
+                <details class="designer-group" data-avalon-scroll="#avalonSiteHeader">
+                    <summary class="designer-group-head">Header &amp; Logo</summary>
                     <div class="designer-group-body">
                         <div class="editor-field">
                             <label class="editor-field-label">Header logo</label>
@@ -1674,7 +1700,7 @@
                     </div>
                 </details>
 
-                <details class="designer-group" open>
+                <details class="designer-group">
                     <summary class="designer-group-head">Top bar &amp; search</summary>
                     <div class="designer-group-body">
                         <div class="editor-field">
@@ -1689,7 +1715,7 @@
                     </div>
                 </details>
 
-                <details class="designer-group" open>
+                <details class="designer-group">
                     <summary class="designer-group-head">Login, wishlist &amp; cart</summary>
                     <div class="designer-group-body">
                         <p class="editor-field-hint">Icons appear on the toolbar row — logo left, search center, utilities right. Cart is the last icon.</p>
@@ -1708,13 +1734,81 @@
                     </div>
                 </details>
 
+                <details class="designer-group">
+                    <summary class="designer-group-head">Brand &amp; accent colors</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 12px">Gold accent tokens used across navigation, rules, and typography highlights.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Primary gold</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="sf-color-gold" data-avalon-color="colorGold" value="#c9a96e">
+                                <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorGold" value="#c9a96e" maxlength="7" aria-label="Primary gold hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Light gold</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="sf-color-gold-light" data-avalon-color="colorGoldLight" value="#e0c992">
+                                <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorGoldLight" value="#e0c992" maxlength="7" aria-label="Light gold hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Dark gold</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="sf-color-gold-dark" data-avalon-color="colorGoldDark" value="#9a7d4a">
+                                <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorGoldDark" value="#9a7d4a" maxlength="7" aria-label="Dark gold hex">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Button colors</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 12px">Applies to filled CTAs — hero, trade band, gallery, expert, and newsletter subscribe.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Button text</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="sf-color-btn-text" data-avalon-color="colorButtonText" value="#12100e">
+                                <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorButtonText" value="#12100e" maxlength="7" aria-label="Button text hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Button hover fill</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="sf-color-btn-hover-bg" data-avalon-color="colorButtonHoverBg" value="#e0c992">
+                                <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorButtonHoverBg" value="#e0c992" maxlength="7" aria-label="Button hover fill hex">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Button hover text</label>
+                            <div class="editor-color-pair">
+                                <input type="color" id="sf-color-btn-hover-text" data-avalon-color="colorButtonHoverText" value="#12100e">
+                                <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorButtonHoverText" value="#12100e" maxlength="7" aria-label="Button hover text hex">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group" data-avalon-scroll="#avalonMegaNav">
+                    <summary class="designer-group-head">Mega Menu &amp; Navigation</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 12px">Rename nav items, add or remove columns and sub-links. Shop by Room supports room thumbnail image paths.</p>
+                        <div id="avalonNavEditorMount"></div>
+                        <button type="button" class="hero-slides-add-btn" id="avalonNavAddBtn">+ Add nav item</button>
+                    </div>
+                </details>
+
                 </div><!-- /#avalonPanelHeader -->
 
-                <div id="avalonPanelSection1" hidden>
-                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 1 — Strong static hero · Art Deco editorial layout (XO paste slot)</p>
+                <div id="avalonPanelSection1" class="avalon-panel-section">
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Primary hero image</summary>
+                    <details class="designer-group designer-group--major" id="avalonEditorHeroSection" data-avalon-scroll=".avalon-hero">
+                        <summary class="designer-group-head">Hero Section</summary>
+                        <div class="designer-group-body avalon-nested-groups">
+
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Hero Image</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label">Large lifestyle photo (left)</label>
@@ -1741,8 +1835,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Primary hero copy</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Hero Copy &amp; Button</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-hero-eyebrow">Eyebrow</label>
@@ -1775,8 +1869,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Top collection tile</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Chandeliers Tile</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label">Tile image</label>
@@ -1810,8 +1904,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Bottom collection tile</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Pendants Tile</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label">Tile image</label>
@@ -1845,8 +1939,11 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Service trust strip</summary>
+                        </div>
+                    </details>
+
+                    <details class="designer-group" data-avalon-scroll="#avalonTrustStrip">
+                        <summary class="designer-group-head">Trust Strip</summary>
                         <div class="designer-group-body">
                             <p class="editor-field-hint" style="margin:0 0 12px">Three service pillars shown below the hero.</p>
                             <div class="editor-field">
@@ -1876,8 +1973,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Trade program band</summary>
+                    <details class="designer-group" data-avalon-scroll="#avalonTradeBand">
+                        <summary class="designer-group-head">Trade Program</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-trade-copy">Supporting copy</label>
@@ -1895,11 +1992,10 @@
                     </details>
                 </div><!-- /#avalonPanelSection1 -->
 
-                <div id="avalonPanelSection2" hidden>
-                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 2 — Featured Collections / Signature Pieces (XO paste slot)</p>
+                <div id="avalonPanelSection2" class="avalon-panel-section">
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Featured brands strip</summary>
+                    <details class="designer-group" data-avalon-scroll="#avalonBrandsStrip">
+                        <summary class="designer-group-head">Featured Brands</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-brands-eyebrow">Eyebrow</label>
@@ -1957,8 +2053,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Section heading</summary>
+                    <details class="designer-group" data-avalon-scroll="#avalonSection2">
+                        <summary class="designer-group-head">Featured Collections Heading</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-s2-rule">Decorative rule label</label>
@@ -1975,7 +2071,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Collection 1</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2010,7 +2106,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Collection 2</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2045,7 +2141,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Collection 3</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2080,7 +2176,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Collection 4</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2115,8 +2211,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Gallery preview</summary>
+                    <details class="designer-group" data-avalon-scroll="#avalonS2Gallery">
+                        <summary class="designer-group-head">Project Gallery</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-s2-gallery-eyebrow">Eyebrow</label>
@@ -2141,7 +2237,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Gallery preview image 1</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2223,11 +2319,10 @@
                     </details>
                 </div><!-- /#avalonPanelSection2 -->
 
-                <div id="avalonPanelSection3" hidden>
-                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Section 3 — Brand Story, Reviews &amp; Lighting Expert (XO paste slot)</p>
+                <div id="avalonPanelSection3" class="avalon-panel-section">
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Section framing</summary>
+                    <details class="designer-group" data-avalon-scroll="#avalonSection3">
+                        <summary class="designer-group-head">About Section Framing</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-s3-rule">Decorative rule label</label>
@@ -2236,7 +2331,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Brand story (left)</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2262,7 +2357,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Testimonial &amp; CTA (right)</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2288,7 +2383,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Google Reviews (below About Us)</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2318,7 +2413,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Review 1</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2372,8 +2467,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Lighting Expert CTA</summary>
+                    <details class="designer-group" data-avalon-scroll="#avalonSection4">
+                        <summary class="designer-group-head">Lighting Expert</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-expert-eyebrow">Eyebrow</label>
@@ -2398,7 +2493,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-group">
                         <summary class="designer-group-head">Expert image 1</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2480,10 +2575,13 @@
                     </details>
                 </div><!-- /#avalonPanelSection3 -->
 
-                <div id="avalonPanelFooter" hidden>
-                    <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 0;margin:0;">Footer — Custom elegant footer (XO paste slot)</p>
+                <div id="avalonPanelFooter" class="avalon-panel-section">
 
-                    <details class="designer-group" open>
+                    <details class="designer-group designer-group--major" data-avalon-scroll="#avalonSiteFooter">
+                        <summary class="designer-group-head">Footer</summary>
+                        <div class="designer-group-body avalon-nested-groups">
+
+                    <details class="designer-subgroup">
                         <summary class="designer-group-head">Brand</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2499,7 +2597,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-subgroup">
                         <summary class="designer-group-head">Newsletter</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2521,8 +2619,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Shop links</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Shop Links</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-footer-col1-head">Column heading</label>
@@ -2563,8 +2661,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Company links</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Company Links</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-footer-col2-head">Column heading</label>
@@ -2605,8 +2703,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Visit &amp; contact</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Visit &amp; Contact</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
                                 <label class="editor-field-label" for="sf-footer-col3-head">Column heading</label>
@@ -2633,8 +2731,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Social media</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Social Media</summary>
                         <div class="designer-group-body">
                             <p class="editor-field-hint">Shown below the footer tagline. Leave a URL blank to hide that icon.</p>
                             <div class="editor-field">
@@ -2668,8 +2766,8 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
-                        <summary class="designer-group-head">Legal links</summary>
+                    <details class="designer-subgroup">
+                        <summary class="designer-group-head">Legal Links</summary>
                         <div class="designer-group-body">
                             <p class="editor-field-hint" style="margin:0 0 12px">Policy links shown below the copyright line. Clear a label to hide a link.</p>
                             <div class="editor-field">
@@ -2699,7 +2797,7 @@
                         </div>
                     </details>
 
-                    <details class="designer-group" open>
+                    <details class="designer-subgroup">
                         <summary class="designer-group-head">Copyright</summary>
                         <div class="designer-group-body">
                             <div class="editor-field">
@@ -2708,8 +2806,13 @@
                             </div>
                         </div>
                     </details>
+
+                        </div>
+                    </details>
                 </div><!-- /#avalonPanelFooter -->
-            </div>
+
+                </div><!-- /#avalonPanelFullSite -->
+            </div><!-- /#avalonFieldPanel -->
 
             <!-- Scaffold shown for non-Woolf / non-Avalon designs -->
             <div class="designer-editor-scaffold" id="designerScaffold" hidden>
@@ -2778,6 +2881,7 @@
     <script src="js/shop-categories-editor.js"></script>
     <script src="js/shop-brands-editor.js"></script>
     <script src="js/catalog-library-editor.js"></script>
+    <script src="js/avalon-nav-editor.js"></script>
     <script src="js/avalon-editor.js"></script>
     <script src="js/designer-editor.js?v=3"></script>
     <!-- section-editor-base provides the shared draft persistence helpers

@@ -127,22 +127,23 @@
 .avalon-hero-primary-cta {
     display: inline-block;
     padding: 14px 30px;
-    background: var(--avalon-gold);
-    color: #12100e;
+    background: var(--avalon-btn-bg, var(--avalon-gold));
+    color: var(--avalon-btn-text, #12100e);
     font-family: var(--font-headline);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     text-decoration: none;
-    border: 1px solid var(--avalon-gold-light);
+    border: 1px solid var(--avalon-btn-border, var(--avalon-gold-light));
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
     pointer-events: auto;
     transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .avalon-hero-primary-cta:hover {
-    background: var(--avalon-gold-light);
+    background: var(--avalon-btn-hover-bg, var(--avalon-gold-light));
+    color: var(--avalon-btn-hover-text, #12100e);
     transform: translateY(-1px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
 }
