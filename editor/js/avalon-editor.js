@@ -12,7 +12,7 @@
         logoUrl: '/',
         logoSize: 88,
         topBarCopy: 'Complimentary design consultation · White-glove delivery',
-        searchPlaceholder: 'Find a fixture…',
+        searchPlaceholder: 'Find the products you\'ll love…',
         headerAccountUrl: '/account',
         headerWishlistUrl: '/wishlist',
         headerCartUrl: '/cart',
@@ -20,6 +20,7 @@
         colorGold: '#c9a96e',
         colorGoldLight: '#e0c992',
         colorGoldDark: '#9a7d4a',
+        colorNavy: '#242741',
         colorButtonText: '#12100e',
         colorButtonHoverBg: '#e0c992',
         colorButtonHoverText: '#12100e',
@@ -345,6 +346,10 @@
         if (!saved || typeof saved !== 'object') return saved;
         if (saved.logoSrc && /scera-logo/i.test(String(saved.logoSrc))) {
             saved.logoSrc = DEFAULTS.logoSrc;
+        }
+        // Upgrade previous default search copy to the new placeholder
+        if (saved.searchPlaceholder === 'Find a fixture…' || saved.searchPlaceholder === 'Find a fixture...') {
+            saved.searchPlaceholder = DEFAULTS.searchPlaceholder;
         }
         return saved;
     }
@@ -804,6 +809,7 @@
             + '--avalon-gold: ' + cv('colorGold') + ';'
             + '--avalon-gold-light: ' + cv('colorGoldLight') + ';'
             + '--avalon-gold-dark: ' + cv('colorGoldDark') + ';'
+            + '--avalon-navy: ' + cv('colorNavy') + ';'
             + '--avalon-btn-bg: ' + cv('colorGold') + ';'
             + '--avalon-btn-text: ' + cv('colorButtonText') + ';'
             + '--avalon-btn-border: ' + cv('colorGoldLight') + ';'
@@ -1116,6 +1122,7 @@
             }
             draftReady = true;
             onReady();
+            scheduleSave();
         });
     }
 

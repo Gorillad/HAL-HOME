@@ -28,7 +28,7 @@
     position: relative;
     overflow: hidden;
     min-height: 0;
-    background: linear-gradient(145deg, #2a2520 0%, #1a1714 55%, #0f0d0b 100%);
+    background: linear-gradient(145deg, color-mix(in srgb, var(--avalon-navy) 70%, #2a2520 30%) 0%, #1a1714 55%, #0f0d0b 100%);
 }
 
 .avalon-hero-primary img,
