@@ -1,0 +1,221 @@
+/* Cardiff category bands + materials + brands */
+
+.cardiff-trust {
+    padding: 28px 0 8px;
+}
+
+.cardiff-trust__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cardiff-trust__item {
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(199, 100, 105, 0.12);
+}
+
+.cardiff-trust__label {
+    display: block;
+    color: var(--cardiff-primary);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.cardiff-trust__detail {
+    display: block;
+    margin-top: 6px;
+    color: var(--cardiff-text-muted);
+    font-size: 13px;
+}
+
+.cardiff-categories {
+    padding: 48px 0 24px;
+}
+
+.cardiff-categories__intro {
+    max-width: 42rem;
+    margin-bottom: 28px;
+}
+
+.cardiff-categories__intro h2 {
+    margin: 10px 0 0;
+    color: var(--cardiff-primary);
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.08;
+}
+
+.cardiff-categories__intro p {
+    margin: 12px 0 0;
+    color: var(--cardiff-text-muted);
+    font-size: 16px;
+}
+
+.cardiff-category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.cardiff-category-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 22px;
+    background: var(--cardiff-surface-raised);
+    border: 1px solid rgba(199, 100, 105, 0.12);
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cardiff-category-card:hover,
+.cardiff-category-card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(47, 42, 42, 0.1);
+    outline: none;
+}
+
+.cardiff-category-card__media {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--cardiff-primary);
+}
+
+.cardiff-category-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.cardiff-category-card:hover .cardiff-category-card__media img {
+    transform: scale(1.04);
+}
+
+.cardiff-category-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px 20px;
+}
+
+.cardiff-category-card__body span {
+    color: var(--cardiff-accent);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.cardiff-category-card__body strong {
+    color: var(--cardiff-primary);
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.cardiff-category-card__body small {
+    color: var(--cardiff-text-muted);
+    font-size: 13px;
+}
+
+.cardiff-materials {
+    padding: 36px 0 12px;
+}
+
+.cardiff-materials__band {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    padding: 18px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(100, 199, 194, 0.18), rgba(199, 154, 100, 0.22));
+    border: 1px solid rgba(199, 100, 105, 0.12);
+}
+
+.cardiff-material {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.cardiff-material__swatch {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+}
+
+.cardiff-material__swatch--rattan { background: linear-gradient(90deg, #d4b07a, var(--cardiff-secondary)); }
+.cardiff-material__swatch--capiz { background: linear-gradient(90deg, #f4e9e8, var(--cardiff-accent) 50%, #f0e2df); }
+.cardiff-material__swatch--brass { background: linear-gradient(90deg, #d8b57a, var(--cardiff-secondary)); }
+.cardiff-material__swatch--nickel { background: linear-gradient(90deg, #e8ecee, #c5cbcf); }
+
+.cardiff-material strong {
+    color: var(--cardiff-primary);
+    font-size: 14px;
+}
+
+.cardiff-material span {
+    color: var(--cardiff-text-muted);
+    font-size: 12px;
+}
+
+.cardiff-brands {
+    padding: 40px 0 16px;
+    text-align: center;
+}
+
+.cardiff-brands__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 18px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cardiff-brands__list a {
+    color: var(--cardiff-primary);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.72;
+    transition: opacity 0.18s ease, color 0.18s ease;
+}
+
+.cardiff-brands__list a:hover,
+.cardiff-brands__list a:focus-visible {
+    opacity: 1;
+    color: var(--cardiff-accent);
+    outline: none;
+}
+
+@media (max-width: 980px) {
+    .cardiff-category-grid,
+    .cardiff-materials__band {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cardiff-trust__list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .cardiff-category-grid {
+        grid-template-columns: 1fr;
+    }
+}

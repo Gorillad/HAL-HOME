@@ -445,7 +445,8 @@
 
         /* Full Site preview iframe — height is fitted dynamically to content */
         #woolFullSiteFrame,
-        #avalonFullSiteFrame {
+        #avalonFullSiteFrame,
+        #cardiffFullSiteFrame {
             display: block;
             width: 100%;
             height: 3200px; /* fallback; overridden once content height is measured */
@@ -2821,7 +2822,178 @@
                 </div><!-- /#avalonPanelFullSite -->
             </div><!-- /#avalonFieldPanel -->
 
-            <!-- Scaffold shown for non-Woolf / non-Avalon designs -->
+            <div class="designer-field-panel" id="cardiffFieldPanel" hidden>
+                <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 8px;margin:0;">Edit Cardiff’s coastal homepage — header, promo hero, category bands, and brand colors.</p>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Header &amp; logo</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-logo-file">Logo image</label>
+                            <input type="file" id="cf-logo-file" accept="image/*">
+                            <button type="button" class="editor-btn-secondary" id="cf-logo-remove" style="margin-top:8px">Reset logo</button>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-logo-url">Logo URL</label>
+                            <input type="text" id="cf-logo-url" data-cardiff-field="logoUrl" class="editor-field-input" placeholder="/">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-logo-size">Logo size <span id="cf-logo-size-val">72px</span></label>
+                            <input type="range" id="cf-logo-size" data-cardiff-field="logoSize" min="48" max="120" step="1" value="72">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-top-bar-copy">Top bar copy</label>
+                            <input type="text" id="cf-top-bar-copy" data-cardiff-field="topBarCopy" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-search-placeholder">Search placeholder</label>
+                            <input type="text" id="cf-search-placeholder" data-cardiff-field="searchPlaceholder" class="editor-field-input">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Brand colors</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 12px">Primary rose, warm secondary, teal accent, and soft neutral background.</p>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Primary</label>
+                            <div class="editor-color-pair">
+                                <input type="color" data-cardiff-color="colorPrimary" value="#c76469">
+                                <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorPrimary" value="#c76469" maxlength="7">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Secondary</label>
+                            <div class="editor-color-pair">
+                                <input type="color" data-cardiff-color="colorSecondary" value="#c79a64">
+                                <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorSecondary" value="#c79a64" maxlength="7">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Accent</label>
+                            <div class="editor-color-pair">
+                                <input type="color" data-cardiff-color="colorAccent" value="#64c7c2">
+                                <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorAccent" value="#64c7c2" maxlength="7">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Background</label>
+                            <div class="editor-color-pair">
+                                <input type="color" data-cardiff-color="colorBg" value="#f4e9e8">
+                                <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorBg" value="#f4e9e8" maxlength="7">
+                            </div>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label">Text</label>
+                            <div class="editor-color-pair">
+                                <input type="color" data-cardiff-color="colorText" value="#2f2a2a">
+                                <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorText" value="#2f2a2a" maxlength="7">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Split hero</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-file">Hero image</label>
+                            <input type="file" id="cf-hero-file" accept="image/*">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-headline">Headline</label>
+                            <input type="text" id="cf-hero-headline" data-cardiff-field="heroHeadline" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-copy">Supporting copy</label>
+                            <textarea id="cf-hero-copy" data-cardiff-field="heroCopy" class="editor-field-input" rows="2"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-discount">Discount highlight</label>
+                            <input type="text" id="cf-hero-discount" data-cardiff-field="heroDiscount" class="editor-field-input" placeholder="50% Off">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-code">Promo code</label>
+                            <input type="text" id="cf-hero-code" data-cardiff-field="heroCode" class="editor-field-input" placeholder="SUMMER">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-cta-label">CTA label</label>
+                            <input type="text" id="cf-hero-cta-label" data-cardiff-field="heroCtaLabel" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-cta-url">CTA URL</label>
+                            <input type="text" id="cf-hero-cta-url" data-cardiff-field="heroCtaUrl" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-hero-fineprint">Fine print</label>
+                            <input type="text" id="cf-hero-fineprint" data-cardiff-field="heroFineprint" class="editor-field-input">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Category bands</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat-eyebrow">Section eyebrow</label>
+                            <input type="text" id="cf-cat-eyebrow" data-cardiff-field="catEyebrow" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat-heading">Section heading</label>
+                            <input type="text" id="cf-cat-heading" data-cardiff-field="catHeading" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat-intro">Section intro</label>
+                            <textarea id="cf-cat-intro" data-cardiff-field="catIntro" class="editor-field-input" rows="2"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat1-title">Category 1 title</label>
+                            <input type="text" id="cf-cat1-title" data-cardiff-field="cat1Title" class="editor-field-input">
+                            <input type="file" id="cf-cat1-file" accept="image/*" style="margin-top:8px">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat2-title">Category 2 title</label>
+                            <input type="text" id="cf-cat2-title" data-cardiff-field="cat2Title" class="editor-field-input">
+                            <input type="file" id="cf-cat2-file" accept="image/*" style="margin-top:8px">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat3-title">Category 3 title</label>
+                            <input type="text" id="cf-cat3-title" data-cardiff-field="cat3Title" class="editor-field-input">
+                            <input type="file" id="cf-cat3-file" accept="image/*" style="margin-top:8px">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-cat4-title">Category 4 title</label>
+                            <input type="text" id="cf-cat4-title" data-cardiff-field="cat4Title" class="editor-field-input">
+                            <input type="file" id="cf-cat4-file" accept="image/*" style="margin-top:8px">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Story &amp; expert CTA</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-story-heading">Story heading</label>
+                            <input type="text" id="cf-story-heading" data-cardiff-field="storyHeading" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-story-copy">Story copy</label>
+                            <textarea id="cf-story-copy" data-cardiff-field="storyCopy" class="editor-field-input" rows="3"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-expert-headline">Expert headline</label>
+                            <input type="text" id="cf-expert-headline" data-cardiff-field="expertHeadline" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="cf-expert-copy">Expert copy</label>
+                            <textarea id="cf-expert-copy" data-cardiff-field="expertCopy" class="editor-field-input" rows="2"></textarea>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Scaffold shown for non-Woolf / non-Avalon / non-Cardiff designs -->
             <div class="designer-editor-scaffold" id="designerScaffold" hidden>
                 <h3 class="editor-panel-subhead" id="scaffoldTemplateName" style="margin-top:0"></h3>
                 <p class="editor-panel-lead">This template editor is being built. The Woolf template is live now — select it from the nav above to start editing.</p>
@@ -2830,7 +3002,7 @@
                     <li><strong>Avalon</strong> — editorial hero &amp; dual collection highlights (preview live)</li>
                     <li><strong>Geneva</strong> — curated project showcase grid</li>
                     <li><strong>Sundance</strong> — mosaic hero and studio story blocks</li>
-                    <li><strong>Cardiff</strong> — split hero and brand-forward category bands</li>
+                    <li><strong>Cardiff</strong> — coastal promo hero and category bands (preview live)</li>
                 </ul>
             </div>
 
@@ -2864,6 +3036,15 @@
                     ></iframe>
                 </div>
 
+                <div class="designer-iframe-wrap" id="cardiffFullSitePreviewWrap" hidden>
+                    <iframe
+                        id="cardiffFullSiteFrame"
+                        src="../designer_editor/cardiff/index.html"
+                        title="Cardiff — Full site preview"
+                        scrolling="yes"
+                    ></iframe>
+                </div>
+
                 <!-- Scaffold preview for designs without a live shell -->
                 <div class="editor-preview-frame designer-preview-scaffold" id="designerScaffoldPreview" hidden>
                     <div class="designer-preview-scaffold-inner">
@@ -2890,6 +3071,7 @@
     <script src="js/catalog-library-editor.js"></script>
     <script src="js/avalon-nav-editor.js"></script>
     <script src="js/avalon-editor.js"></script>
+    <script src="js/cardiff-editor.js"></script>
     <script src="js/designer-editor.js?v=3"></script>
     <!-- section-editor-base provides the shared draft persistence helpers
          (designerSaveCombined / designerLoadCombined) used by the editor. -->
@@ -2902,6 +3084,7 @@
             var frames = [
                 document.getElementById('woolFullSiteFrame'),
                 document.getElementById('avalonFullSiteFrame'),
+                document.getElementById('cardiffFullSiteFrame'),
             ].filter(Boolean);
 
             function fitFrame(frame) {
@@ -2916,6 +3099,8 @@
                 var slug = window.__designerSlug || 'woolf';
                 if (slug === 'avalon') {
                     fitFrame(document.getElementById('avalonFullSiteFrame'));
+                } else if (slug === 'cardiff') {
+                    fitFrame(document.getElementById('cardiffFullSiteFrame'));
                 } else {
                     fitFrame(document.getElementById('woolFullSiteFrame'));
                 }

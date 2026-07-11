@@ -1,0 +1,447 @@
+/* Cardiff header */
+
+.cardiff-site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(244, 233, 232, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(47, 42, 42, 0.08);
+}
+
+.cardiff-utility-bar {
+    background: linear-gradient(90deg, var(--cardiff-primary) 0%, #b4555a 100%);
+    color: #fff8f7;
+}
+
+.cardiff-utility-bar__inner {
+    max-width: var(--cardiff-content-w);
+    margin: 0 auto;
+    padding: 8px 24px;
+    text-align: center;
+}
+
+.cardiff-utility-bar__copy {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.cardiff-header-toolbar__inner {
+    max-width: var(--cardiff-content-w);
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px 24px;
+}
+
+.cardiff-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-self: center;
+    grid-column: 2;
+}
+
+.cardiff-logo img {
+    width: auto;
+    height: var(--cardiff-header-logo-h, 72px);
+    max-height: var(--cardiff-header-logo-h, 72px);
+    object-fit: contain;
+}
+
+.cardiff-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+    min-height: 40px;
+    justify-self: start;
+    grid-column: 1;
+    padding: 6px 0 8px;
+    border: 0;
+    border-bottom: 1px solid rgba(47, 42, 42, 0.2);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    transition: border-color 0.18s ease;
+}
+
+.cardiff-search:focus-within {
+    border-bottom-color: var(--cardiff-primary);
+}
+
+.cardiff-search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+.cardiff-search-input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--cardiff-text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+}
+
+.cardiff-search-input::placeholder {
+    color: var(--cardiff-text-muted);
+}
+
+.cardiff-search-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: var(--cardiff-primary);
+}
+
+.cardiff-search-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.cardiff-header-utils {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    justify-self: end;
+    grid-column: 3;
+}
+
+.cardiff-header-util {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--cardiff-primary);
+    transition: color 0.18s ease, opacity 0.18s ease;
+}
+
+.cardiff-header-util:hover,
+.cardiff-header-util:focus-visible {
+    color: var(--cardiff-secondary);
+    outline: none;
+}
+
+.cardiff-header-util__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: inherit;
+    line-height: 0;
+}
+
+.cardiff-header-util__icon svg {
+    width: 28px;
+    height: 28px;
+    display: block;
+}
+
+.cardiff-header-util__badge {
+    position: absolute;
+    top: -5px;
+    right: -7px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--cardiff-secondary);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+}
+
+.cardiff-header-util--cart .cardiff-header-util__icon {
+    position: relative;
+}
+
+.cardiff-nav {
+    position: relative;
+    border-top: 1px solid rgba(47, 42, 42, 0.08);
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.cardiff-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 8px;
+    max-width: var(--cardiff-content-w);
+    margin: 0 auto;
+    padding: 0 12px;
+    list-style: none;
+}
+
+.cardiff-nav__item {
+    position: static;
+}
+
+.cardiff-nav__item[data-has-mega] {
+    position: relative;
+}
+
+.cardiff-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 14px;
+    color: var(--cardiff-text);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.18s ease;
+}
+
+.cardiff-nav__item[data-has-mega] > .cardiff-nav__link::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    opacity: 0.5;
+    margin-top: 1px;
+}
+
+.cardiff-nav__link:hover,
+.cardiff-nav__link:focus-visible,
+.cardiff-nav__item.is-open > .cardiff-nav__link {
+    color: var(--cardiff-primary);
+    outline: none;
+}
+
+/* Compact, content-sized mega panels */
+.cardiff-mega-panel {
+    position: absolute;
+    left: 0;
+    top: calc(100% - 1px);
+    z-index: 50;
+    width: max-content;
+    max-width: min(920px, calc(100vw - 24px));
+    margin: 0;
+    background: #fff;
+    border: 1px solid rgba(47, 42, 42, 0.1);
+    border-top: 2px solid var(--cardiff-primary);
+    border-radius: 0 0 10px 10px;
+    box-shadow:
+        0 8px 24px rgba(47, 42, 42, 0.1),
+        0 2px 6px rgba(47, 42, 42, 0.06);
+}
+
+/* Keep right-side menus (Ideas / Sale) on-screen */
+.cardiff-nav__item[data-has-mega]:nth-last-child(-n+2) .cardiff-mega-panel {
+    left: auto;
+    right: 0;
+}
+
+.cardiff-mega-panel[hidden] {
+    display: none;
+}
+
+.cardiff-mega-panel__inner {
+    margin: 0;
+    padding: 14px 16px 16px;
+    display: grid;
+    align-items: start;
+    gap: 4px 24px;
+    width: max-content;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.cardiff-mega-panel__inner--lighting {
+    grid-template-columns: repeat(3, max-content);
+}
+
+.cardiff-mega-panel__inner--ceiling {
+    grid-template-columns: repeat(4, max-content);
+}
+
+.cardiff-mega-panel__inner--architectural {
+    grid-template-columns: repeat(4, max-content);
+}
+
+.cardiff-mega-panel__inner--wall {
+    grid-template-columns: repeat(2, max-content);
+}
+
+.cardiff-mega-panel__inner--lamps {
+    grid-template-columns: repeat(3, max-content);
+}
+
+.cardiff-mega-panel__inner--outdoor {
+    grid-template-columns: repeat(3, max-content);
+}
+
+.cardiff-mega-panel__inner--accessories {
+    grid-template-columns: repeat(2, max-content);
+}
+
+.cardiff-mega-panel__inner--brands {
+    grid-template-columns: repeat(3, max-content);
+}
+
+.cardiff-mega-panel__inner--ideas {
+    grid-template-columns: repeat(2, max-content);
+}
+
+.cardiff-mega-panel__inner--sale {
+    grid-template-columns: repeat(2, max-content);
+}
+
+.cardiff-mega-col {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardiff-mega-col__head--spacer {
+    color: transparent;
+    user-select: none;
+    pointer-events: none;
+}
+
+.cardiff-mega-col__head {
+    display: flex;
+    align-items: flex-end;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    height: 34px;
+    margin: 0 0 8px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--cardiff-rule);
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--cardiff-primary);
+    white-space: nowrap;
+}
+
+.cardiff-mega-col__head a {
+    color: inherit;
+    line-height: inherit;
+}
+
+.cardiff-mega-col__head a:hover {
+    color: var(--cardiff-secondary);
+}
+
+.cardiff-mega-col > a {
+    display: block;
+    padding: 5px 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--cardiff-text-muted);
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+.cardiff-mega-col > a:hover,
+.cardiff-mega-col > a:focus-visible {
+    color: var(--cardiff-primary);
+    outline: none;
+}
+
+@media (max-width: 900px) {
+    .cardiff-header-toolbar__inner {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .cardiff-logo,
+    .cardiff-search,
+    .cardiff-header-utils {
+        grid-column: auto;
+        justify-self: center;
+    }
+
+    .cardiff-logo {
+        order: -1;
+    }
+
+    .cardiff-header-utils {
+        justify-content: center;
+    }
+
+    .cardiff-search {
+        max-width: 280px;
+        width: 100%;
+    }
+
+    .cardiff-nav__item[data-has-mega] {
+        position: static;
+    }
+
+    .cardiff-mega-panel,
+    .cardiff-nav__item[data-has-mega]:nth-last-child(-n+2) .cardiff-mega-panel {
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-width: none;
+    }
+
+    .cardiff-mega-panel__inner {
+        width: 100%;
+        padding: 14px 16px 16px;
+        gap: 14px 20px;
+    }
+
+    .cardiff-mega-panel__inner--lighting,
+    .cardiff-mega-panel__inner--lamps,
+    .cardiff-mega-panel__inner--outdoor,
+    .cardiff-mega-panel__inner--wall,
+    .cardiff-mega-panel__inner--accessories,
+    .cardiff-mega-panel__inner--ideas,
+    .cardiff-mega-panel__inner--sale {
+        grid-template-columns: 1fr;
+    }
+
+    .cardiff-mega-panel__inner--ceiling,
+    .cardiff-mega-panel__inner--architectural,
+    .cardiff-mega-panel__inner--brands {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cardiff-mega-col > a,
+    .cardiff-mega-col__head {
+        white-space: normal;
+    }
+
+    .cardiff-mega-col__head {
+        height: auto;
+        min-height: 34px;
+    }
+}
+
+@media (max-width: 600px) {
+    .cardiff-mega-panel__inner--ceiling,
+    .cardiff-mega-panel__inner--architectural,
+    .cardiff-mega-panel__inner--brands {
+        grid-template-columns: 1fr;
+    }
+}

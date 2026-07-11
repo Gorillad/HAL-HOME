@@ -1,0 +1,1035 @@
+<!--
+============================================================
+  IMPORTANT: DO NOT REMOVE OR MODIFY WITHOUT TESTING
+  This code block is REQUIRED for the site search bar to function.
+  It loads the enhanced-search.js / enhanced-search.css module
+  and contains the search input markup (#searchEngine / #searchInputBox)
+  that module depends on.
+  Removing, renaming, or restructuring these elements/IDs/attributes
+  (e.g. itemNumVal, search, results, searchSubmitBtn) will break search.
+============================================================
+-->
+<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">
+<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js"></script>
+
+<!--
+============================================================
+  END OF SEARCH-DEPENDENT BLOCK
+  Everything above (script/link tags + #searchEngine markup)
+  must remain intact for the search bar to work.
+============================================================
+-->
+
+
+
+
+
+<!-- PASTE into XOLogic ? Dashboard ? Header.
+     Header JS is loaded via the Metadata section (/data/js/header.js). -->
+     <div class="topBanner-WD">
+      <div class="bannerCont-WD centerWrap-WD top-banner-inner">
+          <h1 class="topBanner-tagline"><a href="https://www.logicxo.com/" target="_blank" rel="noopener noreferrer">What's LogicX?</a></h1>
+          <div class="topBanner-carousel" role="region" aria-label="Promotions" aria-live="polite">
+              <button type="button" class="topBanner-carousel-btn topBanner-carousel-btn--prev" aria-label="Previous message">
+                  <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <div class="topBanner-carousel-slides">
+                  <p class="topBanner-promo is-active" aria-hidden="false">Use promo codes to save on products and overstock.</p>
+                  <p class="topBanner-promo" aria-hidden="true">Sign in for member-only pricing and extra discounts on every order.</p>
+                  <p class="topBanner-promo" aria-hidden="true">Overstock deals move fast — shop clearance lighting while supplies last.</p>
+              </div>
+              <button type="button" class="topBanner-carousel-btn topBanner-carousel-btn--next" aria-label="Next message">
+                  <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+          </div>
+          <a href="/contact-us" class="topBanner-store-link" aria-label="Find our store">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Find our store</span>
+          </a>
+      </div>
+  </div>
+
+  
+
+<!-- ============================================================
+     LOGICX TRENDING BAR
+     Drop this block directly after the closing </div> of .topBanner-WD
+     It sits between your message bar and your main nav.
+
+     HOW IT UPDATES:
+     - Fetches a fresh trend once per calendar day (Mountain Standard Time)
+     - Caches the result in the visitor's browser (localStorage)
+     - If the visitor returns the same day, they see the cached trend instantly
+     - No API call is made until the next MST calendar day begins
+     - Every visitor that day sees the same trend message
+============================================================ -->
+
+<div class="trendBar-WD">
+  <div class="bannerCont-WD centerWrap-WD trendBar-inner-WD">
+
+    <!-- Gold badge label on the left — hover/tap triggers the tooltip -->
+    <div class="trendBar-label-WD" id="trendBar-badge" aria-describedby="trendBar-tooltip" tabindex="0">
+      <span class="trendBar-pulse-WD" aria-hidden="true"></span>
+      <span>Trending Now</span>
+    </div>
+
+    <!-- AI-generated trend sentence — shimmer shows while loading, replaced by trend text -->
+    <div class="trendBar-content-WD">
+      <div class="trendBar-shimmer-WD" id="trendBar-shimmer">
+        <div class="trendBar-shimmer-line-WD"></div>
+        <div class="trendBar-shimmer-line-WD trendBar-shimmer-short-WD"></div>
+      </div>
+      <span class="trendBar-text-WD" id="trendBar-text" style="display:none;"></span>
+    </div>
+
+    <!-- Three trending finish circles — colors set dynamically by the script -->
+    <div class="trendBar-circles-WD" id="trendBar-circles" style="display:none;">
+      <span class="trendBar-circle-WD" id="trendBar-c1"></span>
+      <span class="trendBar-circle-WD" id="trendBar-c2"></span>
+      <span class="trendBar-circle-WD" id="trendBar-c3"></span>
+    </div>
+
+    <!-- Solid gold "Shop [category] ?" button — href set dynamically by the script -->
+    <a class="trendBar-link-WD" id="trendBar-link" href="#" target="_blank" style="display:none;">
+      Shop now &rarr;
+    </a>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     STYLES — scoped with -WD suffix to avoid conflicts
+     with any existing styles on your site
+============================================================ -->
+<style>
+  /* Outer bar — inherits your banner background so it blends cleanly */
+  .trendBar-WD {
+    background: inherit;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: inherit;
+    color: inherit;
+    box-shadow: 0 4px 8px -2px rgba(0,0,0,0.45);
+  }
+
+  /* Inner row — flex layout matching your .bannerCont-WD pattern */
+  .trendBar-inner-WD {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    flex-wrap: wrap;
+  }
+
+  /* Gold badge — the primary eye-catcher on the left */
+  .trendBar-label-WD {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #c9a96e;
+    color: #1a1400;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Animated pulse dot inside the gold badge */
+  .trendBar-pulse-WD {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1a1400;
+    opacity: 0.6;
+    animation: trendPulse-WD 2s ease-in-out infinite;
+  }
+  @keyframes trendPulse-WD {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 0.2; transform: scale(0.65); }
+  }
+
+  /* Trend text — bold and bright, takes up remaining space */
+  .trendBar-content-WD {
+    flex: 1;
+    min-width: 0;
+  }
+  .trendBar-text-WD {
+    font-size: 13px;
+    font-weight: 600;
+    color: inherit;
+    opacity: 1;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+  /* Dimmed italic style while loading */
+  .trendBar-text-WD.is-loading {
+    opacity: 0.4;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* Solid gold shop button — filled, high contrast, drives the click */
+  .trendBar-link-WD {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #c9a96e;
+    border: none;
+    border-radius: 6px;
+    color: #1a1400;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .trendBar-link-WD:hover {
+    background: #d9b97e;
+    transform: scale(1.02);
+  }
+
+  /* Trending finish circles — three color dots showing trending finishes */
+  .trendBar-circles-WD {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .trendBar-circle-WD {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.25);
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+
+  /* On mobile — show all three circles */
+  @media (max-width: 600px) {
+    .trendBar-circle-WD { display: inline-block; }
+  }
+
+  /* Tooltip — popup that explains the trending bar on hover or tap */
+  .trendBar-label-WD {
+    position: relative;
+    cursor: pointer;
+  }
+  /* Tooltip is fixed to the viewport so it never gets clipped by overflow */
+  .trendBar-tooltip-WD {
+    display: none;
+    position: fixed;
+    width: calc(100vw - 32px);
+    max-width: 320px;
+    background: #1a1a1a;
+    border: 1px solid rgba(201,169,110,0.4);
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    z-index: 99999;
+    pointer-events: none;
+    box-sizing: border-box;
+    /* Never block clicks on elements behind it */
+  }
+  /* Arrow pointing up toward the badge */
+  .trendBar-tooltip-WD::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 18px;
+    width: 10px;
+    height: 10px;
+    background: #1a1a1a;
+    border-left: 1px solid rgba(201,169,110,0.4);
+    border-top: 1px solid rgba(201,169,110,0.4);
+    transform: rotate(45deg);
+  }
+  .trendBar-tooltip-title-WD {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #c9a96e;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    font-family: inherit;
+  }
+  .trendBar-tooltip-body-WD {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    margin: 0;
+    font-weight: 400;
+    font-family: inherit;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+  /* Visibility controlled by JS for both hover and tap */
+  .trendBar-tooltip-WD.is-visible {
+    display: block;
+  }
+
+  /* Shimmer loading animation — shows while API call is in progress */
+  .trendBar-shimmer-WD {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+  .trendBar-shimmer-line-WD {
+    height: 11px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.16) 50%, rgba(255,255,255,0.07) 75%);
+    background-size: 200% 100%;
+    animation: trendShimmer-WD 1.4s infinite;
+  }
+  .trendBar-shimmer-short-WD { width: 55%; }
+  @keyframes trendShimmer-WD {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* On mobile — hide the trend sentence, show badge + button only */
+  @media (max-width: 600px) {
+    .trendBar-inner-WD   { gap: 10px; }
+    .trendBar-content-WD { display: none; }
+  }
+</style>
+
+<!-- ============================================================
+     SCRIPT — handles caching, daily MST refresh logic, and API call
+============================================================ -->
+<script>
+(function () {
+
+  // --- CATALOGUE MAP ---
+  // Maps AI-returned category slugs to live URLs on your site.
+  // Update these URLs here if your site structure ever changes.
+  var CATALOGUE = {
+    'chandeliers':          'https://www.catalog.logicxo.com/lighting-fixtures/chandeliers',
+    'pendants':             'https://www.catalog.logicxo.com/lighting-fixtures/pendants',
+    'mini-pendants':        'https://www.catalog.logicxo.com/lighting-fixtures/mini-pendants',
+    'flush-mounts':         'https://www.catalog.logicxo.com/lighting-fixtures/flush-mounts',
+    'sconces':              'https://www.catalog.logicxo.com/lighting-fixtures/sconces',
+    'wall-sconces':         'https://www.catalog.logicxo.com/lighting-fixtures/sconces',
+    'fans':                 'https://www.catalog.logicxo.com/lighting-fixtures/fans',
+    'fandeliers':           'https://www.catalog.logicxo.com/lighting-fixtures/fans/fandeliers',
+    'lamps':                'https://www.catalog.logicxo.com/lighting-fixtures/lamps/table-lamps',
+    'floor-lamps':          'https://www.catalog.logicxo.com/lighting-fixtures/lamps/floor-lamps',
+    'outdoor-lighting':     'https://www.catalog.logicxo.com/lighting-fixtures/exterior',
+    'outdoor-chandeliers':  'https://www.catalog.logicxo.com/lighting-fixtures/exterior/exterior-chandeliers',
+    'outdoor-pendants':     'https://www.catalog.logicxo.com/lighting-fixtures/exterior/exterior-pendants',
+    'landscape-lighting':   'https://www.catalog.logicxo.com/lighting-fixtures/landscape-ltg',
+    'track-lighting':       'https://www.catalog.logicxo.com/lighting-fixtures/track-ltg',
+    'vanity-lights':        'https://www.catalog.logicxo.com/lighting-fixtures/bathroom-fixtures/vanity-lights',
+    'foyer-lanterns':       'https://www.catalog.logicxo.com/lighting-fixtures'
+  };
+
+  // --- CACHE KEYS ---
+  // These are the names used to store the trend in the visitor's browser.
+  var CACHE_KEY_TREND    = 'lxo_trend_text';
+  var CACHE_KEY_URL      = 'lxo_trend_url';
+  var CACHE_KEY_LABEL    = 'lxo_trend_label';
+  var CACHE_KEY_DATE     = 'lxo_trend_date';
+  var CACHE_KEY_FINISHES = 'lxo_trend_finishes';
+  var CACHE_KEY_HISTORY  = 'lxo_trend_history'; // tracks last 6 categories shown to force rotation
+
+  // --- ELEMENT REFERENCES ---
+  var textEl = document.getElementById('trendBar-text');
+  var linkEl = document.getElementById('trendBar-link');
+
+  // --- GET TODAY'S DATE IN MST ---
+  // MST is UTC-7. We use this as the cache key so the trend
+  // resets at midnight Mountain Standard Time every day.
+  function getMSTDateString() {
+    var now = new Date();
+    var mst = new Date(now.getTime() - (7 * 60 * 60 * 1000));
+    return mst.toISOString().slice(0, 10); // e.g. "2026-07-04"
+  }
+
+  // --- FINISH COLOR MAP ---
+  // Maps standardized finish names to CSS color values for the circles.
+  // These match the exact finish slugs used in your catalogue URLs.
+  var FINISH_COLORS = {
+    'brass':             '#c9a96e',
+    'antique-brass':     '#a07840',
+    'black':             '#1c1c1c',
+    'bronze':            '#6b4226',
+    'nickel':            '#8a9099',
+    'chrome':            '#c8cdd2',
+    'gold':              '#d4af37',
+    'copper':            '#b87333',
+    'silver':            '#adb5bd',
+    'white':             '#f0ede8',
+    'steel':             '#8a9099',
+    'aluminum':          '#b0b4b8',
+    'pewter':            '#8a8d8f',
+    'rust':              '#8b4513',
+    'brown':             '#6b4226',
+    'gray':              '#808080',
+    'green':             '#4a6741',
+    'red':               '#8b2020',
+    'blue':              '#2a4a7a',
+    'gold':              '#d4af37',
+    'pink':              '#c9a0a0',
+    'yellow':            '#c9b84c',
+    'wood':              '#8b6914',
+    'platinum':          '#c0c0c0'
+  };
+
+  // --- FINISH SLUG MAP ---
+  // Maps AI-returned finish names to your catalogue's URL slugs.
+  // This handles vendor-specific names ? standardized slug.
+  // e.g. "Aged Brass", "Satin Brass", "Burnished Brass" all ? "brass"
+  var FINISH_SLUGS = {
+    'brass':             'brass',
+    'aged brass':        'brass',
+    'satin brass':       'brass',
+    'burnished brass':   'brass',
+    'warm gold':         'brass',
+    'polished brass':    'brass',
+    'antique brass':     'antique-brass',
+    'antique-brass':     'antique-brass',
+    'black':             'black',
+    'matte black':       'black',
+    'flat black':        'black',
+    'gloss black':       'black',
+    'bronze':            'bronze',
+    'oil rubbed bronze': 'bronze',
+    'antique bronze':    'bronze',
+    'dark bronze':       'bronze',
+    'nickel':            'nickel',
+    'brushed nickel':    'nickel',
+    'polished nickel':   'nickel',
+    'satin nickel':      'nickel',
+    'chrome':            'chrome',
+    'polished chrome':   'chrome',
+    'brushed chrome':    'chrome',
+    'gold':              'gold',
+    'polished gold':     'gold',
+    'copper':            'copper',
+    'silver':            'silver',
+    'white':             'white',
+    'matte white':       'white',
+    'gloss white':       'white',
+    'steel':             'steel',
+    'stainless steel':   'steel',
+    'aluminum':          'aluminum',
+    'pewter':            'pewter',
+    'gun metal':         'gray',
+    'weathered zinc':    'gray',
+    'iron':              'black',
+    'rust':              'rust',
+    'brown':             'brown',
+    'gray':              'gray',
+    'grey':              'gray',
+    'green':             'green',
+    'red':               'red',
+    'blue':              'blue',
+    'pink':              'pink',
+    'yellow':            'yellow',
+    'wood':              'wood',
+    'platinum':          'platinum'
+  };
+
+  function getFinishSlug(name) {
+    if (!name) return null;
+    var key = name.toLowerCase().trim();
+    return FINISH_SLUGS[key] || null;
+  }
+
+  function getFinishColor(name) {
+    if (!name) return '#888';
+    var slug = getFinishSlug(name) || name.toLowerCase().trim();
+    return FINISH_COLORS[slug] || '#888';
+  }
+
+  // --- DISPLAY A TREND ---
+  // Hides shimmer, shows trend text, finish circles, and sets the shop button link.
+  // The shop button links to category + top trending finish for a filtered result.
+  function displayTrend(trend, url, label, finishes) {
+    document.getElementById('trendBar-shimmer').style.display = 'none';
+    textEl.style.display = 'inline';
+    textEl.textContent = trend;
+
+    // Build a finish-filtered URL using the top trending finish
+    // e.g. /lighting-fixtures/chandeliers/brass?limitRange=0
+    var finishUrl = url;
+    var finishLabel = label;
+    if (finishes && finishes.length > 0) {
+      var topSlug = getFinishSlug(finishes[0]);
+      if (topSlug) {
+        finishUrl = url.replace(/\?.*$/, '') + '/' + topSlug + '?limitRange=0';
+        finishLabel = finishes[0] + ' ' + label;
+      }
+    }
+
+    linkEl.href = finishUrl;
+    linkEl.textContent = 'Shop ' + finishLabel + ' \u2192';
+    linkEl.style.display = 'inline-flex';
+
+    // Render the three finish circles
+    if (finishes && finishes.length === 3) {
+      document.getElementById('trendBar-c1').style.background = getFinishColor(finishes[0]);
+      document.getElementById('trendBar-c2').style.background = getFinishColor(finishes[1]);
+      document.getElementById('trendBar-c3').style.background = getFinishColor(finishes[2]);
+      document.getElementById('trendBar-circles').style.display = 'flex';
+    }
+  }
+
+  // --- FETCH FRESH TREND FROM API ---
+  // Called when no valid cache exists for today.
+  function fetchTrend() {
+
+    // Set loading state while we wait for the API
+    linkEl.style.display = 'none';
+
+    // --- BUILD CATEGORY EXCLUSION LIST ---
+    // Read the last 6 categories shown so the AI avoids repeating them.
+    // This forces daily rotation across different product categories.
+    var history = [];
+    try {
+      history = JSON.parse(localStorage.getItem(CACHE_KEY_HISTORY) || '[]');
+    } catch(e) { history = []; }
+    var exclusionText = history.length > 0
+      ? ' Do NOT pick any of these categories today (already shown recently): ' + history.join(', ') + '.'
+      : '';
+
+    // Call the Claude AI API via our secure server proxy
+    fetch('https://logicx-trend.gorillad.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, // API key is handled securely by the proxy
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 180,
+        messages: [{
+          role: 'user',
+          // Prompt includes exclusion list to force category rotation day to day
+          content: 'You are a lighting industry trend expert for LogicX, a premium lighting retailer carrying brands like Visual Comfort, Hinkley, Hubbardton Forge, and Crystorama. Respond ONLY with a raw JSON object — no markdown, no backticks, no explanation. Format exactly: {"trend":"one punchy sentence max 22 words on the hottest lighting trend in 2026","category":"one of: chandeliers, pendants, mini-pendants, flush-mounts, sconces, wall-sconces, fans, fandeliers, lamps, floor-lamps, outdoor-lighting, outdoor-chandeliers, outdoor-pendants, landscape-lighting, track-lighting, vanity-lights, foyer-lanterns","label":"2-4 word shop link label matching the category","finishes":["finish 1 using ONLY these exact names: brass, antique-brass, black, bronze, nickel, chrome, gold, copper, silver, white, steel, aluminum, pewter, rust, brown, gray, green, red, blue, pink, yellow, wood, platinum","finish 2","finish 3"]}' + exclusionText
+        }]
+      })
+    })
+
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var raw = data && data.content && data.content[0] && data.content[0].text;
+      if (!raw) throw new Error('No content');
+
+      // Strip any accidental markdown and parse the JSON response
+      var clean = raw.replace(/```json|```/g, '').trim();
+      var obj = JSON.parse(clean);
+
+      // Look up the catalogue URL — falls back to chandeliers if unrecognised
+      var url = CATALOGUE[obj.category] || CATALOGUE['chandeliers'];
+
+      // Save to browser cache with today's MST date as the key
+      try {
+        localStorage.setItem(CACHE_KEY_TREND,    obj.trend);
+        localStorage.setItem(CACHE_KEY_URL,      url);
+        localStorage.setItem(CACHE_KEY_LABEL,    obj.label);
+        localStorage.setItem(CACHE_KEY_DATE,     getMSTDateString());
+        localStorage.setItem(CACHE_KEY_FINISHES, JSON.stringify(obj.finishes || []));
+
+        // Add this category to the rotation history (keep last 6)
+        // so tomorrow the AI knows not to repeat it
+        var hist = JSON.parse(localStorage.getItem(CACHE_KEY_HISTORY) || '[]');
+        hist.unshift(obj.category);
+        if (hist.length > 6) hist = hist.slice(0, 6);
+        localStorage.setItem(CACHE_KEY_HISTORY, JSON.stringify(hist));
+      } catch(e) {}
+      // Note: localStorage may be unavailable in some private browsers —
+      // the catch above means it silently falls back to fetching fresh each load.
+
+      displayTrend(obj.trend, url, obj.label, obj.finishes || []);
+    })
+
+    // Fallback content if the API call fails for any reason
+    .catch(function() {
+      displayTrend(
+        'Sculptural brass chandeliers with organic, irregular forms are leading interiors in 2026.',
+        CATALOGUE['chandeliers'],
+        'chandeliers',
+        ['Aged Brass', 'Matte Black', 'Brushed Nickel']
+      );
+    });
+  }
+
+  // --- INITIALISE ---
+  // Check if we already have a cached trend from today (MST).
+  // If yes, show it instantly. If no, fetch a fresh one from the API.
+  function init() {
+    try {
+      var cachedDate  = localStorage.getItem(CACHE_KEY_DATE);
+      var cachedTrend = localStorage.getItem(CACHE_KEY_TREND);
+      var cachedUrl   = localStorage.getItem(CACHE_KEY_URL);
+      var cachedLabel = localStorage.getItem(CACHE_KEY_LABEL);
+
+      var cachedFinishes = JSON.parse(localStorage.getItem(CACHE_KEY_FINISHES) || '[]');
+
+      if (cachedDate === getMSTDateString() && cachedTrend && cachedUrl && cachedLabel) {
+        // Valid cache for today — show instantly, no API call needed
+        displayTrend(cachedTrend, cachedUrl, cachedLabel, cachedFinishes);
+        return;
+      }
+    } catch(e) {}
+
+    // No valid cache — fetch fresh from the API
+    fetchTrend();
+  }
+
+  // Run on page load
+  init();
+
+  // Run on page load
+  // Tooltip wiring is deferred to DOMContentLoaded because the tooltip <div>
+  // lives AFTER this <script> tag in the DOM — so we wait until the full
+  // page has parsed before trying to find it.
+  document.addEventListener('DOMContentLoaded', function() {
+
+    var badge = document.getElementById('trendBar-badge');
+    var tip   = document.getElementById('trendBar-tooltip');
+
+    if (!badge || !tip) return; // safety check
+
+    function positionTooltip() {
+      var rect = badge.getBoundingClientRect();
+      var tipWidth = Math.min(320, window.innerWidth - 32);
+
+      // Position below the badge
+      var top  = rect.bottom + 10;
+      // Align left with badge, clamped so it never goes off screen edges
+      var left = Math.min(rect.left, window.innerWidth - tipWidth - 16);
+      left = Math.max(16, left);
+
+      tip.style.top   = top + 'px';
+      tip.style.left  = left + 'px';
+      tip.style.width = tipWidth + 'px';
+    }
+
+    function showTip() {
+      positionTooltip();
+      tip.classList.add('is-visible');
+      tip.setAttribute('aria-hidden', 'false');
+    }
+
+    function hideTip() {
+      tip.classList.remove('is-visible');
+      tip.setAttribute('aria-hidden', 'true');
+    }
+
+    // Desktop — hover
+    badge.addEventListener('mouseenter', showTip);
+    badge.addEventListener('mouseleave', hideTip);
+
+    // Mobile — tap badge toggles, tap anywhere else closes
+    badge.addEventListener('click', function(e) {
+      e.stopPropagation();
+      tip.classList.contains('is-visible') ? hideTip() : showTip();
+    });
+
+    // Close on outside click or tap
+    document.addEventListener('click', hideTip);
+
+    // Reposition on resize or scroll
+    window.addEventListener('resize', function() { if (tip.classList.contains('is-visible')) positionTooltip(); });
+    window.addEventListener('scroll', function() { if (tip.classList.contains('is-visible')) positionTooltip(); }, true);
+
+  });
+
+})();
+</script>
+
+<!-- Tooltip rendered at the end of the snippet — outside all containers
+     so it never gets clipped by overflow:hidden or stacking contexts -->
+<div class="trendBar-tooltip-WD" id="trendBar-tooltip" role="tooltip" aria-hidden="true">
+  <strong class="trendBar-tooltip-title-WD">What&rsquo;s this?</strong>
+  <p class="trendBar-tooltip-body-WD">Every day our team of experts scans the lighting industry and picks the biggest trend right now &mdash; then points you straight to it in our catalogue. The color circles show the top trending finishes for that style. Fresh picks, every 24 hours.</p>
+</div>
+
+<!-- ============================================================
+     END OF LOGICX TRENDING BAR
+============================================================ -->
+
+
+<div>
+  <div class="middleSection-WD centerWrap-WD header-main">
+      <div class="hamburger" mobile-menu="show">
+          <div class="top-bar"></div>
+          <div class="middle-bar"></div>
+          <div class="bottom-bar"></div>
+      </div>
+      <div class="mainLogo">
+          <a href="/lighting-fixtures?showitems=1" aria-label="LogicXO home" class="header-logo-link">
+              <img src="/data/images/logicxo-gold-v2.png" alt="LogicXO" class="header-logo-img" width="300" height="72">
+          </a>
+      </div>
+      <div id="searchHolder" class="header-search">
+          <div id="searchbar" class="enhanced-search">
+              <label class="visually-hidden" for="catalogSearchInput">Search catalog by item number, SKU, keyword, or brand</label>
+              <span class="header-search-icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+              <input type="text" id="catalogSearchInput" name="itemNumVal" placeholder="Search by item #, SKU, keyword, or brand" search="categories||products" results="6" aria-label="Search catalog">
+              <button type="submit" aria-label="Search catalog"><span class="header-search-btn-text">Search</span></button>
+          </div>
+      </div>
+      <div class="header-utilities">
+          <div class="header-utilities-row">
+          <div class="expert-help">
+              <button type="button" class="expert-help-trigger" id="expertHelpTrigger" aria-expanded="false" aria-haspopup="true" aria-controls="expertHelpMenu">
+                  <i class="fa-solid fa-headset expert-help-trigger-icon" aria-hidden="true"></i>
+                  <span class="expert-help-trigger-text">Expert Help</span>
+                  <i class="fa-solid fa-chevron-down expert-help-chevron" aria-hidden="true"></i>
+              </button>
+              <div class="expert-help-menu" id="expertHelpMenu" role="menu" aria-labelledby="expertHelpTrigger">
+                  <a href="https://support.logicxo.com/" class="expert-help-item" role="menuitem" target="_blank" rel="noopener noreferrer">
+                      <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                      <span>Help Center</span>
+                  </a>
+                  <a href="mailto:hello@logicxo.com?subject=Text%20an%20Expert" class="expert-help-item" role="menuitem">
+                      <i class="fa-solid fa-comment-sms" aria-hidden="true"></i>
+                      <span>Text an Expert</span>
+                  </a>
+                  <a href="/contact-us" class="expert-help-item" role="menuitem">
+                      <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                      <span>Chat with a Representative</span>
+                  </a>
+                  <a href="mailto:hello@logicxo.com" class="expert-help-item" role="menuitem">
+                      <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                      <span>hello@logicxo.com</span>
+                  </a>
+              </div>
+          </div>
+          <div id="userLogo" class="header-sign-in">
+              <a id="LOGINLINK-WD" href="login.php" class="header-action-btn header-action-btn--sign-in" aria-label="Sign in, Member extra discount">
+                  <i class="fa-regular fa-user header-action-btn-icon" id="userLogoI" aria-hidden="true"></i>
+                  <span class="header-sign-in-text">
+                      <span class="header-sign-in-default">
+                          <span class="header-sign-in-line">Sign in</span>
+                          <span class="header-sign-in-sub">Member extra discount</span>
+                      </span>
+                      <span id="fullName-WD"></span>
+                  </span>
+              </a>
+          </div>
+          <span id="cartLogo" class="header-cart-btn" xo-popover="Cart" role="button" tabindex="0" aria-label="Shopping cart">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+              <span class="cartCounter" counter-qty="Cart">0</span>
+          </span>
+          </div>
+      </div>
+  </div>
+
+<link href="/data/css/sb-dropdown-menu.css?v=16" rel="stylesheet">
+
+<nav class="sb-nav">
+<ul class="sb-menu">
+  <!-- 1. Lighting -->
+<li>
+<a href="/lighting-fixtures">Lighting</a>
+<div class="sb-mega-menu">
+
+      <div class="sb-col">
+        <ul>
+          <li><strong><a href="/lighting-fixtures">Shop All Lighting</a></strong></li>
+          <li><a href="/catalog?itemNumVal=Style">Shop by Style</a></li>
+          <li><a href="/brands">Shop by Brand</a></li>
+          <li><a href="/catalog?itemNumVal=Designer">Shop by Designer</a></li>
+          <li><a href="/catalog?itemNumVal=Lighting%20Icons">Lighting Icons</a></li>
+          <li><a href="/catalog?itemNumVal=Best%20Sellers&amp;bs=priceD">Best Sellers</a></li>
+          <li><a href="/catalog?itemNumVal=New%20Arrivals">New Arrivals</a></li>
+          <li><a href="/catalog?itemNumVal=Ready%20to%20Ship">Ready to Ship</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong>Trending</strong></li>
+          <li><a href="/catalog?itemNumVal=Mid%20Century%20Modern">Mid Century Modern Lights</a></li>
+          <li><a href="/catalog?itemNumVal=Brass%20Chandelier">Brass Chandeliers</a></li>
+          <li><a href="/catalog?itemNumVal=Wood%20Pendant">Wood Pendant Lights</a></li>
+          <li><a href="/catalog?itemNumVal=Glass%20Chandelier">Glass Chandeliers</a></li>
+          <li><a href="/lighting-fixtures?itemNumVal=Ceiling%20Lights&amp;showitems=1">Ceiling Lights</a></li>
+          <li><a href="/catalog?itemNumVal=Wood%20Sconce">Wood Sconce</a></li>
+          <li><a href="/catalog?itemNumVal=Alabaster%20Chandelier">Alabaster Chandeliers</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong>Shop by Room</strong></li>
+          <li><a href="/catalog?itemNumVal=Kitchen%20Lighting">Kitchen Lighting</a></li>
+          <li><a href="/catalog?itemNumVal=Dining%20Room%20Lighting">Dining Room Lighting</a></li>
+          <li><a href="/catalog?itemNumVal=Bedroom%20Lighting">Bedroom Lighting</a></li>
+          <li><a href="/catalog?itemNumVal=Bathroom%20Lighting">Bathroom Lighting</a></li>
+          <li><a href="/catalog?itemNumVal=Living%20Room%20Lighting">Living Room Lighting</a></li>
+          <li><a href="/catalog?itemNumVal=Office%20Workspace%20Lighting">Office Workspace Lighting</a></li>
+          <li><a href="/lighting-fixtures/exterior">Outdoor Lighting</a></li>
+        </ul>
+      </div>
+</div>
+</li>
+
+  <!-- 2. Fans 
+  -->
+  <li>
+    <a href="/lighting-fixtures/fans">Fans</a>
+    <div class="sb-mega-menu">
+      <div class="sb-col">
+        <ul>
+          <li><strong><a href="/lighting-fixtures/fans">Fans</a></strong></li>
+          <li><a href="/lighting-fixtures/fans/ceiling-fans?limitRange=0">Indoor Ceiling Fans</a></li>
+          <li><a href="/lighting-fixtures/fans/outdoor-fans">Outdoor Fans</a></li>
+          <li><a href="/lighting-fixtures/fans/portable-fans">Portable Fans</a></li>
+          <li><a href="/lighting-fixtures/fans/wall-fans">Wall Fans</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong><a href="/lighting-fixtures/fans">Fans</a></strong></li>
+          <li><a href="/lighting.com/lighting-fixtures/fans">Belt Fans</a></li>
+          <li><a href="/lighting-fixtures/fans/fandeliers">Fandeliers</a></li>
+          <li><a href="/lighting-fixtures/fans/huggers">Huggers</a></li>
+          <li><a href="/lighting-fixtures/fans/other-fans">More Fans</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong>Fan Accessories</strong></li>
+          <li><a href="/catalog?itemNumVal=Fan%20Light%20Kits">Fan Light Kits</a></li>
+          <li><a href="/lighting-fixtures/fan-accessories/fan-blades">Fandeliers</a></li>
+          <li><a href="/lighting-fixtures/fans/dual-motor-fans">Dual Motor Fans</a></li>
+          <li><a href="/lighting-fixtures/fan-accessories">Fan Accessories</a></li>
+        </ul>
+      </div>
+        <div class="sb-col sb-col-image sb-promo-card">
+          <a class="sb-promo-link" href="/lighting-fixtures/fans">
+            <span class="sb-promo-badge">July Sale</span>
+            <span class="sb-promo-title">Up to 50% Off Fans</span>
+            <span class="sb-promo-text">Indoor &amp; outdoor styles for every room.</span>
+            <img src="/data/images/July-prom-sale-02.png" alt="July promo sale — up to 50% off" width="168" height="168" loading="lazy">
+            <span class="sb-promo-cta">Shop Fans</span>
+          </a>
+        </div>
+    </div>
+  </li>
+
+  <!-- 3. Furniture & Decor -->
+  <li>
+    <a href="/lighting-fixtures/furniture">Furniture &amp; Decor</a>
+    <div class="sb-mega-menu">
+      <div class="sb-col">
+        <ul>
+          <li><strong><a href="/lighting-fixtures/decor-home-accents">Home Decor</a></strong></li>
+          <li><a href="/catalog?itemNumVal=rug&limitRange=0">Area Rugs</a></li>
+          <li><a href="/lighting-fixtures/decor-home-accents/vases">Vases</a></li>
+          <li><a href="/lighting-fixtures/decor-home-accents/wall-art">Wall Accents</a></li>
+          <li><a href="/decor-home-accents/sculptures">Sculptures</a></li>
+          <li><a href="/catalog?itemNumVal=Figurine">Decorative Objects &amp; Figurines</a></li>
+          <li><a href="/lighting-fixtures/decor-home-accents/bowls">Decorative Bowls</a></li>
+          <li><a href="/lighting-fixtures/decor-home-accents?bs=priceD&showitems=1">More Home Decor</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong><a href="/lighting-fixtures/furniture">Furniture</a></strong></li>
+          <li><a href="/lighting-fixtures/furniture/tables">End &amp; Side Tables</a></li>
+          <li><a href="/catalog?itemNumVal=Console%20Tables">Console Tables</a></li>
+          <li><a href="/catalog?itemNumVal=stools">Ottomans &amp; Stools</a></li>
+          <li><a href="/catalog?itemNumVal=Coffee%20tables">Coffee Tables</a></li>
+          <li><a href="/lighting-fixtures/furniture?itemNumVal=chairs">Chairs</a></li>
+          <li><a href="/lighting-fixtures/furniture/cabinets/wine-cabinets?limitRange=0">Cabinets</a></li>
+          <li><a href="/lighting-fixtures/furniture">More Furniture</a></li>
+        </ul>
+      </div>
+          <div class="sb-col sb-col-image sb-promo-card">
+            <a class="sb-promo-link" href="/lighting-fixtures/furniture">
+              <span class="sb-promo-badge">July Sale</span>
+              <span class="sb-promo-title">Furniture &amp; Decor Deals</span>
+              <span class="sb-promo-text">Tables, accents, and pieces to finish the room.</span>
+              <img src="/data/images/July-prom-sale.png" alt="July sale — up to 50% off" width="168" height="168" loading="lazy">
+              <span class="sb-promo-cta">Shop Furniture</span>
+            </a>
+          </div>
+    </div>
+  </li>
+
+  <!-- 4. Outdoor  -->
+  <li>
+    <a href="/lighting-fixtures/exterior">Outdoor</a>
+    <div class="sb-mega-menu">
+      <div class="sb-col">
+        <ul>
+          <li><strong>Patio &amp; Outdoor Furniture</strong></li>
+          <li><a href="/lighting-fixtures/exterior/furniture?itemNumVal=Outdoor%20Chairs">Outdoor Chairs</a></li>
+          <li><a href="/catalog?itemNumVal=Outdoor%20Furniture&limitRange=0">Other Outdoor Furniture</a></li>
+          <li><a href="/catalog?itemNumVal=Outdoor%20stools">Outdoor Ottomans &amp; Stools</a></li>
+          <li><a href="/catalog?itemNumVal=Outdoor%20Tables">Outdoor Tables</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong>Outdoor Decor</strong></li>
+          <li><a href="/lighting-fixtures/exterior/address-numbers?limitRange=0">Bird Feeders</a></li>
+          <li><a href="/lighting-fixtures/exterior/door-bells?limitRange=0">Outdoor Door Bells</a></li>
+          <li><a href="/catalog?itemNumVal=Outdoor%20Lanterns">Outdoor Lanterns</a></li>
+          <li><a href="/lighting-fixtures/exterior/other-exterior">More Outdoor Decor</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong>Outdoor Lighting</strong></li>
+          <li><a href="/lighting.com/lighting-fixtures/exterior/wall-lights">Outdoor Wall Lights</a></li>
+          <li><a href="/lighting-fixtures/exterior/exterior-pendants">Outdoor Pendants / Chandeliers</a></li>
+          <li><a href="/lighting-fixtures/exterior/bollards?limitRange=0">Outdoor Ceiling Lights</a></li>
+          <li><a href="/catalog?itemNumVal=Post%20Lights">Post Lights &amp; Accessories</a></li>
+          <li><a href="/catalog?itemNumVal=Pathway">Pathway Lighting</a></li>
+          <li><a href="/lighting-fixtures/landscape-ltg">Landscape Lighting</a></li>
+          <li><a href="/catalog?itemNumVal=Outdoor%20Lighting">More Outdoor Lighting</a></li>
+        </ul>
+      </div>
+      <div class="sb-col">
+        <ul>
+          <li><strong><a href="/lighting.com/lighting-fixtures/exterior/exterior-fans">Outdoor Fans</a></strong></li>
+        </ul>
+      </div>
+          <div class="sb-col sb-col-image sb-promo-card">
+            <a class="sb-promo-link" href="/lighting-fixtures/exterior">
+              <span class="sb-promo-badge">July Sale</span>
+              <span class="sb-promo-title">Outdoor Savings</span>
+              <span class="sb-promo-text">Wall lights, path lighting, and patio picks.</span>
+              <img src="/data/images/July-prom-sale-02.png" alt="July promo sale — up to 50% off" width="168" height="168" loading="lazy">
+              <span class="sb-promo-cta">Shop Outdoor</span>
+            </a>
+          </div>
+    </div>
+  </li>
+
+  <!-- 5. Sale & Clearance (no dropdown) -->
+   <li><a href="/lighting-fixtures">Shop All</a></li>
+
+  <!-- 6. Brands -->
+
+<li>
+<a href="/brands">Brands</a>
+<div class="sb-mega-menu">
+  <div class="sb-col sb-col-split">
+    <ul>
+      <li><strong>Popular Brands</strong></li>
+          <li><a href="/brand-visual-comfort--co-architectural-collection">Visual Comfort &amp; Co. Architectural Collection</a></li>
+          <li><a href="/brand-visual-comfort--co-fan-collection">Visual Comfort &amp; Co. Fan Collection</a></li>
+          <li><a href="/brand-visual-comfort--co-modern-collection">Visual Comfort &amp; Co. Modern Collection</a></li>
+          <li><a href="/brand-visual-comfort--co-signature-collection">Visual Comfort &amp; Co. Signature Collection</a></li>
+          <li><a href="/brand-visual-comfort--co-studio-collection">Visual Comfort &amp; Co. Studio Collection</a></li>
+          <li><a href="/brand-visual-comfort-rl">Visual Comfort RL</a></li>
+          <li><a href="/brand-wac-us">WAC US</a></li>
+          <li><a href="/brand-hinkley">Hinkley</a></li>
+    </ul>
+    <ul style="margin-top: 1.8rem;">
+          <li><a href="/brand-lib--co-us">Lib &amp; Co.</a></li> 
+          <li><a href="/brand-fine-art-handcrafted-lighting">Fine Art Handcrafted Lighting</a></li>
+          <li><a href="/brand-hubbardton-forge">Hubbardton Forge</a></li>
+          <li><a href="/brand-hammerton">Hammerton</a></li>
+          <li><a href="/brand-quoizel">Quoizel</a></li>
+          <li><a href="/brand-nora">Nora</a></li>
+          <li><a href="/brand-eurofase">Eurofase</a></li>
+          <li><a href="/brand-progress">Progress</a></li>
+          <li><b><a href="/brands">More Brands</a></b></li>
+    </ul>
+  </div>
+      <div class="sb-col sb-col-image sb-promo-card">
+        <a class="sb-promo-link" href="/brands">
+          <span class="sb-promo-badge">July Sale</span>
+          <span class="sb-promo-title">Top Brand Deals</span>
+          <span class="sb-promo-text">Visual Comfort, Hinkley, WAC &amp; more.</span>
+          <img src="/data/images/July-prom-sale.png" alt="July sale — up to 50% off" width="168" height="168" loading="lazy">
+          <span class="sb-promo-cta">Browse Brands</span>
+        </a>
+      </div>
+</div>
+</li>
+
+  <!-- 8. Inspirations (no dropdown, special link) -->
+  <li><a href="/page-gallery.html">Inspirations</a></li>
+</ul>
+</nav>
+
+
+</div>
+
+<mobile-menu status="hide">
+  <mobile-menu-box>
+      <mobile-header>
+          <mobile-close mobile-menu="hide">+</mobile-close>
+      </mobile-header>
+      <mobile-sub-header>Shop</mobile-sub-header>
+      <a href="/lighting-fixtures"><mobile-link>Lighting</mobile-link></a>
+      <a href="/lighting-fixtures/fans"><mobile-link>Fans</mobile-link></a>
+      <a href="/lighting-fixtures/furniture"><mobile-link>Furniture &amp; Decor</mobile-link></a>
+      <a href="/lighting-fixtures/exterior"><mobile-link>Outdoor</mobile-link></a>
+      <a href="/brands"><mobile-link>Brands</mobile-link></a>
+      <a href="/page-gallery.html"><mobile-link>Inspirations</mobile-link></a>
+      <divider></divider>
+      <a id="mobileLoginLink" href="/login.php"><mobile-link><span class="loginShow">Hi, </span><span id="mobileLoginBtn">Sign In | Create Account</span></mobile-link></a>
+      <a href="mailto:hello@logicxo.com"><mobile-link>hello@logicxo.com</mobile-link></a>
+      <divider></divider>
+      <div class="loggedInContent">
+          <mobile-sub-header>Account</mobile-sub-header>
+          <tab-box siblings-closed theme="Mobile Menu">
+              <tab data="Account Data">
+                  <tab-label>Edit Account</tab-label>
+                  <tab-content>
+                      <a href="/Page-UserSettings?type=customer&userID={{session.currentCustomer}}"><mobile-link>Account Information</mobile-link></a>
+                      <a href="/Page-UserSettings?type=customer&userID={{session.currentCustomer}}"><mobile-link>Default Billing</mobile-link></a>
+                      <a href="/Page-UserSettings?type=customer&userID={{session.currentCustomer}}"><mobile-link>Default Delivery</mobile-link></a>
+                      <a href="/Page-UserSettings?type=customer&userID={{session.currentCustomer}}"><mobile-link>User Name & Password</mobile-link></a>
+                      <a href="/Page-UserSettings?type=customer&userID={{session.currentCustomer}}"><mobile-link>Contacts</mobile-link></a>
+                  </tab-content>
+              </tab>
+              <tab data="Wishlists">
+                  <tab-label>Wishlists</tab-label>
+                  <tab-content>
+                      <div class="dynamicWishlists"></div>
+                      <mobile-link action="create wishlist">+ Create A New Wishlist</mobile-link>
+                  </tab-content>
+              </tab>
+          </tab-box>
+          <divider></divider>
+      </div>
+      <a href="/"><mobile-link>Home</mobile-link></a>
+      <a href="/about-us"><mobile-link>About Us</mobile-link></a>
+      <a href="/contact-us"><mobile-link>Contact Us</mobile-link></a>
+      <a href="mailto:hello@logicxo.com"><mobile-link>hello@logicxo.com</mobile-link></a>
+      <a href="/contact-us"><mobile-link>Ask Our Experts</mobile-link></a>
+      <a href="/page-trade-pros.html"><mobile-link>Trade Professionals</mobile-link></a>
+      <a href="/page-gallery.html"><mobile-link>Inspiration Gallery</mobile-link></a>
+      <divider></divider>
+      <tab-box siblings-closed theme="Mobile Menu">
+          <tab>
+              <tab-label>Policies</tab-label>
+              <tab-content>
+                  <a href="/policy/shipping"><mobile-link>Shipping Policy</mobile-link></a>
+                  <a href="/policy/privacy"><mobile-link>Privacy Policy</mobile-link></a>
+                  <a href="/policy/returns"><mobile-link>Return Policy</mobile-link></a>
+                  <a href="/policy/terms"><mobile-link>Terms & Conditions</mobile-link></a>
+              </tab-content>
+          </tab>
+      </tab-box>
+      <divider></divider>
+      <social-media-icons>
+          <a href="https://www.instagram.com/lightingzonela/" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="https://www.facebook.com/dreamonlighting.showroom/" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="https://twitter.com/dreamonlightin1" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="https://www.pinterest.com/dreamonlighting/" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+      </social-media-icons>
+      <mobile-menu-footer>
+          <a href="mailto:hello@logicxo.com">hello@logicxo.com</a>
+          <div class="copyRight-WD">&copy; <span id="currentYear">2026</span> <span class="header-logo-text">LogicX</span></div>
+      </mobile-menu-footer>
+  </mobile-menu-box>
+</mobile-menu>

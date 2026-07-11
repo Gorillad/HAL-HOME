@@ -187,6 +187,8 @@
     var previewWrap        = document.getElementById('woolFullSitePreviewWrap');
     var avalonPreviewFrame = document.getElementById('avalonFullSiteFrame');
     var avalonPreviewWrap  = document.getElementById('avalonFullSitePreviewWrap');
+    var cardiffPreviewFrame = document.getElementById('cardiffFullSiteFrame');
+    var cardiffPreviewWrap  = document.getElementById('cardiffFullSitePreviewWrap');
     var previewScaler      = document.getElementById('previewScaler');
     var editorStatus       = document.getElementById('editorStatus');
     var exportBtn          = document.getElementById('exportHandoffBtn');
@@ -194,6 +196,7 @@
     var saveToast          = document.getElementById('saveToast');
     var woolFieldPanel     = document.getElementById('woolFieldPanel');
     var avalonFieldPanel    = document.getElementById('avalonFieldPanel');
+    var cardiffFieldPanel   = document.getElementById('cardiffFieldPanel');
     var designerScaffold   = document.getElementById('designerScaffold');
     var scaffoldPreview    = document.getElementById('designerScaffoldPreview');
     var previewLabel       = document.getElementById('designerPreviewLabel');
@@ -564,24 +567,40 @@
         if (slug === 'woolf') {
             if (woolFieldPanel) woolFieldPanel.hidden = false;
             if (avalonFieldPanel) avalonFieldPanel.hidden = true;
+            if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = true;
             if (previewWrap) previewWrap.hidden = false;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
+            if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = true;
         } else if (slug === 'avalon') {
             if (woolFieldPanel) woolFieldPanel.hidden = true;
             if (avalonFieldPanel) avalonFieldPanel.hidden = false;
+            if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = true;
             if (previewWrap) previewWrap.hidden = true;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = false;
+            if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
+            if (scaffoldPreview) scaffoldPreview.hidden = true;
+            if (exportBtn) exportBtn.disabled = true;
+        } else if (slug === 'cardiff') {
+            if (woolFieldPanel) woolFieldPanel.hidden = true;
+            if (avalonFieldPanel) avalonFieldPanel.hidden = true;
+            if (cardiffFieldPanel) cardiffFieldPanel.hidden = false;
+            if (designerScaffold) designerScaffold.hidden = true;
+            if (previewWrap) previewWrap.hidden = true;
+            if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
+            if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = false;
             if (scaffoldPreview) scaffoldPreview.hidden = true;
             if (exportBtn) exportBtn.disabled = true;
         } else {
             if (woolFieldPanel) woolFieldPanel.hidden = true;
             if (avalonFieldPanel) avalonFieldPanel.hidden = true;
+            if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = false;
             if (previewWrap) previewWrap.hidden = true;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
+            if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = false;
             var scaffoldTitle = document.getElementById('scaffoldTemplateName');
             if (scaffoldTitle) scaffoldTitle.textContent = name + ' — coming soon';
@@ -2118,6 +2137,16 @@
         }
     }
 
+    function initCardiffPreview() {
+        if (!cardiffPreviewFrame || slug !== 'cardiff') return;
+        cardiffPreviewFrame.addEventListener('load', function () {
+            if (typeof window.__fitFullSite === 'function') window.__fitFullSite();
+        });
+        if (typeof window.__fitFullSite === 'function') {
+            window.requestAnimationFrame(window.__fitFullSite);
+        }
+    }
+
     function init() {
         initRouting();
         scaleIframe();
@@ -2125,6 +2154,12 @@
         if (slug === 'avalon') {
             initSceraPreview();
             if (window.AvalonEditor) window.AvalonEditor.init();
+            return;
+        }
+
+        if (slug === 'cardiff') {
+            initCardiffPreview();
+            if (window.CardiffEditor) window.CardiffEditor.init();
             return;
         }
 

@@ -1,0 +1,117 @@
+/* Cardiff — brand palette tokens */
+:root {
+    --cardiff-primary: #c76469;
+    --cardiff-secondary: #c79a64;
+    --cardiff-accent: #64c7c2;
+    --cardiff-bg: #f4e9e8;
+    --cardiff-surface: #faf4f3;
+    --cardiff-surface-raised: #ffffff;
+    --cardiff-text: #2f2a2a;
+    --cardiff-text-muted: #6a6160;
+    --cardiff-linen: #faf4f3;
+    --cardiff-sand: #f0e2df;
+    --cardiff-mist: #b8ebe8;
+    --cardiff-nickel: #c5cbcf;
+    --cardiff-driftwood: #8a7a68;
+    --cardiff-rule: rgba(199, 100, 105, 0.22);
+
+    /* Semantic aliases used across sections */
+    --cardiff-sea: var(--cardiff-primary);
+    --cardiff-sea-deep: var(--cardiff-primary);
+    --cardiff-sea-light: var(--cardiff-accent);
+    --cardiff-brass: var(--cardiff-secondary);
+
+    --cardiff-content-w: 1280px;
+    --cardiff-header-logo-h: 72px;
+    --cardiff-btn-bg: var(--cardiff-primary);
+    --cardiff-btn-text: #ffffff;
+    --cardiff-btn-hover-bg: var(--cardiff-secondary);
+    --cardiff-btn-hover-text: #ffffff;
+    --font-display: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--cardiff-bg);
+    color: var(--cardiff-text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.cardiff-shell {
+    width: 100%;
+    max-width: var(--cardiff-content-w);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.cardiff-eyebrow {
+    margin: 0;
+    color: var(--cardiff-primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.cardiff-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 22px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--cardiff-btn-bg);
+    color: var(--cardiff-btn-text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.cardiff-btn:hover,
+.cardiff-btn:focus-visible {
+    background: var(--cardiff-btn-hover-bg);
+    color: var(--cardiff-btn-hover-text);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.cardiff-btn--ghost {
+    background: transparent;
+    border-color: rgba(199, 100, 105, 0.35);
+    color: var(--cardiff-primary);
+}
+
+.cardiff-btn--ghost:hover,
+.cardiff-btn--ghost:focus-visible {
+    background: rgba(100, 199, 194, 0.16);
+    color: var(--cardiff-text);
+}

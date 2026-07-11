@@ -1,0 +1,16 @@
+/* Cardiff motion */
+
+.cardiff-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.cardiff-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.cardiff-site-header.is-scrolled {
+    box-shadow: 0 10px 30px rgba(47, 42, 42, 0.08);
+}
