@@ -1578,17 +1578,38 @@
     padding: 0;
 }
 
-.showroom-gallery-main-nav-links a {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: #1a2a3a;
-    text-decoration: none;
-    white-space: nowrap;
+.showroom-gallery-main-nav-links > .showroom-main-nav-item {
+    flex: 0 0 auto;
+    position: relative;
 }
 
-.showroom-gallery-main-nav-links a:hover {
-    color: #3d5a73;
+.showroom-gallery-main-nav-links .showroom-main-nav-trigger {
+    justify-content: center;
+    width: auto;
+    padding: 8px 0;
+    font-size: 18px;
+    cursor: default;
+}
+
+.showroom-gallery-main-nav-links .showroom-main-nav-item:first-child .showroom-main-nav-trigger,
+.showroom-gallery-main-nav-links .showroom-main-nav-item:last-child .showroom-main-nav-trigger {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.showroom-gallery-main-nav-links .showroom-main-nav-dropdown {
+    left: auto;
+    right: 0;
+    min-width: 240px;
+    text-transform: none;
+}
+
+.showroom-gallery-main-nav-links .showroom-main-nav-dropdown a {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 .showroom-gallery-main-nav-search {
@@ -5653,11 +5674,29 @@ a.showroom-spotlight-footer-logo {
     background: var(--classic-dark-text);
 }
 
-.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links a {
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-trigger,
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-label-link,
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-label {
     color: var(--classic-dark-text);
 }
 
-.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links a:hover {
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-trigger:hover,
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-label-link:hover,
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-item:focus-within .showroom-main-nav-trigger {
+    color: var(--classic-dark-blue-bright);
+}
+
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-dropdown {
+    background: var(--classic-dark-elevated);
+    border-color: var(--classic-dark-border);
+}
+
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-dropdown a {
+    color: var(--classic-dark-text);
+}
+
+.editor-page--gallery #showroomPreview[data-preview-theme="dark"] .showroom-gallery-main-nav-links .showroom-main-nav-dropdown a:hover {
+    background: var(--classic-dark-surface);
     color: var(--classic-dark-blue-bright);
 }
 

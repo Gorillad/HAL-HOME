@@ -224,11 +224,19 @@
                         <label for="fieldGalleryHeaderWishlist">Wishlist label</label>
                         <input type="text" id="fieldGalleryHeaderWishlist" name="galleryHeaderWishlistLabel" autocomplete="off">
                     </div>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldGalleryHeaderWishlistUrl">Wishlist URL</label>
+                        <input type="text" id="fieldGalleryHeaderWishlistUrl" name="galleryHeaderWishlistUrl" autocomplete="off" placeholder="/CustomerView">
+                    </div>
                     <div class="editor-field">
                         <label for="fieldGalleryHeaderSignIn">Sign in label</label>
                         <input type="text" id="fieldGalleryHeaderSignIn" name="galleryHeaderSignInLabel" autocomplete="off">
                     </div>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Shown as “Wishlist | Please sign in” on the right side of the top bar. Link URLs are fixed in this template.</p>
+                    <div class="editor-field editor-field--compact">
+                        <label for="fieldGalleryHeaderSignInUrl">Sign in URL</label>
+                        <input type="text" id="fieldGalleryHeaderSignInUrl" name="galleryHeaderSignInUrl" autocomplete="off" placeholder="/login.php">
+                    </div>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Shown as “Wishlist | Please sign in” on the right side of the top bar. Edit each label and destination URL.</p>
                 </fieldset>
 
                 <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-logo">
@@ -361,9 +369,8 @@
                 <div class="editor-accordion-body">
                     <fieldset class="editor-fieldset" id="editor-gallery-main-nav">
                         <legend>Nav categories</legend>
-                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; nav categories sit to the left of the search bar (not centered on the page). Edit link names and URLs, or add more. Search placeholder is “Search…” and is not editable.</p>
+                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; categories sit to the left of search. Rename each parent category, edit dropdown links, uncheck to hide, or add new subcategory rows. Shop ships with CATALOG through WALL LIGHTS; About Us and Account start empty for you to fill.</p>
                         <div id="galleryMainNavEditor"></div>
-                        <button type="button" class="btn btn-secondary editor-add-item-btn" id="addGalleryMainNavLinkBtn">Add nav link</button>
                     </fieldset>
                 </div>
             </details><!-- /#editor-section-gallery-main-nav -->

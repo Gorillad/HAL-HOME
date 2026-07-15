@@ -415,7 +415,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     if (isGallery) {
         const topBar = header.topBar || {};
         const utilities = topBar.utilities || {};
-        const galleryNavLinks = Array.isArray(header.mainNav?.links) ? header.mainNav.links : [];
+        const galleryNavItems = Array.isArray(header.mainNav?.items) ? header.mainNav.items : [];
         writeSpecRows([
             ['Layout', header.layout || 'gallery'],
             ['Sticky header', header.sticky === true
@@ -432,16 +432,31 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 : (header.logoDimensions || 'max 150 px high')],
             ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'hardcoded in template')],
             ['Main nav alignment', header.mainNav?.alignment || 'logo left · nav left of search · search right'],
+            ['Dropdown menus', header.mainNav?.hasDropdowns !== false ? 'Yes — one per top-level category' : 'No'],
+            ['Category count', galleryNavItems.length ? String(galleryNavItems.length) : '0'],
             ['Search bar', header.mainNav?.search?.hardcoded !== false
                 ? `Hardcoded — placeholder “${header.mainNav?.search?.placeholder || 'Search…'}”`
                 : '—'],
         ]);
-        if (galleryNavLinks.length) {
-            writeLines('Main navigation links', { bold: true, size: 10, gap: 4 });
-            writeItemList(
-                galleryNavLinks,
-                (item) => `${item.label || '—'}: ${item.url || '—'}`,
-            );
+        if (galleryNavItems.length) {
+            writeLines('Main navigation categories', { bold: true, size: 10, gap: 4 });
+            galleryNavItems.forEach((item) => {
+                const visibleSubs = Array.isArray(item.subcategories)
+                    ? item.subcategories.filter((sub) => sub.visible !== false)
+                    : [];
+                writeLines(
+                    `${item.label || 'Category'}${item.url ? ` → ${item.url}` : ''}`,
+                    { bold: true, size: 9, gap: 2 },
+                );
+                if (visibleSubs.length) {
+                    writeItemList(
+                        visibleSubs,
+                        (sub) => `${sub.label || '—'}: ${sub.url || '—'}`,
+                    );
+                } else {
+                    writeLines('No visible subcategories', { size: 9, gap: 4 });
+                }
+            });
         }
     } else if (isSpotlight) {
         const spotlightTopBar = header.topBar || {};

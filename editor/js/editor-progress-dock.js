@@ -65,11 +65,13 @@
         'galleryHeaderBarTextColor',
         'galleryHeaderCenterCopy',
         'galleryHeaderWishlistLabel',
+        'galleryHeaderWishlistUrl',
         'galleryHeaderSignInLabel',
+        'galleryHeaderSignInUrl',
     ];
 
     const GALLERY_MAIN_NAV_KEYS = [
-        'galleryMainNavLinks',
+        'galleryMainNavItems',
     ];
 
     const GALLERY_HERO_KEYS = [

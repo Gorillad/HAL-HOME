@@ -92,13 +92,39 @@
     const DEFAULT_GALLERY_HEADER_BAR_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HEADER_CENTER_COPY = 'For pricing and orders call 123-456-7891';
     const DEFAULT_GALLERY_HEADER_WISHLIST = 'Wishlist';
+    const DEFAULT_GALLERY_HEADER_WISHLIST_URL = '/CustomerView';
     const DEFAULT_GALLERY_HEADER_SIGN_IN = 'Please sign in';
+    const DEFAULT_GALLERY_HEADER_SIGN_IN_URL = '/login.php';
     const GALLERY_SEARCH_PLACEHOLDER = 'Search...';
     const HEADER_SEARCH_PLACEHOLDER = 'Enter Keyword or Item#';
-    const DEFAULT_GALLERY_MAIN_NAV_LINKS = [
-        { label: 'Shop', defaultUrl: '/catalog' },
-        { label: 'About Us', defaultUrl: '/about' },
-        { label: 'Account', defaultUrl: '/account' },
+    const DEFAULT_GALLERY_MAIN_NAV_TEMPLATE = [
+        {
+            id: 'gallery-shop',
+            label: 'Shop',
+            url: '/catalog',
+            subcategories: [
+                { id: 'gallery-shop-catalog', label: 'CATALOG', url: '/catalog' },
+                { id: 'gallery-shop-chandeliers', label: 'CHANDELIERS', url: '/catalog/chandeliers' },
+                { id: 'gallery-shop-pendants', label: 'PENDANTS', url: '/catalog/pendants' },
+                { id: 'gallery-shop-bathroom', label: 'BATHROOM FIXTURES', url: '/catalog/bathroom-fixtures' },
+                { id: 'gallery-shop-exterior', label: 'EXTERIOR', url: '/catalog/exterior' },
+                { id: 'gallery-shop-fans', label: 'FANS', url: '/catalog/fans' },
+                { id: 'gallery-shop-foyer', label: 'FOYER', url: '/catalog/foyer' },
+                { id: 'gallery-shop-wall-lights', label: 'WALL LIGHTS', url: '/catalog/wall-lights' },
+            ],
+        },
+        {
+            id: 'gallery-about-us',
+            label: 'About Us',
+            url: '/about',
+            subcategories: [],
+        },
+        {
+            id: 'gallery-account',
+            label: 'Account',
+            url: '/account',
+            subcategories: [],
+        },
     ];
     const GALLERY_IMAGE_DIR = 'gallery/';
     const CLASSIC_IMAGE_DIR = 'classic/';
@@ -465,7 +491,9 @@
         galleryHeaderSticky: document.getElementById('fieldGalleryHeaderSticky'),
         galleryHeaderCenterCopy: document.getElementById('fieldGalleryHeaderCenterCopy'),
         galleryHeaderWishlistLabel: document.getElementById('fieldGalleryHeaderWishlist'),
+        galleryHeaderWishlistUrl: document.getElementById('fieldGalleryHeaderWishlistUrl'),
         galleryHeaderSignInLabel: document.getElementById('fieldGalleryHeaderSignIn'),
+        galleryHeaderSignInUrl: document.getElementById('fieldGalleryHeaderSignInUrl'),
         galleryHeroPrimary: document.getElementById('fieldGalleryHeroPrimary'),
         galleryHeroSecondaryTop: document.getElementById('fieldGalleryHeroSecondaryTop'),
         galleryHeroSecondaryTopHeading: document.getElementById('fieldGalleryHeroSecondaryTopHeading'),
@@ -629,7 +657,6 @@
     const editorClassicSections = document.getElementById('editorClassicSections');
     const showroomClassicSections = document.getElementById('showroomClassicSections');
     const editorNavGalleryCatalog = document.getElementById('editorNavGalleryCatalog');
-    const addGalleryMainNavLinkBtn = document.getElementById('addGalleryMainNavLinkBtn');
     const previewGalleryMainNavLinks = document.getElementById('previewGalleryMainNavLinks');
     const headerJumpNav = document.getElementById('headerJumpNav');
     const headerBannerLinksEditor = document.getElementById('headerBannerLinksEditor');
@@ -757,8 +784,10 @@
         galleryHeaderSticky: false,
         galleryHeaderCenterCopy: DEFAULT_GALLERY_HEADER_CENTER_COPY,
         galleryHeaderWishlistLabel: DEFAULT_GALLERY_HEADER_WISHLIST,
+        galleryHeaderWishlistUrl: DEFAULT_GALLERY_HEADER_WISHLIST_URL,
         galleryHeaderSignInLabel: DEFAULT_GALLERY_HEADER_SIGN_IN,
-        galleryMainNavLinks: defaultGalleryMainNavLinks(),
+        galleryHeaderSignInUrl: DEFAULT_GALLERY_HEADER_SIGN_IN_URL,
+        galleryMainNavItems: defaultGalleryMainNavItems(),
         galleryHeroPrimaryImage: DEFAULT_GALLERY_HERO_PRIMARY,
         galleryHeroSecondaryTopImage: DEFAULT_GALLERY_HERO_SECONDARY_TOP,
         galleryHeroSecondaryTopHeading: DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING,
@@ -1264,22 +1293,11 @@
     }
 
     function buildNavCatalogForReview() {
-        if (templateDesign === 'gallery') {
-            const links = (state.galleryMainNavLinks || []).filter((link) => link.label || link.url);
-            if (!links.length) return [];
-            return [{
-                id: 'gallery-main-nav',
-                label: 'Main navigation',
-                url: '',
-                subcategories: links.map((link) => ({
-                    id: link.id,
-                    label: link.label || 'Link',
-                    url: link.url || '',
-                })),
-            }];
-        }
+        const sourceItems = templateDesign === 'gallery'
+            ? (state.galleryMainNavItems || [])
+            : (state.mainNavItems || []);
 
-        return (state.mainNavItems || [])
+        return sourceItems
             .map((item) => ({
                 id: item.id,
                 label: item.label || 'Category',
@@ -2046,6 +2064,15 @@
         return fallback;
     }
 
+    /** Keep empty strings the user cleared; only fall back when the key was never saved. */
+    function storedText(value, fallbackWhenMissing) {
+        return typeof value === 'string' ? value : fallbackWhenMissing;
+    }
+
+    function readTextField(input) {
+        return input ? input.value.trim() : '';
+    }
+
     function syncGalleryHeroHeadlinePreview() {
         const headlineLines = [
             [previewGalleryHeroHeadlineLine1, resolveGalleryHeroHeadlineLine(
@@ -2071,9 +2098,13 @@
     function syncGalleryHeroOverlayPreview() {
         syncGalleryHeroHeadlinePreview();
 
-        const copy = state.galleryHeroCopy || DEFAULT_GALLERY_HERO_COPY;
-        const buttonLabel = state.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL;
-        const buttonUrl = state.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL;
+        const copy = typeof state.galleryHeroCopy === 'string' ? state.galleryHeroCopy : DEFAULT_GALLERY_HERO_COPY;
+        const buttonLabel = typeof state.galleryHeroButtonLabel === 'string'
+            ? state.galleryHeroButtonLabel
+            : DEFAULT_GALLERY_HERO_BUTTON_LABEL;
+        const buttonUrl = typeof state.galleryHeroButtonUrl === 'string'
+            ? state.galleryHeroButtonUrl
+            : DEFAULT_GALLERY_HERO_BUTTON_URL;
         const buttonBg = normalizeHexColor(
             state.galleryHeroButtonBackgroundColor,
             DEFAULT_GALLERY_HERO_BUTTON_BG,
@@ -2086,10 +2117,14 @@
         state.galleryHeroButtonBackgroundColor = buttonBg;
         state.galleryHeroButtonTextColor = buttonText;
 
-        if (previewGalleryHeroCopy) previewGalleryHeroCopy.textContent = copy;
+        if (previewGalleryHeroCopy) {
+            previewGalleryHeroCopy.textContent = copy;
+            previewGalleryHeroCopy.hidden = !copy;
+        }
         if (previewGalleryHeroCta) {
             previewGalleryHeroCta.textContent = buttonLabel;
             previewGalleryHeroCta.href = buttonUrl || '#';
+            previewGalleryHeroCta.hidden = !buttonLabel;
             if (isGalleryDarkPreview()) {
                 previewGalleryHeroCta.style.backgroundColor = '';
                 previewGalleryHeroCta.style.color = '';
@@ -2112,20 +2147,29 @@
             }
         }
 
-        const secondaryTopHeading = state.galleryHeroSecondaryTopHeading || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
-        const secondaryTopUrl = state.galleryHeroSecondaryTopUrl || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
+        const secondaryTopHeading = typeof state.galleryHeroSecondaryTopHeading === 'string'
+            ? state.galleryHeroSecondaryTopHeading
+            : DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
+        const secondaryTopUrl = typeof state.galleryHeroSecondaryTopUrl === 'string'
+            ? state.galleryHeroSecondaryTopUrl
+            : DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
         if (previewGalleryHeroSecondaryTopHeading) {
             previewGalleryHeroSecondaryTopHeading.textContent = secondaryTopHeading;
+            previewGalleryHeroSecondaryTopHeading.hidden = !secondaryTopHeading;
         }
         if (previewGalleryHeroSecondaryTopLink) {
             previewGalleryHeroSecondaryTopLink.href = secondaryTopUrl || '#';
         }
 
-        const secondaryBottomHeading = state.galleryHeroSecondaryBottomHeading
-            || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
-        const secondaryBottomUrl = state.galleryHeroSecondaryBottomUrl || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
+        const secondaryBottomHeading = typeof state.galleryHeroSecondaryBottomHeading === 'string'
+            ? state.galleryHeroSecondaryBottomHeading
+            : DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
+        const secondaryBottomUrl = typeof state.galleryHeroSecondaryBottomUrl === 'string'
+            ? state.galleryHeroSecondaryBottomUrl
+            : DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
         if (previewGalleryHeroSecondaryBottomHeading) {
             previewGalleryHeroSecondaryBottomHeading.textContent = secondaryBottomHeading;
+            previewGalleryHeroSecondaryBottomHeading.hidden = !secondaryBottomHeading;
         }
         if (previewGalleryHeroSecondaryBottomLink) {
             previewGalleryHeroSecondaryBottomLink.href = secondaryBottomUrl || '#';
@@ -2320,27 +2364,38 @@
             data.galleryHeroSecondaryTopImage,
             DEFAULT_GALLERY_HERO_SECONDARY_TOP,
         );
-        state.galleryHeroSecondaryTopHeading = data.galleryHeroSecondaryTopHeading
-            || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
-        state.galleryHeroSecondaryTopUrl = data.galleryHeroSecondaryTopUrl
-            || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
+        state.galleryHeroSecondaryTopHeading = storedText(
+            data.galleryHeroSecondaryTopHeading,
+            DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING,
+        );
+        state.galleryHeroSecondaryTopUrl = storedText(
+            data.galleryHeroSecondaryTopUrl,
+            DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
+        );
         state.galleryHeroSecondaryBottomImage = resolveGalleryHeroImage(
             data.galleryHeroSecondaryBottomImage,
             DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
         );
-        state.galleryHeroSecondaryBottomHeading = data.galleryHeroSecondaryBottomHeading
-            || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
-        state.galleryHeroSecondaryBottomUrl = data.galleryHeroSecondaryBottomUrl
-            || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
+        state.galleryHeroSecondaryBottomHeading = storedText(
+            data.galleryHeroSecondaryBottomHeading,
+            DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING,
+        );
+        state.galleryHeroSecondaryBottomUrl = storedText(
+            data.galleryHeroSecondaryBottomUrl,
+            DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
+        );
         state.galleryHeroHeadlineLine1 = resolveGalleryHeroHeadlineLine(
             data.galleryHeroHeadlineLine1,
             DEFAULT_GALLERY_HERO_HEADLINE_1,
         );
         state.galleryHeroHeadlineLine2 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine2, '');
         state.galleryHeroHeadlineLine3 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine3, '');
-        state.galleryHeroCopy = data.galleryHeroCopy || DEFAULT_GALLERY_HERO_COPY;
-        state.galleryHeroButtonLabel = data.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL;
-        state.galleryHeroButtonUrl = data.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL;
+        state.galleryHeroCopy = storedText(data.galleryHeroCopy, DEFAULT_GALLERY_HERO_COPY);
+        state.galleryHeroButtonLabel = storedText(
+            data.galleryHeroButtonLabel,
+            DEFAULT_GALLERY_HERO_BUTTON_LABEL,
+        );
+        state.galleryHeroButtonUrl = storedText(data.galleryHeroButtonUrl, DEFAULT_GALLERY_HERO_BUTTON_URL);
         state.galleryHeroButtonBackgroundColor = normalizeHexColor(
             data.galleryHeroButtonBackgroundColor,
             DEFAULT_GALLERY_HERO_BUTTON_BG,
@@ -2403,10 +2458,10 @@
                         resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine2, ''),
                         resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine3, ''),
                     ],
-                    copy: state.galleryHeroCopy || DEFAULT_GALLERY_HERO_COPY,
+                    copy: state.galleryHeroCopy || '',
                     button: {
-                        label: state.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL,
-                        url: state.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL,
+                        label: state.galleryHeroButtonLabel || '',
+                        url: state.galleryHeroButtonUrl || '',
                         backgroundColor: state.galleryHeroButtonBackgroundColor || DEFAULT_GALLERY_HERO_BUTTON_BG,
                         textColor: state.galleryHeroButtonTextColor || DEFAULT_GALLERY_HERO_BUTTON_TEXT,
                         shape: 'square',
@@ -2421,8 +2476,8 @@
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'thin tall sans-serif uppercase',
                     headlineWeight: 200,
-                    heading: state.galleryHeroSecondaryTopHeading || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING,
-                    url: state.galleryHeroSecondaryTopUrl || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
+                    heading: state.galleryHeroSecondaryTopHeading || '',
+                    url: state.galleryHeroSecondaryTopUrl || '',
                 },
             },
             secondaryBottom: {
@@ -2433,8 +2488,8 @@
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'thin tall sans-serif uppercase',
                     headlineWeight: 200,
-                    heading: state.galleryHeroSecondaryBottomHeading || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING,
-                    url: state.galleryHeroSecondaryBottomUrl || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
+                    heading: state.galleryHeroSecondaryBottomHeading || '',
+                    url: state.galleryHeroSecondaryBottomUrl || '',
                 },
             },
         };
@@ -2836,84 +2891,243 @@
         };
     }
 
-    function defaultGalleryMainNavLinks() {
-        return DEFAULT_GALLERY_MAIN_NAV_LINKS.map((link, index) => createFooterLinkItem({
-            label: link.label,
-            url: link.defaultUrl,
-        }, index, 'gmn'));
+    function defaultGalleryMainNavItems() {
+        return DEFAULT_GALLERY_MAIN_NAV_TEMPLATE.map((item) => createMainNavItem({
+            id: item.id,
+            label: item.label,
+            url: item.url || '',
+            subcategories: (item.subcategories || []).map((sub) => ({
+                ...sub,
+                visible: true,
+            })),
+        }));
     }
 
-    function migrateGalleryMainNavLinks(data) {
+    function migrateGalleryMainNavItems(data) {
+        const defaults = defaultGalleryMainNavItems();
+
+        if (Array.isArray(data.galleryMainNavItems) && data.galleryMainNavItems.length > 0) {
+            return defaults.map((defaultItem) => {
+                const savedItem = data.galleryMainNavItems.find((item) => item.id === defaultItem.id)
+                    || data.galleryMainNavItems.find((item) => (
+                        String(item.label || '').trim().toLowerCase()
+                        === String(defaultItem.label || '').trim().toLowerCase()
+                    ));
+                if (!savedItem) return defaultItem;
+
+                const savedSubs = Array.isArray(savedItem.subcategories) ? savedItem.subcategories : [];
+                let subcategories;
+
+                if (defaultItem.subcategories.length) {
+                    subcategories = defaultItem.subcategories.map((defaultSub) => {
+                        const savedSub = savedSubs.find((sub) => sub.id === defaultSub.id)
+                            || savedSubs.find((sub) => sub.label === defaultSub.label);
+                        if (!savedSub) return defaultSub;
+                        return createMainNavSubcategory({
+                            ...defaultSub,
+                            ...savedSub,
+                            id: defaultSub.id,
+                        }, 0, defaultItem.id);
+                    });
+                    savedSubs.forEach((savedSub, index) => {
+                        if (!subcategories.some((sub) => sub.id === savedSub.id)) {
+                            subcategories.push(createMainNavSubcategory(savedSub, index, defaultItem.id));
+                        }
+                    });
+                } else {
+                    subcategories = savedSubs.map((sub, index) => (
+                        createMainNavSubcategory(sub, index, defaultItem.id)
+                    ));
+                }
+
+                return createMainNavItem({
+                    id: defaultItem.id,
+                    label: storedText(savedItem.label, defaultItem.label),
+                    url: storedText(savedItem.url, defaultItem.url || ''),
+                    subcategories,
+                });
+            }).concat(
+                data.galleryMainNavItems
+                    .filter((savedItem) => !defaults.some((defaultItem) => (
+                        defaultItem.id === savedItem.id
+                        || String(defaultItem.label || '').trim().toLowerCase()
+                            === String(savedItem.label || '').trim().toLowerCase()
+                    )))
+                    .map((savedItem) => createMainNavItem(savedItem)),
+            );
+        }
+
         if (Array.isArray(data.galleryMainNavLinks) && data.galleryMainNavLinks.length > 0) {
-            return data.galleryMainNavLinks.map((item, index) => createFooterLinkItem(item, index, 'gmn'));
+            return defaults.map((defaultItem) => {
+                const legacy = data.galleryMainNavLinks.find((link) => (
+                    String(link.label || '').trim().toLowerCase()
+                    === String(defaultItem.label || '').trim().toLowerCase()
+                ));
+                if (!legacy) return defaultItem;
+                return createMainNavItem({
+                    ...defaultItem,
+                    label: storedText(legacy.label, defaultItem.label),
+                    url: storedText(legacy.url, defaultItem.url || ''),
+                });
+            });
         }
 
-        if (Array.isArray(data.galleryMainNavLinks)) {
-            return [];
+        if (Array.isArray(data.galleryMainNavItems) || Array.isArray(data.galleryMainNavLinks)) {
+            return defaults;
         }
 
-        return defaultGalleryMainNavLinks();
+        return defaults;
+    }
+
+    function getGalleryMainNavCategory(navId) {
+        return (state.galleryMainNavItems || []).find((item) => item.id === navId);
+    }
+
+    function renderGalleryMainNavSubEditor(navId, sub) {
+        return (
+            `<div class="editor-main-nav-sub-item" data-sub-id="${sub.id}" data-nav-id="${navId}">
+                <div class="editor-main-nav-sub-item-head">
+                    <label class="editor-toggle editor-toggle--compact">
+                        <input type="checkbox" data-gallery-sub-field="visible" data-sub-id="${sub.id}" data-nav-id="${navId}"${sub.visible !== false ? ' checked' : ''}>
+                        Show in dropdown
+                    </label>
+                    <button type="button" class="editor-footer-link-remove" data-action="remove-gallery-main-nav-sub">Remove</button>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label>Subcategory name</label>
+                    <input type="text" value="${escapeHtml(sub.label)}" data-gallery-sub-field="label" data-sub-id="${sub.id}" data-nav-id="${navId}" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label>URL</label>
+                    <input type="text" value="${escapeHtml(sub.url)}" data-gallery-sub-field="url" data-sub-id="${sub.id}" data-nav-id="${navId}" placeholder="/catalog/..." autocomplete="off">
+                </div>
+            </div>`
+        );
     }
 
     function renderGalleryMainNavEditor() {
-        renderFooterLinksEditor(galleryMainNavEditor, state.galleryMainNavLinks, 'Nav link');
+        if (!galleryMainNavEditor) return;
+
+        galleryMainNavEditor.innerHTML = (state.galleryMainNavItems || []).map((category, categoryIndex) => (
+            `<fieldset class="editor-fieldset editor-main-nav-category" data-nav-id="${category.id}">
+                <legend>${escapeHtml(category.label || `Category ${categoryIndex + 1}`)}</legend>
+                <div class="editor-field editor-field--compact">
+                    <label>Category name</label>
+                    <input type="text" value="${escapeHtml(category.label)}" data-gallery-nav-field="label" data-nav-id="${category.id}" autocomplete="off">
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label>Category link</label>
+                    <input type="text" value="${escapeHtml(category.url || '')}" data-gallery-nav-field="url" data-nav-id="${category.id}" placeholder="/catalog" autocomplete="off">
+                </div>
+                ${category.subcategories.length
+                    ? '<p class="editor-field-hint editor-field-hint--fieldset">Edit subcategory names and URLs. Uncheck any you want hidden from the dropdown.</p>'
+                    : '<p class="editor-field-hint editor-field-hint--fieldset">No subcategories yet — add links for this dropdown when ready.</p>'}
+                <div class="editor-main-nav-subs" data-nav-id="${category.id}">
+                    ${category.subcategories.map((sub) => renderGalleryMainNavSubEditor(category.id, sub)).join('')}
+                </div>
+                <button type="button" class="btn btn-secondary editor-add-item-btn editor-gallery-main-nav-add-sub" data-nav-id="${category.id}">Add subcategory</button>
+            </fieldset>`
+        )).join('');
     }
 
     function readGalleryMainNavFromEditor() {
         if (!galleryMainNavEditor) return;
-        galleryMainNavEditor.querySelectorAll('[data-field]').forEach((input) => {
-            const item = state.galleryMainNavLinks.find((link) => link.id === input.dataset.itemId);
-            if (!item) return;
-            item[input.dataset.field] = input.value.trim();
+
+        (state.galleryMainNavItems || []).forEach((category) => {
+            const labelInput = galleryMainNavEditor.querySelector(
+                `[data-gallery-nav-field="label"][data-nav-id="${category.id}"]`,
+            );
+            if (labelInput) category.label = labelInput.value.trim();
+
+            const urlInput = galleryMainNavEditor.querySelector(
+                `[data-gallery-nav-field="url"][data-nav-id="${category.id}"]`,
+            );
+            if (urlInput) category.url = urlInput.value.trim();
+
+            category.subcategories.forEach((sub) => {
+                galleryMainNavEditor.querySelectorAll(
+                    `[data-gallery-sub-field][data-nav-id="${category.id}"][data-sub-id="${sub.id}"]`,
+                ).forEach((input) => {
+                    const field = input.dataset.gallerySubField;
+                    if (field === 'visible') {
+                        sub.visible = input.checked;
+                    } else if (field) {
+                        sub[field] = input.value.trim();
+                    }
+                });
+            });
         });
     }
 
-    function saveGalleryMainNavDraft() {
+    function saveGalleryMainNavDraft(reRenderEditor = false) {
         readGalleryMainNavFromEditor();
+        if (reRenderEditor) renderGalleryMainNavEditor();
         syncHeaderPreview();
         saveState();
     }
 
-    function addGalleryMainNavLink() {
+    function addGalleryMainNavSubcategory(navId) {
         readGalleryMainNavFromEditor();
-        state.galleryMainNavLinks.push(createFooterLinkItem({
-            label: 'New link',
+        const category = getGalleryMainNavCategory(navId);
+        if (!category) return;
+
+        category.subcategories.push(createMainNavSubcategory({
+            label: 'NEW SUBCATEGORY',
             url: '/',
-        }, state.galleryMainNavLinks.length, 'gmn'));
+        }, category.subcategories.length, navId));
+
         renderGalleryMainNavEditor();
         syncHeaderPreview();
         saveState();
-        setStatus('Nav link added');
+        setStatus('Subcategory added');
     }
 
-    function removeGalleryMainNavLink(id) {
+    function removeGalleryMainNavSubcategory(navId, subId) {
         readGalleryMainNavFromEditor();
-        state.galleryMainNavLinks = state.galleryMainNavLinks.filter((item) => item.id !== id);
+        const category = getGalleryMainNavCategory(navId);
+        if (!category) return;
+
+        category.subcategories = category.subcategories.filter((sub) => sub.id !== subId);
         renderGalleryMainNavEditor();
         syncHeaderPreview();
         saveState();
-        setStatus('Nav link removed');
+        setStatus('Subcategory removed');
     }
 
     function bindGalleryMainNavEditorEvents() {
-        if (galleryMainNavEditor) {
-            galleryMainNavEditor.addEventListener('input', (event) => {
-                if (event.target.matches('[data-field]')) {
-                    saveGalleryMainNavDraft();
-                }
-            });
+        if (!galleryMainNavEditor) return;
 
-            galleryMainNavEditor.addEventListener('click', (event) => {
-                const button = event.target.closest('[data-action="remove-footer-link"]');
-                if (!button) return;
-                const wrap = button.closest('[data-item-id]');
-                if (wrap) removeGalleryMainNavLink(wrap.dataset.itemId);
-            });
-        }
+        galleryMainNavEditor.addEventListener('input', (event) => {
+            if (event.target.matches('[data-gallery-nav-field="label"]')) {
+                const fieldset = event.target.closest('.editor-main-nav-category');
+                const legend = fieldset?.querySelector('legend');
+                if (legend) legend.textContent = event.target.value.trim() || 'Category';
+            }
+            if (event.target.matches('[data-gallery-nav-field], [data-gallery-sub-field]:not([data-gallery-sub-field="visible"])')) {
+                saveGalleryMainNavDraft(false);
+            }
+        });
 
-        if (addGalleryMainNavLinkBtn) {
-            addGalleryMainNavLinkBtn.addEventListener('click', addGalleryMainNavLink);
-        }
+        galleryMainNavEditor.addEventListener('change', (event) => {
+            if (event.target.matches('[data-gallery-sub-field="visible"]')) {
+                saveGalleryMainNavDraft(false);
+            }
+        });
+
+        galleryMainNavEditor.addEventListener('click', (event) => {
+            const addButton = event.target.closest('.editor-gallery-main-nav-add-sub');
+            if (addButton?.dataset.navId) {
+                addGalleryMainNavSubcategory(addButton.dataset.navId);
+                return;
+            }
+
+            const removeButton = event.target.closest('[data-action="remove-gallery-main-nav-sub"]');
+            if (!removeButton) return;
+            const wrap = removeButton.closest('[data-nav-id][data-sub-id]');
+            if (wrap) {
+                removeGalleryMainNavSubcategory(wrap.dataset.navId, wrap.dataset.subId);
+            }
+        });
     }
 
     function mainNavSubcategoriesPending() {
@@ -2930,8 +3144,8 @@
     function createMainNavSubcategory(data = {}, index = 0, prefix = 'mns') {
         return {
             id: data.id || `${prefix}-${index + 1}-${Math.random().toString(36).slice(2, 8)}`,
-            label: String(data.label || '').trim() || 'Subcategory',
-            url: String(data.url || '').trim() || '/',
+            label: storedText(data.label, 'Subcategory'),
+            url: storedText(data.url, '/'),
             visible: data.visible !== false,
         };
     }
@@ -2944,8 +3158,8 @@
 
         return {
             id,
-            label: String(data.label || '').trim() || 'Category',
-            url: String(data.url || '').trim(),
+            label: storedText(data.label, 'Category'),
+            url: storedText(data.url, ''),
             subcategories,
         };
     }
@@ -3372,8 +3586,11 @@
         }
 
         if (previewGalleryTopBarCopy) {
-            previewGalleryTopBarCopy.textContent = state.galleryHeaderCenterCopy
-                || DEFAULT_GALLERY_HEADER_CENTER_COPY;
+            const centerCopy = typeof state.galleryHeaderCenterCopy === 'string'
+                ? state.galleryHeaderCenterCopy
+                : DEFAULT_GALLERY_HEADER_CENTER_COPY;
+            previewGalleryTopBarCopy.textContent = centerCopy;
+            previewGalleryTopBarCopy.hidden = !centerCopy;
             if (!isGalleryDarkPreview()) {
                 previewGalleryTopBarCopy.style.color = barText;
             } else {
@@ -3382,12 +3599,29 @@
         }
 
         if (previewGalleryTopBarUtils) {
-            const wishlist = escapeHtml(state.galleryHeaderWishlistLabel || DEFAULT_GALLERY_HEADER_WISHLIST);
-            const signIn = escapeHtml(state.galleryHeaderSignInLabel || DEFAULT_GALLERY_HEADER_SIGN_IN);
-            previewGalleryTopBarUtils.innerHTML = (
-                `<a href="/wishlist">${wishlist}</a>`
-                + '<span class="showroom-gallery-top-bar-sep" aria-hidden="true">|</span>'
-                + `<a href="/sign-in">${signIn}</a>`
+            const utilLinks = [];
+            const wishlistLabel = typeof state.galleryHeaderWishlistLabel === 'string'
+                ? state.galleryHeaderWishlistLabel.trim()
+                : DEFAULT_GALLERY_HEADER_WISHLIST;
+            const wishlistUrl = (typeof state.galleryHeaderWishlistUrl === 'string'
+                ? state.galleryHeaderWishlistUrl.trim()
+                : DEFAULT_GALLERY_HEADER_WISHLIST_URL) || '#';
+            const signInLabel = typeof state.galleryHeaderSignInLabel === 'string'
+                ? state.galleryHeaderSignInLabel.trim()
+                : DEFAULT_GALLERY_HEADER_SIGN_IN;
+            const signInUrl = (typeof state.galleryHeaderSignInUrl === 'string'
+                ? state.galleryHeaderSignInUrl.trim()
+                : DEFAULT_GALLERY_HEADER_SIGN_IN_URL) || '#';
+
+            if (wishlistLabel) {
+                utilLinks.push(`<a href="${escapeHtml(wishlistUrl)}">${escapeHtml(wishlistLabel)}</a>`);
+            }
+            if (signInLabel) {
+                utilLinks.push(`<a href="${escapeHtml(signInUrl)}">${escapeHtml(signInLabel)}</a>`);
+            }
+
+            previewGalleryTopBarUtils.innerHTML = utilLinks.join(
+                '<span class="showroom-gallery-top-bar-sep" aria-hidden="true">|</span>',
             );
             if (!isGalleryDarkPreview()) {
                 previewGalleryTopBarUtils.querySelectorAll('a').forEach((link) => {
@@ -3400,11 +3634,31 @@
         }
 
         if (previewGalleryMainNavLinks) {
-            const visibleLinks = (state.galleryMainNavLinks || []).filter((link) => link.label || link.url);
-            previewGalleryMainNavLinks.innerHTML = visibleLinks.map((link) => {
-                const url = escapeHtml(link.url || '#');
-                const label = escapeHtml(link.label || 'Link');
-                return `<li><a href="${url}">${label}</a></li>`;
+            previewGalleryMainNavLinks.innerHTML = (state.galleryMainNavItems || []).map((item) => {
+                const visibleSubcategories = (item.subcategories || []).filter((sub) => sub.visible !== false);
+                const hasDropdown = visibleSubcategories.length > 0;
+                const dropdownMarkup = hasDropdown
+                    ? `<ul class="showroom-main-nav-dropdown">${visibleSubcategories.map((sub) => {
+                        const url = escapeHtml(sub.url || '#');
+                        const label = escapeHtml(sub.label || '');
+                        return `<li><a href="${url}">${label}</a></li>`;
+                    }).join('')}</ul>`
+                    : '';
+
+                const categoryUrl = String(item.url || '').trim();
+                const label = escapeHtml(item.label || 'Category');
+                const triggerLabel = categoryUrl
+                    ? `<a href="${escapeHtml(categoryUrl)}" class="showroom-main-nav-label-link">${label}</a>`
+                    : `<span class="showroom-main-nav-label">${label}</span>`;
+
+                return (
+                    `<li class="showroom-main-nav-item${hasDropdown ? ' has-dropdown' : ''}" data-nav-id="${escapeHtml(item.id)}">
+                        <div class="showroom-main-nav-trigger"${hasDropdown ? ' aria-haspopup="true"' : ''}>
+                            ${triggerLabel}
+                        </div>
+                        ${dropdownMarkup}
+                    </li>`
+                );
             }).join('');
         }
     }
@@ -3516,20 +3770,28 @@
                         alignment: 'right',
                         separator: '|',
                         wishlist: {
-                            label: state.galleryHeaderWishlistLabel,
-                            url: '/wishlist',
+                            label: state.galleryHeaderWishlistLabel || '',
+                            url: state.galleryHeaderWishlistUrl || '',
                         },
                         signIn: {
-                            label: state.galleryHeaderSignInLabel,
-                            url: '/sign-in',
+                            label: state.galleryHeaderSignInLabel || '',
+                            url: state.galleryHeaderSignInUrl || '',
                         },
                     },
                 },
                 mainNav: {
                     alignment: 'logo left · nav left of search · search right',
-                    links: state.galleryMainNavLinks.map((link) => ({
-                        label: link.label,
-                        url: link.url,
+                    hasDropdowns: true,
+                    items: (state.galleryMainNavItems || []).map((item) => ({
+                        id: item.id || '',
+                        label: item.label || '',
+                        url: item.url || '',
+                        subcategories: (item.subcategories || []).map((sub) => ({
+                            id: sub.id || '',
+                            label: sub.label || '',
+                            url: sub.url || '',
+                            visible: sub.visible !== false,
+                        })),
                     })),
                     search: {
                         hardcoded: true,
@@ -3629,8 +3891,8 @@
     function createFooterLinkItem(data = {}, index = 0, prefix = 'fl') {
         return {
             id: data.id || `${prefix}-${index + 1}-${Math.random().toString(36).slice(2, 8)}`,
-            label: String(data.label || '').trim() || 'Link',
-            url: String(data.url || '').trim() || '/',
+            label: String(data.label ?? '').trim(),
+            url: String(data.url ?? '').trim(),
         };
     }
 
@@ -3713,8 +3975,8 @@
             const definition = byId.get(item.id) || definitions[index];
             return createFooterLinkItem({
                 id: item.id || definition?.id,
-                label: definition?.label || item.label,
-                url: item.url || definition?.defaultUrl || '/',
+                label: storedText(item.label, definition?.label || 'Link'),
+                url: storedText(item.url, definition?.defaultUrl || '/'),
             }, index, prefix);
         });
     }
@@ -3730,8 +3992,8 @@
             const definition = byId.get(item.id);
             return createFooterLinkItem({
                 id: item.id,
-                label: item.label || definition?.label || 'Link',
-                url: item.url || definition?.defaultUrl || '/',
+                label: storedText(item.label, definition?.label || 'Link'),
+                url: storedText(item.url, definition?.defaultUrl || '/'),
             }, index, 'cfs');
         });
     }
@@ -3824,11 +4086,13 @@
     function renderClassicFooterLinkList(container, links) {
         if (!container) return;
 
-        container.innerHTML = (links || []).map((link) => {
-            const url = escapeHtml(link.url || '#');
-            const label = escapeHtml(link.label || 'Link');
-            return `<li><a href="${url}">${label}</a></li>`;
-        }).join('');
+        container.innerHTML = (links || [])
+            .filter((link) => link.label || link.url)
+            .map((link) => {
+                const url = escapeHtml(link.url || '#');
+                const label = escapeHtml(link.label || '');
+                return `<li><a href="${url}">${label}</a></li>`;
+            }).join('');
     }
 
     function applyClassicFooterTheme() {
@@ -3911,12 +4175,16 @@
     function syncClassicFooterPreview() {
         applyClassicFooterTheme();
 
-        const companyName = state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
+        const companyName = typeof state.classicFooterCompanyName === 'string'
+            ? state.classicFooterCompanyName
+            : DEFAULT_FOOTER_COMPANY;
         if (previewClassicFooterCompany) {
             previewClassicFooterCompany.textContent = companyName;
         }
         if (previewClassicFooterAbout) {
-            previewClassicFooterAbout.textContent = state.classicFooterAboutCopy || DEFAULT_CLASSIC_FOOTER_ABOUT;
+            previewClassicFooterAbout.textContent = typeof state.classicFooterAboutCopy === 'string'
+                ? state.classicFooterAboutCopy
+                : DEFAULT_CLASSIC_FOOTER_ABOUT;
         }
 
         renderClassicFooterLinkList(previewClassicFooterShopLinks, state.classicFooterShopLinks);
@@ -3924,13 +4192,21 @@
         renderClassicFooterLinkList(previewClassicFooterAccountLinks, state.classicFooterAccountLinks);
 
         if (previewClassicFooterAddress) {
-            previewClassicFooterAddress.textContent = state.classicFooterAddress || DEFAULT_FOOTER_ADDRESS;
+            previewClassicFooterAddress.textContent = typeof state.classicFooterAddress === 'string'
+                ? state.classicFooterAddress
+                : DEFAULT_FOOTER_ADDRESS;
         }
         if (previewClassicFooterHours) {
             const hours = [
-                state.classicFooterHoursMonFri || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
-                state.classicFooterHoursSaturday || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
-                state.classicFooterHoursSunday || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+                typeof state.classicFooterHoursMonFri === 'string'
+                    ? state.classicFooterHoursMonFri
+                    : DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
+                typeof state.classicFooterHoursSaturday === 'string'
+                    ? state.classicFooterHoursSaturday
+                    : DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
+                typeof state.classicFooterHoursSunday === 'string'
+                    ? state.classicFooterHoursSunday
+                    : DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
             ].filter(Boolean);
             previewClassicFooterHours.innerHTML = hours.map((line) => `<li>${escapeHtml(line)}</li>`).join('');
         }
@@ -3958,12 +4234,21 @@
         state.classicFooterShopLinks = migratedLinks.classicFooterShopLinks;
         state.classicFooterAboutLinks = migratedLinks.classicFooterAboutLinks;
         state.classicFooterAccountLinks = migratedLinks.classicFooterAccountLinks;
-        state.classicFooterCompanyName = data.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
-        state.classicFooterAboutCopy = data.classicFooterAboutCopy || DEFAULT_CLASSIC_FOOTER_ABOUT;
-        state.classicFooterAddress = data.classicFooterAddress || DEFAULT_FOOTER_ADDRESS;
-        state.classicFooterHoursMonFri = data.classicFooterHoursMonFri || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI;
-        state.classicFooterHoursSaturday = data.classicFooterHoursSaturday || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY;
-        state.classicFooterHoursSunday = data.classicFooterHoursSunday || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY;
+        state.classicFooterCompanyName = storedText(data.classicFooterCompanyName, DEFAULT_FOOTER_COMPANY);
+        state.classicFooterAboutCopy = storedText(data.classicFooterAboutCopy, DEFAULT_CLASSIC_FOOTER_ABOUT);
+        state.classicFooterAddress = storedText(data.classicFooterAddress, DEFAULT_FOOTER_ADDRESS);
+        state.classicFooterHoursMonFri = storedText(
+            data.classicFooterHoursMonFri,
+            DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
+        );
+        state.classicFooterHoursSaturday = storedText(
+            data.classicFooterHoursSaturday,
+            DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
+        );
+        state.classicFooterHoursSunday = storedText(
+            data.classicFooterHoursSunday,
+            DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+        );
         state.classicFooterBackgroundColor = normalizeHex(
             data.classicFooterBackgroundColor || DEFAULT_CLASSIC_FOOTER_BG,
         );
@@ -4002,13 +4287,13 @@
         return {
             layout: 'four-column',
             columns: ['about', 'quick-links', 'contact', 'store-hours'],
-            companyName: state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY,
-            aboutCopy: state.classicFooterAboutCopy || DEFAULT_CLASSIC_FOOTER_ABOUT,
-            address: state.classicFooterAddress || DEFAULT_FOOTER_ADDRESS,
+            companyName: state.classicFooterCompanyName || '',
+            aboutCopy: state.classicFooterAboutCopy || '',
+            address: state.classicFooterAddress || '',
             storeHours: {
-                mondayFriday: state.classicFooterHoursMonFri || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
-                saturday: state.classicFooterHoursSaturday || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
-                sunday: state.classicFooterHoursSunday || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+                mondayFriday: state.classicFooterHoursMonFri || '',
+                saturday: state.classicFooterHoursSaturday || '',
+                sunday: state.classicFooterHoursSunday || '',
             },
             backgroundColor: state.classicFooterBackgroundColor || DEFAULT_CLASSIC_FOOTER_BG,
             textColor: state.classicFooterTextColor || DEFAULT_CLASSIC_FOOTER_TEXT,
@@ -4970,28 +5255,25 @@
         readGalleryCatalogTilesFromEditor();
         readClassicFooterLinksFromEditor();
         if (fields.classicFooterCompanyName) {
-            state.classicFooterCompanyName = fields.classicFooterCompanyName.value.trim() || DEFAULT_FOOTER_COMPANY;
+            state.classicFooterCompanyName = readTextField(fields.classicFooterCompanyName);
         }
         if (fields.classicFooterAboutCopy) {
-            state.classicFooterAboutCopy = fields.classicFooterAboutCopy.value.trim() || DEFAULT_CLASSIC_FOOTER_ABOUT;
+            state.classicFooterAboutCopy = readTextField(fields.classicFooterAboutCopy);
         }
         if (fields.classicFooterAddress) {
-            state.classicFooterAddress = fields.classicFooterAddress.value.trim() || DEFAULT_FOOTER_ADDRESS;
+            state.classicFooterAddress = readTextField(fields.classicFooterAddress);
         }
         if (fields.classicFooterHoursMonFri) {
-            state.classicFooterHoursMonFri = fields.classicFooterHoursMonFri.value.trim()
-                || DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI;
+            state.classicFooterHoursMonFri = readTextField(fields.classicFooterHoursMonFri);
         }
         if (fields.classicFooterHoursSaturday) {
-            state.classicFooterHoursSaturday = fields.classicFooterHoursSaturday.value.trim()
-                || DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY;
+            state.classicFooterHoursSaturday = readTextField(fields.classicFooterHoursSaturday);
         }
         if (fields.classicFooterHoursSunday) {
-            state.classicFooterHoursSunday = fields.classicFooterHoursSunday.value.trim()
-                || DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY;
+            state.classicFooterHoursSunday = readTextField(fields.classicFooterHoursSunday);
         }
         if (fields.classicFooterCopyrightName) {
-            state.classicFooterCopyrightName = fields.classicFooterCopyrightName.value.trim();
+            state.classicFooterCopyrightName = readTextField(fields.classicFooterCopyrightName);
         }
         if (fields.classicFooterBackgroundColor) {
             state.classicFooterBackgroundColor = normalizeHex(
@@ -5075,45 +5357,37 @@
             state.galleryHeaderSticky = fields.galleryHeaderSticky.checked === true;
         }
         if (fields.galleryHeaderCenterCopy) {
-            state.galleryHeaderCenterCopy = fields.galleryHeaderCenterCopy.value.trim()
-                || DEFAULT_GALLERY_HEADER_CENTER_COPY;
-            fields.galleryHeaderCenterCopy.value = state.galleryHeaderCenterCopy;
+            state.galleryHeaderCenterCopy = readTextField(fields.galleryHeaderCenterCopy);
         }
         if (fields.galleryHeaderWishlistLabel) {
-            state.galleryHeaderWishlistLabel = fields.galleryHeaderWishlistLabel.value.trim()
-                || DEFAULT_GALLERY_HEADER_WISHLIST;
-            fields.galleryHeaderWishlistLabel.value = state.galleryHeaderWishlistLabel;
+            state.galleryHeaderWishlistLabel = readTextField(fields.galleryHeaderWishlistLabel);
+        }
+        if (fields.galleryHeaderWishlistUrl) {
+            state.galleryHeaderWishlistUrl = readTextField(fields.galleryHeaderWishlistUrl);
         }
         if (fields.galleryHeaderSignInLabel) {
-            state.galleryHeaderSignInLabel = fields.galleryHeaderSignInLabel.value.trim()
-                || DEFAULT_GALLERY_HEADER_SIGN_IN;
-            fields.galleryHeaderSignInLabel.value = state.galleryHeaderSignInLabel;
+            state.galleryHeaderSignInLabel = readTextField(fields.galleryHeaderSignInLabel);
+        }
+        if (fields.galleryHeaderSignInUrl) {
+            state.galleryHeaderSignInUrl = readTextField(fields.galleryHeaderSignInUrl);
         }
         if (fields.galleryHeroHeadlineLine1) {
-            state.galleryHeroHeadlineLine1 = fields.galleryHeroHeadlineLine1.value.trim();
-            fields.galleryHeroHeadlineLine1.value = state.galleryHeroHeadlineLine1;
+            state.galleryHeroHeadlineLine1 = readTextField(fields.galleryHeroHeadlineLine1);
         }
         if (fields.galleryHeroHeadlineLine2) {
-            state.galleryHeroHeadlineLine2 = fields.galleryHeroHeadlineLine2.value.trim();
-            fields.galleryHeroHeadlineLine2.value = state.galleryHeroHeadlineLine2;
+            state.galleryHeroHeadlineLine2 = readTextField(fields.galleryHeroHeadlineLine2);
         }
         if (fields.galleryHeroHeadlineLine3) {
-            state.galleryHeroHeadlineLine3 = fields.galleryHeroHeadlineLine3.value.trim();
-            fields.galleryHeroHeadlineLine3.value = state.galleryHeroHeadlineLine3;
+            state.galleryHeroHeadlineLine3 = readTextField(fields.galleryHeroHeadlineLine3);
         }
         if (fields.galleryHeroCopy) {
-            state.galleryHeroCopy = fields.galleryHeroCopy.value.trim() || DEFAULT_GALLERY_HERO_COPY;
-            fields.galleryHeroCopy.value = state.galleryHeroCopy;
+            state.galleryHeroCopy = readTextField(fields.galleryHeroCopy);
         }
         if (fields.galleryHeroButtonLabel) {
-            state.galleryHeroButtonLabel = fields.galleryHeroButtonLabel.value.trim()
-                || DEFAULT_GALLERY_HERO_BUTTON_LABEL;
-            fields.galleryHeroButtonLabel.value = state.galleryHeroButtonLabel;
+            state.galleryHeroButtonLabel = readTextField(fields.galleryHeroButtonLabel);
         }
         if (fields.galleryHeroButtonUrl) {
-            state.galleryHeroButtonUrl = fields.galleryHeroButtonUrl.value.trim()
-                || DEFAULT_GALLERY_HERO_BUTTON_URL;
-            fields.galleryHeroButtonUrl.value = state.galleryHeroButtonUrl;
+            state.galleryHeroButtonUrl = readTextField(fields.galleryHeroButtonUrl);
         }
         if (fields.galleryHeroButtonBackgroundColor) {
             state.galleryHeroButtonBackgroundColor = normalizeHexColor(
@@ -5136,24 +5410,16 @@
             }
         }
         if (fields.galleryHeroSecondaryTopHeading) {
-            state.galleryHeroSecondaryTopHeading = fields.galleryHeroSecondaryTopHeading.value.trim()
-                || DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING;
-            fields.galleryHeroSecondaryTopHeading.value = state.galleryHeroSecondaryTopHeading;
+            state.galleryHeroSecondaryTopHeading = readTextField(fields.galleryHeroSecondaryTopHeading);
         }
         if (fields.galleryHeroSecondaryTopUrl) {
-            state.galleryHeroSecondaryTopUrl = fields.galleryHeroSecondaryTopUrl.value.trim()
-                || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL;
-            fields.galleryHeroSecondaryTopUrl.value = state.galleryHeroSecondaryTopUrl;
+            state.galleryHeroSecondaryTopUrl = readTextField(fields.galleryHeroSecondaryTopUrl);
         }
         if (fields.galleryHeroSecondaryBottomHeading) {
-            state.galleryHeroSecondaryBottomHeading = fields.galleryHeroSecondaryBottomHeading.value.trim()
-                || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING;
-            fields.galleryHeroSecondaryBottomHeading.value = state.galleryHeroSecondaryBottomHeading;
+            state.galleryHeroSecondaryBottomHeading = readTextField(fields.galleryHeroSecondaryBottomHeading);
         }
         if (fields.galleryHeroSecondaryBottomUrl) {
-            state.galleryHeroSecondaryBottomUrl = fields.galleryHeroSecondaryBottomUrl.value.trim()
-                || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL;
-            fields.galleryHeroSecondaryBottomUrl.value = state.galleryHeroSecondaryBottomUrl;
+            state.galleryHeroSecondaryBottomUrl = readTextField(fields.galleryHeroSecondaryBottomUrl);
         }
         syncPreview();
         saveState();
@@ -5168,9 +5434,26 @@
             DEFAULT_GALLERY_HEADER_BAR_TEXT,
         );
         state.galleryHeaderSticky = data.galleryHeaderSticky === true;
-        state.galleryHeaderCenterCopy = data.galleryHeaderCenterCopy || DEFAULT_GALLERY_HEADER_CENTER_COPY;
-        state.galleryHeaderWishlistLabel = data.galleryHeaderWishlistLabel || DEFAULT_GALLERY_HEADER_WISHLIST;
-        state.galleryHeaderSignInLabel = data.galleryHeaderSignInLabel || DEFAULT_GALLERY_HEADER_SIGN_IN;
+        state.galleryHeaderCenterCopy = storedText(
+            data.galleryHeaderCenterCopy,
+            DEFAULT_GALLERY_HEADER_CENTER_COPY,
+        );
+        state.galleryHeaderWishlistLabel = storedText(
+            data.galleryHeaderWishlistLabel,
+            DEFAULT_GALLERY_HEADER_WISHLIST,
+        );
+        state.galleryHeaderWishlistUrl = storedText(
+            data.galleryHeaderWishlistUrl,
+            DEFAULT_GALLERY_HEADER_WISHLIST_URL,
+        );
+        state.galleryHeaderSignInLabel = storedText(
+            data.galleryHeaderSignInLabel,
+            DEFAULT_GALLERY_HEADER_SIGN_IN,
+        );
+        state.galleryHeaderSignInUrl = storedText(
+            data.galleryHeaderSignInUrl,
+            DEFAULT_GALLERY_HEADER_SIGN_IN_URL,
+        );
 
         if (fields.galleryHeaderBarBackgroundColor) {
             fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
@@ -5193,10 +5476,16 @@
         if (fields.galleryHeaderWishlistLabel) {
             fields.galleryHeaderWishlistLabel.value = state.galleryHeaderWishlistLabel;
         }
+        if (fields.galleryHeaderWishlistUrl) {
+            fields.galleryHeaderWishlistUrl.value = state.galleryHeaderWishlistUrl;
+        }
         if (fields.galleryHeaderSignInLabel) {
             fields.galleryHeaderSignInLabel.value = state.galleryHeaderSignInLabel;
         }
-        state.galleryMainNavLinks = migrateGalleryMainNavLinks(data);
+        if (fields.galleryHeaderSignInUrl) {
+            fields.galleryHeaderSignInUrl.value = state.galleryHeaderSignInUrl;
+        }
+        state.galleryMainNavItems = migrateGalleryMainNavItems(data);
         renderGalleryMainNavEditor();
         populateGalleryHeroFields(data);
         populateGalleryCatalogFields(data);
@@ -5683,7 +5972,13 @@
     if (fields.galleryHeaderSticky) {
         fields.galleryHeaderSticky.addEventListener('change', readForm);
     }
-    ['galleryHeaderCenterCopy', 'galleryHeaderWishlistLabel', 'galleryHeaderSignInLabel'].forEach((key) => {
+    [
+        'galleryHeaderCenterCopy',
+        'galleryHeaderWishlistLabel',
+        'galleryHeaderWishlistUrl',
+        'galleryHeaderSignInLabel',
+        'galleryHeaderSignInUrl',
+    ].forEach((key) => {
         if (fields[key]) fields[key].addEventListener('input', readForm);
     });
 
