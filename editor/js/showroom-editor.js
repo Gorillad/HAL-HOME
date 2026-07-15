@@ -46,7 +46,7 @@
     const DEFAULT_FOOTER_COMPANY = TEMPLATE_DESIGNS[templateDesign] || 'Showroom';
     const DEFAULT_FOOTER_ADDRESS = '123 Lighting Way\nSuite 400, Anytown, USA';
     const DEFAULT_FOOTER_PHONE = '(800) 555-1234';
-    const DEFAULT_CLASSIC_FOOTER_ABOUT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+    const DEFAULT_CLASSIC_FOOTER_ABOUT = 'Family-owned lighting for every room — from statement chandeliers to everyday pendants, exterior fixtures, and fans. Visit our showroom or shop the catalog online.';
     const DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI = 'Monday - Friday: 9:00 AM - 5:00 PM';
     const DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY = 'Saturday: Closed';
     const DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY = 'Sunday: Closed';
@@ -55,23 +55,23 @@
     const DEFAULT_CLASSIC_FOOTER_COPYRIGHT_TEXT = '#5c5c5c';
     const DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG = '#f5f5f5';
     const CLASSIC_FOOTER_SHOP_LINKS = [
-        { id: 'catalog', label: 'Catalog', defaultUrl: '/catalog' },
-        { id: 'chandeliers', label: 'Chandeliers', defaultUrl: '/catalog/chandeliers' },
-        { id: 'pendants', label: 'Pendants', defaultUrl: '/catalog/pendants' },
-        { id: 'bathroom-fixtures', label: 'Bathroom Fixtures', defaultUrl: '/catalog/bathroom-fixtures' },
-        { id: 'exterior', label: 'Exterior', defaultUrl: '/catalog/exterior' },
-        { id: 'fans', label: 'Fans', defaultUrl: '/catalog/fans' },
-        { id: 'foyer', label: 'Foyer', defaultUrl: '/catalog/foyer' },
-        { id: 'wall-lights', label: 'Wall Lights', defaultUrl: '/catalog/wall-lights' },
+        { id: 'catalog', label: 'Catalog', defaultUrl: '/lighting-fixtures' },
+        { id: 'chandeliers', label: 'Chandeliers', defaultUrl: '/lighting-fixtures/chandeliers' },
+        { id: 'pendants', label: 'Pendants', defaultUrl: '/lighting-fixtures/pendants' },
+        { id: 'bathroom-fixtures', label: 'Bathroom Fixtures', defaultUrl: '/lighting-fixtures/bathroom-fixtures' },
+        { id: 'exterior', label: 'Exterior', defaultUrl: '/lighting-fixtures/exterior' },
+        { id: 'fans', label: 'Fans', defaultUrl: '/lighting-fixtures/fans' },
+        { id: 'foyer', label: 'Foyer', defaultUrl: '/lighting-fixtures/foyer' },
+        { id: 'wall-lights', label: 'Wall Lights', defaultUrl: '/lighting-fixtures/wall-lights' },
     ];
     const CLASSIC_FOOTER_ABOUT_LINKS = [
-        { id: 'about-us', label: 'About Us', defaultUrl: '/about' },
-        { id: 'privacy', label: 'Privacy', defaultUrl: '/privacy' },
-        { id: 'contact-us', label: 'Contact Us', defaultUrl: '/contact' },
+        { id: 'about-us', label: 'About Us', defaultUrl: '/about-us' },
+        { id: 'privacy', label: 'Privacy', defaultUrl: '/policy/privacy' },
+        { id: 'contact-us', label: 'Contact Us', defaultUrl: '/contact-us' },
     ];
     const CLASSIC_FOOTER_ACCOUNT_LINKS = [
         { id: 'my-account', label: 'My Account', defaultUrl: '/account' },
-        { id: 'wish-list', label: 'Wish List', defaultUrl: '/wishlist' },
+        { id: 'wish-list', label: 'Wish List', defaultUrl: '/CustomerView' },
     ];
     const FOOTER_ADA_POPUP = 'ada-compliance::ADA Compliance::600px';
     const DEFAULT_FOOTER_QUICK_LINKS = [
@@ -116,10 +116,10 @@
         {
             id: 'gallery-about-us',
             label: 'ABOUT US',
-            url: '/about',
+            url: '/about-us',
             subcategories: [
-                { id: 'gallery-about-privacy', label: 'PRIVACY', url: '/privacy' },
-                { id: 'gallery-about-contact', label: 'CONTACT US', url: '/contact' },
+                { id: 'gallery-about-privacy', label: 'PRIVACY', url: '/policy/privacy' },
+                { id: 'gallery-about-contact', label: 'CONTACT US', url: '/contact-us' },
             ],
         },
         {
@@ -158,37 +158,37 @@
     const DEFAULT_GALLERY_HERO_HEADLINE_3 = 'LIGHTING';
     const DEFAULT_GALLERY_HERO_COPY = 'Refresh your home with bold silhouettes,\nwarm finishes, and lighting that makes\nevery room feel complete.';
     const DEFAULT_GALLERY_HERO_BUTTON_LABEL = 'Shop Now';
-    const DEFAULT_GALLERY_HERO_BUTTON_URL = '/catalog';
+    const DEFAULT_GALLERY_HERO_BUTTON_URL = '/lighting-fixtures';
     const DEFAULT_GALLERY_HERO_BUTTON_BG = '#2b2b2b';
     const DEFAULT_GALLERY_HERO_BUTTON_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HERO_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING = 'Chandelier';
-    const DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL = '/catalog/chandeliers';
+    const DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL = '/lighting-fixtures/chandeliers';
     const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING = 'Pendants';
-    const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL = '/catalog/pendants';
+    const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL = '/lighting-fixtures/pendants';
     const GALLERY_CATALOG_TILE_DEFAULTS = [
         {
             id: 'bathroom-fixtures',
             label: 'BATHROOM FIXTURES',
-            defaultUrl: '/catalog/bathroom-fixtures',
+            defaultUrl: '/lighting-fixtures/bathroom-fixtures',
             defaultImage: `${GALLERY_IMAGE_DIR}bathroom1.jpg`,
         },
         {
             id: 'exterior',
             label: 'EXTERIOR',
-            defaultUrl: '/catalog/exterior',
+            defaultUrl: '/lighting-fixtures/exterior',
             defaultImage: `${GALLERY_IMAGE_DIR}exterior1.jpg`,
         },
         {
             id: 'fans',
             label: 'FANS',
-            defaultUrl: '/catalog/fans',
+            defaultUrl: '/lighting-fixtures/fans',
             defaultImage: `${GALLERY_IMAGE_DIR}fans1.jpg`,
         },
         {
             id: 'foyer-hall-lanterns',
             label: 'FOYER HALL LANTERNS',
-            defaultUrl: '/catalog/foyer-hall-lanterns',
+            defaultUrl: '/lighting-fixtures/foyer-hall-lanterns',
             defaultImage: `${GALLERY_IMAGE_DIR}hall-lantern3.jpg`,
         },
     ];
@@ -384,6 +384,50 @@
             iconClass: 'fa-brands fa-linkedin-in',
         },
     ];
+    const GALLERY_FOOTER_SOCIAL_LINKS = [
+        {
+            id: 'youtube',
+            label: 'YouTube',
+            urlKey: 'classicFooterYoutubeUrl',
+            visibleKey: 'classicFooterYoutubeVisible',
+            iconClass: 'fa-brands fa-youtube',
+        },
+        {
+            id: 'x',
+            label: 'X',
+            urlKey: 'classicFooterTwitterUrl',
+            visibleKey: 'classicFooterTwitterVisible',
+            iconClass: 'fa-brands fa-x-twitter',
+        },
+        {
+            id: 'facebook',
+            label: 'Facebook',
+            urlKey: 'classicFooterFacebookUrl',
+            visibleKey: 'classicFooterFacebookVisible',
+            iconClass: 'fa-brands fa-facebook-f',
+        },
+        {
+            id: 'instagram',
+            label: 'Instagram',
+            urlKey: 'classicFooterInstagramUrl',
+            visibleKey: 'classicFooterInstagramVisible',
+            iconClass: 'fa-brands fa-instagram',
+        },
+        {
+            id: 'linkedin',
+            label: 'LinkedIn',
+            urlKey: 'classicFooterLinkedinUrl',
+            visibleKey: 'classicFooterLinkedinVisible',
+            iconClass: 'fa-brands fa-linkedin-in',
+        },
+        {
+            id: 'tiktok',
+            label: 'TikTok',
+            urlKey: 'classicFooterTiktokUrl',
+            visibleKey: 'classicFooterTiktokVisible',
+            iconClass: 'fa-brands fa-tiktok',
+        },
+    ];
     const YOUMAYLIKE_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}you-may-like/`;
     const GET_INSPIRED_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}get-inspired/`;
     const DEFAULT_YOUMAYLIKE_SLOT_DEFAULTS = [
@@ -544,6 +588,18 @@
         classicFooterHoursMonFri: document.getElementById('fieldClassicFooterHoursMonFri'),
         classicFooterHoursSaturday: document.getElementById('fieldClassicFooterHoursSaturday'),
         classicFooterHoursSunday: document.getElementById('fieldClassicFooterHoursSunday'),
+        classicFooterYoutubeUrl: document.getElementById('fieldClassicFooterYoutube'),
+        classicFooterYoutubeVisible: document.getElementById('fieldClassicFooterYoutubeVisible'),
+        classicFooterTwitterUrl: document.getElementById('fieldClassicFooterTwitter'),
+        classicFooterTwitterVisible: document.getElementById('fieldClassicFooterTwitterVisible'),
+        classicFooterFacebookUrl: document.getElementById('fieldClassicFooterFacebook'),
+        classicFooterFacebookVisible: document.getElementById('fieldClassicFooterFacebookVisible'),
+        classicFooterInstagramUrl: document.getElementById('fieldClassicFooterInstagram'),
+        classicFooterInstagramVisible: document.getElementById('fieldClassicFooterInstagramVisible'),
+        classicFooterLinkedinUrl: document.getElementById('fieldClassicFooterLinkedin'),
+        classicFooterLinkedinVisible: document.getElementById('fieldClassicFooterLinkedinVisible'),
+        classicFooterTiktokUrl: document.getElementById('fieldClassicFooterTiktok'),
+        classicFooterTiktokVisible: document.getElementById('fieldClassicFooterTiktokVisible'),
         classicFooterCopyrightName: document.getElementById('fieldClassicFooterCopyrightName'),
         classicFooterBackgroundColor: document.getElementById('fieldClassicFooterBg'),
         classicFooterBackgroundColorValue: document.getElementById('fieldClassicFooterBgValue'),
@@ -713,6 +769,7 @@
     const previewClassicFooterAccountLinks = document.getElementById('previewClassicFooterAccountLinks');
     const previewClassicFooterAddress = document.getElementById('previewClassicFooterAddress');
     const previewClassicFooterHours = document.getElementById('previewClassicFooterHours');
+    const previewClassicFooterSocial = document.getElementById('previewClassicFooterSocial');
     const previewClassicCopyright = document.getElementById('previewClassicCopyright');
     const previewFooterLogo = document.getElementById('previewFooterLogo');
     const previewFooterLogoWrap = document.getElementById('previewFooterLogoWrap');
@@ -816,7 +873,7 @@
         galleryHeroButtonBackgroundColor: DEFAULT_GALLERY_HERO_BUTTON_BG,
         galleryHeroButtonTextColor: DEFAULT_GALLERY_HERO_BUTTON_TEXT,
         galleryCatalogTiles: defaultGalleryCatalogTiles(),
-        classicFooterCompanyName: DEFAULT_FOOTER_COMPANY,
+        classicFooterCompanyName: '',
         classicFooterAboutCopy: DEFAULT_CLASSIC_FOOTER_ABOUT,
         classicFooterShopLinks: defaultClassicFooterShopLinks(),
         classicFooterAboutLinks: defaultClassicFooterAboutLinks(),
@@ -825,6 +882,18 @@
         classicFooterHoursMonFri: DEFAULT_CLASSIC_FOOTER_HOURS_MON_FRI,
         classicFooterHoursSaturday: DEFAULT_CLASSIC_FOOTER_HOURS_SATURDAY,
         classicFooterHoursSunday: DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
+        classicFooterYoutubeUrl: '',
+        classicFooterYoutubeVisible: true,
+        classicFooterTwitterUrl: '',
+        classicFooterTwitterVisible: true,
+        classicFooterFacebookUrl: '',
+        classicFooterFacebookVisible: true,
+        classicFooterInstagramUrl: '',
+        classicFooterInstagramVisible: true,
+        classicFooterLinkedinUrl: '',
+        classicFooterLinkedinVisible: true,
+        classicFooterTiktokUrl: '',
+        classicFooterTiktokVisible: true,
         classicFooterCopyrightName: '',
         classicFooterBackgroundColor: DEFAULT_CLASSIC_FOOTER_BG,
         classicFooterTextColor: DEFAULT_CLASSIC_FOOTER_TEXT,
@@ -1052,6 +1121,70 @@
         maybeCascade('galleryHeroButtonTextColor', 'galleryHeroButtonTextColor');
         maybeCascade('aboutButtonTextColor', 'aboutButtonTextColor');
         maybeCascade('featureButtonTextColor', 'featureButtonTextColor');
+    }
+
+    function resolveCompanyInfoName() {
+        const fromInfo = String(state.footerCompanyName || '').trim();
+        return fromInfo || DEFAULT_FOOTER_COMPANY;
+    }
+
+    function resolveClassicFooterCompanyName() {
+        const override = String(state.classicFooterCompanyName || '').trim();
+        if (override) return override;
+        return resolveCompanyInfoName();
+    }
+
+    function getClassicFooterCopyrightCompanyName() {
+        const override = String(state.classicFooterCopyrightName || '').trim();
+        if (override) return override;
+        return resolveClassicFooterCompanyName();
+    }
+
+    /** Keep Footer / Copyright names linked to Company Info until the user customizes them. */
+    function softCascadeCompanyName(previousName, nextName) {
+        const prev = String(previousName || '').trim();
+        const next = String(nextName || '').trim();
+        if (!next || prev === next) return;
+
+        function maybeCascade(stateKey) {
+            const current = String(state[stateKey] || '').trim();
+            if (current && current !== prev && current !== DEFAULT_FOOTER_COMPANY) return;
+            state[stateKey] = next;
+            if (fields[stateKey]) fields[stateKey].value = next;
+        }
+
+        if (templateDesign === 'gallery') {
+            maybeCascade('classicFooterCompanyName');
+            maybeCascade('classicFooterCopyrightName');
+        }
+    }
+
+    function syncLinkedCompanyNameFields() {
+        const companyName = resolveCompanyInfoName();
+        if (templateDesign !== 'gallery') return;
+
+        const classicName = String(state.classicFooterCompanyName || '').trim();
+        if (!classicName || classicName === DEFAULT_FOOTER_COMPANY || classicName === companyName) {
+            state.classicFooterCompanyName = companyName;
+            if (fields.classicFooterCompanyName) {
+                fields.classicFooterCompanyName.value = companyName;
+            }
+        }
+
+        const copyrightName = String(state.classicFooterCopyrightName || '').trim();
+        if (!copyrightName || copyrightName === DEFAULT_FOOTER_COMPANY || copyrightName === companyName) {
+            state.classicFooterCopyrightName = companyName;
+            if (fields.classicFooterCopyrightName) {
+                fields.classicFooterCopyrightName.value = companyName;
+            }
+        }
+
+        if (fields.classicFooterCompanyName) {
+            fields.classicFooterCompanyName.placeholder = companyName;
+        }
+        if (fields.classicFooterCopyrightName) {
+            fields.classicFooterCopyrightName.placeholder = companyName;
+        }
     }
 
     function darkenHex(hex, factor = 0.72) {
@@ -1346,7 +1479,7 @@
         }
 
         if (templateDesign === 'gallery') {
-            pushSection('message-bar', 'Message Bar', showroomHeaderGallery || headerRoot);
+            pushSection('message-bar', 'Message Bar', previewGalleryMessageBar);
             pushSection('header', 'Header', showroomHeaderGallery || headerRoot);
             pushSection('hero', 'Hero', galleryHeroLayoutRoot);
             pushSection('catalog-highlights', 'Catalog Highlights', galleryCatalogRoot);
@@ -1410,6 +1543,10 @@
         };
     }
 
+    function isPreviewCaptureLocked() {
+        return Boolean(previewRoot?.classList.contains('is-pdf-export-capture'));
+    }
+
     async function preparePreviewForCapture() {
         if (templateDesign === 'gallery') {
             ensureGalleryImageDefaults();
@@ -1425,11 +1562,22 @@
         }
         syncPreview();
 
+        // Cancel pending scale/sticky work so it cannot re-apply transform during capture.
+        if (previewFitRaf) {
+            cancelAnimationFrame(previewFitRaf);
+            previewFitRaf = null;
+        }
+        if (galleryStickyPinRaf) {
+            cancelAnimationFrame(galleryStickyPinRaf);
+            galleryStickyPinRaf = null;
+        }
+
         const prevTransform = previewRoot.style.transform;
         const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
         const prevScrollLeft = previewWrap ? previewWrap.scrollLeft : 0;
         previewRoot.style.transform = 'none';
         previewRoot.classList.add('is-pdf-export-capture');
+        clearGalleryStickyPreviewPin();
         if (previewScaler) previewScaler.style.height = '';
         if (previewWrap) {
             previewWrap.scrollTop = 0;
@@ -1438,8 +1586,9 @@
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
         return function restorePreviewAfterCapture() {
-            previewRoot.style.transform = prevTransform;
             previewRoot.classList.remove('is-pdf-export-capture');
+            clearGalleryStickyPreviewPin();
+            previewRoot.style.transform = prevTransform;
             if (previewWrap) {
                 previewWrap.scrollTop = prevScrollTop;
                 previewWrap.scrollLeft = prevScrollLeft;
@@ -1478,6 +1627,12 @@
 
     function syncGalleryStickyPreviewPin() {
         if (!previewGalleryMessageBar || !previewWrap || !previewRoot) return;
+
+        // Never pin during PDF/review capture — nested translateY freezes html2canvas.
+        if (isPreviewCaptureLocked()) {
+            clearGalleryStickyPreviewPin();
+            return;
+        }
 
         if (!isGalleryStickyPreviewActive()) {
             clearGalleryStickyPreviewPin();
@@ -1518,6 +1673,7 @@
     let galleryStickyPinRaf = null;
 
     function scheduleGalleryStickyPreviewPin() {
+        if (isPreviewCaptureLocked()) return;
         if (galleryStickyPinRaf) cancelAnimationFrame(galleryStickyPinRaf);
         galleryStickyPinRaf = requestAnimationFrame(() => {
             galleryStickyPinRaf = null;
@@ -1526,6 +1682,7 @@
     }
 
     function scheduleFitPreviewScale() {
+        if (isPreviewCaptureLocked()) return;
         if (previewFitRaf) cancelAnimationFrame(previewFitRaf);
         previewFitRaf = requestAnimationFrame(() => {
             previewFitRaf = requestAnimationFrame(fitPreviewScale);
@@ -1534,6 +1691,7 @@
 
     function fitPreviewScale() {
         if (!previewWrap || !previewRoot || !previewScaler) return;
+        if (isPreviewCaptureLocked()) return;
 
         const available = Math.max(0, previewWrap.clientWidth - 48);
         if (available <= 0) return;
@@ -2104,7 +2262,10 @@
                 return {
                     id: defaults.id,
                     label: String(saved.label || defaults.label).trim() || defaults.label,
-                    url: String(saved.url || defaults.defaultUrl).trim() || defaults.defaultUrl,
+                    url: normalizeGalleryCatalogUrl(
+                        String(saved.url || defaults.defaultUrl).trim() || defaults.defaultUrl,
+                        defaults.defaultUrl,
+                    ),
                     image: savedGalleryImageRef(saved.image) || defaults.defaultImage || '',
                 };
             });
@@ -2507,8 +2668,8 @@
             data.galleryHeroSecondaryTopHeading,
             DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING,
         );
-        state.galleryHeroSecondaryTopUrl = storedText(
-            data.galleryHeroSecondaryTopUrl,
+        state.galleryHeroSecondaryTopUrl = normalizeGalleryCatalogUrl(
+            storedText(data.galleryHeroSecondaryTopUrl, DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL),
             DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
         );
         state.galleryHeroSecondaryBottomImage = resolveGalleryHeroImage(
@@ -2519,8 +2680,8 @@
             data.galleryHeroSecondaryBottomHeading,
             DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING,
         );
-        state.galleryHeroSecondaryBottomUrl = storedText(
-            data.galleryHeroSecondaryBottomUrl,
+        state.galleryHeroSecondaryBottomUrl = normalizeGalleryCatalogUrl(
+            storedText(data.galleryHeroSecondaryBottomUrl, DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL),
             DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
         );
         state.galleryHeroHeadlineLine1 = resolveGalleryHeroHeadlineLine(
@@ -2538,7 +2699,10 @@
             data.galleryHeroButtonLabel,
             DEFAULT_GALLERY_HERO_BUTTON_LABEL,
         );
-        state.galleryHeroButtonUrl = storedText(data.galleryHeroButtonUrl, DEFAULT_GALLERY_HERO_BUTTON_URL);
+        state.galleryHeroButtonUrl = normalizeGalleryCatalogUrl(
+            storedText(data.galleryHeroButtonUrl, DEFAULT_GALLERY_HERO_BUTTON_URL),
+            DEFAULT_GALLERY_HERO_BUTTON_URL,
+        );
         state.galleryHeroButtonBackgroundColor = normalizeHexColor(
             data.galleryHeroButtonBackgroundColor,
             DEFAULT_GALLERY_HERO_BUTTON_BG,
@@ -2577,6 +2741,14 @@
     }
 
     function buildGalleryHeroExportSpec() {
+        const backdropTokens = {
+            description: 'translucent charcoal text panel + left scrim',
+            panelBackground: 'rgba(18, 16, 14, 0.52)',
+            panelEdgeGradient: 'linear-gradient(90deg, rgba(18, 16, 14, 0.42) 0%, rgba(18, 16, 14, 0.18) 55%, rgba(18, 16, 14, 0) 100%)',
+            backdropFilter: 'blur(2px)',
+            productionNote: 'Use CSS sticky for the message bar only in production. Editor preview uses a JS pin because transform: scale() breaks position: sticky.',
+        };
+
         return {
             layout: 'split-lifestyle',
             height: '500 px',
@@ -2590,7 +2762,8 @@
                 filename: 'gallery-hero-primary.jpg',
                 overlay: {
                     alignment: 'left',
-                    backdrop: 'translucent charcoal text panel + left scrim',
+                    backdrop: backdropTokens.description,
+                    backdropTokens,
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'medium tall sans-serif uppercase',
                     headlineWeight: 500,
@@ -2606,7 +2779,10 @@
                     textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     button: {
                         label: state.galleryHeroButtonLabel || '',
-                        url: state.galleryHeroButtonUrl || '',
+                        url: normalizeGalleryCatalogUrl(
+                            state.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL,
+                            DEFAULT_GALLERY_HERO_BUTTON_URL,
+                        ),
                         backgroundColor: state.galleryHeroButtonBackgroundColor || DEFAULT_GALLERY_HERO_BUTTON_BG,
                         textColor: state.galleryHeroButtonTextColor || DEFAULT_GALLERY_HERO_BUTTON_TEXT,
                         shape: 'square',
@@ -2618,13 +2794,17 @@
                 filename: 'gallery-hero-secondary-top.jpg',
                 overlay: {
                     alignment: 'left · vertically centered',
-                    backdrop: 'translucent charcoal text panel + left scrim',
+                    backdrop: backdropTokens.description,
+                    backdropTokens,
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'medium tall sans-serif uppercase',
                     headlineWeight: 500,
                     heading: state.galleryHeroSecondaryTopHeading || '',
                     textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
-                    url: state.galleryHeroSecondaryTopUrl || '',
+                    url: normalizeGalleryCatalogUrl(
+                        state.galleryHeroSecondaryTopUrl || DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
+                        DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL,
+                    ),
                 },
             },
             secondaryBottom: {
@@ -2632,13 +2812,17 @@
                 filename: 'gallery-hero-secondary-bottom.jpg',
                 overlay: {
                     alignment: 'left · vertically centered',
-                    backdrop: 'translucent charcoal text panel + left scrim',
+                    backdrop: backdropTokens.description,
+                    backdropTokens,
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'medium tall sans-serif uppercase',
                     headlineWeight: 500,
                     heading: state.galleryHeroSecondaryBottomHeading || '',
                     textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
-                    url: state.galleryHeroSecondaryBottomUrl || '',
+                    url: normalizeGalleryCatalogUrl(
+                        state.galleryHeroSecondaryBottomUrl || DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
+                        DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_URL,
+                    ),
                 },
             },
         };
@@ -2817,7 +3001,10 @@
             return {
                 id: defaults.id,
                 label: String(saved.label || defaults.label).trim() || defaults.label,
-                url: String(saved.url || defaults.defaultUrl).trim() || defaults.defaultUrl,
+                url: normalizeGalleryCatalogUrl(
+                    String(saved.url || defaults.defaultUrl).trim() || defaults.defaultUrl,
+                    defaults.defaultUrl,
+                ),
                 image: savedGalleryImageRef(saved.image) || defaults.defaultImage || '',
             };
         });
@@ -3034,7 +3221,7 @@
                 index: index + 1,
                 id: tile.id,
                 label: tile.label,
-                url: tile.url,
+                url: normalizeGalleryCatalogUrl(tile.url || '', GALLERY_CATALOG_ROOT),
                 imageFilename: `gallery-catalog-tile-${index + 1}.jpg`,
             })),
         };
@@ -3073,6 +3260,10 @@
         if (trimmed.startsWith('/catalog/')) {
             return `${GALLERY_CATALOG_ROOT}/${trimmed.slice('/catalog/'.length)}`;
         }
+        if (trimmed === '/about') return '/about-us';
+        if (trimmed === '/contact') return '/contact-us';
+        if (trimmed === '/privacy') return '/policy/privacy';
+        if (trimmed === '/wishlist' || trimmed === '/Wishlist') return '/CustomerView';
         return trimmed;
     }
 
@@ -3972,6 +4163,7 @@
                 layout: 'gallery',
                 sticky: state.galleryHeaderSticky === true,
                 stickyScope: 'message-bar-only',
+                stickyProductionNote: 'Pin only the message bar with CSS position: sticky; top: 0. Logo, main nav, and search must scroll away. Do not sticky the full header. Editor preview may use a JS translate pin because transform: scale() breaks CSS sticky — that workaround is preview-only.',
                 logoSharedWithFooter: state.footerLogoUseHeader !== false,
                 logoSizePx,
                 logoDimensions,
@@ -4190,10 +4382,11 @@
         const byId = new Map(definitions.map((item) => [item.id, item]));
         return savedLinks.map((item, index) => {
             const definition = byId.get(item.id) || definitions[index];
+            const fallbackUrl = definition?.defaultUrl || '/';
             return createFooterLinkItem({
                 id: item.id || definition?.id,
                 label: storedText(item.label, definition?.label || 'Link'),
-                url: storedText(item.url, definition?.defaultUrl || '/'),
+                url: normalizeGalleryCatalogUrl(storedText(item.url, fallbackUrl), fallbackUrl),
             }, index, prefix);
         });
     }
@@ -4207,10 +4400,11 @@
         const byId = new Map(CLASSIC_FOOTER_SHOP_LINKS.map((item) => [item.id, item]));
         return saved.map((item, index) => {
             const definition = byId.get(item.id);
+            const fallbackUrl = definition?.defaultUrl || GALLERY_CATALOG_ROOT;
             return createFooterLinkItem({
                 id: item.id,
                 label: storedText(item.label, definition?.label || 'Link'),
-                url: storedText(item.url, definition?.defaultUrl || '/'),
+                url: normalizeGalleryCatalogUrl(storedText(item.url, fallbackUrl), fallbackUrl),
             }, index, 'cfs');
         });
     }
@@ -4233,17 +4427,13 @@
         };
     }
 
-    function getClassicFooterCopyrightCompanyName() {
-        return state.classicFooterCopyrightName || state.classicFooterCompanyName || DEFAULT_FOOTER_COMPANY;
-    }
-
     function renderClassicFooterLinksEditor(container, links) {
         if (!container) return;
 
         container.innerHTML = links.map((link) => (
             `<div class="editor-classic-footer-link-item" data-item-id="${link.id}">
                 <label for="classicFooterLink-${link.id}">${escapeHtml(link.label)}</label>
-                <input type="text" id="classicFooterLink-${link.id}" value="${escapeHtml(link.url)}" data-field="url" data-item-id="${link.id}" placeholder="/catalog" autocomplete="off">
+                <input type="text" id="classicFooterLink-${link.id}" value="${escapeHtml(link.url)}" data-field="url" data-item-id="${link.id}" placeholder="/lighting-fixtures/..." autocomplete="off">
             </div>`
         )).join('');
     }
@@ -4392,9 +4582,7 @@
     function syncClassicFooterPreview() {
         applyClassicFooterTheme();
 
-        const companyName = typeof state.classicFooterCompanyName === 'string'
-            ? state.classicFooterCompanyName
-            : DEFAULT_FOOTER_COMPANY;
+        const companyName = resolveClassicFooterCompanyName();
         if (previewClassicFooterCompany) {
             previewClassicFooterCompany.textContent = companyName;
         }
@@ -4427,6 +4615,18 @@
             ].filter(Boolean);
             previewClassicFooterHours.innerHTML = hours.map((line) => `<li>${escapeHtml(line)}</li>`).join('');
         }
+        if (previewClassicFooterSocial) {
+            previewClassicFooterSocial.innerHTML = GALLERY_FOOTER_SOCIAL_LINKS
+                .filter((social) => state[social.visibleKey] !== false)
+                .map((social) => {
+                    const rawUrl = String(state[social.urlKey] || '').trim();
+                    const url = escapeHtml(rawUrl || '#');
+                    return (
+                        `<a href="${url}" class="showroom-footer-classic-social-link" aria-label="${escapeHtml(social.label)}" target="_blank" rel="noopener noreferrer"><i class="${social.iconClass}" aria-hidden="true"></i></a>`
+                    );
+                })
+                .join('');
+        }
     }
 
     function populateClassicCopyrightFields(data) {
@@ -4439,6 +4639,7 @@
             data.classicFooterCopyrightBackgroundColor || DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
         );
 
+        syncLinkedCompanyNameFields();
         if (fields.classicFooterCopyrightName) {
             fields.classicFooterCopyrightName.value = state.classicFooterCopyrightName;
         }
@@ -4451,8 +4652,14 @@
         state.classicFooterShopLinks = migratedLinks.classicFooterShopLinks;
         state.classicFooterAboutLinks = migratedLinks.classicFooterAboutLinks;
         state.classicFooterAccountLinks = migratedLinks.classicFooterAccountLinks;
-        state.classicFooterCompanyName = storedText(data.classicFooterCompanyName, DEFAULT_FOOTER_COMPANY);
-        state.classicFooterAboutCopy = storedText(data.classicFooterAboutCopy, DEFAULT_CLASSIC_FOOTER_ABOUT);
+        state.classicFooterCompanyName = storedText(data.classicFooterCompanyName, '');
+        state.classicFooterAboutCopy = (() => {
+            const saved = storedText(data.classicFooterAboutCopy, DEFAULT_CLASSIC_FOOTER_ABOUT);
+            if (String(saved).startsWith('Lorem ipsum dolor sit amet')) {
+                return DEFAULT_CLASSIC_FOOTER_ABOUT;
+            }
+            return saved;
+        })();
         state.classicFooterAddress = storedText(data.classicFooterAddress, DEFAULT_FOOTER_ADDRESS);
         state.classicFooterHoursMonFri = storedText(
             data.classicFooterHoursMonFri,
@@ -4466,6 +4673,10 @@
             data.classicFooterHoursSunday,
             DEFAULT_CLASSIC_FOOTER_HOURS_SUNDAY,
         );
+        GALLERY_FOOTER_SOCIAL_LINKS.forEach((social) => {
+            state[social.urlKey] = data[social.urlKey] || '';
+            state[social.visibleKey] = data[social.visibleKey] !== false;
+        });
         state.classicFooterBackgroundColor = normalizeHex(
             data.classicFooterBackgroundColor || DEFAULT_CLASSIC_FOOTER_BG,
         );
@@ -4480,7 +4691,12 @@
         if (fields.classicFooterHoursMonFri) fields.classicFooterHoursMonFri.value = state.classicFooterHoursMonFri;
         if (fields.classicFooterHoursSaturday) fields.classicFooterHoursSaturday.value = state.classicFooterHoursSaturday;
         if (fields.classicFooterHoursSunday) fields.classicFooterHoursSunday.value = state.classicFooterHoursSunday;
+        GALLERY_FOOTER_SOCIAL_LINKS.forEach((social) => {
+            if (fields[social.urlKey]) fields[social.urlKey].value = state[social.urlKey];
+            if (fields[social.visibleKey]) fields[social.visibleKey].checked = state[social.visibleKey] !== false;
+        });
         renderClassicFooterLinksEditors();
+        syncLinkedCompanyNameFields();
         syncClassicFooterPreview();
         populateClassicCopyrightFields(data);
     }
@@ -4504,7 +4720,7 @@
         return {
             layout: 'four-column',
             columns: ['about', 'quick-links', 'contact', 'store-hours'],
-            companyName: state.classicFooterCompanyName || '',
+            companyName: resolveClassicFooterCompanyName(),
             aboutCopy: state.classicFooterAboutCopy || '',
             address: state.classicFooterAddress || '',
             storeHours: {
@@ -4521,7 +4737,7 @@
                     links: state.classicFooterShopLinks.map((link) => ({
                         id: link.id,
                         label: link.label,
-                        url: link.url,
+                        url: normalizeGalleryCatalogUrl(link.url || '', GALLERY_CATALOG_ROOT),
                     })),
                 },
                 aboutUs: {
@@ -4529,7 +4745,7 @@
                     links: state.classicFooterAboutLinks.map((link) => ({
                         id: link.id,
                         label: link.label,
-                        url: link.url,
+                        url: normalizeGalleryCatalogUrl(link.url || '', '/about-us'),
                     })),
                 },
                 accounts: {
@@ -4537,12 +4753,24 @@
                     links: state.classicFooterAccountLinks.map((link) => ({
                         id: link.id,
                         label: link.label,
-                        url: link.url,
+                        url: normalizeGalleryCatalogUrl(link.url || '', '/account'),
                     })),
                 },
             },
             contactHeading: 'CONTACT US',
             storeHoursHeading: 'STORE HOURS',
+            social: Object.fromEntries(
+                GALLERY_FOOTER_SOCIAL_LINKS.map((social) => [
+                    social.id,
+                    {
+                        url: state[social.urlKey] || '',
+                        visible: state[social.visibleKey] !== false,
+                        iconClass: social.iconClass,
+                        label: social.label,
+                    },
+                ]),
+            ),
+            socialIconSet: 'Font Awesome 6 brands (fa-brands)',
         };
     }
 
@@ -4567,9 +4795,14 @@
             fields.classicFooterHoursSunday,
             fields.classicFooterBackgroundColor,
             fields.classicFooterTextColor,
+            ...GALLERY_FOOTER_SOCIAL_LINKS.flatMap((social) => [
+                fields[social.urlKey],
+                fields[social.visibleKey],
+            ]),
         ].forEach((input) => {
             if (!input) return;
-            input.addEventListener('input', readForm);
+            const eventName = input.type === 'checkbox' ? 'change' : 'input';
+            input.addEventListener(eventName, readForm);
         });
 
         if (classicFooterShopLinksEditor) {
@@ -5462,7 +5695,15 @@
             state.footerLogoUseHeader = fields.footerLogoUseHeader.checked;
         }
         readFooterLinksFromEditor();
+        const previousCompanyName = state.footerCompanyName;
         if (fields.footerCompanyName) state.footerCompanyName = fields.footerCompanyName.value.trim() || DEFAULT_FOOTER_COMPANY;
+        softCascadeCompanyName(previousCompanyName, state.footerCompanyName);
+        if (fields.classicFooterCompanyName) {
+            fields.classicFooterCompanyName.placeholder = resolveCompanyInfoName();
+        }
+        if (fields.classicFooterCopyrightName) {
+            fields.classicFooterCopyrightName.placeholder = resolveCompanyInfoName();
+        }
         if (fields.footerAddress) state.footerAddress = fields.footerAddress.value.trim() || DEFAULT_FOOTER_ADDRESS;
         if (fields.footerPhone) state.footerPhone = fields.footerPhone.value.trim() || DEFAULT_FOOTER_PHONE;
         if (fields.footerCopyrightName) state.footerCopyrightName = fields.footerCopyrightName.value.trim();
@@ -5489,6 +5730,14 @@
         if (fields.classicFooterHoursSunday) {
             state.classicFooterHoursSunday = readTextField(fields.classicFooterHoursSunday);
         }
+        GALLERY_FOOTER_SOCIAL_LINKS.forEach((social) => {
+            if (fields[social.urlKey]) {
+                state[social.urlKey] = fields[social.urlKey].value.trim();
+            }
+            if (fields[social.visibleKey]) {
+                state[social.visibleKey] = fields[social.visibleKey].checked;
+            }
+        });
         if (fields.classicFooterCopyrightName) {
             state.classicFooterCopyrightName = readTextField(fields.classicFooterCopyrightName);
         }
@@ -5808,6 +6057,7 @@
         if (fields.footerAddress) fields.footerAddress.value = state.footerAddress;
         if (fields.footerPhone) fields.footerPhone.value = state.footerPhone;
         if (fields.footerCopyrightName) fields.footerCopyrightName.value = state.footerCopyrightName;
+        syncLinkedCompanyNameFields();
     }
 
     function populateFeatureFields(data) {

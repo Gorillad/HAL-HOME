@@ -134,6 +134,13 @@
             previewFrame.style.boxShadow = 'none';
         }
 
+        // Sticky preview pin uses translateY — strip it so html2canvas does not hang.
+        clonedDoc.querySelectorAll('.showroom-gallery-message-bar').forEach((bar) => {
+            bar.classList.remove('is-preview-stuck');
+            bar.style.removeProperty('transform');
+            bar.style.removeProperty('will-change');
+        });
+
         clonedDoc.querySelectorAll('.showroom-you-may-like-track').forEach((track) => {
             track.style.overflow = 'visible';
             track.scrollLeft = 0;
@@ -294,7 +301,12 @@
         const timeoutMs = options.timeoutMs || 60000;
 
         if (document.fonts?.ready) {
-            await document.fonts.ready;
+            await Promise.race([
+                document.fonts.ready,
+                new Promise((resolve) => {
+                    window.setTimeout(resolve, 3000);
+                }),
+            ]);
         }
 
         await waitForImagesInElement(el, imageTimeout);

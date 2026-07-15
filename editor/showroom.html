@@ -158,7 +158,7 @@
             <details class="editor-accordion editor-panel-section" id="editor-company-info" open>
                 <summary class="editor-accordion-head">Company Info</summary>
                 <div class="editor-accordion-body">
-                    <p class="editor-field-hint">These details appear in the footer and throughout the export handoff.</p>
+                    <p class="editor-field-hint">Set your company name once here — it auto-fills the Footer and Copyright sections. Phone and email are also used in the export handoff.</p>
                     <div class="editor-field">
                         <label for="fieldFooterCompanyName">Company name</label>
                         <input type="text" id="fieldFooterCompanyName" name="footerCompanyName" autocomplete="off" placeholder="Company name">
@@ -414,7 +414,7 @@
                 </div>
                 <div class="editor-field editor-field--compact">
                     <label for="fieldGalleryHeroSecondaryTopUrl">Top right image link</label>
-                    <input type="text" id="fieldGalleryHeroSecondaryTopUrl" name="galleryHeroSecondaryTopUrl" autocomplete="off" placeholder="/catalog/chandeliers">
+                    <input type="text" id="fieldGalleryHeroSecondaryTopUrl" name="galleryHeroSecondaryTopUrl" autocomplete="off" placeholder="/lighting-fixtures/chandeliers">
                 </div>
                 <div class="editor-field">
                     <label for="fieldGalleryHeroSecondaryBottom">Lifestyle image (bottom right)<span class="editor-field-hint">Half height · half width</span></label>
@@ -430,7 +430,7 @@
                 </div>
                 <div class="editor-field editor-field--compact">
                     <label for="fieldGalleryHeroSecondaryBottomUrl">Bottom right image link</label>
-                    <input type="text" id="fieldGalleryHeroSecondaryBottomUrl" name="galleryHeroSecondaryBottomUrl" autocomplete="off" placeholder="/catalog/pendants">
+                    <input type="text" id="fieldGalleryHeroSecondaryBottomUrl" name="galleryHeroSecondaryBottomUrl" autocomplete="off" placeholder="/lighting-fixtures/pendants">
                 </div>
 
                 <fieldset class="editor-fieldset">
@@ -470,7 +470,7 @@
                     </div>
                     <div class="editor-field editor-field--compact">
                         <label for="fieldGalleryHeroButtonUrl">Button link</label>
-                        <input type="text" id="fieldGalleryHeroButtonUrl" name="galleryHeroButtonUrl" autocomplete="off" placeholder="/catalog">
+                        <input type="text" id="fieldGalleryHeroButtonUrl" name="galleryHeroButtonUrl" autocomplete="off" placeholder="/lighting-fixtures">
                     </div>
                     <div class="editor-field">
                         <label for="fieldGalleryHeroButtonBgValue">Button background color</label>
@@ -879,8 +879,6 @@
                 <summary class="editor-accordion-head">Footer</summary>
                 <div class="editor-accordion-body">
             <div class="editor-footer-classic" id="editorFooterClassic" hidden>
-                <p class="editor-panel-lead editor-panel-lead--compact">Four-column footer: company name and about copy, grouped quick links, contact address, and store hours. Shop links can be renamed or removed; About Us and Accounts link labels are fixed — edit URLs only.</p>
-
                 <fieldset class="editor-fieldset">
                     <legend>Footer colors</legend>
                     <div class="editor-field">
@@ -908,6 +906,7 @@
                 <div class="editor-field">
                     <label for="fieldClassicFooterCompanyName">Company name</label>
                     <input type="text" id="fieldClassicFooterCompanyName" name="classicFooterCompanyName" autocomplete="off">
+                    <p class="editor-field-hint">Auto-filled from Company Info. Edit only if the footer should show a different name.</p>
                 </div>
 
                 <div class="editor-field">
@@ -949,6 +948,53 @@
                     </div>
                 </fieldset>
 
+                <fieldset class="editor-fieldset">
+                    <legend>Social media</legend>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Icons appear under Store Hours. Paste profile URLs and uncheck any network you do not want shown.</p>
+                    <div class="editor-social-item">
+                        <label class="editor-toggle editor-toggle--compact" for="fieldClassicFooterYoutubeVisible">
+                            <input type="checkbox" id="fieldClassicFooterYoutubeVisible" name="classicFooterYoutubeVisible" checked>
+                            Show YouTube
+                        </label>
+                        <input type="url" id="fieldClassicFooterYoutube" name="classicFooterYoutubeUrl" autocomplete="off" placeholder="https://youtube.com/...">
+                    </div>
+                    <div class="editor-social-item">
+                        <label class="editor-toggle editor-toggle--compact" for="fieldClassicFooterTwitterVisible">
+                            <input type="checkbox" id="fieldClassicFooterTwitterVisible" name="classicFooterTwitterVisible" checked>
+                            Show X
+                        </label>
+                        <input type="url" id="fieldClassicFooterTwitter" name="classicFooterTwitterUrl" autocomplete="off" placeholder="https://x.com/...">
+                    </div>
+                    <div class="editor-social-item">
+                        <label class="editor-toggle editor-toggle--compact" for="fieldClassicFooterFacebookVisible">
+                            <input type="checkbox" id="fieldClassicFooterFacebookVisible" name="classicFooterFacebookVisible" checked>
+                            Show Facebook
+                        </label>
+                        <input type="url" id="fieldClassicFooterFacebook" name="classicFooterFacebookUrl" autocomplete="off" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="editor-social-item">
+                        <label class="editor-toggle editor-toggle--compact" for="fieldClassicFooterInstagramVisible">
+                            <input type="checkbox" id="fieldClassicFooterInstagramVisible" name="classicFooterInstagramVisible" checked>
+                            Show Instagram
+                        </label>
+                        <input type="url" id="fieldClassicFooterInstagram" name="classicFooterInstagramUrl" autocomplete="off" placeholder="https://instagram.com/...">
+                    </div>
+                    <div class="editor-social-item">
+                        <label class="editor-toggle editor-toggle--compact" for="fieldClassicFooterLinkedinVisible">
+                            <input type="checkbox" id="fieldClassicFooterLinkedinVisible" name="classicFooterLinkedinVisible" checked>
+                            Show LinkedIn
+                        </label>
+                        <input type="url" id="fieldClassicFooterLinkedin" name="classicFooterLinkedinUrl" autocomplete="off" placeholder="https://linkedin.com/...">
+                    </div>
+                    <div class="editor-social-item">
+                        <label class="editor-toggle editor-toggle--compact" for="fieldClassicFooterTiktokVisible">
+                            <input type="checkbox" id="fieldClassicFooterTiktokVisible" name="classicFooterTiktokVisible" checked>
+                            Show TikTok
+                        </label>
+                        <input type="url" id="fieldClassicFooterTiktok" name="classicFooterTiktokUrl" autocomplete="off" placeholder="https://tiktok.com/@...">
+                    </div>
+                </fieldset>
+
             </div>
                 </div>
             </details><!-- /#editor-section-footer-classic -->
@@ -986,7 +1032,7 @@
                 <div class="editor-field">
                     <label for="fieldClassicFooterCopyrightName">Copyright company name</label>
                     <input type="text" id="fieldClassicFooterCopyrightName" name="classicFooterCopyrightName" autocomplete="off">
-                    <span class="editor-field-hint">Used in the required copyright + ADA compliance line. Leave blank to use the footer company name.</span>
+                    <span class="editor-field-hint">Auto-filled from Company Info for the copyright + ADA line. Edit only if it should differ.</span>
                 </div>
             </div>
                 </div>
@@ -1445,7 +1491,7 @@
                                     </div>
                                 </div>
                                 <div class="showroom-gallery-hero-stack">
-                                    <a class="showroom-gallery-hero-secondary-link" id="previewGalleryHeroSecondaryTopLink" href="/catalog/chandeliers">
+                                    <a class="showroom-gallery-hero-secondary-link" id="previewGalleryHeroSecondaryTopLink" href="/lighting-fixtures/chandeliers">
                                         <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryTop">
                                             <img id="previewGalleryHeroSecondaryTopImage" alt="" hidden>
                                             <div class="showroom-gallery-hero-secondary-overlay">
@@ -1453,7 +1499,7 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <a class="showroom-gallery-hero-secondary-link" id="previewGalleryHeroSecondaryBottomLink" href="/catalog/pendants">
+                                    <a class="showroom-gallery-hero-secondary-link" id="previewGalleryHeroSecondaryBottomLink" href="/lighting-fixtures/pendants">
                                         <div class="showroom-gallery-hero-secondary is-empty" id="previewGalleryHeroSecondaryBottom">
                                             <img id="previewGalleryHeroSecondaryBottomImage" alt="" hidden>
                                             <div class="showroom-gallery-hero-secondary-overlay">
@@ -1719,6 +1765,7 @@
                         <div class="showroom-footer-classic-col showroom-footer-classic-col--hours">
                             <h4 class="showroom-footer-classic-heading">STORE HOURS</h4>
                             <ul class="showroom-footer-classic-hours" id="previewClassicFooterHours"></ul>
+                            <div class="showroom-footer-classic-social" id="previewClassicFooterSocial" aria-label="Social media"></div>
                         </div>
                     </div>
                 </footer>

@@ -222,6 +222,18 @@
                     'classicFooterHoursSunday',
                     'classicFooterBackgroundColor',
                     'classicFooterTextColor',
+                    'classicFooterYoutubeUrl',
+                    'classicFooterYoutubeVisible',
+                    'classicFooterTwitterUrl',
+                    'classicFooterTwitterVisible',
+                    'classicFooterFacebookUrl',
+                    'classicFooterFacebookVisible',
+                    'classicFooterInstagramUrl',
+                    'classicFooterInstagramVisible',
+                    'classicFooterLinkedinUrl',
+                    'classicFooterLinkedinVisible',
+                    'classicFooterTiktokUrl',
+                    'classicFooterTiktokVisible',
                 ]);
             case 'editor-section-copyright-classic':
                 return pick(state, [

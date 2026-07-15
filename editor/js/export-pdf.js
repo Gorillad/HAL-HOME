@@ -419,8 +419,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         writeSpecRows([
             ['Layout', header.layout || 'gallery'],
             ['Sticky message bar', header.sticky === true
-                ? 'Yes — pin message bar only (logo + main nav scroll away)'
+                ? 'Yes — pin message bar only (logo + main nav scroll away). Production: CSS position: sticky on the message bar; do not sticky the full header.'
                 : 'No'],
+            ['Sticky scope', header.stickyScope || 'message-bar-only'],
             ['Content column width', header.contentColumnWidth || '1479 px'],
             ['Message bar background', topBar.backgroundColor || '—'],
             ['Message bar text', topBar.textColor || topBar.centerCopyColor || '—'],
@@ -583,6 +584,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Layout', galleryHero.layout || 'split-lifestyle'],
             ['Hero size', `${galleryHero.width || '1479 px'} × ${galleryHero.height || '500 px'}`],
             ['Text backdrop', galleryHeroOverlay.backdrop || 'translucent charcoal text panel + left scrim'],
+            ['Backdrop panel', galleryHeroOverlay.backdropTokens?.panelBackground || 'rgba(18, 16, 14, 0.52)'],
+            ['Backdrop edge', galleryHeroOverlay.backdropTokens?.panelEdgeGradient || 'left charcoal fade'],
             ['Headline font', galleryHeroOverlay.headlineFont || "'Josefin Sans', sans-serif"],
             ['Headline style', galleryHeroOverlay.headlineStyle || 'medium tall sans-serif uppercase'],
             ['Headline weight', galleryHeroOverlay.headlineWeight || 500],
@@ -800,7 +803,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         if (!entry) return '—';
         if (typeof entry === 'string') return entry || '—';
         const status = entry.visible === false ? 'hidden' : 'shown';
-        return `${entry.url || '—'} (${status})`;
+        const icon = entry.iconClass ? ` · ${entry.iconClass}` : '';
+        return `${entry.url || '—'} (${status}${icon})`;
     };
     const copyrightSection = spec.copyright || null;
     const isClassicFooter = footer.layout === 'four-column';
@@ -845,6 +849,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Store hours (Mon–Fri)', storeHours.mondayFriday || '—'],
             ['Store hours (Saturday)', storeHours.saturday || '—'],
             ['Store hours (Sunday)', storeHours.sunday || '—'],
+            ['YouTube', formatFooterSocial(footerSocial.youtube)],
+            ['X', formatFooterSocial(footerSocial.x || footerSocial.twitter)],
+            ['Facebook', formatFooterSocial(footerSocial.facebook)],
+            ['Instagram', formatFooterSocial(footerSocial.instagram)],
+            ['LinkedIn', formatFooterSocial(footerSocial.linkedin)],
+            ['TikTok', formatFooterSocial(footerSocial.tiktok)],
         ]);
         const linkGroups = footer.linkGroups || {};
         Object.values(linkGroups).forEach((group) => {
@@ -1052,6 +1062,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ...specJsonShared,
             header: {
                 layout: header.layout || 'gallery',
+                sticky: header.sticky === true,
+                stickyScope: header.stickyScope || 'message-bar-only',
+                stickyProductionNote: header.stickyProductionNote
+                    || 'Pin only the message bar with CSS position: sticky; top: 0. Logo, main nav, and search must scroll away.',
                 logoSharedWithFooter: header.logoSharedWithFooter !== false,
                 logo: {
                     filename: header.logoFilename || 'header-logo.png',
@@ -1341,9 +1355,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             resolvedHandoffAssets.length
                 ? '3. images/ — Header logo and any client-replaced section images'
                 : '3. images/ — Omitted (image files could not be resolved for export)',
-            '4. spec/homepage-spec.json — Machine-readable spec (Header, Hero, Catalog Highlights, Footer, Copyright)',
+            '4. spec/homepage-spec.json — Machine-readable spec (Header sticky scope, Hero backdrop tokens, Catalog Highlights, Footer social iconClass, Copyright)',
             '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
             '',
+            'Catalog URLs use /lighting-fixtures as the root. Sticky applies to the message bar only.',
             resolvedHandoffAssets.length
                 ? 'Handoff image files are listed in the PDF under “Handoff images”.'
                 : 'Template default images are shown in layout previews only — source those separately on the live site.',
