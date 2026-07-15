@@ -186,7 +186,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         doc.setFontSize(size);
         doc.setTextColor(color[0], color[1], color[2]);
 
-        const lines = doc.splitTextToSize(String(text), maxWidth);
+        const safeText = pdfAscii(text);
+        const lines = doc.splitTextToSize(safeText, Math.max(24, maxWidth));
         const blockH = textBlockHeight(lines, size);
         ensureSpace(blockH + gap);
         doc.text(lines, margin + indent, y);
@@ -194,11 +195,20 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     function writeSectionTitle(title) {
-        ensureSpace(36);
+        ensureSpace(44);
         if (y > margin + 24) {
-            y += 10;
+            y += 8;
         }
-        writeLines(title, { bold: true, size: 12, gap: 10 });
+        writeLines(title, { bold: true, size: 13, gap: 4 });
+        doc.setDrawColor(201, 169, 110);
+        doc.setLineWidth(1.25);
+        doc.line(margin, y, margin + 48, y);
+        y += 12;
+    }
+
+    function writeSubsectionTitle(title) {
+        ensureSpace(28);
+        writeLines(title, { bold: true, size: 11, gap: 6 });
     }
 
     function writeCodeBlock(code, opts = {}) {
@@ -208,7 +218,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             pad = 10,
             maxWidth = contentW - pad * 2,
         } = opts;
-        const codeText = String(code || '').trim() || '—';
+        const codeText = pdfAscii(String(code || '').trim() || '-');
 
         doc.setFont('courier', 'normal');
         doc.setFontSize(size);
@@ -226,11 +236,20 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         y += blockH + gap;
     }
 
+    /**
+     * jsPDF Helvetica is WinAnsi-only. Unicode arrows/dashes/quotes corrupt glyphs
+     * (often shown as "!" and oddly spaced letters). Keep PDF text ASCII-safe.
+     */
     function pdfAscii(text) {
         return String(text ?? '')
-            .replace(/\u2014/g, ' - ')
+            .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+            .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+            .replace(/\u2026/g, '...')
+            .replace(/[\u2013\u2014]/g, ' - ')
             .replace(/\u2192/g, '->')
-            .replace(/\u00b7/g, ' | ');
+            .replace(/\u00b7/g, ' | ')
+            .replace(/\u00a0/g, ' ')
+            .replace(/[^\t\n\r\x20-\x7E]/g, '');
     }
 
     function writeSpecRows(rows) {
@@ -246,10 +265,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
+            doc.setTextColor(34, 47, 54);
             doc.text(labelLines, margin, y);
 
             doc.setFont('helvetica', 'normal');
+            doc.setTextColor(45, 55, 65);
             doc.text(valueLines, margin + labelColW + specColGap, y);
 
             y += rowH;
@@ -262,16 +282,126 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         });
     }
 
-    /** jsPDF built-in fonts are WinAnsi — use ASCII arrows, not Unicode → */
+    /** jsPDF built-in fonts are WinAnsi - use ASCII arrows, not Unicode */
     function pdfLinkLine(label, url, suffix = '') {
-        const safeLabel = String(label || '-').trim() || '-';
-        const safeUrl = String(url || '-').trim() || '-';
-        return suffix ? `${safeLabel} -> ${safeUrl} ${suffix}` : `${safeLabel} -> ${safeUrl}`;
+        const safeLabel = pdfAscii(String(label || '-').trim() || '-');
+        const safeUrl = pdfAscii(String(url || '-').trim() || '-');
+        return suffix ? `${safeLabel}  ${safeUrl}  ${suffix}` : `${safeLabel}  ${safeUrl}`;
+    }
+
+    /**
+     * Aligned label/URL rows for nav and link groups.
+     * Keeps hierarchy readable: label column + URL column.
+     */
+    function writeDefinitionRows(rows, opts = {}) {
+        const indent = opts.indent || 0;
+        const labelW = opts.labelW || 150;
+        const size = opts.size || 9;
+        const gap = opts.gap == null ? 5 : opts.gap;
+        const labelColor = opts.labelColor || [90, 100, 110];
+        const valueColor = opts.valueColor || [34, 47, 54];
+        const valueX = margin + indent + labelW + 10;
+        const valueW = Math.max(40, contentW - indent - labelW - 10);
+
+        (rows || []).forEach(([label, value]) => {
+            const labelLines = doc.splitTextToSize(pdfAscii(label || '-'), labelW);
+            const valueLines = doc.splitTextToSize(pdfAscii(value ?? '-'), valueW);
+            const rowH = Math.max(textBlockHeight(labelLines, size), textBlockHeight(valueLines, size)) + gap;
+            ensureSpace(rowH);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(size);
+            doc.setTextColor(labelColor[0], labelColor[1], labelColor[2]);
+            doc.text(labelLines, margin + indent, y);
+
+            doc.setTextColor(valueColor[0], valueColor[1], valueColor[2]);
+            doc.text(valueLines, valueX, y);
+
+            y += rowH;
+        });
+    }
+
+    function writeMainNavCatalog(navItems, opts = {}) {
+        const items = Array.isArray(navItems) ? navItems : [];
+        if (!items.length) return;
+        const includeHidden = opts.includeHidden === true;
+
+        writeSubsectionTitle(opts.title || 'Main navigation');
+        writeLines(
+            opts.intro
+                || 'Top-level categories with dropdown subcategories. Parent URL is the category landing page; listed children are the dropdown links.',
+            { size: 9, color: [90, 100, 110], gap: 12 },
+        );
+
+        items.forEach((item, index) => {
+            const label = String(item.label || 'Category').trim() || 'Category';
+            const url = String(item.url || '').trim();
+            const allSubs = Array.isArray(item.subcategories) ? item.subcategories : [];
+            const subs = includeHidden
+                ? allSubs
+                : allSubs.filter((sub) => sub.visible !== false);
+
+            if (index > 0) {
+                y += 8;
+            }
+            ensureSpace(56);
+
+            // Category band
+            const bandH = 22;
+            doc.setFillColor(245, 247, 249);
+            doc.setDrawColor(226, 232, 238);
+            doc.setLineWidth(0.6);
+            doc.rect(margin, y - 4, contentW, bandH, 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.setTextColor(34, 47, 54);
+            doc.text(pdfAscii(label), margin + 8, y + 10);
+            y += bandH + 6;
+
+            writeDefinitionRows([
+                ['Parent URL', url || '(none)'],
+            ], { indent: 8, labelW: 88, size: 9, gap: 4 });
+
+            if (subs.length) {
+                writeLines('Subcategories', {
+                    bold: true,
+                    size: 9,
+                    indent: 8,
+                    gap: 4,
+                    color: [70, 80, 90],
+                });
+                writeDefinitionRows(
+                    subs.map((sub) => {
+                        const subLabel = String(sub.label || '-').trim() || '-';
+                        const subUrl = String(sub.url || '-').trim() || '-';
+                        const status = includeHidden && sub.visible === false ? '  (hidden)' : '';
+                        return [subLabel, `${subUrl}${status}`];
+                    }),
+                    {
+                        indent: 16,
+                        labelW: 150,
+                        size: 9,
+                        gap: 4,
+                        labelColor: [55, 65, 75],
+                        valueColor: [34, 47, 54],
+                    },
+                );
+            } else {
+                writeLines('No subcategories configured.', {
+                    size: 9,
+                    indent: 8,
+                    gap: 4,
+                    color: [120, 130, 140],
+                });
+            }
+        });
+
+        y += 6;
     }
 
     function writeSubcategoryList(items, formatLine) {
         items.forEach((item, index) => {
-            const text = String(formatLine(item, index));
+            const text = pdfAscii(String(formatLine(item, index)));
             const size = 8;
             doc.setFont('courier', 'normal');
             doc.setFontSize(size);
@@ -289,7 +419,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8);
         doc.setTextColor(90, 90, 90);
-        doc.text(heading, previewEdge, previewEdge + 8);
+        doc.text(pdfAscii(heading), previewEdge, previewEdge + 8);
     }
 
     async function appendCanvasPreview(canvas, heading) {
@@ -343,8 +473,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
         doc.setTextColor(100, 100, 100);
-        const caption = `${asset.filename}  ·  ${asset.label}  ·  ${asset.dimensions || '—'}`;
-        const captionLines = doc.splitTextToSize(caption, contentW);
+        const caption = `${asset.filename}  |  ${asset.label}  |  ${asset.dimensions || '-'}`;
+        const captionLines = doc.splitTextToSize(pdfAscii(caption), contentW);
         const captionBlockH = textBlockHeight(captionLines, 7);
         doc.text(captionLines, margin, pageH - assetPad - captionBlockH + lineHeight(7));
     }
@@ -416,49 +546,43 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         const topBar = header.topBar || {};
         const utilities = topBar.utilities || {};
         const galleryNavItems = Array.isArray(header.mainNav?.items) ? header.mainNav.items : [];
+
+        writeSubsectionTitle('Message bar');
         writeSpecRows([
-            ['Layout', header.layout || 'gallery'],
             ['Sticky message bar', header.sticky === true
-                ? 'Yes — pin message bar only (logo + main nav scroll away). Production: CSS position: sticky on the message bar; do not sticky the full header.'
+                ? 'Yes - pin message bar only (logo + main nav scroll away). Production: CSS position: sticky on the message bar only.'
                 : 'No'],
             ['Sticky scope', header.stickyScope || 'message-bar-only'],
-            ['Content column width', header.contentColumnWidth || '1479 px'],
-            ['Message bar background', topBar.backgroundColor || '—'],
-            ['Message bar text', topBar.textColor || topBar.centerCopyColor || '—'],
-            ['Center copy', topBar.centerCopy || '—'],
+            ['Background color', topBar.backgroundColor || '-'],
+            ['Text color', topBar.textColor || topBar.centerCopyColor || '-'],
+            ['Center copy', topBar.centerCopy || '-'],
             ['Wishlist', pdfLinkLine(utilities.wishlist?.label, utilities.wishlist?.url)],
             ['Sign in', pdfLinkLine(utilities.signIn?.label, utilities.signIn?.url)],
+        ]);
+
+        writeSubsectionTitle('Primary header');
+        writeSpecRows([
+            ['Layout', header.layout || 'gallery'],
+            ['Content column width', header.contentColumnWidth || '1479 px'],
             ['Header logo size', header.logoSizePx
-                ? `${header.logoSizePx} px display height · width auto`
+                ? `${header.logoSizePx} px display height | width auto`
                 : (header.logoDimensions || 'max 150 px high')],
             ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'hardcoded in template')],
-            ['Main nav alignment', header.mainNav?.alignment || 'logo left · nav left of search · search right'],
-            ['Dropdown menus', header.mainNav?.hasDropdowns !== false ? 'Yes — one per top-level category' : 'No'],
+            ['Main nav alignment', header.mainNav?.alignment
+                || 'logo left | nav left of search | search right'],
+            ['Dropdown menus', header.mainNav?.hasDropdowns !== false
+                ? 'Yes - one dropdown per top-level category'
+                : 'No'],
             ['Category count', galleryNavItems.length ? String(galleryNavItems.length) : '0'],
             ['Search bar', header.mainNav?.search?.hardcoded !== false
-                ? `Hardcoded — placeholder “${header.mainNav?.search?.placeholder || 'Search…'}”`
-                : '—'],
+                ? `Hardcoded - placeholder "${header.mainNav?.search?.placeholder || 'Search...'}"`
+                : '-'],
         ]);
-        if (galleryNavItems.length) {
-            writeLines('Main navigation categories', { bold: true, size: 10, gap: 4 });
-            galleryNavItems.forEach((item) => {
-                const visibleSubs = Array.isArray(item.subcategories)
-                    ? item.subcategories.filter((sub) => sub.visible !== false)
-                    : [];
-                writeLines(
-                    `${item.label || 'Category'}${item.url ? ` → ${item.url}` : ''}`,
-                    { bold: true, size: 9, gap: 2 },
-                );
-                if (visibleSubs.length) {
-                    writeItemList(
-                        visibleSubs,
-                        (sub) => `${sub.label || '—'}: ${sub.url || '—'}`,
-                    );
-                } else {
-                    writeLines('No visible subcategories', { size: 9, gap: 4 });
-                }
-            });
-        }
+
+        writeMainNavCatalog(galleryNavItems, {
+            title: 'Main navigation',
+            intro: 'Top-level categories with dropdown subcategories. Parent URL is the category landing page; listed children are the dropdown links shown under each category.',
+        });
     } else if (isSpotlight) {
         const spotlightTopBar = header.topBar || {};
         const spotlightNavLinks = Array.isArray(header.mainNav?.items) ? header.mainNav.items : [];
@@ -489,14 +613,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             );
         }
         if (spotlightNavLinks.length) {
-            writeLines('Main navigation categories', { bold: true, size: 10, gap: 4 });
-            writeItemList(
-                spotlightNavLinks,
-                (item) => {
-                    const categoryUrl = String(item.url || '').trim();
-                    return categoryUrl ? `${item.label || '—'} (${categoryUrl})` : (item.label || '—');
-                },
-            );
+            writeMainNavCatalog(spotlightNavLinks, {
+                title: 'Main navigation',
+                intro: 'Top-level navigation links for the Spotlight template.',
+            });
         }
     } else {
         writeSpecRows([
@@ -543,32 +663,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Subcategories pending', headerMainNav.subcategoriesPending ? 'Yes — some categories need links' : 'No'],
         ]);
         if (headerMainNavItems.length) {
-            writeLines('Top-level categories', { bold: true, size: 10, gap: 4 });
-            writeLines(
-                headerMainNavItems.map((item) => {
-                    const categoryUrl = String(item.url || '').trim();
-                    return categoryUrl ? `${item.label || '—'} (${categoryUrl})` : (item.label || '—');
-                }).join(' · '),
-                { size: 9, gap: 8 },
-            );
-            headerMainNavItems.forEach((item) => {
-                writeLines(item.label || item.id || 'Category', { bold: true, size: 10, gap: 4 });
-                if (item.url) {
-                    writeLines(`Category link: ${item.url}`, { size: 9, gap: 4 });
-                }
-                const subs = Array.isArray(item.subcategories) ? item.subcategories : [];
-                if (!subs.length) {
-                    writeLines('No subcategories configured yet.', { size: 9, color: [90, 90, 90], gap: 8 });
-                    return;
-                }
-                writeSubcategoryList(
-                    subs,
-                    (sub) => {
-                        const status = `(${sub.visible === false ? 'hidden' : 'shown'})`;
-                        return pdfLinkLine(sub.label, sub.url, status);
-                    },
-                );
-                y += 4;
+            writeMainNavCatalog(headerMainNavItems, {
+                title: 'Main navigation',
+                includeHidden: true,
+                intro: 'Top-level categories with dropdown subcategories. Parent URL is the category landing page; listed children are the dropdown links shown under each category. Hidden children are marked (hidden).',
             });
         }
     }
@@ -660,10 +758,13 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Tile images in handoff', galleryHandoffAssetListLine('gallery-catalog-tile-')],
         ]);
         if (catalogTiles.length) {
-            writeLines('Catalog tiles', { bold: true, size: 10, gap: 4 });
-            writeItemList(
-                catalogTiles,
-                (tile) => `${tile.index || '—'}. ${tile.label || '—'}: ${tile.url || '—'}`,
+            writeSubsectionTitle('Catalog tiles');
+            writeDefinitionRows(
+                catalogTiles.map((tile) => [
+                    String(tile.label || `Tile ${tile.index || ''}`).trim() || 'Tile',
+                    String(tile.url || '-').trim() || '-',
+                ]),
+                { indent: 0, labelW: 170, size: 9, gap: 5 },
             );
         }
     } else if (isSpotlight) {
@@ -860,8 +961,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         Object.values(linkGroups).forEach((group) => {
             const links = Array.isArray(group?.links) ? group.links : [];
             if (!links.length) return;
-            writeLines(group.heading || 'Links', { bold: true, size: 10, gap: 4 });
-            writeItemList(links, (item) => `${item.label}: ${item.url || '—'}`);
+            writeSubsectionTitle(group.heading || 'Links');
+            writeDefinitionRows(
+                links.map((item) => [
+                    String(item.label || '-').trim() || '-',
+                    String(item.url || '-').trim() || '-',
+                ]),
+                { indent: 0, labelW: 150, size: 9, gap: 5 },
+            );
         });
     }
     if (isSpotlightFooter) {
@@ -940,6 +1047,22 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         writeItemList(
             footerPolicies,
             (item) => `${item.label}: ${item.url || '—'}`,
+        );
+    }
+
+    if (isGallery) {
+        writeSectionTitle('Homepage stylesheet');
+        writeSpecRows([
+            ['Handoff path', 'data/css/styles.css'],
+            ['Server path', '/data/css/styles.css'],
+            ['Path convention', 'data/css/[file-name].css -> /data/css/[file-name].css'],
+            ['DevOps dashboard', 'Meta Data, JavaScript & CSS (Global)'],
+            ['Snippet file', 'spec/devops-global-css-snippet.html'],
+            ['Stylesheet link', '<link rel="stylesheet" href="/data/css/styles.css?v1">'],
+        ]);
+        writeLines(
+            'Upload data/css/ from this ZIP to /data/css/ on hosting. Paste the Global Meta snippet so DevOps does not need to author a new stylesheet for this homepage.',
+            { size: 9, color: [90, 90, 90], gap: 10 },
         );
     }
 
@@ -1028,6 +1151,86 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const pdfBlob = doc.output('blob');
     const handoffImageZipPath = (filename) => `images/${filename}`;
 
+    async function fetchTextForHandoff(url) {
+        const response = await fetch(url, { credentials: 'same-origin' });
+        if (!response.ok) {
+            throw new Error(`Could not load handoff asset: ${url} (${response.status})`);
+        }
+        return response.text();
+    }
+
+    /**
+     * Classic homepage stylesheets shipped for hosting upload.
+     * ZIP path data/css/[file] → live server /data/css/[file]
+     */
+    async function loadGalleryHandoffStylesheets() {
+        if (!isGallery) return [];
+        const files = [
+            {
+                zipPath: 'data/css/styles.css',
+                sourceUrl: 'gallery/data/css/styles.css',
+                serverPath: '/data/css/styles.css',
+            },
+        ];
+        const loaded = [];
+        for (const file of files) {
+            try {
+                const content = await fetchTextForHandoff(file.sourceUrl);
+                loaded.push({ ...file, content });
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+        return loaded;
+    }
+
+    const galleryStylesheets = await loadGalleryHandoffStylesheets();
+    const galleryStylesheetNames = galleryStylesheets.map((file) => file.zipPath.split('/').pop());
+    const primaryStylesheet = galleryStylesheets[0] || null;
+    const primaryStylesheetServerPath = primaryStylesheet
+        ? primaryStylesheet.serverPath
+        : '/data/css/styles.css';
+    const primaryStylesheetCacheBust = `${primaryStylesheetServerPath}?v1`;
+
+    const devopsGlobalSnippet = [
+        '<!--',
+        '  DevOps — Hosting dashboard: Meta Data, JavaScript & CSS (Global)',
+        '  ----------------------------------------------------------------',
+        '  1. Upload this package\'s data/css/ folder to the server as /data/css/',
+        `     (file path in handoff: data/css/${primaryStylesheet ? primaryStylesheet.zipPath.split('/').pop() : 'styles.css'})`,
+        `  2. Live URL: ${primaryStylesheetServerPath}`,
+        '  3. Paste (or merge) the link tags below into Global CSS/JS.',
+        '  4. Keep enhanced-search lines if the site already uses them.',
+        '  5. Bump the ?v query when you replace styles.css so browsers load the new file.',
+        '-->',
+        '<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">',
+        '<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js"></script>',
+        `<link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
+        '',
+    ].join('\n');
+
+    const cssFolderReadme = [
+        'Homepage stylesheet — Classic (Gallery)',
+        '=======================================',
+        '',
+        'Upload this folder to the hosting provider as:',
+        '  data/css/  →  /data/css/',
+        '',
+        'Files:',
+        ...(galleryStylesheetNames.length
+            ? galleryStylesheetNames.map((name) => `  - ${name}  →  /data/css/${name}`)
+            : ['  - styles.css  →  /data/css/styles.css']),
+        '',
+        'DevOps: paste the Global Meta link tags from',
+        '  spec/devops-global-css-snippet.html',
+        'into the hosting dashboard section',
+        '  “Meta Data, JavaScript & CSS (Global)”.',
+        '',
+        'Example (after upload):',
+        `  <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
+        '',
+    ].join('\n');
+
     const specJsonShared = {
         template: spec.template || 'Showroom',
         design: spec.design || 'classic',
@@ -1055,6 +1258,23 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             dimensions: a.dimensions,
             included: Boolean(a.dataUrl && String(a.dataUrl).startsWith('data:')),
         })),
+        stylesheets: isGallery
+            ? galleryStylesheets.map((file) => ({
+                filename: file.zipPath.split('/').pop(),
+                zipPath: file.zipPath,
+                serverPath: file.serverPath,
+                note: 'Upload data/css/[file-name].css to hosting /data/css/[file-name].css',
+            }))
+            : [],
+        devops: isGallery
+            ? {
+                globalMetaSection: 'Meta Data, JavaScript & CSS (Global)',
+                snippetFile: 'spec/devops-global-css-snippet.html',
+                cssUploadPath: 'data/css/',
+                cssServerPath: '/data/css/',
+                stylesheetHref: primaryStylesheetCacheBust,
+            }
+            : null,
     };
 
     const specJson = isGallery
@@ -1355,8 +1575,19 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             resolvedHandoffAssets.length
                 ? '3. images/ — Header logo and any client-replaced section images'
                 : '3. images/ — Omitted (image files could not be resolved for export)',
-            '4. spec/homepage-spec.json — Machine-readable spec (Header sticky scope, Hero backdrop tokens, Catalog Highlights, Footer social iconClass, Copyright)',
-            '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+            '4. data/css/ — Homepage stylesheet(s) for hosting upload',
+            '   Upload path: data/css/[file-name].css  →  /data/css/[file-name].css',
+            galleryStylesheetNames.length
+                ? `   Included: ${galleryStylesheetNames.join(', ')}`
+                : '   Included: (stylesheet missing — re-export after confirming editor/gallery/data/css/)',
+            '5. spec/homepage-spec.json — Machine-readable spec (Header sticky scope, Hero backdrop tokens, Catalog Highlights, Footer social iconClass, Copyright)',
+            '6. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+            '7. spec/devops-global-css-snippet.html — Paste into hosting “Meta Data, JavaScript & CSS (Global)”',
+            '',
+            'DEVOPS — Global CSS/JS',
+            'Upload data/css/ to /data/css/ on the server, then add/update the stylesheet link in',
+            'Meta Data, JavaScript & CSS (Global). See spec/devops-global-css-snippet.html.',
+            `Example: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
             '',
             'Catalog URLs use /lighting-fixtures as the root. Sticky applies to the message bar only.',
             resolvedHandoffAssets.length
@@ -1409,15 +1640,31 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     zip.file(pdfFilename, pdfBlob);
 
     if (handoffGuide.buildShowroomHandoffGuide) {
-        zip.file('WELCOME-GUIDE.html', handoffGuide.buildShowroomHandoffGuide(coverMeta));
+        zip.file('WELCOME-GUIDE.html', handoffGuide.buildShowroomHandoffGuide({
+            ...coverMeta,
+            hasStylesheets: galleryStylesheets.length > 0,
+            stylesheetHref: primaryStylesheetCacheBust,
+        }));
     }
     if (handoffGuide.buildShowroomHandoffReadme) {
-        zip.file('HANDOFF-README.txt', handoffGuide.buildShowroomHandoffReadme(coverMeta));
+        zip.file('HANDOFF-README.txt', handoffGuide.buildShowroomHandoffReadme({
+            ...coverMeta,
+            hasStylesheets: galleryStylesheets.length > 0,
+            stylesheetHref: primaryStylesheetCacheBust,
+        }));
     }
 
     for (const asset of resolvedHandoffAssets) {
         if (!String(asset.dataUrl).startsWith('data:')) continue;
         zip.file(handoffImageZipPath(asset.filename), dataUrlToBlob(asset.dataUrl));
+    }
+
+    for (const stylesheet of galleryStylesheets) {
+        zip.file(stylesheet.zipPath, stylesheet.content);
+    }
+    if (isGallery) {
+        zip.file('data/css/README.txt', cssFolderReadme);
+        zip.file('spec/devops-global-css-snippet.html', devopsGlobalSnippet);
     }
 
     zip.file('spec/homepage-spec.json', JSON.stringify(specJson, null, 2));

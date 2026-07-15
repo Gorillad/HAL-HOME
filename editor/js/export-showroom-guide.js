@@ -216,9 +216,31 @@
             '@media print{body{background:#fff}.card,.file-item{box-shadow:none;break-inside:avoid}.cover{min-height:100vh}}',
         ].join('\n');
 
+        const hasStylesheets = Boolean(meta.hasStylesheets);
+        const stylesheetHref = meta.stylesheetHref || '/data/css/styles.css?v1';
+
         const imageNote = hasImages
             ? 'Client-provided images are included in the <code>images/</code> folder.'
             : 'This export uses template default images — upload final assets on the live site.';
+
+        const cssStep = hasStylesheets || design === 'gallery'
+            ? [
+                '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload homepage CSS</div><div class="step-desc">Upload <code>data/css/</code> from this ZIP to the server as <code>/data/css/</code>. File path convention: <code>data/css/[file-name].css</code> → <code>/data/css/[file-name].css</code>.</div></div></div>',
+                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Wire Global Meta CSS/JS</div><div class="step-desc">In the hosting dashboard under <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, paste the link tags from <code>spec/devops-global-css-snippet.html</code> (keeps enhanced-search + adds <code>', escapeHtml(stylesheetHref), '</code>). Bump the <code>?v</code> query when replacing the file.</div></div></div>',
+                `    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
+                '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
+            ].join('\n')
+            : [
+                `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
+                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
+            ].join('\n');
+
+        const cssFileItems = (hasStylesheets || design === 'gallery')
+            ? [
+                '    <div class="file-item is-primary"><div class="file-name">data/css/styles.css</div><div class="file-desc">Homepage stylesheet. Upload to hosting as <code>/data/css/styles.css</code> (handoff path: <code>data/css/[file-name].css</code>).</div></div>',
+                '    <div class="file-item is-primary"><div class="file-name">spec/devops-global-css-snippet.html</div><div class="file-desc">Paste into hosting dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Includes enhanced-search links plus the homepage stylesheet href.</div></div>',
+            ].join('\n')
+            : '';
 
         return [
             '<!DOCTYPE html>',
@@ -252,8 +274,8 @@
             '<div class="page">',
             '<div class="card card-accent">',
             `  <h2>Welcome, ${companyName}</h2>`,
-            `  <p>This package contains everything your developer or onboarding team needs to implement the <strong>${templateLabel}</strong> showroom homepage — copy, links, layout previews, and configuration notes.</p>`,
-            '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
+            `  <p>This package contains everything your developer or onboarding team needs to implement the <strong>${templateLabel}</strong> showroom homepage — copy, links, layout previews, stylesheet, and configuration notes.</p>`,
+            '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec, CSS, and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
             '</div>',
             '<div class="section">',
             '  <div class="section-label">Homepage scope</div>',
@@ -267,8 +289,7 @@
             '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Open the developer brief</div><div class="step-desc">Read <code>', pdfFilename, '</code> first — it includes copy, URLs, colors, layout preview captures, and the handoff image inventory.</div></div></div>',
             '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Use the machine-readable spec</div><div class="step-desc">Import or reference <code>spec/homepage-spec.json</code> for structured field values, section order, and asset filenames.</div></div></div>',
             '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Install ADA footer markup</div><div class="step-desc">Copy <code>spec/footer-copyright-snippet.html</code> to the very bottom of every site footer — this is mandatory on all LogicX showroom sites.</div></div></div>',
-            `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
-            '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
+            cssStep,
             '  </div>',
             '</div>',
             '<div class="section">',
@@ -277,7 +298,8 @@
             '  <div class="file-list">',
             `    <div class="file-item is-primary"><div class="file-name">${pdfFilename}</div><div class="file-desc">Developer brief with a branded cover, full copy spec, layout preview screenshots, and handoff image list.</div></div>`,
             '    <div class="file-item is-primary"><div class="file-name">WELCOME-GUIDE.html</div><div class="file-desc">This guide — open in any browser for a readable overview of the package and recommended install steps.</div></div>',
-            '    <div class="file-item"><div class="file-name">spec/homepage-spec.json</div><div class="file-desc">Structured configuration: header, hero, sections, footer, copyright, and asset metadata.</div></div>',
+            cssFileItems,
+            '    <div class="file-item"><div class="file-name">spec/homepage-spec.json</div><div class="file-desc">Structured configuration: header, hero, sections, footer, copyright, stylesheets, and asset metadata.</div></div>',
             '    <div class="file-item"><div class="file-name">spec/footer-copyright-snippet.html</div><div class="file-desc">Required ADA compliance + copyright markup for the site footer.</div></div>',
             hasImages
                 ? '    <div class="file-item"><div class="file-name">images/</div><div class="file-desc">Client-uploaded image files referenced in the brief (logos, hero photos, section images).</div></div>'
@@ -299,6 +321,9 @@
         const templateLabel = meta.templateLabel || 'Showroom';
         const pdfFilename = meta.pdfFilename || 'showroom-homepage-brief.pdf';
         const hasImages = Boolean(meta.hasHandoffImages);
+        const hasStylesheets = Boolean(meta.hasStylesheets);
+        const stylesheetHref = meta.stylesheetHref || '/data/css/styles.css?v1';
+        const design = meta.design || 'classic';
 
         return [
             `${templateLabel.toUpperCase()} — SHOWROOM HANDOFF PACKAGE`,
@@ -310,7 +335,25 @@
             `  2. ${pdfFilename}   — Developer brief (cover + spec + previews)`,
             '  3. spec/homepage-spec.json    — Machine-readable configuration',
             '  4. spec/footer-copyright-snippet.html — Required ADA footer markup',
-            hasImages ? '  5. images/                    — Client-uploaded handoff images' : '',
+            (hasStylesheets || design === 'gallery')
+                ? '  5. data/css/styles.css         — Homepage stylesheet → /data/css/styles.css'
+                : '',
+            (hasStylesheets || design === 'gallery')
+                ? '  6. spec/devops-global-css-snippet.html — Hosting Global Meta CSS/JS links'
+                : '',
+            hasImages ? '  7. images/                    — Client-uploaded handoff images' : '',
+            '',
+            'CSS PATH',
+            '--------',
+            '  Handoff file: data/css/[file-name].css',
+            '  Server path:  /data/css/[file-name].css',
+            `  Link tag:     <link rel="stylesheet" href="${stylesheetHref}">`,
+            '',
+            'DEVOPS',
+            '------',
+            '  Hosting dashboard → Meta Data, JavaScript & CSS (Global)',
+            '  Paste links from spec/devops-global-css-snippet.html',
+            '  (keeps enhanced-search + wires homepage styles.css).',
             '',
             'REQUIRED',
             '--------',
