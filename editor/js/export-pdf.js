@@ -418,12 +418,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         const galleryNavItems = Array.isArray(header.mainNav?.items) ? header.mainNav.items : [];
         writeSpecRows([
             ['Layout', header.layout || 'gallery'],
-            ['Sticky header', header.sticky === true
-                ? 'Yes — pin header (top bar + primary nav row) while scrolling'
+            ['Sticky message bar', header.sticky === true
+                ? 'Yes — pin message bar only (logo + main nav scroll away)'
                 : 'No'],
             ['Content column width', header.contentColumnWidth || '1479 px'],
-            ['Top bar background', topBar.backgroundColor || '—'],
-            ['Top bar text', topBar.textColor || topBar.centerCopyColor || '—'],
+            ['Message bar background', topBar.backgroundColor || '—'],
+            ['Message bar text', topBar.textColor || topBar.centerCopyColor || '—'],
             ['Center copy', topBar.centerCopy || '—'],
             ['Wishlist', pdfLinkLine(utilities.wishlist?.label, utilities.wishlist?.url)],
             ['Sign in', pdfLinkLine(utilities.signIn?.label, utilities.signIn?.url)],

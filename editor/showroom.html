@@ -121,6 +121,8 @@
         </div>
 
     <nav class="editor-section-nav" id="editorSectionNav" aria-label="Jump to editor section">
+        <div class="editor-section-nav-links">
+        <a href="#editor-section-gallery-message-bar" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryMessageBar">Message Bar</a>
         <a href="#editor-section-header" class="editor-section-nav-link editor-section-nav-link--shared">Header</a>
         <a href="#editor-section-gallery-main-nav" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryMainNav">Main Navigation</a>
         <a href="#editor-section-hero" class="editor-section-nav-link editor-section-nav-link--shared">Hero</a>
@@ -141,6 +143,10 @@
         <a href="#editor-section-spotlight-brands" class="editor-section-nav-link editor-section-nav-link--spotlight">Brands</a>
         <a href="#editor-section-spotlight-newsletter" class="editor-section-nav-link editor-section-nav-link--spotlight">Newsletter</a>
         <a href="#editor-section-spotlight-footer" class="editor-section-nav-link editor-section-nav-link--spotlight">Footer</a>
+        </div>
+        <button type="button" class="editor-section-nav-collapse" id="editorCollapseAllSectionsBtn" title="Close all open editor sections">
+            Collapse all
+        </button>
     </nav>
     </div><!-- /.editor-site-header -->
 
@@ -168,11 +174,77 @@
                 </div>
             </details>
 
+            <details class="editor-accordion editor-panel-section" id="editor-section-gallery-message-bar">
+                <summary class="editor-accordion-head">Message Bar</summary>
+                <div class="editor-accordion-body">
+                    <p class="editor-panel-lead editor-panel-lead--compact">Site-wide utility strip above the logo and main navigation. Sticky only applies to this bar — not the logo or nav row below.</p>
+
+                    <div class="editor-field editor-field--toggle" id="editor-gallery-sticky">
+                        <label class="editor-toggle" for="fieldGalleryHeaderSticky">
+                            <input type="checkbox" id="fieldGalleryHeaderSticky" name="galleryHeaderSticky">
+                            Sticky message bar
+                        </label>
+                        <p class="editor-field-hint">Pin only the message bar while shoppers scroll. Logo, main nav, and search scroll away with the page. Try it in Live preview.</p>
+                    </div>
+
+                    <fieldset class="editor-fieldset" id="editor-gallery-top-bar">
+                        <legend>Message bar</legend>
+                        <div class="editor-field">
+                            <label for="fieldGalleryHeaderBarBgValue">Bar background color</label>
+                            <div class="editor-color">
+                            <div class="editor-color-hex-wrap">
+                                <span class="editor-color-hex-label">Hex</span>
+                                <input type="text" class="editor-color-hex" id="fieldGalleryHeaderBarBgValue" value="#525962" placeholder="#RRGGBB" spellcheck="false" autocomplete="off" aria-label="Hex color">
+                            </div>
+                            <input type="color" id="fieldGalleryHeaderBarBg" name="galleryHeaderBarBackgroundColor" value="#525962" title="Open color picker">
+                        </div>
+                        </div>
+                        <div class="editor-field editor-field--compact">
+                            <label for="fieldGalleryHeaderBarTextValue">Bar text color</label>
+                            <div class="editor-color">
+                            <div class="editor-color-hex-wrap">
+                                <span class="editor-color-hex-label">Hex</span>
+                                <input type="text" class="editor-color-hex" id="fieldGalleryHeaderBarTextValue" value="#ffffff" placeholder="#RRGGBB" spellcheck="false" autocomplete="off" aria-label="Hex color">
+                            </div>
+                            <input type="color" id="fieldGalleryHeaderBarText" name="galleryHeaderBarTextColor" value="#ffffff" title="Open color picker">
+                        </div>
+                            <p class="editor-field-hint">Applies to center copy and Wishlist / Sign in links. Other sections can reuse this as their starting text color.</p>
+                        </div>
+                        <div class="editor-field">
+                            <label for="fieldGalleryHeaderCenterCopy">Center copy</label>
+                            <input type="text" id="fieldGalleryHeaderCenterCopy" name="galleryHeaderCenterCopy" autocomplete="off">
+                            <p class="editor-field-hint">Centered in the message bar — e.g. pricing and orders phone number.</p>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="editor-fieldset" id="editor-gallery-utils">
+                        <legend>Message bar links (right)</legend>
+                        <div class="editor-field">
+                            <label for="fieldGalleryHeaderWishlist">Wishlist label</label>
+                            <input type="text" id="fieldGalleryHeaderWishlist" name="galleryHeaderWishlistLabel" autocomplete="off">
+                        </div>
+                        <div class="editor-field editor-field--compact">
+                            <label for="fieldGalleryHeaderWishlistUrl">Wishlist URL</label>
+                            <input type="text" id="fieldGalleryHeaderWishlistUrl" name="galleryHeaderWishlistUrl" autocomplete="off" placeholder="/CustomerView">
+                        </div>
+                        <div class="editor-field">
+                            <label for="fieldGalleryHeaderSignIn">Sign in label</label>
+                            <input type="text" id="fieldGalleryHeaderSignIn" name="galleryHeaderSignInLabel" autocomplete="off">
+                        </div>
+                        <div class="editor-field editor-field--compact">
+                            <label for="fieldGalleryHeaderSignInUrl">Sign in URL</label>
+                            <input type="text" id="fieldGalleryHeaderSignInUrl" name="galleryHeaderSignInUrl" autocomplete="off" placeholder="/login.php">
+                        </div>
+                        <p class="editor-field-hint editor-field-hint--fieldset">Shown as “Wishlist | Please sign in” on the right side of the message bar. Edit each label and destination URL.</p>
+                    </fieldset>
+                </div>
+            </details><!-- /#editor-section-gallery-message-bar -->
+
             <details class="editor-accordion editor-panel-section" id="editor-section-header">
                 <summary class="editor-accordion-head">Header</summary>
                 <div class="editor-accordion-body">
 
-            <div class="editor-header-jump">
+            <div class="editor-header-jump" id="editorHeaderJumpWrap">
                 <label for="headerJumpNav">Jump to</label>
                 <select id="headerJumpNav" class="editor-header-jump-select" aria-label="Jump to header edit section">
                     <option value="">Choose a header area…</option>
@@ -180,68 +252,9 @@
             </div>
 
             <div class="editor-header-gallery" id="editorHeaderGallery" hidden>
-                <div class="editor-field editor-field--toggle editor-header-jump-target" id="editor-gallery-sticky">
-                    <label class="editor-toggle" for="fieldGalleryHeaderSticky">
-                        <input type="checkbox" id="fieldGalleryHeaderSticky" name="galleryHeaderSticky">
-                        Sticky header
-                    </label>
-                    <p class="editor-field-hint">Pin the full Classic header (top bar and primary nav row) to the top while shoppers scroll.</p>
-                </div>
-
-                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-top-bar">
-                    <legend>Top bar</legend>
-                    <div class="editor-field">
-                        <label for="fieldGalleryHeaderBarBgValue">Bar background color</label>
-                        <div class="editor-color">
-                        <div class="editor-color-hex-wrap">
-                            <span class="editor-color-hex-label">Hex</span>
-                            <input type="text" class="editor-color-hex" id="fieldGalleryHeaderBarBgValue" value="#525962" placeholder="#RRGGBB" spellcheck="false" autocomplete="off" aria-label="Hex color">
-                        </div>
-                        <input type="color" id="fieldGalleryHeaderBarBg" name="galleryHeaderBarBackgroundColor" value="#525962" title="Open color picker">
-                    </div>
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldGalleryHeaderBarTextValue">Bar text color</label>
-                        <div class="editor-color">
-                        <div class="editor-color-hex-wrap">
-                            <span class="editor-color-hex-label">Hex</span>
-                            <input type="text" class="editor-color-hex" id="fieldGalleryHeaderBarTextValue" value="#ffffff" placeholder="#RRGGBB" spellcheck="false" autocomplete="off" aria-label="Hex color">
-                        </div>
-                        <input type="color" id="fieldGalleryHeaderBarText" name="galleryHeaderBarTextColor" value="#ffffff" title="Open color picker">
-                    </div>
-                        <p class="editor-field-hint">Applies to center copy and Wishlist / Sign in links. Other sections can reuse this as their starting text color.</p>
-                    </div>
-                    <div class="editor-field">
-                        <label for="fieldGalleryHeaderCenterCopy">Center copy</label>
-                        <input type="text" id="fieldGalleryHeaderCenterCopy" name="galleryHeaderCenterCopy" autocomplete="off">
-                        <p class="editor-field-hint">Centered on the top bar — e.g. pricing and orders phone number.</p>
-                    </div>
-                </fieldset>
-
-                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-utils">
-                    <legend>Top bar links (right)</legend>
-                    <div class="editor-field">
-                        <label for="fieldGalleryHeaderWishlist">Wishlist label</label>
-                        <input type="text" id="fieldGalleryHeaderWishlist" name="galleryHeaderWishlistLabel" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldGalleryHeaderWishlistUrl">Wishlist URL</label>
-                        <input type="text" id="fieldGalleryHeaderWishlistUrl" name="galleryHeaderWishlistUrl" autocomplete="off" placeholder="/CustomerView">
-                    </div>
-                    <div class="editor-field">
-                        <label for="fieldGalleryHeaderSignIn">Sign in label</label>
-                        <input type="text" id="fieldGalleryHeaderSignIn" name="galleryHeaderSignInLabel" autocomplete="off">
-                    </div>
-                    <div class="editor-field editor-field--compact">
-                        <label for="fieldGalleryHeaderSignInUrl">Sign in URL</label>
-                        <input type="text" id="fieldGalleryHeaderSignInUrl" name="galleryHeaderSignInUrl" autocomplete="off" placeholder="/login.php">
-                    </div>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Shown as “Wishlist | Please sign in” on the right side of the top bar. Edit each label and destination URL.</p>
-                </fieldset>
-
                 <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-logo">
                     <legend>Company logo</legend>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned on desktop, in line with the main navigation and search. PNG or SVG recommended.</p>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned on desktop, in line with the main navigation and search. PNG or SVG recommended. This row is not sticky — only the Message Bar above can stick.</p>
                     <div class="editor-field">
                         <label for="fieldGalleryHeaderLogo">Upload logo</label>
                         <div class="editor-upload editor-upload--logo">
@@ -369,7 +382,7 @@
                 <div class="editor-accordion-body">
                     <fieldset class="editor-fieldset" id="editor-gallery-main-nav">
                         <legend>Nav categories</legend>
-                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; categories sit to the left of search. Rename each parent category, edit dropdown links, uncheck to hide, or add new subcategory rows. Shop ships with CATALOG through WALL LIGHTS; About Us and Account start empty for you to fill.</p>
+                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; categories sit to the left of search. Parent labels and dropdown items display in caps. Rename each parent, edit dropdown links, uncheck to hide, or add subcategory rows. Defaults: Shop categories; About Us → PRIVACY · CONTACT US; Account → MY ACCOUNT · WISHLIST.</p>
                         <div id="galleryMainNavEditor"></div>
                     </fieldset>
                 </div>
@@ -1330,14 +1343,16 @@
                         </div>
                     </div>
                     <div class="showroom-header-gallery" id="showroomHeaderGallery" hidden>
-                        <div class="showroom-gallery-top-bar" id="previewGalleryTopBar">
-                            <div class="showroom-gallery-top-bar-inner">
-                                <div class="showroom-gallery-top-bar-spacer" aria-hidden="true"></div>
-                                <p class="showroom-gallery-top-bar-copy" id="previewGalleryTopBarCopy"></p>
-                                <nav class="showroom-gallery-top-bar-utils" id="previewGalleryTopBarUtils" aria-label="Account utilities"></nav>
+                        <div class="showroom-gallery-message-bar" id="previewGalleryMessageBar">
+                            <div class="showroom-gallery-top-bar" id="previewGalleryTopBar">
+                                <div class="showroom-gallery-top-bar-inner">
+                                    <div class="showroom-gallery-top-bar-spacer" aria-hidden="true"></div>
+                                    <p class="showroom-gallery-top-bar-copy" id="previewGalleryTopBarCopy"></p>
+                                    <nav class="showroom-gallery-top-bar-utils" id="previewGalleryTopBarUtils" aria-label="Account utilities"></nav>
+                                </div>
                             </div>
                         </div>
-                        <div class="showroom-gallery-primary-bar">
+                        <div class="showroom-gallery-primary-bar" id="previewGalleryPrimaryBar">
                             <div class="showroom-gallery-primary-bar-inner">
                                 <a href="/" class="showroom-gallery-logo is-empty" id="previewGalleryLogoWrap">
                                     <img id="previewGalleryLogo" alt="" hidden>

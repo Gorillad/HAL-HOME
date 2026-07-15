@@ -100,7 +100,7 @@
     const DEFAULT_GALLERY_MAIN_NAV_TEMPLATE = [
         {
             id: 'gallery-shop',
-            label: 'Shop',
+            label: 'SHOP',
             url: '/catalog',
             subcategories: [
                 { id: 'gallery-shop-catalog', label: 'CATALOG', url: '/catalog' },
@@ -115,15 +115,21 @@
         },
         {
             id: 'gallery-about-us',
-            label: 'About Us',
+            label: 'ABOUT US',
             url: '/about',
-            subcategories: [],
+            subcategories: [
+                { id: 'gallery-about-privacy', label: 'PRIVACY', url: '/privacy' },
+                { id: 'gallery-about-contact', label: 'CONTACT US', url: '/contact' },
+            ],
         },
         {
             id: 'gallery-account',
-            label: 'Account',
+            label: 'ACCOUNT',
             url: '/account',
-            subcategories: [],
+            subcategories: [
+                { id: 'gallery-account-my-account', label: 'MY ACCOUNT', url: '/account' },
+                { id: 'gallery-account-wishlist', label: 'WISHLIST', url: '/CustomerView' },
+            ],
         },
     ];
     const GALLERY_IMAGE_DIR = 'gallery/';
@@ -640,6 +646,7 @@
     const previewHeaderIcons = document.getElementById('previewHeaderIcons');
     const previewMainNav = document.getElementById('previewMainNav');
     const showroomHeaderClassic = document.getElementById('showroomHeaderClassic');
+    const previewGalleryMessageBar = document.getElementById('previewGalleryMessageBar');
     const showroomHeaderGallery = document.getElementById('showroomHeaderGallery');
     const previewGalleryTopBar = document.getElementById('previewGalleryTopBar');
     const previewGalleryTopBarCopy = document.getElementById('previewGalleryTopBarCopy');
@@ -1333,6 +1340,7 @@
         }
 
         if (templateDesign === 'gallery') {
+            pushSection('message-bar', 'Message Bar', showroomHeaderGallery || headerRoot);
             pushSection('header', 'Header', showroomHeaderGallery || headerRoot);
             pushSection('hero', 'Hero', galleryHeroLayoutRoot);
             pushSection('catalog-highlights', 'Catalog Highlights', galleryCatalogRoot);
@@ -1434,16 +1442,82 @@
         };
     }
 
+    function isGalleryStickyPreviewActive() {
+        return templateDesign === 'gallery' && state.galleryHeaderSticky === true;
+    }
+
+    function getPreviewScaleValue() {
+        if (!previewWrap) return 1;
+        const available = Math.max(0, previewWrap.clientWidth - 48);
+        if (available <= 0) return 1;
+        return Math.min(1, available / TEMPLATE_FRAME_WIDTH);
+    }
+
+    function clearGalleryStickyPreviewPin() {
+        if (!previewGalleryMessageBar) return;
+        previewGalleryMessageBar.classList.remove('is-preview-stuck');
+        previewGalleryMessageBar.style.removeProperty('transform');
+    }
+
+    function getGalleryStickyPinTop() {
+        if (!previewWrap) return 0;
+        const wrapRect = previewWrap.getBoundingClientRect();
+        const padTop = parseFloat(window.getComputedStyle(previewWrap).paddingTop) || 0;
+        const toolbar = previewWrap.querySelector('.editor-preview-toolbar');
+        const toolbarBottom = toolbar
+            ? toolbar.getBoundingClientRect().bottom
+            : (wrapRect.top + padTop);
+        return Math.max(wrapRect.top + padTop, toolbarBottom);
+    }
+
+    function syncGalleryStickyPreviewPin() {
+        if (!previewGalleryMessageBar || !previewWrap || !previewRoot) return;
+
+        if (!isGalleryStickyPreviewActive()) {
+            clearGalleryStickyPreviewPin();
+            previewGalleryMessageBar.classList.remove('is-sticky');
+            return;
+        }
+
+        previewGalleryMessageBar.classList.add('is-sticky');
+
+        // Measure the unpinned message bar position first.
+        previewGalleryMessageBar.classList.remove('is-preview-stuck');
+        previewGalleryMessageBar.style.removeProperty('transform');
+
+        const barRect = previewGalleryMessageBar.getBoundingClientRect();
+        const pinTop = getGalleryStickyPinTop();
+        if (barRect.top >= pinTop - 0.5) {
+            return;
+        }
+
+        const scale = getPreviewScaleValue();
+        const visualDelta = pinTop - barRect.top;
+        const localDelta = scale > 0 ? visualDelta / scale : visualDelta;
+        previewGalleryMessageBar.style.transform = `translateY(${localDelta}px)`;
+        previewGalleryMessageBar.classList.add('is-preview-stuck');
+    }
+
     function clampPreviewScroll() {
         if (!previewWrap) return;
         const maxScroll = Math.max(0, previewWrap.scrollHeight - previewWrap.clientHeight);
         if (previewWrap.scrollTop > maxScroll) {
             previewWrap.scrollTop = maxScroll;
         }
+        syncGalleryStickyPreviewPin();
     }
 
     let previewFitRaf = null;
     let previewResizeObserver = null;
+    let galleryStickyPinRaf = null;
+
+    function scheduleGalleryStickyPreviewPin() {
+        if (galleryStickyPinRaf) cancelAnimationFrame(galleryStickyPinRaf);
+        galleryStickyPinRaf = requestAnimationFrame(() => {
+            galleryStickyPinRaf = null;
+            syncGalleryStickyPreviewPin();
+        });
+    }
 
     function scheduleFitPreviewScale() {
         if (previewFitRaf) cancelAnimationFrame(previewFitRaf);
@@ -1460,8 +1534,15 @@
 
         const scale = Math.min(1, available / TEMPLATE_FRAME_WIDTH);
         previewRoot.style.transform = scale < 1 ? `scale(${scale})` : '';
+        previewRoot.style.maxHeight = '';
+        previewRoot.style.overflowY = '';
+        previewRoot.classList.remove('is-sticky-scroll-host');
+        previewWrap.classList.remove('is-gallery-sticky-scroll');
         previewScaler.style.height = `${previewRoot.offsetHeight * scale}px`;
-        requestAnimationFrame(clampPreviewScroll);
+        requestAnimationFrame(() => {
+            clampPreviewScroll();
+            syncGalleryStickyPreviewPin();
+        });
     }
 
     function bindPreviewResizeObserver() {
@@ -1765,6 +1846,28 @@
         updateActiveSection();
     }
 
+    function collapseAllEditorSections() {
+        if (!editorPanel) return 0;
+
+        let closed = 0;
+        editorPanel.querySelectorAll('details.editor-accordion.editor-panel-section').forEach((section) => {
+            if (section.hidden) return;
+            const block = section.closest('.editor-panel-block');
+            if (block?.hidden) return;
+            if (section.open) {
+                section.open = false;
+                closed += 1;
+            }
+        });
+
+        if (typeof refreshEditorSectionNavSpy === 'function') {
+            refreshEditorSectionNavSpy();
+        }
+
+        setStatus(closed ? `Collapsed ${closed} section${closed === 1 ? '' : 's'}` : 'All sections already collapsed');
+        return closed;
+    }
+
     function bindSectionNav() {
         if (!editorSectionNav || !editorPanel) return;
 
@@ -1776,6 +1879,13 @@
                 jumpToEditorSection(sectionId);
             });
         });
+
+        const collapseBtn = document.getElementById('editorCollapseAllSectionsBtn');
+        if (collapseBtn) {
+            collapseBtn.addEventListener('click', () => {
+                collapseAllEditorSections();
+            });
+        }
     }
 
     function renderHeaderJumpNav() {
@@ -1786,9 +1896,6 @@
         if (templateDesign === 'gallery') {
             headerJumpNav.innerHTML = (
                 `<option value="">Choose a header area…</option>
-                <option value="#editor-gallery-sticky">Sticky header</option>
-                <option value="#editor-gallery-top-bar">Top bar</option>
-                <option value="#editor-gallery-utils">Top bar links</option>
                 <option value="#editor-gallery-logo">Company logo</option>`
             );
         } else {
@@ -1824,7 +1931,11 @@
 
     function bindPreviewScroll() {
         if (!previewWrap) return;
-        previewWrap.addEventListener('scroll', clampPreviewScroll, { passive: true });
+        previewWrap.addEventListener('scroll', () => {
+            clampPreviewScroll();
+            scheduleGalleryStickyPreviewPin();
+        }, { passive: true });
+        window.addEventListener('resize', scheduleGalleryStickyPreviewPin, { passive: true });
     }
 
     function flushSessionToStorage() {
@@ -2903,8 +3014,19 @@
         }));
     }
 
+    function galleryStockNavLabel(savedLabel, defaultLabel) {
+        if (typeof savedLabel !== 'string') return defaultLabel;
+        const trimmed = savedLabel.trim();
+        if (!trimmed) return defaultLabel;
+        if (trimmed.toLowerCase() === String(defaultLabel || '').trim().toLowerCase()) {
+            return defaultLabel;
+        }
+        return trimmed;
+    }
+
     function migrateGalleryMainNavItems(data) {
         const defaults = defaultGalleryMainNavItems();
+        const removedSubIds = new Set(['gallery-about-about-us']);
 
         if (Array.isArray(data.galleryMainNavItems) && data.galleryMainNavItems.length > 0) {
             return defaults.map((defaultItem) => {
@@ -2921,28 +3043,33 @@
                 if (defaultItem.subcategories.length) {
                     subcategories = defaultItem.subcategories.map((defaultSub) => {
                         const savedSub = savedSubs.find((sub) => sub.id === defaultSub.id)
-                            || savedSubs.find((sub) => sub.label === defaultSub.label);
+                            || savedSubs.find((sub) => (
+                                String(sub.label || '').trim().toLowerCase()
+                                === String(defaultSub.label || '').trim().toLowerCase()
+                            ));
                         if (!savedSub) return defaultSub;
                         return createMainNavSubcategory({
                             ...defaultSub,
                             ...savedSub,
                             id: defaultSub.id,
+                            label: galleryStockNavLabel(savedSub.label, defaultSub.label),
                         }, 0, defaultItem.id);
                     });
                     savedSubs.forEach((savedSub, index) => {
+                        if (removedSubIds.has(savedSub.id)) return;
                         if (!subcategories.some((sub) => sub.id === savedSub.id)) {
                             subcategories.push(createMainNavSubcategory(savedSub, index, defaultItem.id));
                         }
                     });
                 } else {
-                    subcategories = savedSubs.map((sub, index) => (
-                        createMainNavSubcategory(sub, index, defaultItem.id)
-                    ));
+                    subcategories = savedSubs
+                        .filter((sub) => !removedSubIds.has(sub.id))
+                        .map((sub, index) => createMainNavSubcategory(sub, index, defaultItem.id));
                 }
 
                 return createMainNavItem({
                     id: defaultItem.id,
-                    label: storedText(savedItem.label, defaultItem.label),
+                    label: galleryStockNavLabel(savedItem.label, defaultItem.label),
                     url: storedText(savedItem.url, defaultItem.url || ''),
                     subcategories,
                 });
@@ -2966,7 +3093,7 @@
                 if (!legacy) return defaultItem;
                 return createMainNavItem({
                     ...defaultItem,
-                    label: storedText(legacy.label, defaultItem.label),
+                    label: galleryStockNavLabel(legacy.label, defaultItem.label),
                     url: storedText(legacy.url, defaultItem.url || ''),
                 });
             });
@@ -3566,8 +3693,18 @@
         applyHeaderLogoSize();
         syncLogoUploadPreviews();
 
+        if (previewGalleryMessageBar) {
+            previewGalleryMessageBar.classList.toggle('is-sticky', state.galleryHeaderSticky === true);
+            if (!state.galleryHeaderSticky) {
+                clearGalleryStickyPreviewPin();
+            }
+            scheduleFitPreviewScale();
+            scheduleGalleryStickyPreviewPin();
+        }
+
         if (showroomHeaderGallery) {
-            showroomHeaderGallery.classList.toggle('is-sticky', state.galleryHeaderSticky === true);
+            showroomHeaderGallery.classList.remove('is-sticky', 'is-preview-stuck');
+            showroomHeaderGallery.style.removeProperty('transform');
         }
 
         const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
@@ -3755,6 +3892,7 @@
             return {
                 layout: 'gallery',
                 sticky: state.galleryHeaderSticky === true,
+                stickyScope: 'message-bar-only',
                 logoSharedWithFooter: state.footerLogoUseHeader !== false,
                 logoSizePx,
                 logoDimensions,
@@ -6513,6 +6651,7 @@
 
     const GALLERY_EDITOR_SECTIONS = new Set([
         'editor-company-info',
+        'editor-section-gallery-message-bar',
         'editor-section-header',
         'editor-section-gallery-main-nav',
         'editor-section-hero',
@@ -6548,6 +6687,7 @@
             } else {
                 block.hidden = sectionId === 'editor-section-gallery-catalog'
                     || sectionId === 'editor-section-gallery-main-nav'
+                    || sectionId === 'editor-section-gallery-message-bar'
                     || sectionId === 'editor-section-footer-classic'
                     || sectionId === 'editor-section-copyright-classic'
                     || sectionId.startsWith('editor-section-spotlight-');
@@ -6590,7 +6730,10 @@
         const editorHeaderSpotlightHint = document.getElementById('editorHeaderSpotlightHint');
         const editorHeaderClassicHint = document.getElementById('editorHeaderClassicHint');
         if (editorHeaderSpotlightHint) editorHeaderSpotlightHint.hidden = !isSpotlight;
-        if (editorHeaderClassicHint) editorHeaderClassicHint.hidden = isSpotlight;
+        if (editorHeaderClassicHint) editorHeaderClassicHint.hidden = isSpotlight || isGallery;
+
+        const editorHeaderJumpWrap = document.getElementById('editorHeaderJumpWrap');
+        if (editorHeaderJumpWrap) editorHeaderJumpWrap.hidden = isGallery;
 
         const editorHeaderLogoHint = document.getElementById('editorHeaderLogoHint');
         if (editorHeaderLogoHint) {
