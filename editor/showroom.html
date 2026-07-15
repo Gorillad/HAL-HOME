@@ -122,6 +122,7 @@
 
     <nav class="editor-section-nav" id="editorSectionNav" aria-label="Jump to editor section">
         <a href="#editor-section-header" class="editor-section-nav-link editor-section-nav-link--shared">Header</a>
+        <a href="#editor-section-gallery-main-nav" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryMainNav">Main Navigation</a>
         <a href="#editor-section-hero" class="editor-section-nav-link editor-section-nav-link--shared">Hero</a>
         <a href="#editor-section-gallery-catalog" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavGalleryCatalog">Catalog Highlights</a>
         <a href="#editor-section-footer-classic" class="editor-section-nav-link editor-section-nav-link--gallery" id="editorNavFooterClassic">Footer</a>
@@ -179,6 +180,14 @@
             </div>
 
             <div class="editor-header-gallery" id="editorHeaderGallery" hidden>
+                <div class="editor-field editor-field--toggle editor-header-jump-target" id="editor-gallery-sticky">
+                    <label class="editor-toggle" for="fieldGalleryHeaderSticky">
+                        <input type="checkbox" id="fieldGalleryHeaderSticky" name="galleryHeaderSticky">
+                        Sticky header
+                    </label>
+                    <p class="editor-field-hint">Pin the full Classic header (top bar and primary nav row) to the top while shoppers scroll.</p>
+                </div>
+
                 <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-top-bar">
                     <legend>Top bar</legend>
                     <div class="editor-field">
@@ -224,7 +233,7 @@
 
                 <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-logo">
                     <legend>Company logo</legend>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Centered below the top bar. PNG or SVG recommended.</p>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned on desktop, in line with the main navigation and search. PNG or SVG recommended.</p>
                     <div class="editor-field">
                         <label for="fieldGalleryHeaderLogo">Upload logo</label>
                         <div class="editor-upload editor-upload--logo">
@@ -234,23 +243,16 @@
                     </div>
                     <div class="editor-field">
                         <label for="fieldGalleryHeaderLogoSize">Logo size</label>
-                        <p class="editor-field-hint" style="margin:0 0 6px">Display height below the top bar. Width scales automatically.</p>
+                        <p class="editor-field-hint" style="margin:0 0 6px">Display height in the primary header row. Width scales automatically.</p>
                         <div class="editor-range-row">
-                            <input type="range" class="editor-header-logo-size" id="fieldGalleryHeaderLogoSize" min="60" max="150" step="1" value="100">
-                            <span class="editor-range-value editor-header-logo-size-val">100px</span>
+                            <input type="range" class="editor-header-logo-size" id="fieldGalleryHeaderLogoSize" min="40" max="100" step="1" value="56">
+                            <span class="editor-range-value editor-header-logo-size-val">56px</span>
                         </div>
                         <div class="editor-range-scale">
-                            <span class="editor-header-logo-size-min">60px</span>
-                            <span class="editor-header-logo-size-max">150px</span>
+                            <span class="editor-header-logo-size-min">40px</span>
+                            <span class="editor-header-logo-size-max">100px</span>
                         </div>
                     </div>
-                </fieldset>
-
-                <fieldset class="editor-fieldset editor-header-jump-target" id="editor-gallery-main-nav">
-                    <legend>Main navigation</legend>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Centered below the logo. Edit link names and URLs, or add more nav links. The search bar is fixed on the right with placeholder “Search…”.</p>
-                    <div id="galleryMainNavEditor"></div>
-                    <button type="button" class="btn btn-secondary editor-add-item-btn" id="addGalleryMainNavLinkBtn">Add nav link</button>
                 </fieldset>
             </div>
 
@@ -353,6 +355,18 @@
             </div>
                 </div>
             </details><!-- /#editor-section-header -->
+
+            <details class="editor-accordion editor-panel-section" id="editor-section-gallery-main-nav">
+                <summary class="editor-accordion-head">Main Navigation</summary>
+                <div class="editor-accordion-body">
+                    <fieldset class="editor-fieldset" id="editor-gallery-main-nav">
+                        <legend>Nav categories</legend>
+                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; nav categories sit to the left of the search bar (not centered on the page). Edit link names and URLs, or add more. Search placeholder is “Search…” and is not editable.</p>
+                        <div id="galleryMainNavEditor"></div>
+                        <button type="button" class="btn btn-secondary editor-add-item-btn" id="addGalleryMainNavLinkBtn">Add nav link</button>
+                    </fieldset>
+                </div>
+            </details><!-- /#editor-section-gallery-main-nav -->
 
             <details class="editor-accordion editor-panel-section" id="editor-section-hero">
                 <summary class="editor-accordion-head">Hero</summary>
@@ -1316,21 +1330,26 @@
                                 <nav class="showroom-gallery-top-bar-utils" id="previewGalleryTopBarUtils" aria-label="Account utilities"></nav>
                             </div>
                         </div>
-                        <div class="showroom-gallery-logo-row">
-                            <a href="/" class="showroom-gallery-logo is-empty" id="previewGalleryLogoWrap">
-                                <img id="previewGalleryLogo" alt="" hidden>
-                            </a>
-                        </div>
-                        <nav class="showroom-gallery-main-nav" id="previewGalleryMainNav" aria-label="Main navigation">
-                            <div class="showroom-gallery-main-nav-inner">
-                                <ul class="showroom-gallery-main-nav-links" id="previewGalleryMainNavLinks"></ul>
+                        <div class="showroom-gallery-primary-bar">
+                            <div class="showroom-gallery-primary-bar-inner">
+                                <a href="/" class="showroom-gallery-logo is-empty" id="previewGalleryLogoWrap">
+                                    <img id="previewGalleryLogo" alt="" hidden>
+                                </a>
+                                <nav class="showroom-gallery-main-nav" id="previewGalleryMainNav" aria-label="Main navigation">
+                                    <ul class="showroom-gallery-main-nav-links" id="previewGalleryMainNavLinks"></ul>
+                                </nav>
                                 <label class="showroom-gallery-main-nav-search">
                                     <span class="showroom-gallery-main-nav-search-label">Search</span>
                                     <input type="search" class="showroom-gallery-main-nav-search-input" placeholder="Search..." disabled aria-disabled="true">
                                     <i class="fa-solid fa-magnifying-glass showroom-gallery-main-nav-search-icon" aria-hidden="true"></i>
                                 </label>
+                                <button type="button" class="showroom-gallery-menu-toggle" aria-label="Open menu" aria-hidden="true" tabindex="-1" disabled>
+                                    <span class="showroom-gallery-menu-toggle-bar" aria-hidden="true"></span>
+                                    <span class="showroom-gallery-menu-toggle-bar" aria-hidden="true"></span>
+                                    <span class="showroom-gallery-menu-toggle-bar" aria-hidden="true"></span>
+                                </button>
                             </div>
-                        </nav>
+                        </div>
                     </div>
                     <div class="showroom-header-spotlight" id="showroomHeaderSpotlight" hidden>
                         <div class="showroom-header-banner showroom-spotlight-banner" id="previewSpotlightHeaderBanner">

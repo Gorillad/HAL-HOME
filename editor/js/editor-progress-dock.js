@@ -17,6 +17,7 @@
         ],
         gallery: [
             { id: 'editor-section-header', label: 'Header' },
+            { id: 'editor-section-gallery-main-nav', label: 'Main Navigation' },
             { id: 'editor-section-hero', label: 'Hero' },
             { id: 'editor-section-gallery-catalog', label: 'Catalog Highlights' },
             { id: 'editor-section-footer-classic', label: 'Footer' },
@@ -59,11 +60,15 @@
 
     const GALLERY_HEADER_KEYS = [
         'headerLogoImage',
+        'galleryHeaderSticky',
         'galleryHeaderBarBackgroundColor',
         'galleryHeaderBarTextColor',
         'galleryHeaderCenterCopy',
         'galleryHeaderWishlistLabel',
         'galleryHeaderSignInLabel',
+    ];
+
+    const GALLERY_MAIN_NAV_KEYS = [
         'galleryMainNavLinks',
     ];
 
@@ -128,6 +133,8 @@
                 if (design === 'gallery') return pick(state, GALLERY_HEADER_KEYS);
                 if (design === 'spotlight') return pick(state, SPOTLIGHT_HEADER_KEYS);
                 return pick(state, CLASSIC_HEADER_KEYS);
+            case 'editor-section-gallery-main-nav':
+                return pick(state, GALLERY_MAIN_NAV_KEYS);
             case 'editor-section-hero':
                 if (design === 'gallery') return pick(state, GALLERY_HERO_KEYS);
                 if (design === 'spotlight') return pick(state, SPOTLIGHT_HERO_KEYS);

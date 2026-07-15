@@ -105,7 +105,7 @@
     /** Per-template header logo height slider limits (px) — adjust min/max when tuning. */
     const HEADER_LOGO_SIZE_LIMITS = {
         classic: { min: 40, max: 80, default: 56 },
-        gallery: { min: 60, max: 150, default: 100 },
+        gallery: { min: 40, max: 100, default: 56 },
         spotlight: { min: 40, max: 80, default: 56 },
     };
     const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}header/logo-classic.png`;
@@ -462,6 +462,7 @@
         galleryHeaderBarBackgroundColorValue: document.getElementById('fieldGalleryHeaderBarBgValue'),
         galleryHeaderBarTextColor: document.getElementById('fieldGalleryHeaderBarText'),
         galleryHeaderBarTextColorValue: document.getElementById('fieldGalleryHeaderBarTextValue'),
+        galleryHeaderSticky: document.getElementById('fieldGalleryHeaderSticky'),
         galleryHeaderCenterCopy: document.getElementById('fieldGalleryHeaderCenterCopy'),
         galleryHeaderWishlistLabel: document.getElementById('fieldGalleryHeaderWishlist'),
         galleryHeaderSignInLabel: document.getElementById('fieldGalleryHeaderSignIn'),
@@ -753,6 +754,7 @@
             ?? HEADER_LOGO_SIZE_LIMITS.classic.default,
         galleryHeaderBarBackgroundColor: DEFAULT_GALLERY_HEADER_BAR_BG,
         galleryHeaderBarTextColor: DEFAULT_GALLERY_HEADER_BAR_TEXT,
+        galleryHeaderSticky: false,
         galleryHeaderCenterCopy: DEFAULT_GALLERY_HEADER_CENTER_COPY,
         galleryHeaderWishlistLabel: DEFAULT_GALLERY_HEADER_WISHLIST,
         galleryHeaderSignInLabel: DEFAULT_GALLERY_HEADER_SIGN_IN,
@@ -1766,10 +1768,10 @@
         if (templateDesign === 'gallery') {
             headerJumpNav.innerHTML = (
                 `<option value="">Choose a header area…</option>
+                <option value="#editor-gallery-sticky">Sticky header</option>
                 <option value="#editor-gallery-top-bar">Top bar</option>
                 <option value="#editor-gallery-utils">Top bar links</option>
-                <option value="#editor-gallery-logo">Company logo</option>
-                <option value="#editor-gallery-main-nav">Main navigation</option>`
+                <option value="#editor-gallery-logo">Company logo</option>`
             );
         } else {
             const navOptions = state.mainNavItems.map((category) => (
@@ -3350,6 +3352,10 @@
         applyHeaderLogoSize();
         syncLogoUploadPreviews();
 
+        if (showroomHeaderGallery) {
+            showroomHeaderGallery.classList.toggle('is-sticky', state.galleryHeaderSticky === true);
+        }
+
         const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
         const barText = normalizeHexColor(
             state.galleryHeaderBarTextColor,
@@ -3494,6 +3500,7 @@
         if (templateDesign === 'gallery') {
             return {
                 layout: 'gallery',
+                sticky: state.galleryHeaderSticky === true,
                 logoSharedWithFooter: state.footerLogoUseHeader !== false,
                 logoSizePx,
                 logoDimensions,
@@ -3519,7 +3526,7 @@
                     },
                 },
                 mainNav: {
-                    alignment: 'center',
+                    alignment: 'logo left · nav left of search · search right',
                     links: state.galleryMainNavLinks.map((link) => ({
                         label: link.label,
                         url: link.url,
@@ -5064,6 +5071,9 @@
             }
             softCascadeFromHeaderText(previousGalleryHeaderText, state.galleryHeaderBarTextColor);
         }
+        if (fields.galleryHeaderSticky) {
+            state.galleryHeaderSticky = fields.galleryHeaderSticky.checked === true;
+        }
         if (fields.galleryHeaderCenterCopy) {
             state.galleryHeaderCenterCopy = fields.galleryHeaderCenterCopy.value.trim()
                 || DEFAULT_GALLERY_HEADER_CENTER_COPY;
@@ -5157,6 +5167,7 @@
             data.galleryHeaderBarTextColor,
             DEFAULT_GALLERY_HEADER_BAR_TEXT,
         );
+        state.galleryHeaderSticky = data.galleryHeaderSticky === true;
         state.galleryHeaderCenterCopy = data.galleryHeaderCenterCopy || DEFAULT_GALLERY_HEADER_CENTER_COPY;
         state.galleryHeaderWishlistLabel = data.galleryHeaderWishlistLabel || DEFAULT_GALLERY_HEADER_WISHLIST;
         state.galleryHeaderSignInLabel = data.galleryHeaderSignInLabel || DEFAULT_GALLERY_HEADER_SIGN_IN;
@@ -5172,6 +5183,9 @@
             if (fields.galleryHeaderBarTextColorValue) {
                 setColorValueEl(fields.galleryHeaderBarTextColorValue, state.galleryHeaderBarTextColor);
             }
+        }
+        if (fields.galleryHeaderSticky) {
+            fields.galleryHeaderSticky.checked = state.galleryHeaderSticky;
         }
         if (fields.galleryHeaderCenterCopy) {
             fields.galleryHeaderCenterCopy.value = state.galleryHeaderCenterCopy;
@@ -5665,6 +5679,9 @@
     }
     if (fields.galleryHeaderBarTextColor) {
         fields.galleryHeaderBarTextColor.addEventListener('input', readForm);
+    }
+    if (fields.galleryHeaderSticky) {
+        fields.galleryHeaderSticky.addEventListener('change', readForm);
     }
     ['galleryHeaderCenterCopy', 'galleryHeaderWishlistLabel', 'galleryHeaderSignInLabel'].forEach((key) => {
         if (fields[key]) fields[key].addEventListener('input', readForm);
@@ -6202,6 +6219,7 @@
     const GALLERY_EDITOR_SECTIONS = new Set([
         'editor-company-info',
         'editor-section-header',
+        'editor-section-gallery-main-nav',
         'editor-section-hero',
         'editor-section-gallery-catalog',
         'editor-section-footer-classic',
@@ -6234,6 +6252,7 @@
                 block.hidden = !SPOTLIGHT_EDITOR_SECTIONS.has(sectionId);
             } else {
                 block.hidden = sectionId === 'editor-section-gallery-catalog'
+                    || sectionId === 'editor-section-gallery-main-nav'
                     || sectionId === 'editor-section-footer-classic'
                     || sectionId === 'editor-section-copyright-classic'
                     || sectionId.startsWith('editor-section-spotlight-');

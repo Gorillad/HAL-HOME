@@ -418,6 +418,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         const galleryNavLinks = Array.isArray(header.mainNav?.links) ? header.mainNav.links : [];
         writeSpecRows([
             ['Layout', header.layout || 'gallery'],
+            ['Sticky header', header.sticky === true
+                ? 'Yes — pin header (top bar + primary nav row) while scrolling'
+                : 'No'],
             ['Content column width', header.contentColumnWidth || '1479 px'],
             ['Top bar background', topBar.backgroundColor || '—'],
             ['Top bar text', topBar.textColor || topBar.centerCopyColor || '—'],
@@ -428,7 +431,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 ? `${header.logoSizePx} px display height · width auto`
                 : (header.logoDimensions || 'max 150 px high')],
             ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'hardcoded in template')],
-            ['Main nav alignment', header.mainNav?.alignment || 'center'],
+            ['Main nav alignment', header.mainNav?.alignment || 'logo left · nav left of search · search right'],
             ['Search bar', header.mainNav?.search?.hardcoded !== false
                 ? `Hardcoded — placeholder “${header.mainNav?.search?.placeholder || 'Search…'}”`
                 : '—'],

@@ -4,7 +4,7 @@ Classic template default images
 Paths are relative to editor/showroom.html (gallery/).
 
 Header
-  xologic-logo.png          Company logo (centered below top bar)
+  xologic-logo.png          Company logo (left, in line with main nav)
 
 Hero (500 px tall · 1479 px wide)
   quorum1.jpg               Large lifestyle image (left)
