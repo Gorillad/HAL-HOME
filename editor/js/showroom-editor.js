@@ -2591,8 +2591,8 @@
                 overlay: {
                     alignment: 'left',
                     headlineFont: "'Josefin Sans', sans-serif",
-                    headlineStyle: 'thin tall sans-serif uppercase',
-                    headlineWeight: 200,
+                    headlineStyle: 'medium tall sans-serif uppercase',
+                    headlineWeight: 500,
                     headline: [
                         resolveGalleryHeroHeadlineLine(
                             state.galleryHeroHeadlineLine1,
@@ -2618,8 +2618,8 @@
                 overlay: {
                     alignment: 'left · vertically centered',
                     headlineFont: "'Josefin Sans', sans-serif",
-                    headlineStyle: 'thin tall sans-serif uppercase',
-                    headlineWeight: 200,
+                    headlineStyle: 'medium tall sans-serif uppercase',
+                    headlineWeight: 500,
                     heading: state.galleryHeroSecondaryTopHeading || '',
                     textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     url: state.galleryHeroSecondaryTopUrl || '',
@@ -2631,8 +2631,8 @@
                 overlay: {
                     alignment: 'left · vertically centered',
                     headlineFont: "'Josefin Sans', sans-serif",
-                    headlineStyle: 'thin tall sans-serif uppercase',
-                    headlineWeight: 200,
+                    headlineStyle: 'medium tall sans-serif uppercase',
+                    headlineWeight: 500,
                     heading: state.galleryHeroSecondaryBottomHeading || '',
                     textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     url: state.galleryHeroSecondaryBottomUrl || '',

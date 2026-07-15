@@ -1853,7 +1853,7 @@
     display: block;
     font-family: var(--font-gallery-hero-headline);
     font-size: 52px;
-    font-weight: 200;
+    font-weight: 500;
     line-height: 1.05;
     letter-spacing: 0.12em;
     color: #ffffff;
@@ -1865,7 +1865,9 @@
 .showroom-gallery-hero-primary-copy {
     margin: 18px 0 22px;
     max-width: 30ch;
+    font-family: var(--font-body);
     font-size: 15px;
+    font-weight: 600;
     line-height: 1.55;
     color: #ffffff;
     text-align: left;
@@ -1934,7 +1936,7 @@
     margin: 0;
     font-family: var(--font-gallery-hero-headline);
     font-size: 34px;
-    font-weight: 200;
+    font-weight: 500;
     line-height: 1.05;
     letter-spacing: 0.12em;
     color: #ffffff;
