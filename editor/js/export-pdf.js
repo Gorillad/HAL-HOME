@@ -420,6 +420,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Layout', header.layout || 'gallery'],
             ['Content column width', header.contentColumnWidth || '1479 px'],
             ['Top bar background', topBar.backgroundColor || '—'],
+            ['Top bar text', topBar.textColor || topBar.centerCopyColor || '—'],
             ['Center copy', topBar.centerCopy || '—'],
             ['Wishlist', pdfLinkLine(utilities.wishlist?.label, utilities.wishlist?.url)],
             ['Sign in', pdfLinkLine(utilities.signIn?.label, utilities.signIn?.url)],
@@ -604,6 +605,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['CTA button background', spec.heroCtaBackgroundColor || spec.copyBackgroundColor || '#44301f'],
             ['CTA button text', spec.heroCtaTextColor || '#ffffff'],
             ['Copy background', spec.copyBackgroundColor],
+            ['Copy text', spec.copyTextColor || '—'],
             ['Hero images in handoff', 'No — upload separately'],
             ['Product image size', spec.productImageSize || '563 × 342 px'],
             ['Lifestyle image size', spec.lifestyleImageSize || '854 × 670 px min'],
@@ -1098,6 +1100,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 ctaBackgroundColor: spec.heroCtaBackgroundColor || '',
                 ctaTextColor: spec.heroCtaTextColor || '#ffffff',
                 backgroundColor: spec.copyBackgroundColor || '',
+                textColor: spec.copyTextColor || '',
             },
             header: {
                 layout: header.layout || 'classic',

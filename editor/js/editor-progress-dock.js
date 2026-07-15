@@ -48,6 +48,7 @@
         'description',
         'cta',
         'copyBackgroundColor',
+        'copyTextColor',
         'heroCtaBackgroundColor',
         'heroCtaTextColor',
         'heroCtaVisible',
@@ -59,6 +60,7 @@
     const GALLERY_HEADER_KEYS = [
         'headerLogoImage',
         'galleryHeaderBarBackgroundColor',
+        'galleryHeaderBarTextColor',
         'galleryHeaderCenterCopy',
         'galleryHeaderWishlistLabel',
         'galleryHeaderSignInLabel',

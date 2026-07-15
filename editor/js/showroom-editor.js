@@ -89,6 +89,7 @@
     const DEFAULT_HEADER_BANNER_BG = '#000000';
     const DEFAULT_HEADER_BANNER_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HEADER_BAR_BG = '#525962';
+    const DEFAULT_GALLERY_HEADER_BAR_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HEADER_CENTER_COPY = 'For pricing and orders call 123-456-7891';
     const DEFAULT_GALLERY_HEADER_WISHLIST = 'Wishlist';
     const DEFAULT_GALLERY_HEADER_SIGN_IN = 'Please sign in';
@@ -415,6 +416,8 @@
         title: document.getElementById('fieldTitle'),
         copyBackgroundColor: document.getElementById('fieldCopyBg'),
         copyBackgroundColorValue: document.getElementById('fieldCopyBgValue'),
+        copyTextColor: document.getElementById('fieldCopyText'),
+        copyTextColorValue: document.getElementById('fieldCopyTextValue'),
         description: document.getElementById('fieldDescription'),
         cta: document.getElementById('fieldCta'),
         heroCtaHide: document.getElementById('fieldHeroCtaHide'),
@@ -457,6 +460,8 @@
         galleryHeaderLogo: document.getElementById('fieldGalleryHeaderLogo'),
         galleryHeaderBarBackgroundColor: document.getElementById('fieldGalleryHeaderBarBg'),
         galleryHeaderBarBackgroundColorValue: document.getElementById('fieldGalleryHeaderBarBgValue'),
+        galleryHeaderBarTextColor: document.getElementById('fieldGalleryHeaderBarText'),
+        galleryHeaderBarTextColorValue: document.getElementById('fieldGalleryHeaderBarTextValue'),
         galleryHeaderCenterCopy: document.getElementById('fieldGalleryHeaderCenterCopy'),
         galleryHeaderWishlistLabel: document.getElementById('fieldGalleryHeaderWishlist'),
         galleryHeaderSignInLabel: document.getElementById('fieldGalleryHeaderSignIn'),
@@ -698,6 +703,7 @@
     let state = {
         title: '',
         copyBackgroundColor: DEFAULT_COPY_BG,
+        copyTextColor: DEFAULT_HEADER_BANNER_TEXT,
         description: '',
         cta: '',
         heroCtaBackgroundColor: DEFAULT_HERO_CTA_BG,
@@ -746,6 +752,7 @@
         headerLogoSize: HEADER_LOGO_SIZE_LIMITS[templateDesign]?.default
             ?? HEADER_LOGO_SIZE_LIMITS.classic.default,
         galleryHeaderBarBackgroundColor: DEFAULT_GALLERY_HEADER_BAR_BG,
+        galleryHeaderBarTextColor: DEFAULT_GALLERY_HEADER_BAR_TEXT,
         galleryHeaderCenterCopy: DEFAULT_GALLERY_HEADER_CENTER_COPY,
         galleryHeaderWishlistLabel: DEFAULT_GALLERY_HEADER_WISHLIST,
         galleryHeaderSignInLabel: DEFAULT_GALLERY_HEADER_SIGN_IN,
@@ -929,6 +936,37 @@
         if (!color) return fallback;
         const value = color.trim().toLowerCase();
         return /^#[0-9a-f]{6}$/.test(value) ? value : fallback;
+    }
+
+    function hexWithAlpha(hex, alpha) {
+        const value = normalizeHexColor(hex, '#ffffff').slice(1);
+        const r = parseInt(value.slice(0, 2), 16);
+        const g = parseInt(value.slice(2, 4), 16);
+        const b = parseInt(value.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function softCascadeFromHeaderText(previousHeaderText, nextHeaderText) {
+        const prev = normalizeHexColor(previousHeaderText, '');
+        const next = normalizeHexColor(nextHeaderText, DEFAULT_HEADER_BANNER_TEXT);
+        if (!prev || prev === next) return;
+
+        function maybeCascade(stateKey, fieldKey) {
+            if (normalizeHexColor(state[stateKey], '') !== prev) return;
+            state[stateKey] = next;
+            if (fields[fieldKey]) {
+                fields[fieldKey].value = next;
+                if (fields[`${fieldKey}Value`]) {
+                    fields[`${fieldKey}Value`].textContent = next;
+                }
+            }
+        }
+
+        maybeCascade('copyTextColor', 'copyTextColor');
+        maybeCascade('heroCtaTextColor', 'heroCtaTextColor');
+        maybeCascade('galleryHeroButtonTextColor', 'galleryHeroButtonTextColor');
+        maybeCascade('aboutButtonTextColor', 'aboutButtonTextColor');
+        maybeCascade('featureButtonTextColor', 'featureButtonTextColor');
     }
 
     function darkenHex(hex, factor = 0.72) {
@@ -2375,15 +2413,18 @@
             preview.cta.textContent = state.cta || 'Explore collection';
 
             const copyBg = normalizeHex(state.copyBackgroundColor);
+            const copyText = normalizeHexColor(state.copyTextColor, DEFAULT_HEADER_BANNER_TEXT);
             const isCrystalPreview = state.previewTheme === 'dark' && templateDesign === 'classic';
             if (isCrystalPreview) {
                 preview.copy.style.background = '';
                 preview.copy.style.backgroundColor = '';
+                preview.copy.style.color = '';
                 preview.cta.style.background = '';
                 preview.cta.style.backgroundColor = '';
                 preview.cta.style.color = '';
             } else {
                 preview.copy.style.backgroundColor = copyBg;
+                preview.copy.style.color = copyText;
                 preview.cta.style.backgroundColor = normalizeHexColor(
                     state.heroCtaBackgroundColor,
                     darkenHex(copyBg),
@@ -3269,17 +3310,28 @@
         syncLogoUploadPreviews();
 
         const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
+        const barText = normalizeHexColor(
+            state.galleryHeaderBarTextColor,
+            DEFAULT_GALLERY_HEADER_BAR_TEXT,
+        );
         if (previewGalleryTopBar) {
             if (isGalleryDarkPreview()) {
                 previewGalleryTopBar.style.backgroundColor = '';
+                previewGalleryTopBar.style.color = '';
             } else {
                 previewGalleryTopBar.style.backgroundColor = barBg;
+                previewGalleryTopBar.style.color = barText;
             }
         }
 
         if (previewGalleryTopBarCopy) {
             previewGalleryTopBarCopy.textContent = state.galleryHeaderCenterCopy
                 || DEFAULT_GALLERY_HEADER_CENTER_COPY;
+            if (!isGalleryDarkPreview()) {
+                previewGalleryTopBarCopy.style.color = barText;
+            } else {
+                previewGalleryTopBarCopy.style.color = '';
+            }
         }
 
         if (previewGalleryTopBarUtils) {
@@ -3290,6 +3342,14 @@
                 + '<span class="showroom-gallery-top-bar-sep" aria-hidden="true">|</span>'
                 + `<a href="/sign-in">${signIn}</a>`
             );
+            if (!isGalleryDarkPreview()) {
+                previewGalleryTopBarUtils.querySelectorAll('a').forEach((link) => {
+                    link.style.color = barText;
+                });
+                previewGalleryTopBarUtils.querySelectorAll('.showroom-gallery-top-bar-sep').forEach((sep) => {
+                    sep.style.color = hexWithAlpha(barText, 0.72);
+                });
+            }
         }
 
         if (previewGalleryMainNavLinks) {
@@ -3400,8 +3460,9 @@
                 contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
                 topBar: {
                     backgroundColor: state.galleryHeaderBarBackgroundColor,
+                    textColor: state.galleryHeaderBarTextColor || DEFAULT_GALLERY_HEADER_BAR_TEXT,
                     centerCopyBackground: 'transparent',
-                    centerCopyColor: '#ffffff',
+                    centerCopyColor: state.galleryHeaderBarTextColor || DEFAULT_GALLERY_HEADER_BAR_TEXT,
                     centerCopy: state.galleryHeaderCenterCopy,
                     utilities: {
                         alignment: 'right',
@@ -4734,6 +4795,16 @@
         if (fields.copyBackgroundColorValue) {
             fields.copyBackgroundColorValue.textContent = state.copyBackgroundColor;
         }
+        if (fields.copyTextColor) {
+            state.copyTextColor = normalizeHexColor(
+                fields.copyTextColor.value,
+                DEFAULT_HEADER_BANNER_TEXT,
+            );
+            fields.copyTextColor.value = state.copyTextColor;
+            if (fields.copyTextColorValue) {
+                fields.copyTextColorValue.textContent = state.copyTextColor;
+            }
+        }
         state.description = fields.description.value.trim();
         state.cta = fields.cta.value.trim();
         if (fields.heroCtaHide) {
@@ -4920,6 +4991,7 @@
             }
         }
         if (fields.headerBannerTextColor) {
+            const previousHeaderText = state.headerBannerTextColor;
             state.headerBannerTextColor = normalizeHexColor(
                 fields.headerBannerTextColor.value,
                 DEFAULT_HEADER_BANNER_TEXT,
@@ -4928,6 +5000,7 @@
             if (fields.headerBannerTextColorValue) {
                 fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
             }
+            softCascadeFromHeaderText(previousHeaderText, state.headerBannerTextColor);
         }
         if (fields.galleryHeaderBarBackgroundColor) {
             state.galleryHeaderBarBackgroundColor = normalizeHex(
@@ -4937,6 +5010,18 @@
             if (fields.galleryHeaderBarBackgroundColorValue) {
                 fields.galleryHeaderBarBackgroundColorValue.textContent = state.galleryHeaderBarBackgroundColor;
             }
+        }
+        if (fields.galleryHeaderBarTextColor) {
+            const previousGalleryHeaderText = state.galleryHeaderBarTextColor;
+            state.galleryHeaderBarTextColor = normalizeHexColor(
+                fields.galleryHeaderBarTextColor.value,
+                DEFAULT_GALLERY_HEADER_BAR_TEXT,
+            );
+            fields.galleryHeaderBarTextColor.value = state.galleryHeaderBarTextColor;
+            if (fields.galleryHeaderBarTextColorValue) {
+                fields.galleryHeaderBarTextColorValue.textContent = state.galleryHeaderBarTextColor;
+            }
+            softCascadeFromHeaderText(previousGalleryHeaderText, state.galleryHeaderBarTextColor);
         }
         if (fields.galleryHeaderCenterCopy) {
             state.galleryHeaderCenterCopy = fields.galleryHeaderCenterCopy.value.trim()
@@ -5027,6 +5112,10 @@
         state.galleryHeaderBarBackgroundColor = normalizeHex(
             data.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG,
         );
+        state.galleryHeaderBarTextColor = normalizeHexColor(
+            data.galleryHeaderBarTextColor,
+            DEFAULT_GALLERY_HEADER_BAR_TEXT,
+        );
         state.galleryHeaderCenterCopy = data.galleryHeaderCenterCopy || DEFAULT_GALLERY_HEADER_CENTER_COPY;
         state.galleryHeaderWishlistLabel = data.galleryHeaderWishlistLabel || DEFAULT_GALLERY_HEADER_WISHLIST;
         state.galleryHeaderSignInLabel = data.galleryHeaderSignInLabel || DEFAULT_GALLERY_HEADER_SIGN_IN;
@@ -5035,6 +5124,12 @@
             fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
             if (fields.galleryHeaderBarBackgroundColorValue) {
                 fields.galleryHeaderBarBackgroundColorValue.textContent = state.galleryHeaderBarBackgroundColor;
+            }
+        }
+        if (fields.galleryHeaderBarTextColor) {
+            fields.galleryHeaderBarTextColor.value = state.galleryHeaderBarTextColor;
+            if (fields.galleryHeaderBarTextColorValue) {
+                fields.galleryHeaderBarTextColorValue.textContent = state.galleryHeaderBarTextColor;
             }
         }
         if (fields.galleryHeaderCenterCopy) {
@@ -5241,13 +5336,26 @@
         if (fields.copyBackgroundColorValue) {
             fields.copyBackgroundColorValue.textContent = state.copyBackgroundColor;
         }
+        const headerTextFallback = templateDesign === 'gallery'
+            ? normalizeHexColor(data.galleryHeaderBarTextColor, DEFAULT_GALLERY_HEADER_BAR_TEXT)
+            : normalizeHexColor(data.headerBannerTextColor, DEFAULT_HEADER_BANNER_TEXT);
+        state.copyTextColor = normalizeHexColor(data.copyTextColor, headerTextFallback);
+        if (fields.copyTextColor) {
+            fields.copyTextColor.value = state.copyTextColor;
+            if (fields.copyTextColorValue) {
+                fields.copyTextColorValue.textContent = state.copyTextColor;
+            }
+        }
         fields.description.value = data.description || '';
         fields.cta.value = data.cta || '';
         state.heroCtaBackgroundColor = normalizeHexColor(
             data.heroCtaBackgroundColor,
             darkenHex(state.copyBackgroundColor),
         );
-        state.heroCtaTextColor = normalizeHexColor(data.heroCtaTextColor, DEFAULT_HERO_CTA_TEXT);
+        state.heroCtaTextColor = normalizeHexColor(
+            data.heroCtaTextColor,
+            headerTextFallback || DEFAULT_HERO_CTA_TEXT,
+        );
         state.heroCtaVisible = data.heroCtaVisible !== false;
         if (fields.heroCtaHide) {
             fields.heroCtaHide.checked = !state.heroCtaVisible;
@@ -5336,6 +5444,9 @@
     });
 
     fields.copyBackgroundColor.addEventListener('input', readForm);
+    if (fields.copyTextColor) {
+        fields.copyTextColor.addEventListener('input', readForm);
+    }
 
     if (fields.heroCtaHide) {
         fields.heroCtaHide.addEventListener('change', readForm);
@@ -5453,6 +5564,9 @@
     }
     if (fields.galleryHeaderBarBackgroundColor) {
         fields.galleryHeaderBarBackgroundColor.addEventListener('input', readForm);
+    }
+    if (fields.galleryHeaderBarTextColor) {
+        fields.galleryHeaderBarTextColor.addEventListener('input', readForm);
     }
     ['galleryHeaderCenterCopy', 'galleryHeaderWishlistLabel', 'galleryHeaderSignInLabel'].forEach((key) => {
         if (fields[key]) fields[key].addEventListener('input', readForm);
@@ -5744,6 +5858,7 @@
                     heroCtaTextColor: state.heroCtaTextColor,
                     heroCtaVisible: state.heroCtaVisible,
                     copyBackgroundColor: state.copyBackgroundColor,
+                    copyTextColor: state.copyTextColor,
                     productImageSize: '563 × 342 px',
                     lifestyleImageSize: '854 × 670 px min',
                     shopAllUrl: state.shopAllUrl,
