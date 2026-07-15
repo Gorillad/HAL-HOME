@@ -133,13 +133,14 @@
             display: none;
         }
 
-        /* Color pair input (swatch + hex) */
+        /* Color pair input (hex first, then swatch) */
         .editor-color-pair {
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .editor-color-pair input[type="color"] {
+            order: 2;
             width: 36px;
             height: 36px;
             border: 1px solid var(--editor-border, #2a2a2a);
@@ -149,7 +150,12 @@
             cursor: pointer;
             flex-shrink: 0;
         }
-        .editor-color-pair .editor-field-input { flex: 1; font-family: monospace; }
+        .editor-color-pair .editor-color-hex,
+        .editor-color-pair .editor-field-input.editor-color-hex {
+            order: 1;
+            flex: 1;
+            font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+        }
 
         /* Iframe preview */
         .designer-iframe-wrap {
@@ -747,22 +753,22 @@
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-blue">Primary blue (buttons &amp; links)</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-blue" data-field="colorBlue" value="#004fa3">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorBlue" value="#004fa3" maxlength="7" aria-label="Primary blue hex">
+                                <input type="color" id="df-color-blue" data-field="colorBlue" value="#004fa3">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-navy">Main nav background</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-navy" data-field="colorNavy" value="#0d2137">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorNavy" value="#0d2137" maxlength="7" aria-label="Navy hex">
+                                <input type="color" id="df-color-navy" data-field="colorNavy" value="#0d2137">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-navy-dark">Top bar background</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-navy-dark" data-field="colorNavyDark" value="#081525">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorNavyDark" value="#081525" maxlength="7" aria-label="Dark top bar hex">
+                                <input type="color" id="df-color-navy-dark" data-field="colorNavyDark" value="#081525">
                             </div>
                         </div>
 
@@ -771,29 +777,29 @@
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-topbar-text">Top bar text</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-topbar-text" data-field="colorTopbarText" value="#ffffff">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorTopbarText" value="#ffffff" maxlength="7" aria-label="Top bar text hex">
+                                <input type="color" id="df-color-topbar-text" data-field="colorTopbarText" value="#ffffff">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-subnav-text">Sub-nav links</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-subnav-text" data-field="colorSubnavText" value="#0d2137">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorSubnavText" value="#0d2137" maxlength="7" aria-label="Sub-nav text hex">
+                                <input type="color" id="df-color-subnav-text" data-field="colorSubnavText" value="#0d2137">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-mega-head">Mega menu headings</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-mega-head" data-field="colorMegaHead" value="#0d2137">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorMegaHead" value="#0d2137" maxlength="7" aria-label="Mega menu heading hex">
+                                <input type="color" id="df-color-mega-head" data-field="colorMegaHead" value="#0d2137">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-color-mega-link">Mega menu links</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-color-mega-link" data-field="colorMegaLink" value="#4a5568">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="colorMegaLink" value="#4a5568" maxlength="7" aria-label="Mega menu link hex">
+                                <input type="color" id="df-color-mega-link" data-field="colorMegaLink" value="#4a5568">
                             </div>
                         </div>
 
@@ -1363,8 +1369,8 @@
                         <div class="editor-field">
                             <label class="editor-field-label" for="df-cta-bg">Band background color</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="df-cta-bg" data-field="ctaBgColor" value="#004fa3">
                                 <input type="text" class="editor-color-hex editor-field-input" data-field-hex="ctaBgColor" value="#004fa3" maxlength="7" aria-label="CTA band background hex">
+                                <input type="color" id="df-cta-bg" data-field="ctaBgColor" value="#004fa3">
                             </div>
                         </div>
                     </div>
@@ -1748,29 +1754,29 @@
                         <div class="editor-field">
                             <label class="editor-field-label">Primary gold</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-gold" data-avalon-color="colorGold" value="#c9a96e">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorGold" value="#c9a96e" maxlength="7" aria-label="Primary gold hex">
+                                <input type="color" id="sf-color-gold" data-avalon-color="colorGold" value="#c9a96e">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Light gold</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-gold-light" data-avalon-color="colorGoldLight" value="#e0c992">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorGoldLight" value="#e0c992" maxlength="7" aria-label="Light gold hex">
+                                <input type="color" id="sf-color-gold-light" data-avalon-color="colorGoldLight" value="#e0c992">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Dark gold</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-gold-dark" data-avalon-color="colorGoldDark" value="#9a7d4a">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorGoldDark" value="#9a7d4a" maxlength="7" aria-label="Dark gold hex">
+                                <input type="color" id="sf-color-gold-dark" data-avalon-color="colorGoldDark" value="#9a7d4a">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Navy</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-navy" data-avalon-color="colorNavy" value="#242741">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorNavy" value="#242741" maxlength="7" aria-label="Navy hex">
+                                <input type="color" id="sf-color-navy" data-avalon-color="colorNavy" value="#242741">
                             </div>
                         </div>
                     </div>
@@ -1783,22 +1789,22 @@
                         <div class="editor-field">
                             <label class="editor-field-label">Button text</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-btn-text" data-avalon-color="colorButtonText" value="#12100e">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorButtonText" value="#12100e" maxlength="7" aria-label="Button text hex">
+                                <input type="color" id="sf-color-btn-text" data-avalon-color="colorButtonText" value="#12100e">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Button hover fill</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-btn-hover-bg" data-avalon-color="colorButtonHoverBg" value="#e0c992">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorButtonHoverBg" value="#e0c992" maxlength="7" aria-label="Button hover fill hex">
+                                <input type="color" id="sf-color-btn-hover-bg" data-avalon-color="colorButtonHoverBg" value="#e0c992">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Button hover text</label>
                             <div class="editor-color-pair">
-                                <input type="color" id="sf-color-btn-hover-text" data-avalon-color="colorButtonHoverText" value="#12100e">
                                 <input type="text" class="editor-color-hex editor-field-input" data-avalon-color-hex="colorButtonHoverText" value="#12100e" maxlength="7" aria-label="Button hover text hex">
+                                <input type="color" id="sf-color-btn-hover-text" data-avalon-color="colorButtonHoverText" value="#12100e">
                             </div>
                         </div>
                     </div>
@@ -2865,36 +2871,36 @@
                         <div class="editor-field">
                             <label class="editor-field-label">Primary</label>
                             <div class="editor-color-pair">
-                                <input type="color" data-cardiff-color="colorPrimary" value="#c76469">
                                 <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorPrimary" value="#c76469" maxlength="7">
+                                <input type="color" data-cardiff-color="colorPrimary" value="#c76469">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Secondary</label>
                             <div class="editor-color-pair">
-                                <input type="color" data-cardiff-color="colorSecondary" value="#c79a64">
                                 <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorSecondary" value="#c79a64" maxlength="7">
+                                <input type="color" data-cardiff-color="colorSecondary" value="#c79a64">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Accent</label>
                             <div class="editor-color-pair">
-                                <input type="color" data-cardiff-color="colorAccent" value="#64c7c2">
                                 <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorAccent" value="#64c7c2" maxlength="7">
+                                <input type="color" data-cardiff-color="colorAccent" value="#64c7c2">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Background</label>
                             <div class="editor-color-pair">
-                                <input type="color" data-cardiff-color="colorBg" value="#f4e9e8">
                                 <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorBg" value="#f4e9e8" maxlength="7">
+                                <input type="color" data-cardiff-color="colorBg" value="#f4e9e8">
                             </div>
                         </div>
                         <div class="editor-field">
                             <label class="editor-field-label">Text</label>
                             <div class="editor-color-pair">
-                                <input type="color" data-cardiff-color="colorText" value="#2f2a2a">
                                 <input type="text" class="editor-color-hex editor-field-input" data-cardiff-color-hex="colorText" value="#2f2a2a" maxlength="7">
+                                <input type="color" data-cardiff-color="colorText" value="#2f2a2a">
                             </div>
                         </div>
                     </div>

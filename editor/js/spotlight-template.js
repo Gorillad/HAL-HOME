@@ -3,6 +3,13 @@
  * Loaded before showroom-editor.js; integrated when ?design=spotlight.
  */
 window.SpotlightEditor = (function createSpotlightEditorModule() {
+    function setColorValueEl(el, hex) {
+        if (!el) return;
+        const value = String(hex || '');
+        if (el.tagName === 'INPUT') el.value = value;
+        else el.textContent = value;
+    }
+
     const IMAGE_DIR = 'Spotlight/';
     const DEFAULT_HEADER_LOGO = `${IMAGE_DIR}xologic-logo.png`;
     const DEFAULT_HEADER_BANNER_BG = '#254155';
@@ -1131,25 +1138,25 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
         if (refs.fieldSpotlightFooterBackgroundColor) {
             refs.fieldSpotlightFooterBackgroundColor.value = bg;
             if (refs.fieldSpotlightFooterBackgroundColorValue) {
-                refs.fieldSpotlightFooterBackgroundColorValue.textContent = bg;
+                setColorValueEl(refs.fieldSpotlightFooterBackgroundColorValue, bg);
             }
         }
         if (refs.fieldSpotlightFooterTextColor) {
             refs.fieldSpotlightFooterTextColor.value = text;
             if (refs.fieldSpotlightFooterTextColorValue) {
-                refs.fieldSpotlightFooterTextColorValue.textContent = text;
+                setColorValueEl(refs.fieldSpotlightFooterTextColorValue, text);
             }
         }
         if (refs.fieldSpotlightFooterCopyrightBackgroundColor) {
             refs.fieldSpotlightFooterCopyrightBackgroundColor.value = copyrightBg;
             if (refs.fieldSpotlightFooterCopyrightBackgroundColorValue) {
-                refs.fieldSpotlightFooterCopyrightBackgroundColorValue.textContent = copyrightBg;
+                setColorValueEl(refs.fieldSpotlightFooterCopyrightBackgroundColorValue, copyrightBg);
             }
         }
         if (refs.fieldSpotlightFooterCopyrightTextColor) {
             refs.fieldSpotlightFooterCopyrightTextColor.value = copyrightText;
             if (refs.fieldSpotlightFooterCopyrightTextColorValue) {
-                refs.fieldSpotlightFooterCopyrightTextColorValue.textContent = copyrightText;
+                setColorValueEl(refs.fieldSpotlightFooterCopyrightTextColorValue, copyrightText);
             }
         }
     }

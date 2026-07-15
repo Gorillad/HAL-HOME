@@ -1185,12 +1185,38 @@
         scheduleSave();
     }
 
+    function parseFlexibleHex(color, fallback) {
+        if (color == null) return fallback;
+        var value = String(color).trim().toLowerCase();
+        if (!value) return fallback;
+        var rgbMatch = value.match(/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})/i);
+        if (rgbMatch) {
+            var channels = rgbMatch.slice(1, 4).map(function (n) {
+                var num = Math.max(0, Math.min(255, parseInt(n, 10)));
+                return num.toString(16).padStart(2, '0');
+            });
+            return '#' + channels.join('');
+        }
+        if (value.charAt(0) === '#') value = value.slice(1);
+        value = value.replace(/[^0-9a-f]/g, '');
+        if (value.length === 3) {
+            value = value.split('').map(function (ch) { return ch + ch; }).join('');
+        } else if (value.length >= 8) {
+            value = value.slice(0, 6);
+        } else if (value.length > 6) {
+            value = value.slice(0, 6);
+        }
+        if (value.length !== 6 || !/^[0-9a-f]{6}$/.test(value)) return fallback;
+        return '#' + value;
+    }
+
     function onHexChange(e) {
         var hexInput = e.target;
         var key = hexInput.dataset.fieldHex;
         if (!key) return;
-        var val = hexInput.value.trim();
-        if (!/^#[0-9a-fA-F]{6}$/.test(val)) return;
+        var val = parseFlexibleHex(hexInput.value, null);
+        if (!val) return;
+        hexInput.value = val;
         var colorInput = document.querySelector('[data-field="' + key + '"][type="color"]');
         if (colorInput) colorInput.value = val;
         draft[key] = val;
@@ -1202,9 +1228,25 @@
         var panel = document.getElementById('woolFieldPanel');
         if (!panel) return;
         panel.addEventListener('input', onFieldChange);
-        // Hex inputs fire on blur for better UX
+        // Hex inputs: paste-friendly + change commit
         panel.querySelectorAll('[data-field-hex]').forEach(function (el) {
+            el.removeAttribute('maxlength');
+            el.setAttribute('placeholder', '#RRGGBB');
+            el.addEventListener('paste', function (event) {
+                event.preventDefault();
+                var pasted = (event.clipboardData || window.clipboardData)
+                    ? (event.clipboardData || window.clipboardData).getData('text')
+                    : '';
+                var val = parseFlexibleHex(pasted, null);
+                if (!val) return;
+                el.value = val;
+                onHexChange({ target: el });
+            });
             el.addEventListener('change', onHexChange);
+            el.addEventListener('input', function () {
+                var val = parseFlexibleHex(el.value, null);
+                if (val) onHexChange({ target: el });
+            });
         });
         // Phone auto-format: XXX-XXX-XXXX  or  1-XXX-XXX-XXXX
         var phoneInput = document.getElementById('df-phone');

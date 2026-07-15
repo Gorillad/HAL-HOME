@@ -926,16 +926,57 @@
         return merged;
     }
 
+
+    function setColorValueEl(el, hex) {
+        if (!el) return;
+        const value = String(hex || '');
+        if (el.tagName === 'INPUT') el.value = value;
+        else el.textContent = value;
+    }
+
+    /**
+     * Accept common paste formats and always return #rrggbb (or fallback):
+     * #rgb, #rrggbb, #rrggbbaa, rgb/rrggbb without #, with spaces.
+     */
+    function parseFlexibleHex(color, fallback) {
+        if (color == null) return fallback;
+        let value = String(color).trim().toLowerCase();
+        if (!value) return fallback;
+
+        // rgb(r, g, b) / rgba(r, g, b, a)
+        const rgbMatch = value.match(/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})/i);
+        if (rgbMatch) {
+            const channels = rgbMatch.slice(1, 4).map((n) => {
+                const num = Math.max(0, Math.min(255, parseInt(n, 10)));
+                return num.toString(16).padStart(2, '0');
+            });
+            return `#${channels.join('')}`;
+        }
+
+        if (value.startsWith('#')) value = value.slice(1);
+        value = value.replace(/[^0-9a-f]/g, '');
+
+        if (value.length === 3) {
+            value = value.split('').map((ch) => ch + ch).join('');
+        } else if (value.length === 8) {
+            // Strip alpha from #rrggbbaa pastes
+            value = value.slice(0, 6);
+        } else if (value.length > 6) {
+            value = value.slice(0, 6);
+        }
+
+        if (value.length !== 6 || !/^[0-9a-f]{6}$/.test(value)) {
+            return fallback;
+        }
+        return `#${value}`;
+    }
+
     function normalizeHex(color) {
-        if (!color) return DEFAULT_COPY_BG;
-        const value = color.trim().toLowerCase();
-        return /^#[0-9a-f]{6}$/.test(value) ? value : DEFAULT_COPY_BG;
+        return parseFlexibleHex(color, DEFAULT_COPY_BG);
     }
 
     function normalizeHexColor(color, fallback) {
-        if (!color) return fallback;
-        const value = color.trim().toLowerCase();
-        return /^#[0-9a-f]{6}$/.test(value) ? value : fallback;
+        return parseFlexibleHex(color, fallback);
     }
 
     function hexWithAlpha(hex, alpha) {
@@ -957,7 +998,7 @@
             if (fields[fieldKey]) {
                 fields[fieldKey].value = next;
                 if (fields[`${fieldKey}Value`]) {
-                    fields[`${fieldKey}Value`].textContent = next;
+                    setColorValueEl(fields[`${fieldKey}Value`], next);
                 }
             }
         }
@@ -2059,13 +2100,13 @@
         if (fields.galleryHeroButtonBackgroundColor) {
             fields.galleryHeroButtonBackgroundColor.value = buttonBg;
             if (fields.galleryHeroButtonBackgroundColorValue) {
-                fields.galleryHeroButtonBackgroundColorValue.textContent = buttonBg;
+                setColorValueEl(fields.galleryHeroButtonBackgroundColorValue, buttonBg);
             }
         }
         if (fields.galleryHeroButtonTextColor) {
             fields.galleryHeroButtonTextColor.value = buttonText;
             if (fields.galleryHeroButtonTextColorValue) {
-                fields.galleryHeroButtonTextColorValue.textContent = buttonText;
+                setColorValueEl(fields.galleryHeroButtonTextColorValue, buttonText);
             }
         }
 
@@ -3803,13 +3844,13 @@
         if (fields.classicFooterBackgroundColor) {
             fields.classicFooterBackgroundColor.value = bg;
             if (fields.classicFooterBackgroundColorValue) {
-                fields.classicFooterBackgroundColorValue.textContent = bg;
+                setColorValueEl(fields.classicFooterBackgroundColorValue, bg);
             }
         }
         if (fields.classicFooterTextColor) {
             fields.classicFooterTextColor.value = text;
             if (fields.classicFooterTextColorValue) {
-                fields.classicFooterTextColorValue.textContent = text;
+                setColorValueEl(fields.classicFooterTextColorValue, text);
             }
         }
     }
@@ -3839,13 +3880,13 @@
         if (fields.classicFooterCopyrightTextColor) {
             fields.classicFooterCopyrightTextColor.value = copyrightText;
             if (fields.classicFooterCopyrightTextColorValue) {
-                fields.classicFooterCopyrightTextColorValue.textContent = copyrightText;
+                setColorValueEl(fields.classicFooterCopyrightTextColorValue, copyrightText);
             }
         }
         if (fields.classicFooterCopyrightBackgroundColor) {
             fields.classicFooterCopyrightBackgroundColor.value = copyrightBg;
             if (fields.classicFooterCopyrightBackgroundColorValue) {
-                fields.classicFooterCopyrightBackgroundColorValue.textContent = copyrightBg;
+                setColorValueEl(fields.classicFooterCopyrightBackgroundColorValue, copyrightBg);
             }
         }
     }
@@ -4793,7 +4834,7 @@
         state.copyBackgroundColor = normalizeHex(fields.copyBackgroundColor.value);
         fields.copyBackgroundColor.value = state.copyBackgroundColor;
         if (fields.copyBackgroundColorValue) {
-            fields.copyBackgroundColorValue.textContent = state.copyBackgroundColor;
+            setColorValueEl(fields.copyBackgroundColorValue, state.copyBackgroundColor);
         }
         if (fields.copyTextColor) {
             state.copyTextColor = normalizeHexColor(
@@ -4802,7 +4843,7 @@
             );
             fields.copyTextColor.value = state.copyTextColor;
             if (fields.copyTextColorValue) {
-                fields.copyTextColorValue.textContent = state.copyTextColor;
+                setColorValueEl(fields.copyTextColorValue, state.copyTextColor);
             }
         }
         state.description = fields.description.value.trim();
@@ -4817,7 +4858,7 @@
             );
             fields.heroCtaBackgroundColor.value = state.heroCtaBackgroundColor;
             if (fields.heroCtaBackgroundColorValue) {
-                fields.heroCtaBackgroundColorValue.textContent = state.heroCtaBackgroundColor;
+                setColorValueEl(fields.heroCtaBackgroundColorValue, state.heroCtaBackgroundColor);
             }
         }
         if (fields.heroCtaTextColor) {
@@ -4827,7 +4868,7 @@
             );
             fields.heroCtaTextColor.value = state.heroCtaTextColor;
             if (fields.heroCtaTextColorValue) {
-                fields.heroCtaTextColorValue.textContent = state.heroCtaTextColor;
+                setColorValueEl(fields.heroCtaTextColorValue, state.heroCtaTextColor);
             }
         }
         if (fields.shopAllUrl) {
@@ -4850,14 +4891,14 @@
             state.aboutButtonBackgroundColor = normalizeHexColor(fields.aboutButtonBackgroundColor.value, DEFAULT_ABOUT_BTN_BG);
             fields.aboutButtonBackgroundColor.value = state.aboutButtonBackgroundColor;
             if (fields.aboutButtonBackgroundColorValue) {
-                fields.aboutButtonBackgroundColorValue.textContent = state.aboutButtonBackgroundColor;
+                setColorValueEl(fields.aboutButtonBackgroundColorValue, state.aboutButtonBackgroundColor);
             }
         }
         if (fields.aboutButtonTextColor) {
             state.aboutButtonTextColor = normalizeHexColor(fields.aboutButtonTextColor.value, DEFAULT_ABOUT_BTN_TEXT);
             fields.aboutButtonTextColor.value = state.aboutButtonTextColor;
             if (fields.aboutButtonTextColorValue) {
-                fields.aboutButtonTextColorValue.textContent = state.aboutButtonTextColor;
+                setColorValueEl(fields.aboutButtonTextColorValue, state.aboutButtonTextColor);
             }
         }
         if (fields.featureLeftHeader) state.featureLeftHeader = fields.featureLeftHeader.value.trim();
@@ -4884,14 +4925,14 @@
             state.featureButtonBackgroundColor = normalizeHexColor(fields.featureButtonBackgroundColor.value, DEFAULT_FEATURE_BTN_BG);
             fields.featureButtonBackgroundColor.value = state.featureButtonBackgroundColor;
             if (fields.featureButtonBackgroundColorValue) {
-                fields.featureButtonBackgroundColorValue.textContent = state.featureButtonBackgroundColor;
+                setColorValueEl(fields.featureButtonBackgroundColorValue, state.featureButtonBackgroundColor);
             }
         }
         if (fields.featureButtonTextColor) {
             state.featureButtonTextColor = normalizeHexColor(fields.featureButtonTextColor.value, DEFAULT_FEATURE_BTN_TEXT);
             fields.featureButtonTextColor.value = state.featureButtonTextColor;
             if (fields.featureButtonTextColorValue) {
-                fields.featureButtonTextColorValue.textContent = state.featureButtonTextColor;
+                setColorValueEl(fields.featureButtonTextColorValue, state.featureButtonTextColor);
             }
         }
         if (fields.sketchSectionVisible) {
@@ -4951,7 +4992,7 @@
             );
             fields.classicFooterBackgroundColor.value = state.classicFooterBackgroundColor;
             if (fields.classicFooterBackgroundColorValue) {
-                fields.classicFooterBackgroundColorValue.textContent = state.classicFooterBackgroundColor;
+                setColorValueEl(fields.classicFooterBackgroundColorValue, state.classicFooterBackgroundColor);
             }
         }
         if (fields.classicFooterTextColor) {
@@ -4961,7 +5002,7 @@
             );
             fields.classicFooterTextColor.value = state.classicFooterTextColor;
             if (fields.classicFooterTextColorValue) {
-                fields.classicFooterTextColorValue.textContent = state.classicFooterTextColor;
+                setColorValueEl(fields.classicFooterTextColorValue, state.classicFooterTextColor);
             }
         }
         if (fields.classicFooterCopyrightTextColor) {
@@ -4971,7 +5012,7 @@
             );
             fields.classicFooterCopyrightTextColor.value = state.classicFooterCopyrightTextColor;
             if (fields.classicFooterCopyrightTextColorValue) {
-                fields.classicFooterCopyrightTextColorValue.textContent = state.classicFooterCopyrightTextColor;
+                setColorValueEl(fields.classicFooterCopyrightTextColorValue, state.classicFooterCopyrightTextColor);
             }
         }
         if (fields.classicFooterCopyrightBackgroundColor) {
@@ -4980,14 +5021,14 @@
             );
             fields.classicFooterCopyrightBackgroundColor.value = state.classicFooterCopyrightBackgroundColor;
             if (fields.classicFooterCopyrightBackgroundColorValue) {
-                fields.classicFooterCopyrightBackgroundColorValue.textContent = state.classicFooterCopyrightBackgroundColor;
+                setColorValueEl(fields.classicFooterCopyrightBackgroundColorValue, state.classicFooterCopyrightBackgroundColor);
             }
         }
         if (fields.headerBannerBackgroundColor) {
             state.headerBannerBackgroundColor = normalizeHex(fields.headerBannerBackgroundColor.value || DEFAULT_HEADER_BANNER_BG);
             fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
             if (fields.headerBannerBackgroundColorValue) {
-                fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+                setColorValueEl(fields.headerBannerBackgroundColorValue, state.headerBannerBackgroundColor);
             }
         }
         if (fields.headerBannerTextColor) {
@@ -4998,7 +5039,7 @@
             );
             fields.headerBannerTextColor.value = state.headerBannerTextColor;
             if (fields.headerBannerTextColorValue) {
-                fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
+                setColorValueEl(fields.headerBannerTextColorValue, state.headerBannerTextColor);
             }
             softCascadeFromHeaderText(previousHeaderText, state.headerBannerTextColor);
         }
@@ -5008,7 +5049,7 @@
             );
             fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
             if (fields.galleryHeaderBarBackgroundColorValue) {
-                fields.galleryHeaderBarBackgroundColorValue.textContent = state.galleryHeaderBarBackgroundColor;
+                setColorValueEl(fields.galleryHeaderBarBackgroundColorValue, state.galleryHeaderBarBackgroundColor);
             }
         }
         if (fields.galleryHeaderBarTextColor) {
@@ -5019,7 +5060,7 @@
             );
             fields.galleryHeaderBarTextColor.value = state.galleryHeaderBarTextColor;
             if (fields.galleryHeaderBarTextColorValue) {
-                fields.galleryHeaderBarTextColorValue.textContent = state.galleryHeaderBarTextColor;
+                setColorValueEl(fields.galleryHeaderBarTextColorValue, state.galleryHeaderBarTextColor);
             }
             softCascadeFromHeaderText(previousGalleryHeaderText, state.galleryHeaderBarTextColor);
         }
@@ -5071,7 +5112,7 @@
             );
             fields.galleryHeroButtonBackgroundColor.value = state.galleryHeroButtonBackgroundColor;
             if (fields.galleryHeroButtonBackgroundColorValue) {
-                fields.galleryHeroButtonBackgroundColorValue.textContent = state.galleryHeroButtonBackgroundColor;
+                setColorValueEl(fields.galleryHeroButtonBackgroundColorValue, state.galleryHeroButtonBackgroundColor);
             }
         }
         if (fields.galleryHeroButtonTextColor) {
@@ -5081,7 +5122,7 @@
             );
             fields.galleryHeroButtonTextColor.value = state.galleryHeroButtonTextColor;
             if (fields.galleryHeroButtonTextColorValue) {
-                fields.galleryHeroButtonTextColorValue.textContent = state.galleryHeroButtonTextColor;
+                setColorValueEl(fields.galleryHeroButtonTextColorValue, state.galleryHeroButtonTextColor);
             }
         }
         if (fields.galleryHeroSecondaryTopHeading) {
@@ -5123,13 +5164,13 @@
         if (fields.galleryHeaderBarBackgroundColor) {
             fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
             if (fields.galleryHeaderBarBackgroundColorValue) {
-                fields.galleryHeaderBarBackgroundColorValue.textContent = state.galleryHeaderBarBackgroundColor;
+                setColorValueEl(fields.galleryHeaderBarBackgroundColorValue, state.galleryHeaderBarBackgroundColor);
             }
         }
         if (fields.galleryHeaderBarTextColor) {
             fields.galleryHeaderBarTextColor.value = state.galleryHeaderBarTextColor;
             if (fields.galleryHeaderBarTextColorValue) {
-                fields.galleryHeaderBarTextColorValue.textContent = state.galleryHeaderBarTextColor;
+                setColorValueEl(fields.galleryHeaderBarTextColorValue, state.galleryHeaderBarTextColor);
             }
         }
         if (fields.galleryHeaderCenterCopy) {
@@ -5183,13 +5224,13 @@
         if (fields.headerBannerBackgroundColor) {
             fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
             if (fields.headerBannerBackgroundColorValue) {
-                fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+                setColorValueEl(fields.headerBannerBackgroundColorValue, state.headerBannerBackgroundColor);
             }
         }
         if (fields.headerBannerTextColor) {
             fields.headerBannerTextColor.value = state.headerBannerTextColor;
             if (fields.headerBannerTextColorValue) {
-                fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
+                setColorValueEl(fields.headerBannerTextColorValue, state.headerBannerTextColor);
             }
         }
     }
@@ -5254,13 +5295,13 @@
         if (fields.featureButtonBackgroundColor) {
             fields.featureButtonBackgroundColor.value = state.featureButtonBackgroundColor;
             if (fields.featureButtonBackgroundColorValue) {
-                fields.featureButtonBackgroundColorValue.textContent = state.featureButtonBackgroundColor;
+                setColorValueEl(fields.featureButtonBackgroundColorValue, state.featureButtonBackgroundColor);
             }
         }
         if (fields.featureButtonTextColor) {
             fields.featureButtonTextColor.value = state.featureButtonTextColor;
             if (fields.featureButtonTextColorValue) {
-                fields.featureButtonTextColorValue.textContent = state.featureButtonTextColor;
+                setColorValueEl(fields.featureButtonTextColorValue, state.featureButtonTextColor);
             }
         }
 
@@ -5308,13 +5349,13 @@
         if (fields.aboutButtonBackgroundColor) {
             fields.aboutButtonBackgroundColor.value = state.aboutButtonBackgroundColor;
             if (fields.aboutButtonBackgroundColorValue) {
-                fields.aboutButtonBackgroundColorValue.textContent = state.aboutButtonBackgroundColor;
+                setColorValueEl(fields.aboutButtonBackgroundColorValue, state.aboutButtonBackgroundColor);
             }
         }
         if (fields.aboutButtonTextColor) {
             fields.aboutButtonTextColor.value = state.aboutButtonTextColor;
             if (fields.aboutButtonTextColorValue) {
-                fields.aboutButtonTextColorValue.textContent = state.aboutButtonTextColor;
+                setColorValueEl(fields.aboutButtonTextColorValue, state.aboutButtonTextColor);
             }
         }
 
@@ -5334,7 +5375,7 @@
         state.copyBackgroundColor = normalizeHex(data.copyBackgroundColor || DEFAULT_COPY_BG);
         fields.copyBackgroundColor.value = state.copyBackgroundColor;
         if (fields.copyBackgroundColorValue) {
-            fields.copyBackgroundColorValue.textContent = state.copyBackgroundColor;
+            setColorValueEl(fields.copyBackgroundColorValue, state.copyBackgroundColor);
         }
         const headerTextFallback = templateDesign === 'gallery'
             ? normalizeHexColor(data.galleryHeaderBarTextColor, DEFAULT_GALLERY_HEADER_BAR_TEXT)
@@ -5343,7 +5384,7 @@
         if (fields.copyTextColor) {
             fields.copyTextColor.value = state.copyTextColor;
             if (fields.copyTextColorValue) {
-                fields.copyTextColorValue.textContent = state.copyTextColor;
+                setColorValueEl(fields.copyTextColorValue, state.copyTextColor);
             }
         }
         fields.description.value = data.description || '';
@@ -5363,13 +5404,13 @@
         if (fields.heroCtaBackgroundColor) {
             fields.heroCtaBackgroundColor.value = state.heroCtaBackgroundColor;
             if (fields.heroCtaBackgroundColorValue) {
-                fields.heroCtaBackgroundColorValue.textContent = state.heroCtaBackgroundColor;
+                setColorValueEl(fields.heroCtaBackgroundColorValue, state.heroCtaBackgroundColor);
             }
         }
         if (fields.heroCtaTextColor) {
             fields.heroCtaTextColor.value = state.heroCtaTextColor;
             if (fields.heroCtaTextColorValue) {
-                fields.heroCtaTextColorValue.textContent = state.heroCtaTextColor;
+                setColorValueEl(fields.heroCtaTextColorValue, state.heroCtaTextColor);
             }
         }
         if (fields.shopAllUrl) {
@@ -5442,6 +5483,63 @@
     ['title', 'description', 'cta'].forEach((key) => {
         fields[key].addEventListener('input', readForm);
     });
+
+
+    function applyHexToColorPair(hexInput, colorInput, raw, { commit = true } = {}) {
+        const normalized = parseFlexibleHex(raw, null);
+        if (!normalized) return false;
+        hexInput.value = normalized;
+        colorInput.value = normalized;
+        if (commit) readForm();
+        return true;
+    }
+
+    function bindHexColorInputs() {
+        document.querySelectorAll('.editor-color').forEach((wrap) => {
+            const colorInput = wrap.querySelector('input[type="color"]');
+            const hexInput = wrap.querySelector('input.editor-color-hex');
+            if (!colorInput || !hexInput) return;
+
+            // Hex is the primary control — keep maxlength loose so paste isn't clipped.
+            hexInput.removeAttribute('maxlength');
+            hexInput.setAttribute('inputmode', 'text');
+            hexInput.setAttribute('placeholder', '#RRGGBB');
+            hexInput.setAttribute('autocomplete', 'off');
+            hexInput.setAttribute('spellcheck', 'false');
+
+            hexInput.addEventListener('paste', (event) => {
+                event.preventDefault();
+                const pasted = (event.clipboardData || window.clipboardData)?.getData('text') || '';
+                if (!applyHexToColorPair(hexInput, colorInput, pasted)) {
+                    // Keep a helpful cue when paste isn't a color
+                    hexInput.classList.add('is-invalid');
+                    window.setTimeout(() => hexInput.classList.remove('is-invalid'), 900);
+                }
+            });
+
+            hexInput.addEventListener('input', () => {
+                const raw = hexInput.value.trim();
+                // Apply as soon as the typed/pasted value is a recognizable hex/rgb.
+                if (parseFlexibleHex(raw, null)) {
+                    applyHexToColorPair(hexInput, colorInput, raw);
+                }
+            });
+
+            hexInput.addEventListener('change', () => {
+                if (!applyHexToColorPair(hexInput, colorInput, hexInput.value)) {
+                    // Revert invalid edits to the live swatch value
+                    hexInput.value = colorInput.value;
+                }
+            });
+
+            colorInput.addEventListener('input', () => {
+                setColorValueEl(hexInput, colorInput.value);
+            });
+        });
+    }
+
+
+    bindHexColorInputs();
 
     fields.copyBackgroundColor.addEventListener('input', readForm);
     if (fields.copyTextColor) {
@@ -5735,7 +5833,7 @@
             );
             fields.headerBannerBackgroundColor.value = state.headerBannerBackgroundColor;
             if (fields.headerBannerBackgroundColorValue) {
-                fields.headerBannerBackgroundColorValue.textContent = state.headerBannerBackgroundColor;
+                setColorValueEl(fields.headerBannerBackgroundColorValue, state.headerBannerBackgroundColor);
             }
         }
         if (fields.headerBannerTextColor) {
@@ -5745,7 +5843,7 @@
             );
             fields.headerBannerTextColor.value = state.headerBannerTextColor;
             if (fields.headerBannerTextColorValue) {
-                fields.headerBannerTextColorValue.textContent = state.headerBannerTextColor;
+                setColorValueEl(fields.headerBannerTextColorValue, state.headerBannerTextColor);
             }
         }
     }

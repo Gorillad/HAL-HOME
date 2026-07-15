@@ -894,10 +894,21 @@
     }
 
     function normalizeHexColor(value) {
-        if (!value) return '';
-        var v = String(value).trim();
-        if (v.charAt(0) !== '#') v = '#' + v;
-        return /^#[0-9a-fA-F]{6}$/.test(v) ? v.toLowerCase() : '';
+        if (value == null) return '';
+        var v = String(value).trim().toLowerCase();
+        if (!v) return '';
+        var rgbMatch = v.match(/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})/i);
+        if (rgbMatch) {
+            return '#' + rgbMatch.slice(1, 4).map(function (n) {
+                return Math.max(0, Math.min(255, parseInt(n, 10))).toString(16).padStart(2, '0');
+            }).join('');
+        }
+        if (v.charAt(0) === '#') v = v.slice(1);
+        v = v.replace(/[^0-9a-f]/g, '');
+        if (v.length === 3) v = v.split('').map(function (ch) { return ch + ch; }).join('');
+        if (v.length >= 8) v = v.slice(0, 6);
+        else if (v.length > 6) v = v.slice(0, 6);
+        return /^[0-9a-f]{6}$/.test(v) ? '#' + v : '';
     }
 
     function populateColorFields() {
@@ -933,16 +944,34 @@
         });
 
         panel.querySelectorAll('[data-avalon-color-hex]').forEach(function (hexInput) {
-            hexInput.addEventListener('input', function () {
+            hexInput.removeAttribute('maxlength');
+            hexInput.setAttribute('placeholder', '#RRGGBB');
+
+            function commitHex(raw) {
                 var key = hexInput.dataset.avalonColorHex;
                 if (!key) return;
-                var norm = normalizeHexColor(hexInput.value);
+                var norm = normalizeHexColor(raw);
                 if (!norm) return;
+                hexInput.value = norm;
                 draft[key] = norm;
                 var picker = panel.querySelector('[data-avalon-color="' + key + '"]');
                 if (picker) picker.value = norm;
                 applyColors();
                 scheduleSave();
+            }
+
+            hexInput.addEventListener('paste', function (event) {
+                event.preventDefault();
+                var pasted = (event.clipboardData || window.clipboardData)
+                    ? (event.clipboardData || window.clipboardData).getData('text')
+                    : '';
+                commitHex(pasted);
+            });
+            hexInput.addEventListener('input', function () {
+                commitHex(hexInput.value);
+            });
+            hexInput.addEventListener('change', function () {
+                commitHex(hexInput.value);
             });
         });
     }

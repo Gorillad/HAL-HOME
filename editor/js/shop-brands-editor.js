@@ -313,8 +313,8 @@
             + '<div class="editor-field">'
             + '<label class="editor-field-label" for="shop-brands-carousel-bg">Carousel background</label>'
             + '<div class="editor-color-pair">'
-            + '<input type="color" id="shop-brands-carousel-bg" value="' + escAttr(header.carouselBg) + '">'
             + '<input type="text" id="shop-brands-carousel-bg-hex" class="editor-color-hex editor-field-input" value="' + escAttr(header.carouselBg) + '" maxlength="7" aria-label="Carousel background hex">'
+            + '<input type="color" id="shop-brands-carousel-bg" value="' + escAttr(header.carouselBg) + '">'
             + '</div>'
             + '</div>';
 
