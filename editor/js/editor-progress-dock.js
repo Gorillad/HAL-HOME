@@ -90,6 +90,7 @@
         'galleryHeroHeadlineLine2',
         'galleryHeroHeadlineLine3',
         'galleryHeroCopy',
+        'galleryHeroTextColor',
         'galleryHeroButtonLabel',
         'galleryHeroButtonUrl',
         'galleryHeroButtonBackgroundColor',

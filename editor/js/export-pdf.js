@@ -589,6 +589,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Large image headline line 2', galleryHeroOverlay.headline?.[1] || '(hidden)'],
             ['Large image headline line 3', galleryHeroOverlay.headline?.[2] || '(hidden)'],
             ['Large image copy', galleryHeroOverlay.copy || '—'],
+            ['Hero text color', galleryHeroOverlay.textColor || '#ffffff'],
             ['Shop button label', galleryHeroButton.label || '—'],
             ['Shop button link', galleryHeroButton.url || '—'],
             ['Shop button background', galleryHeroButton.backgroundColor || '#2b2b2b'],

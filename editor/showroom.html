@@ -382,7 +382,7 @@
                 <div class="editor-accordion-body">
                     <fieldset class="editor-fieldset" id="editor-gallery-main-nav">
                         <legend>Nav categories</legend>
-                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; categories sit to the left of search. Parent labels and dropdown items display in caps. Rename each parent, edit dropdown links, uncheck to hide, or add subcategory rows. Defaults: Shop categories; About Us → PRIVACY · CONTACT US; Account → MY ACCOUNT · WISHLIST.</p>
+                        <p class="editor-field-hint editor-field-hint--fieldset">Desktop: logo left; categories sit to the left of search. Parent labels and dropdown items display in caps. Catalog Parent URLs start with <code>/lighting-fixtures</code> (the catalog page). Defaults: Shop categories; About Us → PRIVACY · CONTACT US; Account → MY ACCOUNT · WISHLIST.</p>
                         <div id="galleryMainNavEditor"></div>
                     </fieldset>
                 </div>
@@ -436,6 +436,17 @@
                 <fieldset class="editor-fieldset">
                     <legend>Large lifestyle image copy</legend>
                     <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned overlay on the large image: headline, body copy, and square Shop Now button. Headline lines 2 and 3 are optional — leave blank to hide them.</p>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroTextValue">Text color</label>
+                        <div class="editor-color">
+                        <div class="editor-color-hex-wrap">
+                            <span class="editor-color-hex-label">Hex</span>
+                            <input type="text" class="editor-color-hex" id="fieldGalleryHeroTextValue" value="#ffffff" placeholder="#RRGGBB" spellcheck="false" autocomplete="off" aria-label="Hex color">
+                        </div>
+                        <input type="color" id="fieldGalleryHeroText" name="galleryHeroTextColor" value="#ffffff" title="Open color picker">
+                    </div>
+                        <p class="editor-field-hint">Applies to the large-image headline and body copy, plus the top and bottom right image headings. Button colors are separate below.</p>
+                    </div>
                     <div class="editor-field">
                         <label for="fieldGalleryHeroHeadline1">Headline line 1</label>
                         <input type="text" id="fieldGalleryHeroHeadline1" name="galleryHeroHeadlineLine1" autocomplete="off">

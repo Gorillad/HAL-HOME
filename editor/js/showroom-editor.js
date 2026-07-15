@@ -101,16 +101,16 @@
         {
             id: 'gallery-shop',
             label: 'SHOP',
-            url: '/catalog',
+            url: '/lighting-fixtures',
             subcategories: [
-                { id: 'gallery-shop-catalog', label: 'CATALOG', url: '/catalog' },
-                { id: 'gallery-shop-chandeliers', label: 'CHANDELIERS', url: '/catalog/chandeliers' },
-                { id: 'gallery-shop-pendants', label: 'PENDANTS', url: '/catalog/pendants' },
-                { id: 'gallery-shop-bathroom', label: 'BATHROOM FIXTURES', url: '/catalog/bathroom-fixtures' },
-                { id: 'gallery-shop-exterior', label: 'EXTERIOR', url: '/catalog/exterior' },
-                { id: 'gallery-shop-fans', label: 'FANS', url: '/catalog/fans' },
-                { id: 'gallery-shop-foyer', label: 'FOYER', url: '/catalog/foyer' },
-                { id: 'gallery-shop-wall-lights', label: 'WALL LIGHTS', url: '/catalog/wall-lights' },
+                { id: 'gallery-shop-catalog', label: 'CATALOG', url: '/lighting-fixtures' },
+                { id: 'gallery-shop-chandeliers', label: 'CHANDELIERS', url: '/lighting-fixtures/chandeliers' },
+                { id: 'gallery-shop-pendants', label: 'PENDANTS', url: '/lighting-fixtures/pendants' },
+                { id: 'gallery-shop-bathroom', label: 'BATHROOM FIXTURES', url: '/lighting-fixtures/bathroom-fixtures' },
+                { id: 'gallery-shop-exterior', label: 'EXTERIOR', url: '/lighting-fixtures/exterior' },
+                { id: 'gallery-shop-fans', label: 'FANS', url: '/lighting-fixtures/fans' },
+                { id: 'gallery-shop-foyer', label: 'FOYER', url: '/lighting-fixtures/foyer' },
+                { id: 'gallery-shop-wall-lights', label: 'WALL LIGHTS', url: '/lighting-fixtures/wall-lights' },
             ],
         },
         {
@@ -132,6 +132,7 @@
             ],
         },
     ];
+    const GALLERY_CATALOG_ROOT = '/lighting-fixtures';
     const GALLERY_IMAGE_DIR = 'gallery/';
     const CLASSIC_IMAGE_DIR = 'classic/';
     /** Per-template header logo height slider limits (px) — adjust min/max when tuning. */
@@ -160,6 +161,7 @@
     const DEFAULT_GALLERY_HERO_BUTTON_URL = '/catalog';
     const DEFAULT_GALLERY_HERO_BUTTON_BG = '#2b2b2b';
     const DEFAULT_GALLERY_HERO_BUTTON_TEXT = '#ffffff';
+    const DEFAULT_GALLERY_HERO_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING = 'Chandelier';
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL = '/catalog/chandeliers';
     const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING = 'Pendants';
@@ -511,6 +513,8 @@
         galleryHeroHeadlineLine2: document.getElementById('fieldGalleryHeroHeadline2'),
         galleryHeroHeadlineLine3: document.getElementById('fieldGalleryHeroHeadline3'),
         galleryHeroCopy: document.getElementById('fieldGalleryHeroCopy'),
+        galleryHeroTextColor: document.getElementById('fieldGalleryHeroText'),
+        galleryHeroTextColorValue: document.getElementById('fieldGalleryHeroTextValue'),
         galleryHeroButtonLabel: document.getElementById('fieldGalleryHeroButtonLabel'),
         galleryHeroButtonUrl: document.getElementById('fieldGalleryHeroButtonUrl'),
         galleryHeroButtonBackgroundColor: document.getElementById('fieldGalleryHeroButtonBg'),
@@ -806,6 +810,7 @@
         galleryHeroHeadlineLine2: DEFAULT_GALLERY_HERO_HEADLINE_2,
         galleryHeroHeadlineLine3: DEFAULT_GALLERY_HERO_HEADLINE_3,
         galleryHeroCopy: DEFAULT_GALLERY_HERO_COPY,
+        galleryHeroTextColor: DEFAULT_GALLERY_HERO_TEXT,
         galleryHeroButtonLabel: DEFAULT_GALLERY_HERO_BUTTON_LABEL,
         galleryHeroButtonUrl: DEFAULT_GALLERY_HERO_BUTTON_URL,
         galleryHeroButtonBackgroundColor: DEFAULT_GALLERY_HERO_BUTTON_BG,
@@ -1043,6 +1048,7 @@
 
         maybeCascade('copyTextColor', 'copyTextColor');
         maybeCascade('heroCtaTextColor', 'heroCtaTextColor');
+        maybeCascade('galleryHeroTextColor', 'galleryHeroTextColor');
         maybeCascade('galleryHeroButtonTextColor', 'galleryHeroButtonTextColor');
         maybeCascade('aboutButtonTextColor', 'aboutButtonTextColor');
         maybeCascade('featureButtonTextColor', 'featureButtonTextColor');
@@ -2210,6 +2216,10 @@
         syncGalleryHeroHeadlinePreview();
 
         const copy = typeof state.galleryHeroCopy === 'string' ? state.galleryHeroCopy : DEFAULT_GALLERY_HERO_COPY;
+        const textColor = normalizeHexColor(
+            state.galleryHeroTextColor,
+            DEFAULT_GALLERY_HERO_TEXT,
+        );
         const buttonLabel = typeof state.galleryHeroButtonLabel === 'string'
             ? state.galleryHeroButtonLabel
             : DEFAULT_GALLERY_HERO_BUTTON_LABEL;
@@ -2225,12 +2235,22 @@
             DEFAULT_GALLERY_HERO_BUTTON_TEXT,
         );
 
+        state.galleryHeroTextColor = textColor;
         state.galleryHeroButtonBackgroundColor = buttonBg;
         state.galleryHeroButtonTextColor = buttonText;
+
+        [
+            previewGalleryHeroHeadlineLine1,
+            previewGalleryHeroHeadlineLine2,
+            previewGalleryHeroHeadlineLine3,
+        ].forEach((element) => {
+            if (element) element.style.color = textColor;
+        });
 
         if (previewGalleryHeroCopy) {
             previewGalleryHeroCopy.textContent = copy;
             previewGalleryHeroCopy.hidden = !copy;
+            previewGalleryHeroCopy.style.color = textColor;
         }
         if (previewGalleryHeroCta) {
             previewGalleryHeroCta.textContent = buttonLabel;
@@ -2245,6 +2265,12 @@
             }
         }
 
+        if (fields.galleryHeroTextColor) {
+            fields.galleryHeroTextColor.value = textColor;
+            if (fields.galleryHeroTextColorValue) {
+                setColorValueEl(fields.galleryHeroTextColorValue, textColor);
+            }
+        }
         if (fields.galleryHeroButtonBackgroundColor) {
             fields.galleryHeroButtonBackgroundColor.value = buttonBg;
             if (fields.galleryHeroButtonBackgroundColorValue) {
@@ -2267,6 +2293,7 @@
         if (previewGalleryHeroSecondaryTopHeading) {
             previewGalleryHeroSecondaryTopHeading.textContent = secondaryTopHeading;
             previewGalleryHeroSecondaryTopHeading.hidden = !secondaryTopHeading;
+            previewGalleryHeroSecondaryTopHeading.style.color = textColor;
         }
         if (previewGalleryHeroSecondaryTopLink) {
             previewGalleryHeroSecondaryTopLink.href = secondaryTopUrl || '#';
@@ -2281,6 +2308,7 @@
         if (previewGalleryHeroSecondaryBottomHeading) {
             previewGalleryHeroSecondaryBottomHeading.textContent = secondaryBottomHeading;
             previewGalleryHeroSecondaryBottomHeading.hidden = !secondaryBottomHeading;
+            previewGalleryHeroSecondaryBottomHeading.style.color = textColor;
         }
         if (previewGalleryHeroSecondaryBottomLink) {
             previewGalleryHeroSecondaryBottomLink.href = secondaryBottomUrl || '#';
@@ -2502,6 +2530,10 @@
         state.galleryHeroHeadlineLine2 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine2, '');
         state.galleryHeroHeadlineLine3 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine3, '');
         state.galleryHeroCopy = storedText(data.galleryHeroCopy, DEFAULT_GALLERY_HERO_COPY);
+        state.galleryHeroTextColor = normalizeHexColor(
+            data.galleryHeroTextColor,
+            DEFAULT_GALLERY_HERO_TEXT,
+        );
         state.galleryHeroButtonLabel = storedText(
             data.galleryHeroButtonLabel,
             DEFAULT_GALLERY_HERO_BUTTON_LABEL,
@@ -2570,6 +2602,7 @@
                         resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine3, ''),
                     ],
                     copy: state.galleryHeroCopy || '',
+                    textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     button: {
                         label: state.galleryHeroButtonLabel || '',
                         url: state.galleryHeroButtonUrl || '',
@@ -2588,6 +2621,7 @@
                     headlineStyle: 'thin tall sans-serif uppercase',
                     headlineWeight: 200,
                     heading: state.galleryHeroSecondaryTopHeading || '',
+                    textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     url: state.galleryHeroSecondaryTopUrl || '',
                 },
             },
@@ -2600,6 +2634,7 @@
                     headlineStyle: 'thin tall sans-serif uppercase',
                     headlineWeight: 200,
                     heading: state.galleryHeroSecondaryBottomHeading || '',
+                    textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     url: state.galleryHeroSecondaryBottomUrl || '',
                 },
             },
@@ -3024,6 +3059,20 @@
         return trimmed;
     }
 
+    /** Map legacy /catalog paths to the live catalog root /lighting-fixtures. */
+    function normalizeGalleryCatalogUrl(url, fallback = '') {
+        if (typeof url !== 'string') return fallback;
+        const trimmed = url.trim();
+        if (!trimmed) return fallback;
+        if (trimmed === '/catalog' || trimmed === '/catalog/') {
+            return GALLERY_CATALOG_ROOT;
+        }
+        if (trimmed.startsWith('/catalog/')) {
+            return `${GALLERY_CATALOG_ROOT}/${trimmed.slice('/catalog/'.length)}`;
+        }
+        return trimmed;
+    }
+
     function migrateGalleryMainNavItems(data) {
         const defaults = defaultGalleryMainNavItems();
         const removedSubIds = new Set(['gallery-about-about-us']);
@@ -3053,24 +3102,40 @@
                             ...savedSub,
                             id: defaultSub.id,
                             label: galleryStockNavLabel(savedSub.label, defaultSub.label),
+                            url: normalizeGalleryCatalogUrl(
+                                storedText(savedSub.url, defaultSub.url || GALLERY_CATALOG_ROOT),
+                                defaultSub.url || GALLERY_CATALOG_ROOT,
+                            ),
                         }, 0, defaultItem.id);
                     });
                     savedSubs.forEach((savedSub, index) => {
                         if (removedSubIds.has(savedSub.id)) return;
                         if (!subcategories.some((sub) => sub.id === savedSub.id)) {
-                            subcategories.push(createMainNavSubcategory(savedSub, index, defaultItem.id));
+                            subcategories.push(createMainNavSubcategory({
+                                ...savedSub,
+                                url: normalizeGalleryCatalogUrl(
+                                    storedText(savedSub.url, GALLERY_CATALOG_ROOT),
+                                    GALLERY_CATALOG_ROOT,
+                                ),
+                            }, index, defaultItem.id));
                         }
                     });
                 } else {
                     subcategories = savedSubs
                         .filter((sub) => !removedSubIds.has(sub.id))
-                        .map((sub, index) => createMainNavSubcategory(sub, index, defaultItem.id));
+                        .map((sub, index) => createMainNavSubcategory({
+                            ...sub,
+                            url: normalizeGalleryCatalogUrl(storedText(sub.url, '/'), '/'),
+                        }, index, defaultItem.id));
                 }
 
                 return createMainNavItem({
                     id: defaultItem.id,
                     label: galleryStockNavLabel(savedItem.label, defaultItem.label),
-                    url: storedText(savedItem.url, defaultItem.url || ''),
+                    url: normalizeGalleryCatalogUrl(
+                        storedText(savedItem.url, defaultItem.url || ''),
+                        defaultItem.url || '',
+                    ),
                     subcategories,
                 });
             }).concat(
@@ -3080,7 +3145,14 @@
                         || String(defaultItem.label || '').trim().toLowerCase()
                             === String(savedItem.label || '').trim().toLowerCase()
                     )))
-                    .map((savedItem) => createMainNavItem(savedItem)),
+                    .map((savedItem) => createMainNavItem({
+                        ...savedItem,
+                        url: normalizeGalleryCatalogUrl(storedText(savedItem.url, ''), ''),
+                        subcategories: (savedItem.subcategories || []).map((sub) => ({
+                            ...sub,
+                            url: normalizeGalleryCatalogUrl(storedText(sub.url, '/'), '/'),
+                        })),
+                    })),
             );
         }
 
@@ -3094,7 +3166,10 @@
                 return createMainNavItem({
                     ...defaultItem,
                     label: galleryStockNavLabel(legacy.label, defaultItem.label),
-                    url: storedText(legacy.url, defaultItem.url || ''),
+                    url: normalizeGalleryCatalogUrl(
+                        storedText(legacy.url, defaultItem.url || ''),
+                        defaultItem.url || '',
+                    ),
                 });
             });
         }
@@ -3126,7 +3201,7 @@
                 </div>
                 <div class="editor-field editor-field--compact">
                     <label>URL</label>
-                    <input type="text" value="${escapeHtml(sub.url)}" data-gallery-sub-field="url" data-sub-id="${sub.id}" data-nav-id="${navId}" placeholder="/catalog/..." autocomplete="off">
+                    <input type="text" value="${escapeHtml(sub.url)}" data-gallery-sub-field="url" data-sub-id="${sub.id}" data-nav-id="${navId}" placeholder="/lighting-fixtures/..." autocomplete="off">
                 </div>
             </div>`
         );
@@ -3143,8 +3218,9 @@
                     <input type="text" value="${escapeHtml(category.label)}" data-gallery-nav-field="label" data-nav-id="${category.id}" autocomplete="off">
                 </div>
                 <div class="editor-field editor-field--compact">
-                    <label>Category link</label>
-                    <input type="text" value="${escapeHtml(category.url || '')}" data-gallery-nav-field="url" data-nav-id="${category.id}" placeholder="/catalog" autocomplete="off">
+                    <label>Parent URL</label>
+                    <input type="text" value="${escapeHtml(category.url || '')}" data-gallery-nav-field="url" data-nav-id="${category.id}" placeholder="/lighting-fixtures" autocomplete="off">
+                    <p class="editor-field-hint">Catalog parents start with <code>/lighting-fixtures</code> — that path opens the catalog page. Add a slug after it for a category (e.g. <code>/lighting-fixtures/chandeliers</code>).</p>
                 </div>
                 ${category.subcategories.length
                     ? '<p class="editor-field-hint editor-field-hint--fieldset">Edit subcategory names and URLs. Uncheck any you want hidden from the dropdown.</p>'
@@ -3200,7 +3276,7 @@
 
         category.subcategories.push(createMainNavSubcategory({
             label: 'NEW SUBCATEGORY',
-            url: '/',
+            url: category.id === 'gallery-shop' ? `${GALLERY_CATALOG_ROOT}/` : '/',
         }, category.subcategories.length, navId));
 
         renderGalleryMainNavEditor();
@@ -5521,6 +5597,16 @@
         if (fields.galleryHeroCopy) {
             state.galleryHeroCopy = readTextField(fields.galleryHeroCopy);
         }
+        if (fields.galleryHeroTextColor) {
+            state.galleryHeroTextColor = normalizeHexColor(
+                fields.galleryHeroTextColor.value,
+                DEFAULT_GALLERY_HERO_TEXT,
+            );
+            fields.galleryHeroTextColor.value = state.galleryHeroTextColor;
+            if (fields.galleryHeroTextColorValue) {
+                setColorValueEl(fields.galleryHeroTextColorValue, state.galleryHeroTextColor);
+            }
+        }
         if (fields.galleryHeroButtonLabel) {
             state.galleryHeroButtonLabel = readTextField(fields.galleryHeroButtonLabel);
         }
@@ -6088,6 +6174,7 @@
         'galleryHeroSecondaryBottomHeading',
         'galleryHeroSecondaryBottomUrl',
         'galleryHeroCopy',
+        'galleryHeroTextColor',
         'galleryHeroButtonLabel',
         'galleryHeroButtonUrl',
         'galleryHeroButtonBackgroundColor',
