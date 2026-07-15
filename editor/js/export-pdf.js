@@ -582,6 +582,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         writeSpecRows([
             ['Layout', galleryHero.layout || 'split-lifestyle'],
             ['Hero size', `${galleryHero.width || '1479 px'} × ${galleryHero.height || '500 px'}`],
+            ['Text backdrop', galleryHeroOverlay.backdrop || 'translucent charcoal text panel + left scrim'],
             ['Headline font', galleryHeroOverlay.headlineFont || "'Josefin Sans', sans-serif"],
             ['Headline style', galleryHeroOverlay.headlineStyle || 'medium tall sans-serif uppercase'],
             ['Headline weight', galleryHeroOverlay.headlineWeight || 500],

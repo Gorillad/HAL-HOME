@@ -2590,6 +2590,7 @@
                 filename: 'gallery-hero-primary.jpg',
                 overlay: {
                     alignment: 'left',
+                    backdrop: 'translucent charcoal text panel + left scrim',
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'medium tall sans-serif uppercase',
                     headlineWeight: 500,
@@ -2617,6 +2618,7 @@
                 filename: 'gallery-hero-secondary-top.jpg',
                 overlay: {
                     alignment: 'left · vertically centered',
+                    backdrop: 'translucent charcoal text panel + left scrim',
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'medium tall sans-serif uppercase',
                     headlineWeight: 500,
@@ -2630,6 +2632,7 @@
                 filename: 'gallery-hero-secondary-bottom.jpg',
                 overlay: {
                     alignment: 'left · vertically centered',
+                    backdrop: 'translucent charcoal text panel + left scrim',
                     headlineFont: "'Josefin Sans', sans-serif",
                     headlineStyle: 'medium tall sans-serif uppercase',
                     headlineWeight: 500,
