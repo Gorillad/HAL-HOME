@@ -3290,6 +3290,12 @@
     100% { background-color: transparent; }
 }
 
+.editor-main-nav-category-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin: -4px 0 10px;
+}
+
 .editor-main-nav-category {
     margin-bottom: 18px;
 }

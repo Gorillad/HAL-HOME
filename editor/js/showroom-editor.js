@@ -3271,83 +3271,53 @@
         const defaults = defaultGalleryMainNavItems();
         const removedSubIds = new Set(['gallery-about-about-us']);
 
+        // Saved list is source of truth so users can add/remove categories.
         if (Array.isArray(data.galleryMainNavItems) && data.galleryMainNavItems.length > 0) {
-            return defaults.map((defaultItem) => {
-                const savedItem = data.galleryMainNavItems.find((item) => item.id === defaultItem.id)
-                    || data.galleryMainNavItems.find((item) => (
+            return data.galleryMainNavItems.map((savedItem, savedIndex) => {
+                const defaultItem = defaults.find((item) => item.id === savedItem.id)
+                    || defaults.find((item) => (
                         String(item.label || '').trim().toLowerCase()
-                        === String(defaultItem.label || '').trim().toLowerCase()
+                        === String(savedItem.label || '').trim().toLowerCase()
                     ));
-                if (!savedItem) return defaultItem;
-
+                const categoryId = savedItem.id || defaultItem?.id || `gallery-nav-${savedIndex + 1}`;
                 const savedSubs = Array.isArray(savedItem.subcategories) ? savedItem.subcategories : [];
-                let subcategories;
+                const stockSubs = defaultItem?.subcategories || [];
 
-                if (defaultItem.subcategories.length) {
-                    subcategories = defaultItem.subcategories.map((defaultSub) => {
-                        const savedSub = savedSubs.find((sub) => sub.id === defaultSub.id)
-                            || savedSubs.find((sub) => (
+                const subcategories = savedSubs
+                    .filter((sub) => !removedSubIds.has(sub.id))
+                    .map((savedSub, index) => {
+                        const defaultSub = stockSubs.find((sub) => sub.id === savedSub.id)
+                            || stockSubs.find((sub) => (
                                 String(sub.label || '').trim().toLowerCase()
-                                === String(defaultSub.label || '').trim().toLowerCase()
+                                === String(savedSub.label || '').trim().toLowerCase()
                             ));
-                        if (!savedSub) return defaultSub;
+                        const fallbackUrl = defaultSub?.url || GALLERY_CATALOG_ROOT;
                         return createMainNavSubcategory({
-                            ...defaultSub,
+                            ...(defaultSub || {}),
                             ...savedSub,
-                            id: defaultSub.id,
-                            label: galleryStockNavLabel(savedSub.label, defaultSub.label),
+                            id: savedSub.id || defaultSub?.id,
+                            label: defaultSub
+                                ? galleryStockNavLabel(savedSub.label, defaultSub.label)
+                                : storedText(savedSub.label, 'NEW SUBCATEGORY'),
                             url: normalizeGalleryCatalogUrl(
-                                storedText(savedSub.url, defaultSub.url || GALLERY_CATALOG_ROOT),
-                                defaultSub.url || GALLERY_CATALOG_ROOT,
+                                storedText(savedSub.url, fallbackUrl),
+                                fallbackUrl,
                             ),
-                        }, 0, defaultItem.id);
+                        }, index, categoryId);
                     });
-                    savedSubs.forEach((savedSub, index) => {
-                        if (removedSubIds.has(savedSub.id)) return;
-                        if (!subcategories.some((sub) => sub.id === savedSub.id)) {
-                            subcategories.push(createMainNavSubcategory({
-                                ...savedSub,
-                                url: normalizeGalleryCatalogUrl(
-                                    storedText(savedSub.url, GALLERY_CATALOG_ROOT),
-                                    GALLERY_CATALOG_ROOT,
-                                ),
-                            }, index, defaultItem.id));
-                        }
-                    });
-                } else {
-                    subcategories = savedSubs
-                        .filter((sub) => !removedSubIds.has(sub.id))
-                        .map((sub, index) => createMainNavSubcategory({
-                            ...sub,
-                            url: normalizeGalleryCatalogUrl(storedText(sub.url, '/'), '/'),
-                        }, index, defaultItem.id));
-                }
 
                 return createMainNavItem({
-                    id: defaultItem.id,
-                    label: galleryStockNavLabel(savedItem.label, defaultItem.label),
+                    id: categoryId,
+                    label: defaultItem
+                        ? galleryStockNavLabel(savedItem.label, defaultItem.label)
+                        : storedText(savedItem.label, 'NEW CATEGORY'),
                     url: normalizeGalleryCatalogUrl(
-                        storedText(savedItem.url, defaultItem.url || ''),
-                        defaultItem.url || '',
+                        storedText(savedItem.url, defaultItem?.url || ''),
+                        defaultItem?.url || '',
                     ),
                     subcategories,
                 });
-            }).concat(
-                data.galleryMainNavItems
-                    .filter((savedItem) => !defaults.some((defaultItem) => (
-                        defaultItem.id === savedItem.id
-                        || String(defaultItem.label || '').trim().toLowerCase()
-                            === String(savedItem.label || '').trim().toLowerCase()
-                    )))
-                    .map((savedItem) => createMainNavItem({
-                        ...savedItem,
-                        url: normalizeGalleryCatalogUrl(storedText(savedItem.url, ''), ''),
-                        subcategories: (savedItem.subcategories || []).map((sub) => ({
-                            ...sub,
-                            url: normalizeGalleryCatalogUrl(storedText(sub.url, '/'), '/'),
-                        })),
-                    })),
-            );
+            });
         }
 
         if (Array.isArray(data.galleryMainNavLinks) && data.galleryMainNavLinks.length > 0) {
@@ -3404,9 +3374,12 @@
     function renderGalleryMainNavEditor() {
         if (!galleryMainNavEditor) return;
 
-        galleryMainNavEditor.innerHTML = (state.galleryMainNavItems || []).map((category, categoryIndex) => (
+        const categoriesMarkup = (state.galleryMainNavItems || []).map((category, categoryIndex) => (
             `<fieldset class="editor-fieldset editor-main-nav-category" data-nav-id="${category.id}">
                 <legend>${escapeHtml(category.label || `Category ${categoryIndex + 1}`)}</legend>
+                <div class="editor-main-nav-category-toolbar">
+                    <button type="button" class="editor-footer-link-remove" data-action="remove-gallery-main-nav-category">Remove category</button>
+                </div>
                 <div class="editor-field editor-field--compact">
                     <label>Category name</label>
                     <input type="text" value="${escapeHtml(category.label)}" data-gallery-nav-field="label" data-nav-id="${category.id}" autocomplete="off">
@@ -3414,17 +3387,16 @@
                 <div class="editor-field editor-field--compact">
                     <label>Parent URL</label>
                     <input type="text" value="${escapeHtml(category.url || '')}" data-gallery-nav-field="url" data-nav-id="${category.id}" placeholder="/lighting-fixtures" autocomplete="off">
-                    <p class="editor-field-hint">Catalog parents start with <code>/lighting-fixtures</code> — that path opens the catalog page. Add a slug after it for a category (e.g. <code>/lighting-fixtures/chandeliers</code>).</p>
                 </div>
-                ${category.subcategories.length
-                    ? '<p class="editor-field-hint editor-field-hint--fieldset">Edit subcategory names and URLs. Uncheck any you want hidden from the dropdown.</p>'
-                    : '<p class="editor-field-hint editor-field-hint--fieldset">No subcategories yet — add links for this dropdown when ready.</p>'}
                 <div class="editor-main-nav-subs" data-nav-id="${category.id}">
-                    ${category.subcategories.map((sub) => renderGalleryMainNavSubEditor(category.id, sub)).join('')}
+                    ${(category.subcategories || []).map((sub) => renderGalleryMainNavSubEditor(category.id, sub)).join('')}
                 </div>
                 <button type="button" class="btn btn-secondary editor-add-item-btn editor-gallery-main-nav-add-sub" data-nav-id="${category.id}">Add subcategory</button>
             </fieldset>`
         )).join('');
+
+        galleryMainNavEditor.innerHTML = `${categoriesMarkup}
+            <button type="button" class="btn btn-secondary editor-add-item-btn editor-gallery-main-nav-add-category">Add category</button>`;
     }
 
     function readGalleryMainNavFromEditor() {
@@ -3463,14 +3435,47 @@
         saveState();
     }
 
+    function addGalleryMainNavCategory() {
+        readGalleryMainNavFromEditor();
+        if (!Array.isArray(state.galleryMainNavItems)) {
+            state.galleryMainNavItems = [];
+        }
+
+        state.galleryMainNavItems.push(createMainNavItem({
+            id: `gallery-nav-${Date.now().toString(36)}`,
+            label: 'NEW CATEGORY',
+            url: '/',
+            subcategories: [],
+        }));
+
+        renderGalleryMainNavEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Category added');
+    }
+
+    function removeGalleryMainNavCategory(navId) {
+        readGalleryMainNavFromEditor();
+        state.galleryMainNavItems = (state.galleryMainNavItems || []).filter((item) => item.id !== navId);
+        renderGalleryMainNavEditor();
+        syncHeaderPreview();
+        saveState();
+        setStatus('Category removed');
+    }
+
     function addGalleryMainNavSubcategory(navId) {
         readGalleryMainNavFromEditor();
         const category = getGalleryMainNavCategory(navId);
         if (!category) return;
 
+        if (!Array.isArray(category.subcategories)) {
+            category.subcategories = [];
+        }
+
+        const defaultUrl = String(category.url || '').trim() || GALLERY_CATALOG_ROOT;
         category.subcategories.push(createMainNavSubcategory({
             label: 'NEW SUBCATEGORY',
-            url: category.id === 'gallery-shop' ? `${GALLERY_CATALOG_ROOT}/` : '/',
+            url: defaultUrl,
         }, category.subcategories.length, navId));
 
         renderGalleryMainNavEditor();
@@ -3512,15 +3517,30 @@
         });
 
         galleryMainNavEditor.addEventListener('click', (event) => {
-            const addButton = event.target.closest('.editor-gallery-main-nav-add-sub');
-            if (addButton?.dataset.navId) {
-                addGalleryMainNavSubcategory(addButton.dataset.navId);
+            const addCategoryButton = event.target.closest('.editor-gallery-main-nav-add-category');
+            if (addCategoryButton) {
+                addGalleryMainNavCategory();
                 return;
             }
 
-            const removeButton = event.target.closest('[data-action="remove-gallery-main-nav-sub"]');
-            if (!removeButton) return;
-            const wrap = removeButton.closest('[data-nav-id][data-sub-id]');
+            const addSubButton = event.target.closest('.editor-gallery-main-nav-add-sub');
+            if (addSubButton?.dataset.navId) {
+                addGalleryMainNavSubcategory(addSubButton.dataset.navId);
+                return;
+            }
+
+            const removeCategoryButton = event.target.closest('[data-action="remove-gallery-main-nav-category"]');
+            if (removeCategoryButton) {
+                const fieldset = removeCategoryButton.closest('[data-nav-id]');
+                if (fieldset?.dataset.navId) {
+                    removeGalleryMainNavCategory(fieldset.dataset.navId);
+                }
+                return;
+            }
+
+            const removeSubButton = event.target.closest('[data-action="remove-gallery-main-nav-sub"]');
+            if (!removeSubButton) return;
+            const wrap = removeSubButton.closest('[data-nav-id][data-sub-id]');
             if (wrap) {
                 removeGalleryMainNavSubcategory(wrap.dataset.navId, wrap.dataset.subId);
             }
