@@ -17,17 +17,18 @@ Catalog Highlights (4 tiles)
   fans1.jpg                 Fans
   hall-lantern3.jpg         Foyer Hall Lanterns
 
-Homepage stylesheet (developer handoff)
-  data/css/styles.css       Production Classic homepage CSS
+Homepage stylesheet (support handoff)
+  Source in editor:  gallery/data/css/styles.css
+  FTP ZIP path:      logicx/css/styles.css
+  Live server path:  /logicx/css/styles.css
+  Images live path:  /logicx/images/
 
-  Handoff ZIP path:  data/css/styles.css
-  Hosting upload:    /data/css/styles.css
-  Path convention:   data/css/[file-name].css → /data/css/[file-name].css
-
-  DevOps: paste Global Meta links from the handoff file
-  spec/devops-global-css-snippet.html into the hosting dashboard section
-  “Meta Data, JavaScript & CSS (Global)”. Keep enhanced-search links;
-  wire styles.css and bump ?v when replacing the file.
+  Support install:
+  1. FTP upload logicx/ only (css + images) to the site root
+  2. Paste meta-data-global-css-snippet.html (ZIP root) into
+     “Meta Data, JavaScript & CSS (Global)”
+  3. Verify /logicx/css/styles.css loads (not 404)
+  4. Paste html/* (ZIP root) into CMS regions — do not FTP html/
 
 Uploaded images are stored as data URLs in localStorage and replace these defaults.
 The editor applies bundled defaults automatically on load (including empty saved drafts).

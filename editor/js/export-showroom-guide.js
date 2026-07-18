@@ -29,6 +29,24 @@
         return 'SHR-' + Date.now().toString(36).toUpperCase().slice(-6);
     }
 
+    /** Human-readable export stamp for debugging which ZIP is on the client site. */
+    function buildHandoffVersion(date) {
+        const d = date instanceof Date ? date : new Date();
+        const pad = (n) => String(n).padStart(2, '0');
+        return (
+            `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`
+            + `-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`
+        );
+    }
+
+    function withHandoffVersion(filename, version) {
+        const name = String(filename || '');
+        const ver = String(version || '').trim();
+        if (!ver || !name) return name;
+        if (name.includes(`-${ver}.`) || name.endsWith(`-${ver}`)) return name;
+        return name.replace(/(\.[^.]+)$/, `-${ver}$1`);
+    }
+
     function getSectionList(meta) {
         const design = meta.design || 'classic';
         if (design === 'gallery') {
@@ -53,6 +71,7 @@
         const companyName = String(meta.companyName || 'Your Showroom').trim() || 'Your Showroom';
         const templateLabel = String(meta.templateLabel || 'Showroom').trim() || 'Showroom';
         const packageId = meta.packageId || buildPackageId();
+        const handoffVersion = meta.handoffVersion || buildHandoffVersion();
         const dateStr = new Date().toLocaleDateString('en-US', {
             year: 'numeric', month: 'long', day: 'numeric',
         });
@@ -138,9 +157,9 @@
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.setTextColor(120, 130, 140);
-        doc.text(`Package ID  ${packageId}`, margin, pageH - 72);
-        doc.text(`Issued  ${dateStr}`, margin, pageH - 56);
-        doc.text('Open WELCOME-GUIDE.html in this ZIP for the full rundown', margin, pageH - 40);
+        doc.text(`Handoff version  ${handoffVersion}`, margin, pageH - 72);
+        doc.text(`Package ID  ${packageId}  ·  Issued  ${dateStr}`, margin, pageH - 56);
+        doc.text('Open HANDOFF-VERSION.txt or WELCOME-GUIDE.html to confirm this package', margin, pageH - 40);
 
         doc.setFillColor(201, 169, 110);
         doc.rect(0, pageH - 5, pageW, 5, 'F');
@@ -153,6 +172,7 @@
         const templateLabel = escapeHtml(meta.templateLabel || 'Showroom');
         const design = meta.design || 'classic';
         const packageId = escapeHtml(meta.packageId || buildPackageId());
+        const handoffVersion = escapeHtml(meta.handoffVersion || buildHandoffVersion());
         const pdfFilename = escapeHtml(meta.pdfFilename || 'showroom-homepage-brief.pdf');
         const hasImages = Boolean(meta.hasHandoffImages);
         const date = new Date().toLocaleDateString('en-US', {
@@ -217,28 +237,56 @@
         ].join('\n');
 
         const hasStylesheets = Boolean(meta.hasStylesheets);
-        const stylesheetHref = meta.stylesheetHref || '/data/css/styles.css?v1';
+        const isClassicSupport = design === 'gallery';
+        const packageRoot = meta.packageRoot || 'logicx';
+        const serverRoot = meta.serverRoot || '/logicx';
+        const metaSnippetPath = meta.metaSnippetPath || 'meta-data-global-css-snippet.html';
+        const htmlDir = meta.htmlDir || 'html';
+        const cssDir = meta.cssDir || `${packageRoot}/css`;
+        const imagesDir = meta.imagesDir || `${packageRoot}/images`;
+        const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
+        const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v3`;
 
         const imageNote = hasImages
-            ? 'Client-provided images are included in the <code>images/</code> folder.'
-            : 'This export uses template default images — upload final assets on the live site.';
+            ? `Client images are in <code>${escapeHtml(imagesDir)}/</code> (live: <code>${escapeHtml(imagesServerPath)}/</code>).`
+            : 'This export uses template default images — upload final assets on the live site if needed.';
 
-        const cssStep = hasStylesheets || design === 'gallery'
+        const hasCmsHtml = isClassicSupport || Boolean(meta.hasCmsHtml);
+
+        const cssStep = isClassicSupport
             ? [
-                '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload homepage CSS</div><div class="step-desc">Upload <code>data/css/</code> from this ZIP to the server as <code>/data/css/</code>. File path convention: <code>data/css/[file-name].css</code> → <code>/data/css/[file-name].css</code>.</div></div></div>',
-                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Wire Global Meta CSS/JS</div><div class="step-desc">In the hosting dashboard under <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, paste the link tags from <code>spec/devops-global-css-snippet.html</code> (keeps enhanced-search + adds <code>', escapeHtml(stylesheetHref), '</code>). Bump the <code>?v</code> query when replacing the file.</div></div></div>',
-                `    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
-                '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
+                '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload logicx/ (css + images only)</div><div class="step-desc">Upload the top-level <code>logicx/</code> folder from this ZIP to the site root. Live paths: <code>/logicx/css/</code> and <code>/logicx/images/</code>. Do <strong>not</strong> FTP <code>html/</code> or <code>meta-data-global-css-snippet.html</code> — those are paste-only from the ZIP root.</div></div></div>',
+                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Paste Meta Data / Global CSS</div><div class="step-desc">Open the client dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Paste the contents of <code>', escapeHtml(metaSnippetPath), '</code> from the ZIP root (keep both enhanced-search lines; wire <code>', escapeHtml(stylesheetHref), '</code>). Then open that stylesheet URL in a browser — it must not 404 or the homepage will look broken.</div></div></div>',
+                `    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Confirm images on FTP</div><div class="step-desc">${imageNote}</div></div></div>`,
+                '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Paste homepage HTML into CMS regions</div><div class="step-desc">Open <code>', escapeHtml(htmlDir), '/README.txt</code>, then paste <code>header.html</code> → <strong>header</strong>, <code>section_1.html</code> → <strong>section_1</strong>, <code>section_2.html</code> → <strong>section_2</strong>, and <code>footer.html</code> → <strong>footer</strong>. Use the live preview markup — do not rebuild by hand.</div></div></div>',
             ].join('\n')
-            : [
-                `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
-                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
-            ].join('\n');
+            : hasStylesheets
+                ? [
+                    '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload homepage CSS</div><div class="step-desc">Upload stylesheets from this ZIP and wire them in Global Meta.</div></div></div>',
+                    `    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
+                    '    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
+                ].join('\n')
+                : [
+                    `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Upload image assets</div><div class="step-desc">${imageNote}</div></div></div>`,
+                    '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Build each homepage section</div><div class="step-desc">Match the layout previews in the PDF. Use the spec for exact copy, button labels, navigation links, and footer contact details.</div></div></div>',
+                ].join('\n');
 
-        const cssFileItems = (hasStylesheets || design === 'gallery')
+        const cssFileItems = isClassicSupport
             ? [
-                '    <div class="file-item is-primary"><div class="file-name">data/css/styles.css</div><div class="file-desc">Homepage stylesheet. Upload to hosting as <code>/data/css/styles.css</code> (handoff path: <code>data/css/[file-name].css</code>).</div></div>',
-                '    <div class="file-item is-primary"><div class="file-name">spec/devops-global-css-snippet.html</div><div class="file-desc">Paste into hosting dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Includes enhanced-search links plus the homepage stylesheet href.</div></div>',
+                `    <div class="file-item is-primary"><div class="file-name">logicx/</div><div class="file-desc">FTP only — css + images. Live base: <code>${escapeHtml(serverRoot)}/</code>.</div></div>`,
+                `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(cssDir)}/styles.css</div><div class="file-desc">Homepage stylesheet → <code>${escapeHtml(cssServerPath)}/styles.css</code> (must load; 404 = broken homepage).</div></div>`,
+                `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(metaSnippetPath)}</div><div class="file-desc">ZIP root — paste into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Not for FTP.</div></div>`,
+            ].join('\n')
+            : hasStylesheets
+                ? [
+                    '    <div class="file-item is-primary"><div class="file-name">data/css/styles.css</div><div class="file-desc">Homepage stylesheet for hosting upload.</div></div>',
+                ].join('\n')
+                : '';
+
+        const cmsHtmlFileItems = hasCmsHtml
+            ? [
+                `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/</div><div class="file-desc">CMS paste markup from the live preview. <code>header.html</code> → header, <code>section_1.html</code> → section_1, <code>section_2.html</code> → section_2, <code>footer.html</code> → footer (includes copyright/ADA).</div></div>`,
             ].join('\n')
             : '';
 
@@ -266,6 +314,7 @@
             `    <div class="cover-for-name">${companyName}</div>`,
             '  </div>',
             '  <div class="cover-meta">',
+            `    <div><strong>Handoff version</strong><br>${handoffVersion}</div>`,
             `    <div><strong>Package ID</strong><br>${packageId}</div>`,
             `    <div><strong>Issued</strong><br>${escapeHtml(date)}</div>`,
             `    <div><strong>Sections</strong><br>${sections.length} documented</div>`,
@@ -274,8 +323,10 @@
             '<div class="page">',
             '<div class="card card-accent">',
             `  <h2>Welcome, ${companyName}</h2>`,
-            `  <p>This package contains everything your developer or onboarding team needs to implement the <strong>${templateLabel}</strong> showroom homepage — copy, links, layout previews, stylesheet, and configuration notes.</p>`,
-            '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec, CSS, and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
+            `  <p>This package is for the onboarding / tech support agent implementing the <strong>${templateLabel}</strong> homepage with the client — FTP assets, paste Meta Data CSS, then paste CMS HTML. No web developer required for a standard install.</p>`,
+            hasCmsHtml
+                ? `  <p>FTP <code>logicx/</code> (css + images only), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste <code>${escapeHtml(htmlDir)}/</code> into each CMS region. Copyright/ADA is already at the bottom of <code>footer.html</code>.</p>`
+                : '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec, CSS, and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
             '</div>',
             '<div class="section">',
             '  <div class="section-label">Homepage scope</div>',
@@ -286,9 +337,17 @@
             '  <div class="section-label">Getting started</div>',
             '  <h2>Recommended workflow</h2>',
             '  <div class="steps">',
-            '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Open the developer brief</div><div class="step-desc">Read <code>', pdfFilename, '</code> first — it includes copy, URLs, colors, layout preview captures, and the handoff image inventory.</div></div></div>',
-            '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Use the machine-readable spec</div><div class="step-desc">Import or reference <code>spec/homepage-spec.json</code> for structured field values, section order, and asset filenames.</div></div></div>',
-            '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Install ADA footer markup</div><div class="step-desc">Copy <code>spec/footer-copyright-snippet.html</code> to the very bottom of every site footer — this is mandatory on all LogicX showroom sites.</div></div></div>',
+            hasCmsHtml
+                ? [
+                    '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Skim the brief</div><div class="step-desc">Open <code>', pdfFilename, '</code> for layout previews and the image inventory. You will paste HTML — do not rebuild sections from the PDF.</div></div></div>',
+                    '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Read the CMS paste map</div><div class="step-desc">Open <code>', escapeHtml(htmlDir), '/README.txt</code> for which file goes into which dashboard region.</div></div></div>',
+                    '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Copyright / ADA is in the footer file</div><div class="step-desc"><code>', escapeHtml(htmlDir), '/footer.html</code> already includes the copyright + ADA block at the bottom.</div></div></div>',
+                ].join('\n')
+                : [
+                    '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Open the developer brief</div><div class="step-desc">Read <code>', pdfFilename, '</code> first — it includes copy, URLs, colors, layout preview captures, and the handoff image inventory.</div></div></div>',
+                    '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Use the machine-readable spec</div><div class="step-desc">Import or reference <code>spec/homepage-spec.json</code> for structured field values, section order, and asset filenames.</div></div></div>',
+                    '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Install ADA footer markup</div><div class="step-desc">Copy <code>spec/footer-copyright-snippet.html</code> to the very bottom of every site footer — this is mandatory on all LogicX showroom sites.</div></div></div>',
+                ].join('\n'),
             cssStep,
             '  </div>',
             '</div>',
@@ -298,6 +357,7 @@
             '  <div class="file-list">',
             `    <div class="file-item is-primary"><div class="file-name">${pdfFilename}</div><div class="file-desc">Developer brief with a branded cover, full copy spec, layout preview screenshots, and handoff image list.</div></div>`,
             '    <div class="file-item is-primary"><div class="file-name">WELCOME-GUIDE.html</div><div class="file-desc">This guide — open in any browser for a readable overview of the package and recommended install steps.</div></div>',
+            cmsHtmlFileItems,
             cssFileItems,
             '    <div class="file-item"><div class="file-name">spec/homepage-spec.json</div><div class="file-desc">Structured configuration: header, hero, sections, footer, copyright, stylesheets, and asset metadata.</div></div>',
             '    <div class="file-item"><div class="file-name">spec/footer-copyright-snippet.html</div><div class="file-desc">Required ADA compliance + copyright markup for the site footer.</div></div>',
@@ -309,7 +369,7 @@
             '</div>',
             '<div class="footer-note">',
             `  <span>LogicX Showroom · ${templateLabel}</span>`,
-            `  <span>${packageId} · ${escapeHtml(date)}</span>`,
+            `  <span>v${handoffVersion} · ${packageId} · ${escapeHtml(date)}</span>`,
             '</div>',
             '</div>',
             '</body>',
@@ -322,38 +382,89 @@
         const pdfFilename = meta.pdfFilename || 'showroom-homepage-brief.pdf';
         const hasImages = Boolean(meta.hasHandoffImages);
         const hasStylesheets = Boolean(meta.hasStylesheets);
-        const stylesheetHref = meta.stylesheetHref || '/data/css/styles.css?v1';
         const design = meta.design || 'classic';
+        const handoffVersion = meta.handoffVersion || buildHandoffVersion();
+        const packageId = meta.packageId || buildPackageId();
+        const packageRoot = meta.packageRoot || 'logicx';
+        const serverRoot = meta.serverRoot || '/logicx';
+        const metaSnippetPath = meta.metaSnippetPath || 'meta-data-global-css-snippet.html';
+        const htmlDir = meta.htmlDir || 'html';
+        const cssDir = meta.cssDir || `${packageRoot}/css`;
+        const imagesDir = meta.imagesDir || `${packageRoot}/images`;
+        const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
+        const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v3`;
+
+        if (design === 'gallery') {
+            return [
+                `${templateLabel.toUpperCase()} — SUPPORT HANDOFF PACKAGE`,
+                '='.repeat(40),
+                '',
+                'HANDOFF VERSION',
+                '--------------',
+                `  ${handoffVersion}`,
+                `  Package ID: ${packageId}`,
+                '  See also: HANDOFF-VERSION.txt',
+                '',
+                'START HERE',
+                '----------',
+                '  1. WELCOME-GUIDE.html         — Open in browser (support install steps)',
+                `  2. ${pdfFilename}   — Brief + layout previews`,
+                '  3. logicx/                    — FTP only (css + images)',
+                `       Live base: ${serverRoot}/`,
+                `  4. ${metaSnippetPath} — paste into Meta Data / Global CSS`,
+                `  5. ${htmlDir}/                  — CMS paste files (not FTP)`,
+                '',
+                'FTP TREE (inside logicx/)',
+                '-------------------------',
+                `  ${cssDir}/styles.css`,
+                `    → ${cssServerPath}/styles.css`,
+                hasImages ? `  ${imagesDir}/` : '',
+                hasImages ? `    → ${imagesServerPath}/` : '',
+                '',
+                'SUPPORT INSTALL ORDER',
+                '---------------------',
+                '  1. FTP upload logicx/ to the site root (css + images only)',
+                `  2. Paste ${metaSnippetPath}`,
+                '     into Meta Data, JavaScript & CSS (Global)',
+                `  3. Verify ${cssServerPath}/styles.css loads (not 404)`,
+                `  4. Paste ${htmlDir}/*.html into CMS regions:`,
+                '       header.html     → header',
+                '       section_1.html  → section_1',
+                '       section_2.html  → section_2',
+                '       footer.html     → footer (includes copyright/ADA)',
+                '',
+                'STYLESHEET LINK',
+                '---------------',
+                `  <link rel="stylesheet" href="${stylesheetHref}">`,
+                '',
+                'REFERENCE (optional)',
+                '--------------------',
+                '  spec/homepage-spec.json',
+                '  spec/footer-copyright-snippet.html',
+                '',
+                'Generated by LogicX Showroom Editor — ' + new Date().toLocaleDateString(),
+            ].filter(Boolean).join('\n');
+        }
 
         return [
             `${templateLabel.toUpperCase()} — SHOWROOM HANDOFF PACKAGE`,
             '='.repeat(40),
             '',
+            'HANDOFF VERSION',
+            '--------------',
+            `  ${handoffVersion}`,
+            `  Package ID: ${packageId}`,
+            '  See also: HANDOFF-VERSION.txt',
+            '',
             'START HERE',
             '----------',
             '  1. WELCOME-GUIDE.html         — Open in browser for package overview',
-            `  2. ${pdfFilename}   — Developer brief (cover + spec + previews)`,
+            `  2. ${pdfFilename}   — Brief (cover + spec + previews)`,
             '  3. spec/homepage-spec.json    — Machine-readable configuration',
             '  4. spec/footer-copyright-snippet.html — Required ADA footer markup',
-            (hasStylesheets || design === 'gallery')
-                ? '  5. data/css/styles.css         — Homepage stylesheet → /data/css/styles.css'
-                : '',
-            (hasStylesheets || design === 'gallery')
-                ? '  6. spec/devops-global-css-snippet.html — Hosting Global Meta CSS/JS links'
-                : '',
-            hasImages ? '  7. images/                    — Client-uploaded handoff images' : '',
-            '',
-            'CSS PATH',
-            '--------',
-            '  Handoff file: data/css/[file-name].css',
-            '  Server path:  /data/css/[file-name].css',
-            `  Link tag:     <link rel="stylesheet" href="${stylesheetHref}">`,
-            '',
-            'DEVOPS',
-            '------',
-            '  Hosting dashboard → Meta Data, JavaScript & CSS (Global)',
-            '  Paste links from spec/devops-global-css-snippet.html',
-            '  (keeps enhanced-search + wires homepage styles.css).',
+            hasStylesheets ? '  5. data/css/styles.css         — Homepage stylesheet' : '',
+            hasImages ? '  6. images/                    — Client-uploaded handoff images' : '',
             '',
             'REQUIRED',
             '--------',
@@ -365,6 +476,8 @@
 
     window.ShowroomHandoffGuide = {
         buildPackageId,
+        buildHandoffVersion,
+        withHandoffVersion,
         appendShowroomPdfCover,
         buildShowroomHandoffGuide,
         buildShowroomHandoffReadme,

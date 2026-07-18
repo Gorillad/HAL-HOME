@@ -3997,19 +3997,21 @@
             showroomHeaderGallery.style.removeProperty('transform');
         }
 
-        const barBg = normalizeHex(state.galleryHeaderBarBackgroundColor || DEFAULT_GALLERY_HEADER_BAR_BG);
+        const barBg = normalizeHexColor(
+            state.galleryHeaderBarBackgroundColor,
+            DEFAULT_GALLERY_HEADER_BAR_BG,
+        );
         const barText = normalizeHexColor(
             state.galleryHeaderBarTextColor,
             DEFAULT_GALLERY_HEADER_BAR_TEXT,
         );
+        state.galleryHeaderBarBackgroundColor = barBg;
+        state.galleryHeaderBarTextColor = barText;
+
+        // Always apply Message Bar colors from the editor — preview theme must not swallow them.
         if (previewGalleryTopBar) {
-            if (isGalleryDarkPreview()) {
-                previewGalleryTopBar.style.backgroundColor = '';
-                previewGalleryTopBar.style.color = '';
-            } else {
-                previewGalleryTopBar.style.backgroundColor = barBg;
-                previewGalleryTopBar.style.color = barText;
-            }
+            previewGalleryTopBar.style.setProperty('background-color', barBg, 'important');
+            previewGalleryTopBar.style.setProperty('color', barText, 'important');
         }
 
         if (previewGalleryTopBarCopy) {
@@ -4018,11 +4020,7 @@
                 : DEFAULT_GALLERY_HEADER_CENTER_COPY;
             previewGalleryTopBarCopy.textContent = centerCopy;
             previewGalleryTopBarCopy.hidden = !centerCopy;
-            if (!isGalleryDarkPreview()) {
-                previewGalleryTopBarCopy.style.color = barText;
-            } else {
-                previewGalleryTopBarCopy.style.color = '';
-            }
+            previewGalleryTopBarCopy.style.setProperty('color', barText, 'important');
         }
 
         if (previewGalleryTopBarUtils) {
@@ -4050,14 +4048,12 @@
             previewGalleryTopBarUtils.innerHTML = utilLinks.join(
                 '<span class="showroom-gallery-top-bar-sep" aria-hidden="true">|</span>',
             );
-            if (!isGalleryDarkPreview()) {
-                previewGalleryTopBarUtils.querySelectorAll('a').forEach((link) => {
-                    link.style.color = barText;
-                });
-                previewGalleryTopBarUtils.querySelectorAll('.showroom-gallery-top-bar-sep').forEach((sep) => {
-                    sep.style.color = hexWithAlpha(barText, 0.72);
-                });
-            }
+            previewGalleryTopBarUtils.querySelectorAll('a').forEach((link) => {
+                link.style.setProperty('color', barText, 'important');
+            });
+            previewGalleryTopBarUtils.querySelectorAll('.showroom-gallery-top-bar-sep').forEach((sep) => {
+                sep.style.setProperty('color', hexWithAlpha(barText, 0.72), 'important');
+            });
         }
 
         if (previewGalleryMainNavLinks) {
@@ -5819,8 +5815,9 @@
             softCascadeFromHeaderText(previousHeaderText, state.headerBannerTextColor);
         }
         if (fields.galleryHeaderBarBackgroundColor) {
-            state.galleryHeaderBarBackgroundColor = normalizeHex(
-                fields.galleryHeaderBarBackgroundColor.value || DEFAULT_GALLERY_HEADER_BAR_BG,
+            state.galleryHeaderBarBackgroundColor = normalizeHexColor(
+                fields.galleryHeaderBarBackgroundColor.value,
+                DEFAULT_GALLERY_HEADER_BAR_BG,
             );
             fields.galleryHeaderBarBackgroundColor.value = state.galleryHeaderBarBackgroundColor;
             if (fields.galleryHeaderBarBackgroundColorValue) {
@@ -6334,6 +6331,8 @@
 
             colorInput.addEventListener('input', () => {
                 setColorValueEl(hexInput, colorInput.value);
+                // Keep preview/state in sync even if a field-specific listener was missed.
+                readForm();
             });
         });
     }

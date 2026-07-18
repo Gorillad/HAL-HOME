@@ -25,20 +25,46 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     const isGallery = spec?.design === 'gallery';
     const isSpotlight = spec?.design === 'spotlight';
+    /**
+     * Classic package layout:
+     *   logicx/{css,images}       — FTP only
+     *   html/ + meta-data-*.html  — CMS paste (ZIP parent, not FTP)
+     */
+    const GALLERY_PACKAGE_ROOT = 'logicx';
+    const GALLERY_SERVER_ROOT = '/logicx';
+    const GALLERY_CSS_ZIP_DIR = `${GALLERY_PACKAGE_ROOT}/css`;
+    const GALLERY_IMAGES_ZIP_DIR = `${GALLERY_PACKAGE_ROOT}/images`;
+    const GALLERY_HTML_ZIP_DIR = 'html';
+    const GALLERY_META_SNIPPET_ZIP = 'meta-data-global-css-snippet.html';
+    const GALLERY_CSS_SERVER = `${GALLERY_SERVER_ROOT}/css`;
+    const GALLERY_IMAGES_SERVER = `${GALLERY_SERVER_ROOT}/images`;
     const resolvedHandoffAssets = assets.filter(
         (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
     );
 
     const handoffGuide = window.ShowroomHandoffGuide || {};
+    const exportedAt = new Date();
     const packageId = guideMeta.packageId
         || (handoffGuide.buildPackageId ? handoffGuide.buildPackageId() : `SHR-${Date.now().toString(36).toUpperCase().slice(-6)}`);
+    const handoffVersion = guideMeta.handoffVersion
+        || (handoffGuide.buildHandoffVersion
+            ? handoffGuide.buildHandoffVersion(exportedAt)
+            : exportedAt.toISOString().replace(/[-:TZ.]/g, '').slice(0, 14));
+    const withVersion = (filename) => (
+        handoffGuide.withHandoffVersion
+            ? handoffGuide.withHandoffVersion(filename, handoffVersion)
+            : String(filename || '').replace(/(\.[^.]+)$/, `-${handoffVersion}$1`)
+    );
+    const versionedPdfFilename = withVersion(pdfFilename);
+    const versionedZipFilename = withVersion(zipFilename);
     const coverMeta = {
         companyName: guideMeta.companyName || spec?.footer?.companyName || spec?.copyright?.companyName || 'Your Showroom',
         templateLabel: guideMeta.templateLabel || spec?.template || 'Showroom',
         design: guideMeta.design || spec?.design || 'classic',
         packageId,
+        handoffVersion,
         logoDataUrl: guideMeta.logoDataUrl || '',
-        pdfFilename,
+        pdfFilename: versionedPdfFilename,
         hasHandoffImages: resolvedHandoffAssets.length > 0,
     };
 
@@ -1051,17 +1077,17 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     if (isGallery) {
-        writeSectionTitle('Homepage stylesheet');
+        writeSectionTitle('Homepage stylesheet (support install)');
         writeSpecRows([
-            ['Handoff path', 'data/css/styles.css'],
-            ['Server path', '/data/css/styles.css'],
-            ['Path convention', 'data/css/[file-name].css -> /data/css/[file-name].css'],
-            ['DevOps dashboard', 'Meta Data, JavaScript & CSS (Global)'],
-            ['Snippet file', 'spec/devops-global-css-snippet.html'],
-            ['Stylesheet link', '<link rel="stylesheet" href="/data/css/styles.css?v1">'],
+            ['FTP upload', 'Upload the logicx/ folder from this ZIP to the site root'],
+            ['Handoff path', `${GALLERY_CSS_ZIP_DIR}/styles.css`],
+            ['Server path', `${GALLERY_CSS_SERVER}/styles.css`],
+            ['Dashboard section', 'Meta Data, JavaScript & CSS (Global)'],
+            ['Snippet file', GALLERY_META_SNIPPET_ZIP],
+            ['Stylesheet link', `<link rel="stylesheet" href="${GALLERY_CSS_SERVER}/styles.css?v3">`],
         ]);
         writeLines(
-            'Upload data/css/ from this ZIP to /data/css/ on hosting. Paste the Global Meta snippet so DevOps does not need to author a new stylesheet for this homepage.',
+            'Support: FTP upload logicx/ (css + images only). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions.',
             { size: 9, color: [90, 90, 90], gap: 10 },
         );
     }
@@ -1149,7 +1175,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     const pdfBlob = doc.output('blob');
-    const handoffImageZipPath = (filename) => `images/${filename}`;
+    const handoffImageZipPath = (filename) => (
+        isGallery ? `${GALLERY_IMAGES_ZIP_DIR}/${filename}` : `images/${filename}`
+    );
 
     async function fetchTextForHandoff(url) {
         const response = await fetch(url, { credentials: 'same-origin' });
@@ -1160,16 +1188,16 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     /**
-     * Classic homepage stylesheets shipped for hosting upload.
-     * ZIP path data/css/[file] → live server /data/css/[file]
+     * Classic homepage stylesheets for FTP upload.
+     * ZIP: logicx/css/[file] → live: /logicx/css/[file]
      */
     async function loadGalleryHandoffStylesheets() {
         if (!isGallery) return [];
         const files = [
             {
-                zipPath: 'data/css/styles.css',
+                zipPath: `${GALLERY_CSS_ZIP_DIR}/styles.css`,
                 sourceUrl: 'gallery/data/css/styles.css',
-                serverPath: '/data/css/styles.css',
+                serverPath: `${GALLERY_CSS_SERVER}/styles.css`,
             },
         ];
         const loaded = [];
@@ -1189,19 +1217,23 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const primaryStylesheet = galleryStylesheets[0] || null;
     const primaryStylesheetServerPath = primaryStylesheet
         ? primaryStylesheet.serverPath
-        : '/data/css/styles.css';
-    const primaryStylesheetCacheBust = `${primaryStylesheetServerPath}?v1`;
+        : `${GALLERY_CSS_SERVER}/styles.css`;
+    const primaryStylesheetCacheBust = `${primaryStylesheetServerPath}?v3`;
 
-    const devopsGlobalSnippet = [
+    const metaDataGlobalSnippet = [
         '<!--',
-        '  DevOps — Hosting dashboard: Meta Data, JavaScript & CSS (Global)',
-        '  ----------------------------------------------------------------',
-        '  1. Upload this package\'s data/css/ folder to the server as /data/css/',
-        `     (file path in handoff: data/css/${primaryStylesheet ? primaryStylesheet.zipPath.split('/').pop() : 'styles.css'})`,
-        `  2. Live URL: ${primaryStylesheetServerPath}`,
-        '  3. Paste (or merge) the link tags below into Global CSS/JS.',
-        '  4. Keep enhanced-search lines if the site already uses them.',
-        '  5. Bump the ?v query when you replace styles.css so browsers load the new file.',
+        '  Support — paste into: Meta Data, JavaScript & CSS (Global)',
+        '  ---------------------------------------------------------',
+        `  Handoff version: ${handoffVersion}`,
+        `  Package ID: ${packageId}`,
+        '  1. Upload the logicx/ folder from this ZIP to the site root via FTP.',
+        `  2. Stylesheet file: ${GALLERY_CSS_ZIP_DIR}/${primaryStylesheet ? primaryStylesheet.zipPath.split('/').pop() : 'styles.css'}`,
+        `  3. Live URL: ${primaryStylesheetServerPath}`,
+        '  4. Paste (or merge) the link tags below into Meta Data / Global CSS.',
+        '  5. REQUIRED: keep both enhanced-search lines — new databases need them',
+        '     so #searchEngine / enhanced-search.js can bind on the live site.',
+        '  6. Bump the ?v query when you replace styles.css so browsers load the new file.',
+        '  7. Confirm styles.css is on FTP at the Live URL below (homepage looks unstyled if missing).',
         '-->',
         '<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">',
         '<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js"></script>',
@@ -1210,26 +1242,345 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     ].join('\n');
 
     const cssFolderReadme = [
-        'Homepage stylesheet — Classic (Gallery)',
-        '=======================================',
+        'Homepage stylesheet — Classic (FTP)',
+        '===================================',
         '',
-        'Upload this folder to the hosting provider as:',
-        '  data/css/  →  /data/css/',
+        'This folder is FTP-only (inside logicx/):',
+        `  ${GALLERY_CSS_ZIP_DIR}/`,
+        '',
+        'Support install:',
+        '  1. Upload the top-level logicx/ folder from the ZIP to the site root.',
+        `  2. Live path must be exactly: ${GALLERY_CSS_SERVER}/styles.css`,
+        '  3. Paste meta-data-global-css-snippet.html (ZIP root) into',
+        '     Meta Data, JavaScript & CSS (Global).',
         '',
         'Files:',
         ...(galleryStylesheetNames.length
-            ? galleryStylesheetNames.map((name) => `  - ${name}  →  /data/css/${name}`)
-            : ['  - styles.css  →  /data/css/styles.css']),
+            ? galleryStylesheetNames.map((name) => `  - ${name}  →  ${GALLERY_CSS_SERVER}/${name}`)
+            : [`  - styles.css  →  ${GALLERY_CSS_SERVER}/styles.css`]),
         '',
-        'DevOps: paste the Global Meta link tags from',
-        '  spec/devops-global-css-snippet.html',
-        'into the hosting dashboard section',
-        '  “Meta Data, JavaScript & CSS (Global)”.',
+        'If the homepage looks unstyled, open the Live URL in a browser.',
+        'A 404 means FTP path or Meta Data link is wrong.',
         '',
-        'Example (after upload):',
+        'Example Meta Data link (after FTP):',
         `  <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
         '',
     ].join('\n');
+
+    /**
+     * Classic CMS paste HTML — serialize the live preview DOM (single source of truth).
+     * Dashboard regions: header → section_1 → section_2 → footer (footer + copyright).
+     */
+    const GALLERY_PREVIEW_ID_TO_IMAGE = {
+        previewGalleryLogo: 'header-logo.png',
+        previewGalleryHeroPrimaryImage: 'gallery-hero-primary.jpg',
+        previewGalleryHeroSecondaryTopImage: 'gallery-hero-secondary-top.jpg',
+        previewGalleryHeroSecondaryBottomImage: 'gallery-hero-secondary-bottom.jpg',
+    };
+
+    const GALLERY_DEFAULT_PATH_TO_IMAGE = {
+        'gallery/xologic-logo.png': 'header-logo.png',
+        'gallery/quorum1.jpg': 'gallery-hero-primary.jpg',
+        'gallery/chandelier4.jpg': 'gallery-hero-secondary-top.jpg',
+        'gallery/pendants3.jpg': 'gallery-hero-secondary-bottom.jpg',
+        'gallery/bathroom1.jpg': 'gallery-catalog-tile-1.jpg',
+        'gallery/exterior1.jpg': 'gallery-catalog-tile-2.jpg',
+        'gallery/fans1.jpg': 'gallery-catalog-tile-3.jpg',
+        'gallery/hall-lantern3.jpg': 'gallery-catalog-tile-4.jpg',
+    };
+
+    function galleryCmsImagePath(filename) {
+        return `${GALLERY_IMAGES_SERVER}/${filename}`;
+    }
+
+    function galleryRelativeImageKey(src) {
+        const value = String(src || '');
+        if (!value || value.startsWith('data:')) return '';
+        try {
+            const url = new URL(value, window.location.href);
+            const match = url.pathname.match(/(?:^|\/)(gallery\/[^/?#]+)$/i);
+            if (match) return match[1].replace(/^\/+/, '');
+        } catch {
+            /* ignore */
+        }
+        const loose = value.match(/(gallery\/[^/?#]+)/i);
+        return loose ? loose[1] : '';
+    }
+
+    function buildGalleryCmsSrcLookup(assets) {
+        const bySrc = new Map();
+        for (const asset of assets) {
+            if (!asset?.filename || !asset.dataUrl) continue;
+            const path = galleryCmsImagePath(asset.filename);
+            bySrc.set(String(asset.dataUrl), path);
+        }
+        Object.entries(GALLERY_DEFAULT_PATH_TO_IMAGE).forEach(([rel, filename]) => {
+            bySrc.set(rel, galleryCmsImagePath(filename));
+        });
+        return bySrc;
+    }
+
+    function resolveGalleryCmsImageSrc(img, srcLookup, catalogTileIndex) {
+        const attrSrc = img.getAttribute('src') || '';
+        const liveSrc = img.src || attrSrc;
+        if (srcLookup.has(attrSrc)) return srcLookup.get(attrSrc);
+        if (liveSrc && srcLookup.has(liveSrc)) return srcLookup.get(liveSrc);
+
+        const rel = galleryRelativeImageKey(attrSrc || liveSrc);
+        if (rel && srcLookup.has(rel)) return srcLookup.get(rel);
+
+        const id = img.id || '';
+        if (GALLERY_PREVIEW_ID_TO_IMAGE[id]) {
+            return galleryCmsImagePath(GALLERY_PREVIEW_ID_TO_IMAGE[id]);
+        }
+        if (id.startsWith('previewGalleryCatalogTile-') && catalogTileIndex > 0) {
+            return galleryCmsImagePath(`gallery-catalog-tile-${catalogTileIndex}.jpg`);
+        }
+        return '';
+    }
+
+    function escapeHtmlAttr(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    /**
+     * Fixed enhanced-search module for Classic header handoff.
+     * IDs/attrs are bound by enhanced-search.js — do not rename or restructure.
+     * Only placeholder text may vary.
+     */
+    function buildGalleryEnhancedSearchModule(placeholder) {
+        const ph = escapeHtmlAttr(placeholder || 'Search...');
+        return [
+            '<div id="searchEngine" class="showroom-gallery-main-nav-search">',
+            '  <div id="searchInputBox" class="enhanced-search" style="display:flex;align-items:center;width:100%">',
+            `    <input class="showroom-gallery-main-nav-search-input" type="text"`,
+            `           name="itemNumVal" placeholder="${ph}" aria-label="Search Keywords"`,
+            '           search="categories" results="6">',
+            '    <button id="searchSubmitBtn" class="showroom-gallery-main-nav-search-icon"',
+            '            type="submit" aria-label="Submit Search"',
+            '            style="background:none;border:0;padding:0;cursor:pointer">',
+            '      <i class="fa fa-search" aria-hidden="true"></i>',
+            '    </button>',
+            '  </div>',
+            '</div>',
+        ].join('\n');
+    }
+
+    function resolveGallerySearchPlaceholder(sourceEl) {
+        const fromSpec = spec?.header?.toolbar?.searchPlaceholder
+            || spec?.header?.search?.placeholder;
+        if (typeof fromSpec === 'string' && fromSpec.trim()) return fromSpec.trim();
+
+        const fromPreview = sourceEl?.querySelector?.('.showroom-gallery-main-nav-search-input')
+            ?.getAttribute('placeholder');
+        if (typeof fromPreview === 'string' && fromPreview.trim()) return fromPreview.trim();
+
+        return 'Search...';
+    }
+
+    function injectGalleryEnhancedSearchModule(clone, sourceEl) {
+        if (!clone) return clone;
+        const slot = clone.querySelector('.showroom-gallery-main-nav-search');
+        if (!slot || !slot.parentNode) return clone;
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = buildGalleryEnhancedSearchModule(
+            resolveGallerySearchPlaceholder(sourceEl),
+        ).trim();
+        const moduleEl = wrapper.firstElementChild;
+        if (moduleEl) slot.replaceWith(moduleEl);
+        return clone;
+    }
+
+    function sanitizeGalleryCmsClone(root, srcLookup) {
+        if (!root) return null;
+        const clone = root.cloneNode(true);
+        clone.removeAttribute('hidden');
+        clone.classList.remove('is-preview-stuck', 'editor-preview-image-jump-target');
+        clone.style.removeProperty('transform');
+
+        // Rewrite image paths while preview ids still exist on the clone.
+        let catalogTileIndex = 0;
+        clone.querySelectorAll('img').forEach((img) => {
+            const inCatalogTile = Boolean(img.closest('.showroom-gallery-catalog-tile'));
+            if (inCatalogTile) catalogTileIndex += 1;
+            const nextSrc = resolveGalleryCmsImageSrc(img, srcLookup, inCatalogTile ? catalogTileIndex : 0);
+            if (nextSrc) {
+                img.setAttribute('src', nextSrc);
+                img.removeAttribute('srcset');
+            }
+            img.removeAttribute('hidden');
+        });
+
+        clone.querySelectorAll('*').forEach((el) => {
+            el.classList.remove('is-preview-stuck', 'editor-preview-image-jump-target');
+            el.removeAttribute('data-editor-jump-target');
+            if (el.hasAttribute('style') && /transform/i.test(el.getAttribute('style') || '')) {
+                el.style.removeProperty('transform');
+            }
+            // Keep enhanced-search binding ids (#searchEngine, #searchInputBox, #searchSubmitBtn).
+            if (el.id && (/^preview/i.test(el.id) || /^showroom/i.test(el.id))) {
+                el.removeAttribute('id');
+            }
+            if (el.matches('input, button, textarea, select')) {
+                el.removeAttribute('disabled');
+                el.removeAttribute('aria-disabled');
+            }
+        });
+
+        return clone;
+    }
+
+    function serializeGalleryCmsRegion(el, srcLookup, label, pasteRegion, options = {}) {
+        if (!el) return '';
+        let clone = sanitizeGalleryCmsClone(el, srcLookup);
+        if (!clone) return '';
+        if (options.injectEnhancedSearch) {
+            clone = injectGalleryEnhancedSearchModule(clone, el);
+        }
+        const date = new Date().toLocaleDateString();
+        return [
+            `<!-- Showroom Classic — ${label} | LogicX Showroom Editor · ${date} -->`,
+            `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
+            `<!-- Paste into CMS region: ${pasteRegion} -->`,
+            `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css and images under ${GALLERY_IMAGES_SERVER}/ -->`,
+            options.injectEnhancedSearch
+                ? '<!-- Search module is fixed for enhanced-search.js (#searchEngine / #searchInputBox / #searchSubmitBtn) -->'
+                : null,
+            '',
+            clone.outerHTML,
+            '',
+        ].filter((line) => line !== null).join('\n');
+    }
+
+    function collectShowroomClassesFromHtml(html) {
+        const classes = new Set();
+        const re = /class\s*=\s*["']([^"']+)["']/gi;
+        let match;
+        while ((match = re.exec(html)) !== null) {
+            match[1].split(/\s+/).forEach((name) => {
+                if (name.startsWith('showroom-')) classes.add(name);
+            });
+        }
+        return classes;
+    }
+
+    function collectShowroomClassesFromCss(cssText) {
+        const classes = new Set();
+        const re = /\.((?:showroom-)[a-zA-Z0-9_-]+)/g;
+        let match;
+        while ((match = re.exec(cssText || '')) !== null) {
+            classes.add(match[1]);
+        }
+        return classes;
+    }
+
+    function warnGalleryHtmlCssDrift(htmlFiles, cssText) {
+        if (!cssText) return;
+        const cssClasses = collectShowroomClassesFromCss(cssText);
+        const missing = [];
+        htmlFiles.forEach((file) => {
+            collectShowroomClassesFromHtml(file.content).forEach((name) => {
+                if (!cssClasses.has(name)) missing.push(`${file.path}: .${name}`);
+            });
+        });
+        if (missing.length) {
+            console.warn(
+                '[showroom handoff] .showroom-* classes in exported HTML missing from styles.css:\n'
+                + missing.join('\n'),
+            );
+        }
+    }
+
+    function buildGalleryCmsHtmlFiles() {
+        if (!isGallery) return [];
+        const srcLookup = buildGalleryCmsSrcLookup(resolvedHandoffAssets);
+        const headerHtml = serializeGalleryCmsRegion(
+            headerEl,
+            srcLookup,
+            'Header (message bar + logo + main nav + search)',
+            'header',
+            { injectEnhancedSearch: true },
+        );
+        const section1Html = serializeGalleryCmsRegion(
+            heroEl,
+            srcLookup,
+            'Hero (split lifestyle)',
+            'section_1',
+        );
+        const section2Html = serializeGalleryCmsRegion(
+            galleryCatalogEl,
+            srcLookup,
+            'Catalog Highlights (four tiles)',
+            'section_2',
+        );
+
+        const footerParts = [];
+        const footerClone = sanitizeGalleryCmsClone(footerEl, srcLookup);
+        const copyrightClone = sanitizeGalleryCmsClone(copyrightEl, srcLookup);
+        if (footerClone) footerParts.push(footerClone.outerHTML);
+        if (copyrightClone) footerParts.push(copyrightClone.outerHTML);
+        const date = new Date().toLocaleDateString();
+        const footerHtml = footerParts.length
+            ? [
+                `<!-- Showroom Classic — Footer + Copyright/ADA | LogicX Showroom Editor · ${date} -->`,
+                `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
+                '<!-- Paste into CMS region: footer -->',
+                `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css and images under ${GALLERY_IMAGES_SERVER}/ -->`,
+                '',
+                footerParts.join('\n\n'),
+                '',
+            ].join('\n')
+            : '';
+
+        const files = [
+            { path: `${GALLERY_HTML_ZIP_DIR}/header.html`, content: headerHtml },
+            { path: `${GALLERY_HTML_ZIP_DIR}/section_1.html`, content: section1Html },
+            { path: `${GALLERY_HTML_ZIP_DIR}/section_2.html`, content: section2Html },
+            { path: `${GALLERY_HTML_ZIP_DIR}/footer.html`, content: footerHtml },
+        ].filter((file) => file.content);
+
+        const cssText = galleryStylesheets[0]?.content || '';
+        warnGalleryHtmlCssDrift(files, cssText);
+
+        files.push({
+            path: `${GALLERY_HTML_ZIP_DIR}/README.txt`,
+            content: [
+                'Showroom Classic — CMS paste HTML (support)',
+                '==========================================',
+                '',
+                `Handoff version: ${handoffVersion}`,
+                `Package ID: ${packageId}`,
+                '',
+                'These files are for CMS paste only — do NOT upload html/ via FTP.',
+                'Copy-paste each file into the matching dashboard region:',
+                '',
+                '  html/header.html     →  header',
+                '  html/section_1.html  →  section_1   (hero)',
+                '  html/section_2.html  →  section_2   (catalog highlights)',
+                '  html/footer.html     →  footer      (columns + copyright/ADA)',
+                '',
+                'Install order (support agent):',
+                '  1. FTP upload logicx/ only (css + images under logicx/css and logicx/images)',
+                '  2. Paste meta-data-global-css-snippet.html (ZIP root)',
+                '     into dashboard → Meta Data, JavaScript & CSS (Global)',
+                `  3. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
+                `  4. Confirm images are at ${GALLERY_IMAGES_SERVER}/`,
+                '  5. Paste these html/*.html files into the CMS regions above',
+                '',
+                'meta and section_3 CMS regions are not used by this template.',
+                '',
+            ].join('\n'),
+        });
+
+        return files;
+    }
+
+    const galleryCmsHtmlFiles = buildGalleryCmsHtmlFiles();
 
     const specJsonShared = {
         template: spec.template || 'Showroom',
@@ -1239,8 +1590,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             : isSpotlight
                 ? ['header', 'homepage-hero', 'on-sale', 'shop-by-room', 'about-us', 'categories', 'brands', 'newsletter', 'footer']
                 : ['header', 'homepage-hero', 'featured-categories', 'about-us', 'feature-cards', 'you-may-like', 'get-inspired', 'footer'],
-        generatedAt: new Date().toISOString(),
+        generatedAt: exportedAt.toISOString(),
         packageId,
+        handoffVersion,
         adaCompliance: {
             required: true,
             placement: 'Very bottom of footer on every website',
@@ -1263,15 +1615,34 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 filename: file.zipPath.split('/').pop(),
                 zipPath: file.zipPath,
                 serverPath: file.serverPath,
-                note: 'Upload data/css/[file-name].css to hosting /data/css/[file-name].css',
+                note: `FTP upload logicx/ → live ${GALLERY_CSS_SERVER}/[file-name].css`,
             }))
             : [],
+        supportInstall: isGallery
+            ? {
+                ftpUploadFolder: 'logicx/',
+                ftpContents: ['css', 'images'],
+                packageRoot: GALLERY_PACKAGE_ROOT,
+                serverRoot: GALLERY_SERVER_ROOT,
+                globalMetaSection: 'Meta Data, JavaScript & CSS (Global)',
+                snippetFile: GALLERY_META_SNIPPET_ZIP,
+                cssZipPath: `${GALLERY_CSS_ZIP_DIR}/`,
+                cssServerPath: `${GALLERY_CSS_SERVER}/`,
+                imagesZipPath: `${GALLERY_IMAGES_ZIP_DIR}/`,
+                imagesServerPath: `${GALLERY_IMAGES_SERVER}/`,
+                htmlZipPath: `${GALLERY_HTML_ZIP_DIR}/`,
+                htmlPasteOnly: true,
+                metaPasteOnly: true,
+                stylesheetHref: primaryStylesheetCacheBust,
+            }
+            : null,
+        /** @deprecated use supportInstall — kept for older tooling that still reads devops */
         devops: isGallery
             ? {
                 globalMetaSection: 'Meta Data, JavaScript & CSS (Global)',
-                snippetFile: 'spec/devops-global-css-snippet.html',
-                cssUploadPath: 'data/css/',
-                cssServerPath: '/data/css/',
+                snippetFile: GALLERY_META_SNIPPET_ZIP,
+                cssUploadPath: `${GALLERY_CSS_ZIP_DIR}/`,
+                cssServerPath: `${GALLERY_CSS_SERVER}/`,
                 stylesheetHref: primaryStylesheetCacheBust,
             }
             : null,
@@ -1562,32 +1933,41 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     const readmeText = isGallery
         ? [
-            'Showroom Classic — Developer Handoff',
-            '====================================',
+            'Showroom Classic — Support Handoff',
+            '=================================',
             '',
-            'START HERE: Open WELCOME-GUIDE.html in your browser, then read showroom-homepage-brief.pdf.',
+            'START HERE: Open WELCOME-GUIDE.html, then follow the support install steps.',
             '',
-            'REQUIRED — ADA compliance footer (all websites)',
-            'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
+            'FTP — only logicx/ (css + images)',
+            `  Upload logicx/ from this ZIP to the site root.`,
+            `  Live base path: ${GALLERY_SERVER_ROOT}/`,
+            '  Do NOT FTP html/ or meta-data-global-css-snippet.html — those are paste-only.',
             '',
-            '1. WELCOME-GUIDE.html — Package overview and install workflow',
-            `2. ${pdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, handoff image list`,
-            resolvedHandoffAssets.length
-                ? '3. images/ — Header logo and any client-replaced section images'
-                : '3. images/ — Omitted (image files could not be resolved for export)',
-            '4. data/css/ — Homepage stylesheet(s) for hosting upload',
-            '   Upload path: data/css/[file-name].css  →  /data/css/[file-name].css',
-            galleryStylesheetNames.length
-                ? `   Included: ${galleryStylesheetNames.join(', ')}`
-                : '   Included: (stylesheet missing — re-export after confirming editor/gallery/data/css/)',
-            '5. spec/homepage-spec.json — Machine-readable spec (Header sticky scope, Hero backdrop tokens, Catalog Highlights, Footer social iconClass, Copyright)',
-            '6. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
-            '7. spec/devops-global-css-snippet.html — Paste into hosting “Meta Data, JavaScript & CSS (Global)”',
+            `Handoff version: ${handoffVersion}`,
+            `Package ID: ${packageId}`,
             '',
-            'DEVOPS — Global CSS/JS',
-            'Upload data/css/ to /data/css/ on the server, then add/update the stylesheet link in',
-            'Meta Data, JavaScript & CSS (Global). See spec/devops-global-css-snippet.html.',
-            `Example: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
+            '1. WELCOME-GUIDE.html — Support install overview',
+            '2. HANDOFF-VERSION.txt — Version stamp for debugging',
+            `3. ${versionedPdfFilename} — Brief + layout previews (reference)`,
+            '4. logicx/ — FTP only',
+            `   ${GALLERY_CSS_ZIP_DIR}/styles.css → ${GALLERY_CSS_SERVER}/styles.css`,
+            `   ${GALLERY_IMAGES_ZIP_DIR}/ → ${GALLERY_IMAGES_SERVER}/`,
+            '5. meta-data-global-css-snippet.html (ZIP root) — paste into Meta Data / Global CSS',
+            '6. html/ (ZIP root) — CMS paste markup',
+            '   html/header.html     → CMS region header',
+            '   html/section_1.html  → CMS region section_1 (hero)',
+            '   html/section_2.html  → CMS region section_2 (catalog)',
+            '   html/footer.html     → CMS region footer (+ copyright/ADA)',
+            '7. spec/homepage-spec.json — Structured reference (optional)',
+            '8. spec/footer-copyright-snippet.html — ADA reference (also in html/footer.html)',
+            '',
+            'SUPPORT INSTALL ORDER',
+            '  1. FTP upload logicx/ (css + images only)',
+            '  2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS',
+            `  3. Verify ${GALLERY_CSS_SERVER}/styles.css loads in the browser (not 404)`,
+            '  4. Paste html/*.html into CMS regions — see html/README.txt',
+            '',
+            `Example stylesheet link: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
             '',
             'Catalog URLs use /lighting-fixtures as the root. Sticky applies to the message bar only.',
             resolvedHandoffAssets.length
@@ -1599,18 +1979,22 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 'Showroom Spotlight — Developer Handoff',
                 '======================================',
                 '',
-                'START HERE: Open WELCOME-GUIDE.html in your browser, then read showroom-homepage-brief.pdf.',
+                `Handoff version: ${handoffVersion}`,
+                `Package ID: ${packageId}`,
+                '',
+                'START HERE: Open WELCOME-GUIDE.html in your browser, then read the PDF brief.',
                 '',
                 'REQUIRED — ADA compliance footer (all websites)',
                 'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
                 '',
                 '1. WELCOME-GUIDE.html — Package overview and install workflow',
-                `2. ${pdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, handoff image list`,
+                '2. HANDOFF-VERSION.txt — Version stamp for debugging',
+                `3. ${versionedPdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, handoff image list`,
                 resolvedHandoffAssets.length
-                    ? '3. images/ — All handoff image files (header logo, hero slides, section images, footer logo)'
-                    : '3. images/ — Omitted (image files could not be resolved for export)',
-                '4. spec/homepage-spec.json — Machine-readable spec (Header, Hero, sections, Footer)',
-                '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+                    ? '4. images/ — All handoff image files (header logo, hero slides, section images, footer logo)'
+                    : '4. images/ — Omitted (image files could not be resolved for export)',
+                '5. spec/homepage-spec.json — Machine-readable spec (Header, Hero, sections, Footer)',
+                '6. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
                 '',
                 resolvedHandoffAssets.length
                     ? 'Handoff image files are listed in the PDF under “Handoff images”.'
@@ -1620,16 +2004,20 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             'Showroom Homepage — Developer Handoff',
             '=====================================',
             '',
-            'START HERE: Open WELCOME-GUIDE.html in your browser, then read showroom-homepage-brief.pdf.',
+            `Handoff version: ${handoffVersion}`,
+            `Package ID: ${packageId}`,
+            '',
+            'START HERE: Open WELCOME-GUIDE.html in your browser, then read the PDF brief.',
             '',
             'REQUIRED — ADA compliance footer (all websites)',
             'Place spec/footer-copyright-snippet.html markup at the very bottom of every site footer.',
             '',
             '1. WELCOME-GUIDE.html — Package overview and install workflow',
-            `2. ${pdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, and handoff image list`,
-            '3. images/ — Client image files referenced in the PDF',
-            '4. spec/homepage-spec.json — Machine-readable spec',
-            '5. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
+            '2. HANDOFF-VERSION.txt — Version stamp for debugging',
+            `3. ${versionedPdfFilename} (ZIP root) — Branded cover, copy spec, layout previews, and handoff image list`,
+            '4. images/ — Client image files referenced in the PDF',
+            '5. spec/homepage-spec.json — Machine-readable spec',
+            '6. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
             '',
             'Handoff image files (when present): Header logo, About Us employee photo, feature card photos,',
             'You May Like product images, Get Inspired lifestyle photo, and footer logo only when',
@@ -1637,20 +2025,59 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ].join('\n');
 
     const zip = new JSZip();
-    zip.file(pdfFilename, pdfBlob);
+    zip.file(versionedPdfFilename, pdfBlob);
+    zip.file('HANDOFF-VERSION.txt', [
+        'LogicX Showroom — Handoff Version',
+        '================================',
+        '',
+        `Handoff version: ${handoffVersion}`,
+        `Package ID:      ${packageId}`,
+        `Template:        ${coverMeta.templateLabel}`,
+        `Design:          ${coverMeta.design}`,
+        `Company:         ${coverMeta.companyName}`,
+        `Exported at:     ${exportedAt.toISOString()}`,
+        `ZIP filename:    ${versionedZipFilename}`,
+        `PDF filename:    ${versionedPdfFilename}`,
+        '',
+        'Use this file when debugging a live site so you know which export package was installed.',
+        '',
+    ].join('\n'));
+
+    const hasGalleryCmsHtml = galleryCmsHtmlFiles.some(
+        (file) => (file.path.startsWith('html/') || file.path.includes('/html/'))
+            && file.path.endsWith('.html'),
+    );
 
     if (handoffGuide.buildShowroomHandoffGuide) {
         zip.file('WELCOME-GUIDE.html', handoffGuide.buildShowroomHandoffGuide({
             ...coverMeta,
             hasStylesheets: galleryStylesheets.length > 0,
+            hasCmsHtml: hasGalleryCmsHtml,
             stylesheetHref: primaryStylesheetCacheBust,
+            packageRoot: isGallery ? GALLERY_PACKAGE_ROOT : '',
+            serverRoot: isGallery ? GALLERY_SERVER_ROOT : '',
+            metaSnippetPath: isGallery ? GALLERY_META_SNIPPET_ZIP : '',
+            htmlDir: isGallery ? GALLERY_HTML_ZIP_DIR : '',
+            cssDir: isGallery ? GALLERY_CSS_ZIP_DIR : '',
+            imagesDir: isGallery ? GALLERY_IMAGES_ZIP_DIR : '',
+            cssServerPath: isGallery ? GALLERY_CSS_SERVER : '',
+            imagesServerPath: isGallery ? GALLERY_IMAGES_SERVER : '',
         }));
     }
     if (handoffGuide.buildShowroomHandoffReadme) {
         zip.file('HANDOFF-README.txt', handoffGuide.buildShowroomHandoffReadme({
             ...coverMeta,
             hasStylesheets: galleryStylesheets.length > 0,
+            hasCmsHtml: hasGalleryCmsHtml,
             stylesheetHref: primaryStylesheetCacheBust,
+            packageRoot: isGallery ? GALLERY_PACKAGE_ROOT : '',
+            serverRoot: isGallery ? GALLERY_SERVER_ROOT : '',
+            metaSnippetPath: isGallery ? GALLERY_META_SNIPPET_ZIP : '',
+            htmlDir: isGallery ? GALLERY_HTML_ZIP_DIR : '',
+            cssDir: isGallery ? GALLERY_CSS_ZIP_DIR : '',
+            imagesDir: isGallery ? GALLERY_IMAGES_ZIP_DIR : '',
+            cssServerPath: isGallery ? GALLERY_CSS_SERVER : '',
+            imagesServerPath: isGallery ? GALLERY_IMAGES_SERVER : '',
         }));
     }
 
@@ -1663,8 +2090,36 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         zip.file(stylesheet.zipPath, stylesheet.content);
     }
     if (isGallery) {
-        zip.file('data/css/README.txt', cssFolderReadme);
-        zip.file('spec/devops-global-css-snippet.html', devopsGlobalSnippet);
+        zip.file(`${GALLERY_CSS_ZIP_DIR}/README.txt`, cssFolderReadme);
+        zip.file(GALLERY_META_SNIPPET_ZIP, metaDataGlobalSnippet);
+        zip.file(`${GALLERY_PACKAGE_ROOT}/README.txt`, [
+            'LogicX Classic homepage — FTP package (css + images only)',
+            '========================================================',
+            '',
+            `Handoff version: ${handoffVersion}`,
+            `Package ID: ${packageId}`,
+            '',
+            'Upload this entire logicx/ folder to the site root.',
+            `Live base path: ${GALLERY_SERVER_ROOT}/`,
+            '',
+            'Contents (FTP):',
+            `  css/     → ${GALLERY_CSS_SERVER}/`,
+            `  images/  → ${GALLERY_IMAGES_SERVER}/`,
+            '',
+            'NOT in this folder (paste from ZIP root instead):',
+            '  html/                             → CMS regions',
+            '  meta-data-global-css-snippet.html → Meta Data, JavaScript & CSS (Global)',
+            '',
+            'Homepage looks unstyled if styles.css is missing at:',
+            `  ${GALLERY_CSS_SERVER}/styles.css`,
+            '',
+            'Replace/update the logicx/ directory on FTP for CSS/image updates.',
+            '',
+        ].join('\n'));
+    }
+
+    for (const file of galleryCmsHtmlFiles) {
+        zip.file(file.path, file.content);
     }
 
     zip.file('spec/homepage-spec.json', JSON.stringify(specJson, null, 2));
@@ -1672,9 +2127,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     zip.file('spec/README.txt', readmeText);
 
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    downloadBlob(zipBlob, zipFilename);
+    downloadBlob(zipBlob, versionedZipFilename);
 
-    return { pdfBlob, zipBlob };
+    return { pdfBlob, zipBlob, handoffVersion, packageId, zipFilename: versionedZipFilename };
 };
 
 function normalizeFooterLinksForExport(links) {
