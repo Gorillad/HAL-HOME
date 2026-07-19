@@ -2206,6 +2206,11 @@
             reviewExported: false,
             previewTheme: baseline.previewTheme === 'dark' ? 'dark' : 'light',
         });
+        // Asset version is a shipping/cache-bust control — always return to the
+        // template default (CODE_FLOOR), not a previously bumped draft value.
+        if (templateDesign === 'gallery') {
+            state.galleryAssetVersion = DEFAULT_GALLERY_ASSET_VERSION;
+        }
         return true;
     }
 
@@ -2225,6 +2230,9 @@
 
         if (templateDesign === 'gallery') {
             finishGalleryEditorInit();
+            // Re-apply after finishGalleryEditorInit so the badge/input cannot
+            // keep a bumped value from a stale baseline or mid-init sync.
+            setGalleryAssetVersion(DEFAULT_GALLERY_ASSET_VERSION, { save: false, silent: true });
         } else if (templateDesign === 'spotlight') {
             finishSpotlightEditorInit();
         } else {
@@ -2232,7 +2240,11 @@
         }
 
         saveState({ silent: true });
-        setStatus('Reset to defaults');
+        setStatus(
+            templateDesign === 'gallery'
+                ? `Reset to defaults · assets ${ClassicAssetVersion.label(DEFAULT_GALLERY_ASSET_VERSION)}`
+                : 'Reset to defaults',
+        );
     }
 
     function initResetBtn() {
@@ -2258,12 +2270,21 @@
     function loadBaselineState() {
         try {
             const raw = localStorage.getItem(BASELINE_STORAGE_KEY);
-            if (raw) return JSON.parse(raw);
+            if (!raw) return null;
+            const baseline = JSON.parse(raw);
+            if (baseline && typeof baseline === 'object' && templateDesign === 'gallery') {
+                // Never treat a bumped cache-bust as a template default.
+                baseline.galleryAssetVersion = DEFAULT_GALLERY_ASSET_VERSION;
+            }
+            return baseline;
         } catch { /* ignore */ }
         return null;
     }
 
     function persistBaselineState(baseline) {
+        if (baseline && templateDesign === 'gallery') {
+            baseline.galleryAssetVersion = DEFAULT_GALLERY_ASSET_VERSION;
+        }
         baselineState = baseline;
         try {
             localStorage.setItem(BASELINE_STORAGE_KEY, JSON.stringify(baseline));
