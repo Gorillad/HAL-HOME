@@ -86,11 +86,18 @@
                     <div class="editor-chrome-heading">
                         <h1>Showroom editor</h1>
                         <span class="editor-template-name" id="editorTemplateName">McQueen</span>
+                        <span class="editor-asset-version-badge" id="editorAssetVersionBadge" hidden title="Cache-bust version for Classic CSS, JS, and images on the live site">assets v9</span>
                     </div>
                     <p class="editor-chrome-tip">Optimize images before uploading for faster page loads. <a href="https://squoosh.app/" target="_blank" rel="noopener noreferrer">Compress free with Squoosh</a></p>
                 </div>
             </div>
             <div class="editor-chrome-actions editor-showroom-actions">
+                <div class="editor-asset-version" id="editorClassicAssetVersion" hidden>
+                    <label class="editor-asset-version-label" for="fieldGalleryAssetVersion">Assets</label>
+                    <span class="editor-asset-version-prefix" aria-hidden="true">v</span>
+                    <input type="number" id="fieldGalleryAssetVersion" name="galleryAssetVersion" min="1" step="1" value="9" inputmode="numeric" aria-label="Classic asset version" title="Bump when replacing CSS, JS, or images so browsers load the new files">
+                    <button type="button" class="btn btn-secondary" id="bumpGalleryAssetVersion" title="Increase version for the next FTP / Meta Data paste">Bump</button>
+                </div>
                 <span class="editor-status" id="editorStatus" aria-live="polite"></span>
                 <button type="button" class="btn btn-secondary" id="resetDraftBtn" style="display:none">Reset to defaults</button>
                 <button type="button" class="btn btn-secondary" id="shareReviewBtn" title="ZIP with HTML feedback form, PDF backup, and section screenshots">Share for review</button>
@@ -1826,6 +1833,7 @@
     <script src="vendor/html2canvas.min.js"></script>
     <script src="vendor/jspdf.umd.min.js"></script>
     <script src="vendor/jszip.min.js"></script>
+    <script src="js/classic-asset-version.js"></script>
     <script src="js/export-showroom-guide.js"></script>
     <script src="js/showroom-capture.js"></script>
     <script src="js/export-pdf.js"></script>
@@ -1834,6 +1842,6 @@
     <script src="js/spotlight-template.js?v=2"></script>
     <script src="js/editor-progress-dock.js"></script>
     <script src="gallery/data/js/gallery-nav.js"></script>
-    <script src="js/showroom-editor.js?v=4"></script>
+    <script src="js/showroom-editor.js?v=5"></script>
 </body>
 </html>

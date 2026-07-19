@@ -47,6 +47,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     );
 
     const handoffGuide = window.ShowroomHandoffGuide || {};
+    const classicAssetVersionApi = window.ShowroomClassicAssetVersion || null;
     const exportedAt = new Date();
     const packageId = guideMeta.packageId
         || (handoffGuide.buildPackageId ? handoffGuide.buildPackageId() : `SHR-${Date.now().toString(36).toUpperCase().slice(-6)}`);
@@ -54,6 +55,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         || (handoffGuide.buildHandoffVersion
             ? handoffGuide.buildHandoffVersion(exportedAt)
             : exportedAt.toISOString().replace(/[-:TZ.]/g, '').slice(0, 14));
+    const galleryAssetVersion = classicAssetVersionApi
+        ? classicAssetVersionApi.normalize(guideMeta.assetVersion ?? guideMeta.galleryAssetVersion)
+        : Math.max(9, parseInt(guideMeta.assetVersion ?? guideMeta.galleryAssetVersion, 10) || 9);
+    const galleryAssetQuery = `?v${galleryAssetVersion}`;
+    const withGalleryAssetQuery = (url) => {
+        const base = String(url || '').split('?')[0];
+        return base ? `${base}${galleryAssetQuery}` : galleryAssetQuery;
+    };
     const withVersion = (filename) => (
         handoffGuide.withHandoffVersion
             ? handoffGuide.withHandoffVersion(filename, handoffVersion)
@@ -1089,10 +1098,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Phone nav script', GALLERY_NAV_JS_SERVER],
             ['Dashboard section', 'Meta Data, JavaScript & CSS (Global)'],
             ['Snippet file', GALLERY_META_SNIPPET_ZIP],
-            ['Stylesheet link', `<link rel="stylesheet" href="${GALLERY_CSS_SERVER}/styles.css?v8">`],
+            ['Asset version', `v${galleryAssetVersion} (CSS, JS, images ?v query)`],
+            ['Stylesheet link', `<link rel="stylesheet" href="${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery}">`],
         ]);
         writeLines(
-            'Support: FTP upload data/ (css + js + images under data/logicx/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions.',
+            'Support: FTP upload data/ (css + js + images under data/logicx/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions. Bump Asset version in the editor when replacing CSS/JS/images.',
             { size: 9, color: [90, 90, 90], gap: 10 },
         );
     }
@@ -1245,11 +1255,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const primaryStylesheetServerPath = primaryStylesheet
         ? primaryStylesheet.serverPath
         : `${GALLERY_CSS_SERVER}/styles.css`;
-    const primaryStylesheetCacheBust = `${primaryStylesheetServerPath}?v8`;
+    const primaryStylesheetCacheBust = withGalleryAssetQuery(primaryStylesheetServerPath);
     const galleryNavScript = galleryScripts[0] || null;
-    const galleryNavScriptSrc = galleryNavScript
-        ? `${galleryNavScript.serverPath}?v1`
-        : `${GALLERY_NAV_JS_SERVER}?v1`;
+    const galleryNavScriptSrc = withGalleryAssetQuery(
+        galleryNavScript ? galleryNavScript.serverPath : GALLERY_NAV_JS_SERVER,
+    );
 
     const metaDataGlobalSnippet = [
         '<!--',
@@ -1257,6 +1267,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         '  ---------------------------------------------------------',
         `  Handoff version: ${handoffVersion}`,
         `  Package ID: ${packageId}`,
+        `  Asset version: v${galleryAssetVersion} (CSS + JS + images cache-bust)`,
         '  1. Upload the data/ folder from this ZIP to the site root via FTP.',
         `  2. Stylesheet file: ${GALLERY_CSS_ZIP_DIR}/${primaryStylesheet ? primaryStylesheet.zipPath.split('/').pop() : 'styles.css'}`,
         `  3. Live URL: ${primaryStylesheetServerPath}`,
@@ -1264,7 +1275,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         '  5. REQUIRED: keep both enhanced-search lines — new databases need them',
         '     so #searchEngine / enhanced-search.js can bind on the live site.',
         '  6. REQUIRED: keep gallery-nav.js — phone hamburger + accordion nav.',
-        '  7. Bump the ?v query when you replace styles.css / gallery-nav.js.',
+        `  7. Keep ?v${galleryAssetVersion} on CSS/JS (and image URLs in pasted HTML).`,
+        '     Bump Asset version in the Showroom editor when replacing those files.',
         '  8. Confirm styles.css is on FTP at the Live URL below (homepage looks unstyled if missing).',
         '-->',
         '<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">',
@@ -1295,6 +1307,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         'Content max-width: 1440px (message bar, header, hero, catalog, footer, copyright).',
         'Confirm in styles.css: --showroom-content-max: 1440px; and max-width: 1440px;',
         '',
+        `Asset version for this package: v${galleryAssetVersion}`,
+        `  Meta Data link must use: ${primaryStylesheetCacheBust}`,
+        '',
         'If the homepage looks unstyled, open the Live URL in a browser.',
         'A 404 means FTP path or Meta Data link is wrong.',
         '',
@@ -1315,6 +1330,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         '',
         'Required for phone header: hamburger opens main nav;',
         'tapping a category expands its dropdown.',
+        '',
+        `Asset version for this package: v${galleryAssetVersion}`,
         '',
         'Meta Data script tag (also in meta-data-global-css-snippet.html):',
         `  <script src="${galleryNavScriptSrc}"></script>`,
@@ -1344,7 +1361,18 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     };
 
     function galleryCmsImagePath(filename) {
-        return `${GALLERY_IMAGES_SERVER}/${filename}`;
+        return withGalleryAssetQuery(`${GALLERY_IMAGES_SERVER}/${filename}`);
+    }
+
+    function stampGalleryAssetBanner(content, kind) {
+        const body = String(content || '');
+        const banner = [
+            `/* Classic handoff asset version: v${galleryAssetVersion} (${kind}) */`,
+            `/* Bump Asset version in the Showroom editor when replacing this file on FTP. */`,
+            '',
+        ].join('\n');
+        if (body.includes(`Classic handoff asset version: v${galleryAssetVersion}`)) return body;
+        return banner + body;
     }
 
     function galleryRelativeImageKey(src) {
@@ -1530,8 +1558,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         return [
             `<!-- Showroom Classic — ${label} | LogicX Showroom Editor · ${date} -->`,
             `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
+            `<!-- Asset version: v${galleryAssetVersion} (CSS/JS/images ?v${galleryAssetVersion}) -->`,
             `<!-- Paste into CMS region: ${pasteRegion} -->`,
-            `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css and images under ${GALLERY_IMAGES_SERVER}/ -->`,
+            `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery} and images under ${GALLERY_IMAGES_SERVER}/ -->`,
             options.injectEnhancedSearch
                 ? '<!-- Search module is fixed for enhanced-search.js (#searchEngine / #searchInputBox / #searchSubmitBtn) -->'
                 : null,
@@ -1613,8 +1642,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ? [
                 `<!-- Showroom Classic — Footer + Copyright/ADA | LogicX Showroom Editor · ${date} -->`,
                 `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
+                `<!-- Asset version: v${galleryAssetVersion} (CSS/JS/images ?v${galleryAssetVersion}) -->`,
                 '<!-- Paste into CMS region: footer -->',
-                `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css and images under ${GALLERY_IMAGES_SERVER}/ -->`,
+                `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery} and images under ${GALLERY_IMAGES_SERVER}/ -->`,
                 '',
                 footerParts.join('\n\n'),
                 '',
@@ -1717,7 +1747,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 htmlZipPath: `${GALLERY_HTML_ZIP_DIR}/`,
                 htmlPasteOnly: true,
                 metaPasteOnly: true,
+                assetVersion: galleryAssetVersion,
+                assetQuery: galleryAssetQuery,
                 stylesheetHref: primaryStylesheetCacheBust,
+                scriptHref: galleryNavScriptSrc,
             }
             : null,
         /** @deprecated use supportInstall — kept for older tooling that still reads devops */
@@ -1727,6 +1760,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 snippetFile: GALLERY_META_SNIPPET_ZIP,
                 cssUploadPath: `${GALLERY_CSS_ZIP_DIR}/`,
                 cssServerPath: `${GALLERY_CSS_SERVER}/`,
+                assetVersion: galleryAssetVersion,
                 stylesheetHref: primaryStylesheetCacheBust,
             }
             : null,
@@ -2116,6 +2150,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         '',
         `Handoff version: ${handoffVersion}`,
         `Package ID:      ${packageId}`,
+        ...(isGallery ? [
+            `Asset version:   v${galleryAssetVersion}`,
+            `  CSS:    ${primaryStylesheetCacheBust}`,
+            `  JS:     ${galleryNavScriptSrc}`,
+            `  Images: ${GALLERY_IMAGES_SERVER}/[file]${galleryAssetQuery}`,
+        ] : []),
         `Template:        ${coverMeta.templateLabel}`,
         `Design:          ${coverMeta.design}`,
         `Company:         ${coverMeta.companyName}`,
@@ -2138,6 +2178,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             hasStylesheets: galleryStylesheets.length > 0,
             hasCmsHtml: hasGalleryCmsHtml,
             stylesheetHref: primaryStylesheetCacheBust,
+            assetVersion: isGallery ? galleryAssetVersion : undefined,
             packageRoot: isGallery ? GALLERY_PACKAGE_ROOT : '',
             serverRoot: isGallery ? GALLERY_SERVER_ROOT : '',
             metaSnippetPath: isGallery ? GALLERY_META_SNIPPET_ZIP : '',
@@ -2154,6 +2195,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             hasStylesheets: galleryStylesheets.length > 0,
             hasCmsHtml: hasGalleryCmsHtml,
             stylesheetHref: primaryStylesheetCacheBust,
+            assetVersion: isGallery ? galleryAssetVersion : undefined,
             packageRoot: isGallery ? GALLERY_PACKAGE_ROOT : '',
             serverRoot: isGallery ? GALLERY_SERVER_ROOT : '',
             metaSnippetPath: isGallery ? GALLERY_META_SNIPPET_ZIP : '',
@@ -2171,10 +2213,16 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     for (const stylesheet of galleryStylesheets) {
-        zip.file(stylesheet.zipPath, stylesheet.content);
+        zip.file(
+            stylesheet.zipPath,
+            isGallery ? stampGalleryAssetBanner(stylesheet.content, 'css') : stylesheet.content,
+        );
     }
     for (const script of galleryScripts) {
-        zip.file(script.zipPath, script.content);
+        zip.file(
+            script.zipPath,
+            isGallery ? stampGalleryAssetBanner(script.content, 'js') : script.content,
+        );
     }
     if (isGallery) {
         zip.file(`${GALLERY_CSS_ZIP_DIR}/README.txt`, cssFolderReadme);
@@ -2188,6 +2236,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '',
             `Handoff version: ${handoffVersion}`,
             `Package ID: ${packageId}`,
+            `Asset version: v${galleryAssetVersion}`,
             '',
             'Upload the top-level data/ folder from this ZIP to the site root.',
             `Live base path: ${GALLERY_SERVER_ROOT}/`,
@@ -2202,12 +2251,13 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '  meta-data-global-css-snippet.html → Meta Data, JavaScript & CSS (Global)',
             '',
             'Homepage looks unstyled if styles.css is missing at:',
-            `  ${GALLERY_CSS_SERVER}/styles.css`,
+            `  ${primaryStylesheetCacheBust}`,
             '',
             'Phone hamburger requires gallery-nav.js at:',
-            `  ${GALLERY_NAV_JS_SERVER}`,
+            `  ${galleryNavScriptSrc}`,
             '',
-            'Replace/update data/logicx/ on FTP for CSS/JS/image updates.',
+            `After replacing CSS/JS/images, bump Asset version in the editor (now v${galleryAssetVersion})`,
+            'and re-paste Meta Data + HTML so browsers load the new files.',
             '',
         ].join('\n'));
     }

@@ -9,6 +9,9 @@
  *   Applied to message bar, primary header, hero, catalog column,
  *   footer main, and copyright inner. Background bars stay full-bleed.
  *
+ * ASSET VERSION (?vN): set in Showroom editor → Export handoff.
+ *   Meta Data and pasted HTML image URLs use the same ?vN cache-bust.
+ *
  * Covers Classic gallery homepage only (message bar, primary header,
  * hero, catalog highlights, classic footer, copyright). Not editor chrome.
  * Phone menu toggle: pair with /data/logicx/js/gallery-nav.js.

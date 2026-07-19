@@ -246,7 +246,10 @@
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
         const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
-        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v8`;
+        const assetVersion = meta.assetVersion != null
+            ? String(meta.assetVersion).replace(/^v/i, '')
+            : '9';
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v${assetVersion}`;
 
         const imageNote = hasImages
             ? `Client images are in <code>${escapeHtml(imagesDir)}/</code> (live: <code>${escapeHtml(imagesServerPath)}/</code>).`
@@ -316,7 +319,9 @@
             '  <div class="cover-meta">',
             `    <div><strong>Handoff version</strong><br>${handoffVersion}</div>`,
             `    <div><strong>Package ID</strong><br>${packageId}</div>`,
-            `    <div><strong>Issued</strong><br>${escapeHtml(date)}</div>`,
+            isClassicSupport
+                ? `    <div><strong>Asset version</strong><br>v${escapeHtml(assetVersion)} (CSS/JS/images)</div>`
+                : `    <div><strong>Issued</strong><br>${escapeHtml(date)}</div>`,
             `    <div><strong>Sections</strong><br>${sections.length} documented</div>`,
             '  </div>',
             '</div>',
@@ -393,7 +398,10 @@
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
         const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
-        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v8`;
+        const assetVersion = meta.assetVersion != null
+            ? String(meta.assetVersion).replace(/^v/i, '')
+            : '9';
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v${assetVersion}`;
 
         if (design === 'gallery') {
             return [
@@ -404,13 +412,14 @@
                 '--------------',
                 `  ${handoffVersion}`,
                 `  Package ID: ${packageId}`,
+                `  Asset version: v${assetVersion}`,
                 '  See also: HANDOFF-VERSION.txt',
                 '',
                 'START HERE',
                 '----------',
                 '  1. WELCOME-GUIDE.html         — Open in browser (support install steps)',
                 `  2. ${pdfFilename}   — Brief + layout previews`,
-                '  3. data/logicx/               — FTP only (css + images)',
+                '  3. data/logicx/               — FTP only (css + js + images)',
                 `       Live base: ${serverRoot}/`,
                 `  4. ${metaSnippetPath} — paste into Meta Data / Global CSS`,
                 `  5. ${htmlDir}/                  — CMS paste files (not FTP)`,
@@ -418,16 +427,16 @@
                 'FTP TREE (inside data/)',
                 '-----------------------',
                 `  ${cssDir}/styles.css`,
-                `    → ${cssServerPath}/styles.css`,
+                `    → ${stylesheetHref}`,
                 hasImages ? `  ${imagesDir}/` : '',
-                hasImages ? `    → ${imagesServerPath}/` : '',
+                hasImages ? `    → ${imagesServerPath}/[file]?v${assetVersion}` : '',
                 '',
                 'SUPPORT INSTALL ORDER',
                 '---------------------',
-                '  1. FTP upload data/ to the site root (css + images under data/logicx/)',
+                '  1. FTP upload data/ to the site root (css + js + images under data/logicx/)',
                 `  2. Paste ${metaSnippetPath}`,
                 '     into Meta Data, JavaScript & CSS (Global)',
-                `  3. Verify ${cssServerPath}/styles.css loads (not 404)`,
+                `  3. Verify ${stylesheetHref} loads (not 404)`,
                 `  4. Paste ${htmlDir}/*.html into CMS regions:`,
                 '       header.html     → header',
                 '       section_1.html  → section_1',

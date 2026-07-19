@@ -164,6 +164,17 @@
     const DEFAULT_GALLERY_HERO_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HERO_PANEL_COLOR = '#12100e';
     const DEFAULT_GALLERY_HERO_PANEL_OPACITY = 52;
+    const ClassicAssetVersion = window.ShowroomClassicAssetVersion || {
+        CODE_FLOOR: 9,
+        DEFAULT: 9,
+        normalize: (value) => {
+            const n = parseInt(value, 10);
+            if (Number.isNaN(n) || n < 1) return 9;
+            return Math.max(9, n);
+        },
+        label: (value) => `v${ClassicAssetVersion.normalize(value)}`,
+    };
+    const DEFAULT_GALLERY_ASSET_VERSION = ClassicAssetVersion.DEFAULT;
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING = 'Chandelier';
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL = '/lighting-fixtures/chandeliers';
     const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING = 'Pendants';
@@ -571,6 +582,7 @@
         galleryHeroButtonBackgroundColorValue: document.getElementById('fieldGalleryHeroButtonBgValue'),
         galleryHeroButtonTextColor: document.getElementById('fieldGalleryHeroButtonText'),
         galleryHeroButtonTextColorValue: document.getElementById('fieldGalleryHeroButtonTextValue'),
+        galleryAssetVersion: document.getElementById('fieldGalleryAssetVersion'),
         footerLogo: document.getElementById('fieldFooterLogo'),
         footerLogoUseHeader: document.getElementById('fieldFooterLogoUseHeader'),
         footerEmail: document.getElementById('fieldFooterEmail'),
@@ -881,6 +893,7 @@
         galleryHeroButtonUrl: DEFAULT_GALLERY_HERO_BUTTON_URL,
         galleryHeroButtonBackgroundColor: DEFAULT_GALLERY_HERO_BUTTON_BG,
         galleryHeroButtonTextColor: DEFAULT_GALLERY_HERO_BUTTON_TEXT,
+        galleryAssetVersion: DEFAULT_GALLERY_ASSET_VERSION,
         galleryCatalogTiles: defaultGalleryCatalogTiles(),
         classicFooterCompanyName: '',
         classicFooterAboutCopy: DEFAULT_CLASSIC_FOOTER_ABOUT,
@@ -1112,6 +1125,39 @@
         const num = parseInt(value, 10);
         if (Number.isNaN(num)) return DEFAULT_GALLERY_HERO_PANEL_OPACITY;
         return Math.max(0, Math.min(100, num));
+    }
+
+    function normalizeGalleryAssetVersion(value) {
+        return ClassicAssetVersion.normalize(value);
+    }
+
+    function getGalleryAssetVersion() {
+        return normalizeGalleryAssetVersion(state.galleryAssetVersion);
+    }
+
+    function syncGalleryAssetVersionUI() {
+        const version = getGalleryAssetVersion();
+        state.galleryAssetVersion = version;
+        if (fields.galleryAssetVersion) {
+            fields.galleryAssetVersion.value = String(version);
+            fields.galleryAssetVersion.min = String(ClassicAssetVersion.CODE_FLOOR || DEFAULT_GALLERY_ASSET_VERSION);
+        }
+        const badge = document.getElementById('editorAssetVersionBadge');
+        if (badge) {
+            badge.textContent = `assets ${ClassicAssetVersion.label(version)}`;
+            badge.hidden = templateDesign !== 'gallery';
+        }
+        const wrap = document.getElementById('editorClassicAssetVersion');
+        if (wrap) wrap.hidden = templateDesign !== 'gallery';
+    }
+
+    function setGalleryAssetVersion(next, options = {}) {
+        const version = normalizeGalleryAssetVersion(next);
+        state.galleryAssetVersion = version;
+        syncGalleryAssetVersionUI();
+        if (options.save !== false) saveState({ silent: options.silent === true });
+        if (options.status) setStatus(options.status);
+        return version;
     }
 
     function galleryHeroPanelBackground(color, opacityPercent) {
@@ -6097,6 +6143,7 @@
         populateGalleryHeroFields(data);
         populateGalleryCatalogFields(data);
         populateClassicFooterFields(data);
+        setGalleryAssetVersion(data.galleryAssetVersion, { save: false, silent: true });
     }
 
     function populateHeaderFields(data) {
@@ -6571,6 +6618,29 @@
         if (fields[key]) fields[key].addEventListener('input', readForm);
     });
 
+    if (fields.galleryAssetVersion) {
+        fields.galleryAssetVersion.addEventListener('change', () => {
+            const version = setGalleryAssetVersion(fields.galleryAssetVersion.value);
+            setStatus(`Asset version set to ${ClassicAssetVersion.label(version)}`);
+        });
+        fields.galleryAssetVersion.addEventListener('input', () => {
+            const draft = parseInt(fields.galleryAssetVersion.value, 10);
+            if (!Number.isNaN(draft) && draft >= 1) {
+                const badge = document.getElementById('editorAssetVersionBadge');
+                if (badge) badge.textContent = `assets v${draft}`;
+            }
+        });
+    }
+    const bumpGalleryAssetVersionBtn = document.getElementById('bumpGalleryAssetVersion');
+    if (bumpGalleryAssetVersionBtn) {
+        bumpGalleryAssetVersionBtn.addEventListener('click', () => {
+            const next = getGalleryAssetVersion() + 1;
+            setGalleryAssetVersion(next, {
+                status: `Asset version bumped to ${ClassicAssetVersion.label(next)} — re-export handoff before FTP`,
+            });
+        });
+    }
+
     if (fields.galleryHeaderLogo) {
         fields.galleryHeaderLogo.addEventListener('change', () => {
             onImageUpload(fields.galleryHeaderLogo, 'headerLogoImage');
@@ -7040,6 +7110,7 @@
                     templateLabel: TEMPLATE_DESIGNS[templateDesign],
                     design: templateDesign,
                     logoDataUrl: handoffLogoDataUrl,
+                    assetVersion: templateDesign === 'gallery' ? getGalleryAssetVersion() : undefined,
                 },
                 onProgress: (progress) => handleCaptureProgress(progress, 'handoff'),
             });
@@ -7265,6 +7336,8 @@
 
         if (templateDesign === 'gallery') {
             ensureGalleryImageDefaults();
+            state.galleryAssetVersion = normalizeGalleryAssetVersion(state.galleryAssetVersion);
+            syncGalleryAssetVersionUI();
             if (galleryCatalogTilesEditor && !galleryCatalogTilesEditor.childElementCount) {
                 renderGalleryCatalogTilesEditor();
             } else if (galleryCatalogTilesEditor) {
@@ -7282,6 +7355,8 @@
         } else if (templateDesign === 'spotlight' && window.SpotlightEditor) {
             SpotlightEditor.applyUI();
             SpotlightEditor.syncPreview();
+        } else {
+            syncGalleryAssetVersionUI();
         }
 
         markPreviewJumpTargets();
