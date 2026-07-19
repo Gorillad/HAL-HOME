@@ -5,6 +5,10 @@
  * Live server path: /data/logicx/css/styles.css
  * Wire via Meta Data snippet (meta-data-global-css-snippet.html in ZIP root).
  *
+ * SITE CONTENT MAX-WIDTH: 1440px
+ *   Applied to message bar, primary header, hero, catalog column,
+ *   footer main, and copyright inner. Background bars stay full-bleed.
+ *
  * Covers Classic gallery homepage only (message bar, primary header,
  * hero, catalog highlights, classic footer, copyright). Not editor chrome.
  * Phone menu toggle: pair with /data/logicx/js/gallery-nav.js.
@@ -18,6 +22,8 @@
 
 /* ——— Tokens & page shell ——— */
 :root {
+    /* Homepage content column — keep literal 1440px in sync with fallbacks below */
+    --showroom-content-max: 1440px;
     --gallery-hero-w: 1440px;
     --gallery-hero-gap: 8px;
     --gallery-header-logo-max-h: 100px;
@@ -93,7 +99,8 @@
     align-items: center;
     gap: 20px;
     width: 100%;
-    max-width: var(--gallery-hero-w);
+    max-width: 1440px;
+    max-width: var(--showroom-content-max, var(--gallery-hero-w, 1440px));
     margin: 0 auto;
     padding-left: var(--showroom-page-inset);
     padding-right: var(--showroom-page-inset);
@@ -198,7 +205,8 @@
     align-items: center;
     gap: clamp(24px, 2.5vw, 40px);
     width: 100%;
-    max-width: var(--gallery-hero-w);
+    max-width: 1440px;
+    max-width: var(--showroom-content-max, var(--gallery-hero-w, 1440px));
     margin: 0 auto;
     padding: 18px var(--showroom-page-inset);
     box-sizing: border-box;
@@ -667,12 +675,14 @@
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
-    max-width: var(--gallery-hero-w);
+    max-width: 1440px;
+    max-width: var(--showroom-content-max, var(--gallery-hero-w, 1440px));
 }
 
 .showroom-gallery-content-column {
     width: 100%;
-    max-width: var(--gallery-hero-w);
+    max-width: 1440px;
+    max-width: var(--showroom-content-max, var(--gallery-hero-w, 1440px));
     margin-left: auto;
     margin-right: auto;
     padding-left: var(--showroom-page-inset);
@@ -1038,9 +1048,13 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 32px;
     width: 100%;
-    max-width: 100%;
+    max-width: 1440px;
+    max-width: var(--showroom-content-max, var(--gallery-hero-w, 1440px));
     margin: 0 auto;
+    padding-left: var(--showroom-page-inset);
+    padding-right: var(--showroom-page-inset);
     padding-bottom: 36px;
+    box-sizing: border-box;
 }
 
 .showroom-footer-classic-col {
@@ -1205,7 +1219,13 @@
 }
 
 .showroom-copyright-classic-inner {
+    width: 100%;
+    max-width: 1440px;
+    max-width: var(--showroom-content-max, var(--gallery-hero-w, 1440px));
     margin: 0 auto;
+    padding-left: var(--showroom-page-inset);
+    padding-right: var(--showroom-page-inset);
+    box-sizing: border-box;
 }
 
 .showroom-copyright-classic-text {

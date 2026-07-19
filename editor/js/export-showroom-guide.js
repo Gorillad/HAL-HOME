@@ -246,7 +246,7 @@
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
         const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
-        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v7`;
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v8`;
 
         const imageNote = hasImages
             ? `Client images are in <code>${escapeHtml(imagesDir)}/</code> (live: <code>${escapeHtml(imagesServerPath)}/</code>).`
@@ -393,7 +393,7 @@
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
         const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
-        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v7`;
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v8`;
 
         if (design === 'gallery') {
             return [

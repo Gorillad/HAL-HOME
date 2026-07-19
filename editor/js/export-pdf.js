@@ -1089,7 +1089,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Phone nav script', GALLERY_NAV_JS_SERVER],
             ['Dashboard section', 'Meta Data, JavaScript & CSS (Global)'],
             ['Snippet file', GALLERY_META_SNIPPET_ZIP],
-            ['Stylesheet link', `<link rel="stylesheet" href="${GALLERY_CSS_SERVER}/styles.css?v7">`],
+            ['Stylesheet link', `<link rel="stylesheet" href="${GALLERY_CSS_SERVER}/styles.css?v8">`],
         ]);
         writeLines(
             'Support: FTP upload data/ (css + js + images under data/logicx/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions.',
@@ -1245,7 +1245,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const primaryStylesheetServerPath = primaryStylesheet
         ? primaryStylesheet.serverPath
         : `${GALLERY_CSS_SERVER}/styles.css`;
-    const primaryStylesheetCacheBust = `${primaryStylesheetServerPath}?v7`;
+    const primaryStylesheetCacheBust = `${primaryStylesheetServerPath}?v8`;
     const galleryNavScript = galleryScripts[0] || null;
     const galleryNavScriptSrc = galleryNavScript
         ? `${galleryNavScript.serverPath}?v1`
@@ -1291,6 +1291,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ...(galleryStylesheetNames.length
             ? galleryStylesheetNames.map((name) => `  - ${name}  →  ${GALLERY_CSS_SERVER}/${name}`)
             : [`  - styles.css  →  ${GALLERY_CSS_SERVER}/styles.css`]),
+        '',
+        'Content max-width: 1440px (message bar, header, hero, catalog, footer, copyright).',
+        'Confirm in styles.css: --showroom-content-max: 1440px; and max-width: 1440px;',
         '',
         'If the homepage looks unstyled, open the Live URL in a browser.',
         'A 404 means FTP path or Meta Data link is wrong.',
