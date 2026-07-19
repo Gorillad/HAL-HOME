@@ -2,17 +2,18 @@
  * Classic (gallery) handoff asset cache-bust version.
  * Single source of truth for ?vN on CSS, JS, and images.
  *
- * Bump CODE_FLOOR when shipping template CSS/JS/layout changes in the repo.
- * Editors can raise the version higher per client (logo/image swaps) without
- * a code change — Export handoff then writes ?vN into Meta Data + HTML.
+ * Default is 0 for a fresh client homepage that has not been customized yet.
+ * Used by Classic (gallery) and McQueen (classic) Showroom support handoffs.
+ * Editors bump the version when replacing CSS, JS, or images so Export handoff
+ * writes ?vN into Meta Data + HTML and live browsers load the new files.
  */
 (function (global) {
-    /** Minimum version shipped with this codebase (raise when template assets change). */
-    var CODE_FLOOR = 9;
+    /** Starting version for new Classic drafts (clients who have not begun yet). */
+    var CODE_FLOOR = 0;
 
     function normalize(value) {
         var n = parseInt(value, 10);
-        if (isNaN(n) || n < 1) return CODE_FLOOR;
+        if (isNaN(n) || n < 0) return CODE_FLOOR;
         return Math.max(CODE_FLOOR, n);
     }
 

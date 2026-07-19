@@ -165,12 +165,12 @@
     const DEFAULT_GALLERY_HERO_PANEL_COLOR = '#12100e';
     const DEFAULT_GALLERY_HERO_PANEL_OPACITY = 52;
     const ClassicAssetVersion = window.ShowroomClassicAssetVersion || {
-        CODE_FLOOR: 9,
-        DEFAULT: 9,
+        CODE_FLOOR: 0,
+        DEFAULT: 0,
         normalize: (value) => {
             const n = parseInt(value, 10);
-            if (Number.isNaN(n) || n < 1) return 9;
-            return Math.max(9, n);
+            if (Number.isNaN(n) || n < 0) return 0;
+            return Math.max(0, n);
         },
         label: (value) => `v${ClassicAssetVersion.normalize(value)}`,
     };
@@ -1140,15 +1140,16 @@
         state.galleryAssetVersion = version;
         if (fields.galleryAssetVersion) {
             fields.galleryAssetVersion.value = String(version);
-            fields.galleryAssetVersion.min = String(ClassicAssetVersion.CODE_FLOOR || DEFAULT_GALLERY_ASSET_VERSION);
+            const floor = ClassicAssetVersion.CODE_FLOOR;
+            fields.galleryAssetVersion.min = String(floor == null ? 0 : floor);
         }
         const badge = document.getElementById('editorAssetVersionBadge');
         if (badge) {
             badge.textContent = `assets ${ClassicAssetVersion.label(version)}`;
-            badge.hidden = templateDesign !== 'gallery';
+            badge.hidden = templateDesign !== 'gallery' && templateDesign !== 'classic';
         }
         const wrap = document.getElementById('editorClassicAssetVersion');
-        if (wrap) wrap.hidden = templateDesign !== 'gallery';
+        if (wrap) wrap.hidden = templateDesign !== 'gallery' && templateDesign !== 'classic';
     }
 
     function setGalleryAssetVersion(next, options = {}) {
@@ -2208,7 +2209,7 @@
         });
         // Asset version is a shipping/cache-bust control — always return to the
         // template default (CODE_FLOOR), not a previously bumped draft value.
-        if (templateDesign === 'gallery') {
+        if (templateDesign === 'gallery' || templateDesign === 'classic') {
             state.galleryAssetVersion = DEFAULT_GALLERY_ASSET_VERSION;
         }
         return true;
@@ -2237,11 +2238,12 @@
             finishSpotlightEditorInit();
         } else {
             finishClassicEditorInit();
+            setGalleryAssetVersion(DEFAULT_GALLERY_ASSET_VERSION, { save: false, silent: true });
         }
 
         saveState({ silent: true });
         setStatus(
-            templateDesign === 'gallery'
+            (templateDesign === 'gallery' || templateDesign === 'classic')
                 ? `Reset to defaults · assets ${ClassicAssetVersion.label(DEFAULT_GALLERY_ASSET_VERSION)}`
                 : 'Reset to defaults',
         );
@@ -6900,6 +6902,18 @@
                 dataUrl: state.headerLogoImage || DEFAULT_CLASSIC_HEADER_LOGO,
             },
             {
+                filename: 'hero-product.jpg',
+                label: 'Hero — product image (left)',
+                dimensions: '563 × 342 px',
+                dataUrl: state.productImage || DEFAULT_CLASSIC_PRODUCT_IMAGE,
+            },
+            {
+                filename: 'hero-lifestyle.jpg',
+                label: 'Hero — lifestyle image (right)',
+                dimensions: '854 × 670 px min',
+                dataUrl: state.lifestyleImage || DEFAULT_CLASSIC_LIFESTYLE_IMAGE,
+            },
+            {
                 filename: 'about-employee-image.png',
                 label: 'About Us employee photo (centered, overlaps panel)',
                 dimensions: '417 × 282 px',
@@ -7114,6 +7128,7 @@
                 featureTilesEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : featureTilesRoot,
                 youMayLikeEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : youMayLikeRoot,
                 getInspiredEl: templateDesign === 'gallery' || templateDesign === 'spotlight' ? null : getInspiredRoot,
+                sketchEl: templateDesign === 'classic' ? sketchRoot : null,
                 footerEl: templateDesign === 'gallery'
                     ? classicFooterRoot
                     : templateDesign === 'spotlight'
@@ -7131,7 +7146,9 @@
                     templateLabel: TEMPLATE_DESIGNS[templateDesign],
                     design: templateDesign,
                     logoDataUrl: handoffLogoDataUrl,
-                    assetVersion: templateDesign === 'gallery' ? getGalleryAssetVersion() : undefined,
+                    assetVersion: (templateDesign === 'gallery' || templateDesign === 'classic')
+                        ? getGalleryAssetVersion()
+                        : undefined,
                 },
                 onProgress: (progress) => handleCaptureProgress(progress, 'handoff'),
             });
@@ -7373,6 +7390,9 @@
                 renderClassicFooterLinksEditors();
             }
             syncGalleryPreview();
+        } else if (templateDesign === 'classic') {
+            state.galleryAssetVersion = normalizeGalleryAssetVersion(state.galleryAssetVersion);
+            syncGalleryAssetVersionUI();
         } else if (templateDesign === 'spotlight' && window.SpotlightEditor) {
             SpotlightEditor.applyUI();
             SpotlightEditor.syncPreview();
