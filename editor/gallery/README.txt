@@ -6,7 +6,7 @@ Paths are relative to editor/showroom.html (gallery/).
 Header
   xologic-logo.png          Company logo (left, in line with main nav)
 
-Hero (500 px tall · 1479 px wide)
+Hero (500 px tall · 1440 px wide)
   quorum1.jpg               Large lifestyle image (left)
   chandelier4.jpg           Lifestyle image (top right)
   pendants3.jpg             Lifestyle image (bottom right)
@@ -19,15 +19,15 @@ Catalog Highlights (4 tiles)
 
 Homepage stylesheet (support handoff)
   Source in editor:  gallery/data/css/styles.css
-  FTP ZIP path:      logicx/css/styles.css
-  Live server path:  /logicx/css/styles.css
-  Images live path:  /logicx/images/
+  FTP ZIP path:      data/logicx/css/styles.css
+  Live server path:  /data/logicx/css/styles.css
+  Images live path:  /data/logicx/images/
 
   Support install:
-  1. FTP upload logicx/ only (css + images) to the site root
+  1. FTP upload data/ only (css + images under data/logicx/) to the site root
   2. Paste meta-data-global-css-snippet.html (ZIP root) into
      “Meta Data, JavaScript & CSS (Global)”
-  3. Verify /logicx/css/styles.css loads (not 404)
+  3. Verify /data/logicx/css/styles.css loads (not 404)
   4. Paste html/* (ZIP root) into CMS regions — do not FTP html/
 
 Uploaded images are stored as data URLs in localStorage and replace these defaults.

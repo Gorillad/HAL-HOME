@@ -447,6 +447,25 @@
                         <p class="editor-field-hint">Applies to the large-image headline and body copy, plus the top and bottom right image headings. Button colors are separate below.</p>
                     </div>
                     <div class="editor-field">
+                        <label for="fieldGalleryHeroPanelColorValue">Text panel color</label>
+                        <div class="editor-color">
+                            <div class="editor-color-hex-wrap">
+                                <span class="editor-color-hex-label">Hex</span>
+                                <input type="text" class="editor-color-hex" id="fieldGalleryHeroPanelColorValue" value="#12100e" placeholder="#RRGGBB" spellcheck="false" autocomplete="off" aria-label="Panel color hex">
+                            </div>
+                            <input type="color" id="fieldGalleryHeroPanelColor" name="galleryHeroPanelColor" value="#12100e" title="Open color picker">
+                        </div>
+                        <p class="editor-field-hint">Dark translucent panel behind the large-image copy (also used on the right image headings).</p>
+                    </div>
+                    <div class="editor-field">
+                        <label for="fieldGalleryHeroPanelOpacity">Text panel transparency</label>
+                        <div class="editor-range-row">
+                            <input type="range" id="fieldGalleryHeroPanelOpacity" name="galleryHeroPanelOpacity" min="0" max="100" step="1" value="52">
+                            <span class="editor-range-value" id="fieldGalleryHeroPanelOpacityVal">52%</span>
+                        </div>
+                        <p class="editor-field-hint">0% = fully clear · 100% = solid. Default 52% matches the Classic template.</p>
+                    </div>
+                    <div class="editor-field">
                         <label for="fieldGalleryHeroHeadline1">Headline line 1</label>
                         <input type="text" id="fieldGalleryHeroHeadline1" name="galleryHeroHeadlineLine1" autocomplete="off">
                     </div>
@@ -1421,7 +1440,7 @@
                                     <input type="search" class="showroom-gallery-main-nav-search-input" placeholder="Search..." disabled aria-disabled="true">
                                     <i class="fa-solid fa-magnifying-glass showroom-gallery-main-nav-search-icon" aria-hidden="true"></i>
                                 </label>
-                                <button type="button" class="showroom-gallery-menu-toggle" aria-label="Open menu" aria-hidden="true" tabindex="-1" disabled>
+                                <button type="button" class="showroom-gallery-menu-toggle" id="previewGalleryMenuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="previewGalleryMainNav">
                                     <span class="showroom-gallery-menu-toggle-bar" aria-hidden="true"></span>
                                     <span class="showroom-gallery-menu-toggle-bar" aria-hidden="true"></span>
                                     <span class="showroom-gallery-menu-toggle-bar" aria-hidden="true"></span>
@@ -1478,7 +1497,7 @@
                                 <div class="showroom-gallery-hero-primary is-empty" id="previewGalleryHeroPrimary">
                                     <img id="previewGalleryHeroPrimaryImage" alt="" hidden>
                                     <div class="showroom-gallery-hero-primary-overlay">
-                                        <div class="showroom-gallery-hero-primary-panel">
+                                        <div class="showroom-gallery-hero-primary-panel" id="previewGalleryHeroPrimaryPanel">
                                             <div class="showroom-gallery-hero-primary-headline">
                                                 <span class="showroom-gallery-hero-primary-headline-line" id="previewGalleryHeroHeadlineLine1">STEP UP</span>
                                                 <span class="showroom-gallery-hero-primary-headline-line" id="previewGalleryHeroHeadlineLine2">YOUR</span>
@@ -1814,6 +1833,7 @@
     <script src="js/export-client-review.js"></script>
     <script src="js/spotlight-template.js?v=2"></script>
     <script src="js/editor-progress-dock.js"></script>
-    <script src="js/showroom-editor.js?v=3"></script>
+    <script src="gallery/data/js/gallery-nav.js"></script>
+    <script src="js/showroom-editor.js?v=4"></script>
 </body>
 </html>

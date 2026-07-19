@@ -238,15 +238,15 @@
 
         const hasStylesheets = Boolean(meta.hasStylesheets);
         const isClassicSupport = design === 'gallery';
-        const packageRoot = meta.packageRoot || 'logicx';
-        const serverRoot = meta.serverRoot || '/logicx';
+        const packageRoot = meta.packageRoot || 'data/logicx';
+        const serverRoot = meta.serverRoot || '/data/logicx';
         const metaSnippetPath = meta.metaSnippetPath || 'meta-data-global-css-snippet.html';
         const htmlDir = meta.htmlDir || 'html';
         const cssDir = meta.cssDir || `${packageRoot}/css`;
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
         const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
-        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v3`;
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v7`;
 
         const imageNote = hasImages
             ? `Client images are in <code>${escapeHtml(imagesDir)}/</code> (live: <code>${escapeHtml(imagesServerPath)}/</code>).`
@@ -256,7 +256,7 @@
 
         const cssStep = isClassicSupport
             ? [
-                '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload logicx/ (css + images only)</div><div class="step-desc">Upload the top-level <code>logicx/</code> folder from this ZIP to the site root. Live paths: <code>/logicx/css/</code> and <code>/logicx/images/</code>. Do <strong>not</strong> FTP <code>html/</code> or <code>meta-data-global-css-snippet.html</code> — those are paste-only from the ZIP root.</div></div></div>',
+                '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload data/ (css + images only)</div><div class="step-desc">Upload the top-level <code>data/</code> folder from this ZIP to the site root. Live paths: <code>/data/logicx/css/</code> and <code>/data/logicx/images/</code>. Do <strong>not</strong> FTP <code>html/</code> or <code>meta-data-global-css-snippet.html</code> — those are paste-only from the ZIP root.</div></div></div>',
                 '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Paste Meta Data / Global CSS</div><div class="step-desc">Open the client dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Paste the contents of <code>', escapeHtml(metaSnippetPath), '</code> from the ZIP root (keep both enhanced-search lines; wire <code>', escapeHtml(stylesheetHref), '</code>). Then open that stylesheet URL in a browser — it must not 404 or the homepage will look broken.</div></div></div>',
                 `    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Confirm images on FTP</div><div class="step-desc">${imageNote}</div></div></div>`,
                 '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Paste homepage HTML into CMS regions</div><div class="step-desc">Open <code>', escapeHtml(htmlDir), '/README.txt</code>, then paste <code>header.html</code> → <strong>header</strong>, <code>section_1.html</code> → <strong>section_1</strong>, <code>section_2.html</code> → <strong>section_2</strong>, and <code>footer.html</code> → <strong>footer</strong>. Use the live preview markup — do not rebuild by hand.</div></div></div>',
@@ -274,7 +274,7 @@
 
         const cssFileItems = isClassicSupport
             ? [
-                `    <div class="file-item is-primary"><div class="file-name">logicx/</div><div class="file-desc">FTP only — css + images. Live base: <code>${escapeHtml(serverRoot)}/</code>.</div></div>`,
+                `    <div class="file-item is-primary"><div class="file-name">data/</div><div class="file-desc">FTP only — css + images under <code>data/logicx/</code>. Live base: <code>${escapeHtml(serverRoot)}/</code>.</div></div>`,
                 `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(cssDir)}/styles.css</div><div class="file-desc">Homepage stylesheet → <code>${escapeHtml(cssServerPath)}/styles.css</code> (must load; 404 = broken homepage).</div></div>`,
                 `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(metaSnippetPath)}</div><div class="file-desc">ZIP root — paste into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Not for FTP.</div></div>`,
             ].join('\n')
@@ -325,7 +325,7 @@
             `  <h2>Welcome, ${companyName}</h2>`,
             `  <p>This package is for the onboarding / tech support agent implementing the <strong>${templateLabel}</strong> homepage with the client — FTP assets, paste Meta Data CSS, then paste CMS HTML. No web developer required for a standard install.</p>`,
             hasCmsHtml
-                ? `  <p>FTP <code>logicx/</code> (css + images only), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste <code>${escapeHtml(htmlDir)}/</code> into each CMS region. Copyright/ADA is already at the bottom of <code>footer.html</code>.</p>`
+                ? `  <p>FTP <code>data/</code> (css + images under <code>data/logicx/</code>), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste <code>${escapeHtml(htmlDir)}/</code> into each CMS region. Copyright/ADA is already at the bottom of <code>footer.html</code>.</p>`
                 : '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec, CSS, and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
             '</div>',
             '<div class="section">',
@@ -385,15 +385,15 @@
         const design = meta.design || 'classic';
         const handoffVersion = meta.handoffVersion || buildHandoffVersion();
         const packageId = meta.packageId || buildPackageId();
-        const packageRoot = meta.packageRoot || 'logicx';
-        const serverRoot = meta.serverRoot || '/logicx';
+        const packageRoot = meta.packageRoot || 'data/logicx';
+        const serverRoot = meta.serverRoot || '/data/logicx';
         const metaSnippetPath = meta.metaSnippetPath || 'meta-data-global-css-snippet.html';
         const htmlDir = meta.htmlDir || 'html';
         const cssDir = meta.cssDir || `${packageRoot}/css`;
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
         const imagesServerPath = meta.imagesServerPath || `${serverRoot}/images`;
-        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v3`;
+        const stylesheetHref = meta.stylesheetHref || `${cssServerPath}/styles.css?v7`;
 
         if (design === 'gallery') {
             return [
@@ -410,13 +410,13 @@
                 '----------',
                 '  1. WELCOME-GUIDE.html         — Open in browser (support install steps)',
                 `  2. ${pdfFilename}   — Brief + layout previews`,
-                '  3. logicx/                    — FTP only (css + images)',
+                '  3. data/logicx/               — FTP only (css + images)',
                 `       Live base: ${serverRoot}/`,
                 `  4. ${metaSnippetPath} — paste into Meta Data / Global CSS`,
                 `  5. ${htmlDir}/                  — CMS paste files (not FTP)`,
                 '',
-                'FTP TREE (inside logicx/)',
-                '-------------------------',
+                'FTP TREE (inside data/)',
+                '-----------------------',
                 `  ${cssDir}/styles.css`,
                 `    → ${cssServerPath}/styles.css`,
                 hasImages ? `  ${imagesDir}/` : '',
@@ -424,7 +424,7 @@
                 '',
                 'SUPPORT INSTALL ORDER',
                 '---------------------',
-                '  1. FTP upload logicx/ to the site root (css + images only)',
+                '  1. FTP upload data/ to the site root (css + images under data/logicx/)',
                 `  2. Paste ${metaSnippetPath}`,
                 '     into Meta Data, JavaScript & CSS (Global)',
                 `  3. Verify ${cssServerPath}/styles.css loads (not 404)`,

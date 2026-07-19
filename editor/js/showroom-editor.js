@@ -162,6 +162,8 @@
     const DEFAULT_GALLERY_HERO_BUTTON_BG = '#2b2b2b';
     const DEFAULT_GALLERY_HERO_BUTTON_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HERO_TEXT = '#ffffff';
+    const DEFAULT_GALLERY_HERO_PANEL_COLOR = '#12100e';
+    const DEFAULT_GALLERY_HERO_PANEL_OPACITY = 52;
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_HEADING = 'Chandelier';
     const DEFAULT_GALLERY_HERO_SECONDARY_TOP_URL = '/lighting-fixtures/chandeliers';
     const DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM_HEADING = 'Pendants';
@@ -559,6 +561,10 @@
         galleryHeroCopy: document.getElementById('fieldGalleryHeroCopy'),
         galleryHeroTextColor: document.getElementById('fieldGalleryHeroText'),
         galleryHeroTextColorValue: document.getElementById('fieldGalleryHeroTextValue'),
+        galleryHeroPanelColor: document.getElementById('fieldGalleryHeroPanelColor'),
+        galleryHeroPanelColorValue: document.getElementById('fieldGalleryHeroPanelColorValue'),
+        galleryHeroPanelOpacity: document.getElementById('fieldGalleryHeroPanelOpacity'),
+        galleryHeroPanelOpacityVal: document.getElementById('fieldGalleryHeroPanelOpacityVal'),
         galleryHeroButtonLabel: document.getElementById('fieldGalleryHeroButtonLabel'),
         galleryHeroButtonUrl: document.getElementById('fieldGalleryHeroButtonUrl'),
         galleryHeroButtonBackgroundColor: document.getElementById('fieldGalleryHeroButtonBg'),
@@ -692,6 +698,7 @@
     const previewGalleryHeroHeadlineLine3 = document.getElementById('previewGalleryHeroHeadlineLine3');
     const previewGalleryHeroCopy = document.getElementById('previewGalleryHeroCopy');
     const previewGalleryHeroCta = document.getElementById('previewGalleryHeroCta');
+    const previewGalleryHeroPrimaryPanel = document.getElementById('previewGalleryHeroPrimaryPanel');
     const uploadPreviewGalleryHeroPrimary = document.getElementById('uploadPreviewGalleryHeroPrimary');
     const uploadPreviewGalleryHeroSecondaryTop = document.getElementById('uploadPreviewGalleryHeroSecondaryTop');
     const uploadPreviewGalleryHeroSecondaryBottom = document.getElementById('uploadPreviewGalleryHeroSecondaryBottom');
@@ -868,6 +875,8 @@
         galleryHeroHeadlineLine3: DEFAULT_GALLERY_HERO_HEADLINE_3,
         galleryHeroCopy: DEFAULT_GALLERY_HERO_COPY,
         galleryHeroTextColor: DEFAULT_GALLERY_HERO_TEXT,
+        galleryHeroPanelColor: DEFAULT_GALLERY_HERO_PANEL_COLOR,
+        galleryHeroPanelOpacity: DEFAULT_GALLERY_HERO_PANEL_OPACITY,
         galleryHeroButtonLabel: DEFAULT_GALLERY_HERO_BUTTON_LABEL,
         galleryHeroButtonUrl: DEFAULT_GALLERY_HERO_BUTTON_URL,
         galleryHeroButtonBackgroundColor: DEFAULT_GALLERY_HERO_BUTTON_BG,
@@ -1097,6 +1106,28 @@
         const g = parseInt(value.slice(2, 4), 16);
         const b = parseInt(value.slice(4, 6), 16);
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function normalizeGalleryHeroPanelOpacity(value) {
+        const num = parseInt(value, 10);
+        if (Number.isNaN(num)) return DEFAULT_GALLERY_HERO_PANEL_OPACITY;
+        return Math.max(0, Math.min(100, num));
+    }
+
+    function galleryHeroPanelBackground(color, opacityPercent) {
+        return hexWithAlpha(
+            normalizeHexColor(color, DEFAULT_GALLERY_HERO_PANEL_COLOR),
+            normalizeGalleryHeroPanelOpacity(opacityPercent) / 100,
+        );
+    }
+
+    function galleryHeroPanelEdgeGradient(color, opacityPercent) {
+        const base = normalizeGalleryHeroPanelOpacity(opacityPercent) / 100;
+        // Keep the left scrim proportional to the Classic defaults (0.42 / 0.52 and 0.18 / 0.52).
+        const edgeStart = Math.min(1, base * (0.42 / 0.52));
+        const edgeMid = Math.min(1, base * (0.18 / 0.52));
+        const hex = normalizeHexColor(color, DEFAULT_GALLERY_HERO_PANEL_COLOR);
+        return `linear-gradient(90deg, ${hexWithAlpha(hex, edgeStart)} 0%, ${hexWithAlpha(hex, edgeMid)} 55%, ${hexWithAlpha(hex, 0)} 100%)`;
     }
 
     function softCascadeFromHeaderText(previousHeaderText, nextHeaderText) {
@@ -2381,6 +2412,13 @@
             state.galleryHeroTextColor,
             DEFAULT_GALLERY_HERO_TEXT,
         );
+        const panelColor = normalizeHexColor(
+            state.galleryHeroPanelColor,
+            DEFAULT_GALLERY_HERO_PANEL_COLOR,
+        );
+        const panelOpacity = normalizeGalleryHeroPanelOpacity(state.galleryHeroPanelOpacity);
+        const panelBackground = galleryHeroPanelBackground(panelColor, panelOpacity);
+        const panelEdge = galleryHeroPanelEdgeGradient(panelColor, panelOpacity);
         const buttonLabel = typeof state.galleryHeroButtonLabel === 'string'
             ? state.galleryHeroButtonLabel
             : DEFAULT_GALLERY_HERO_BUTTON_LABEL;
@@ -2397,8 +2435,23 @@
         );
 
         state.galleryHeroTextColor = textColor;
+        state.galleryHeroPanelColor = panelColor;
+        state.galleryHeroPanelOpacity = panelOpacity;
         state.galleryHeroButtonBackgroundColor = buttonBg;
         state.galleryHeroButtonTextColor = buttonText;
+
+        // Inline + CSS vars so handoff HTML keeps the panel even if host CSS drops custom properties.
+        if (showroomHeroGallery) {
+            showroomHeroGallery.style.setProperty('--gallery-hero-panel', panelBackground);
+            showroomHeroGallery.style.setProperty('--gallery-hero-panel-edge', panelEdge);
+            showroomHeroGallery.style.setProperty(
+                '--gallery-hero-scrim',
+                hexWithAlpha(panelColor, Math.min(1, (panelOpacity / 100) * (0.48 / 0.52))),
+            );
+        }
+        if (previewGalleryHeroPrimaryPanel) {
+            previewGalleryHeroPrimaryPanel.style.background = panelBackground;
+        }
 
         [
             previewGalleryHeroHeadlineLine1,
@@ -2432,6 +2485,18 @@
                 setColorValueEl(fields.galleryHeroTextColorValue, textColor);
             }
         }
+        if (fields.galleryHeroPanelColor) {
+            fields.galleryHeroPanelColor.value = panelColor;
+            if (fields.galleryHeroPanelColorValue) {
+                setColorValueEl(fields.galleryHeroPanelColorValue, panelColor);
+            }
+        }
+        if (fields.galleryHeroPanelOpacity) {
+            fields.galleryHeroPanelOpacity.value = String(panelOpacity);
+            if (fields.galleryHeroPanelOpacityVal) {
+                fields.galleryHeroPanelOpacityVal.textContent = `${panelOpacity}%`;
+            }
+        }
         if (fields.galleryHeroButtonBackgroundColor) {
             fields.galleryHeroButtonBackgroundColor.value = buttonBg;
             if (fields.galleryHeroButtonBackgroundColorValue) {
@@ -2455,6 +2520,7 @@
             previewGalleryHeroSecondaryTopHeading.textContent = secondaryTopHeading;
             previewGalleryHeroSecondaryTopHeading.hidden = !secondaryTopHeading;
             previewGalleryHeroSecondaryTopHeading.style.color = textColor;
+            previewGalleryHeroSecondaryTopHeading.style.background = panelBackground;
         }
         if (previewGalleryHeroSecondaryTopLink) {
             previewGalleryHeroSecondaryTopLink.href = secondaryTopUrl || '#';
@@ -2470,6 +2536,7 @@
             previewGalleryHeroSecondaryBottomHeading.textContent = secondaryBottomHeading;
             previewGalleryHeroSecondaryBottomHeading.hidden = !secondaryBottomHeading;
             previewGalleryHeroSecondaryBottomHeading.style.color = textColor;
+            previewGalleryHeroSecondaryBottomHeading.style.background = panelBackground;
         }
         if (previewGalleryHeroSecondaryBottomLink) {
             previewGalleryHeroSecondaryBottomLink.href = secondaryBottomUrl || '#';
@@ -2695,6 +2762,13 @@
             data.galleryHeroTextColor,
             DEFAULT_GALLERY_HERO_TEXT,
         );
+        state.galleryHeroPanelColor = normalizeHexColor(
+            data.galleryHeroPanelColor,
+            DEFAULT_GALLERY_HERO_PANEL_COLOR,
+        );
+        state.galleryHeroPanelOpacity = normalizeGalleryHeroPanelOpacity(
+            data.galleryHeroPanelOpacity,
+        );
         state.galleryHeroButtonLabel = storedText(
             data.galleryHeroButtonLabel,
             DEFAULT_GALLERY_HERO_BUTTON_LABEL,
@@ -2722,6 +2796,18 @@
             fields.galleryHeroHeadlineLine3.value = state.galleryHeroHeadlineLine3;
         }
         if (fields.galleryHeroCopy) fields.galleryHeroCopy.value = state.galleryHeroCopy;
+        if (fields.galleryHeroPanelColor) {
+            fields.galleryHeroPanelColor.value = state.galleryHeroPanelColor;
+            if (fields.galleryHeroPanelColorValue) {
+                setColorValueEl(fields.galleryHeroPanelColorValue, state.galleryHeroPanelColor);
+            }
+        }
+        if (fields.galleryHeroPanelOpacity) {
+            fields.galleryHeroPanelOpacity.value = String(state.galleryHeroPanelOpacity);
+            if (fields.galleryHeroPanelOpacityVal) {
+                fields.galleryHeroPanelOpacityVal.textContent = `${state.galleryHeroPanelOpacity}%`;
+            }
+        }
         if (fields.galleryHeroButtonLabel) {
             fields.galleryHeroButtonLabel.value = state.galleryHeroButtonLabel;
         }
@@ -2741,18 +2827,27 @@
     }
 
     function buildGalleryHeroExportSpec() {
+        const panelColor = normalizeHexColor(
+            state.galleryHeroPanelColor,
+            DEFAULT_GALLERY_HERO_PANEL_COLOR,
+        );
+        const panelOpacity = normalizeGalleryHeroPanelOpacity(state.galleryHeroPanelOpacity);
+        const panelBackground = galleryHeroPanelBackground(panelColor, panelOpacity);
+        const panelEdge = galleryHeroPanelEdgeGradient(panelColor, panelOpacity);
         const backdropTokens = {
             description: 'translucent charcoal text panel + left scrim',
-            panelBackground: 'rgba(18, 16, 14, 0.52)',
-            panelEdgeGradient: 'linear-gradient(90deg, rgba(18, 16, 14, 0.42) 0%, rgba(18, 16, 14, 0.18) 55%, rgba(18, 16, 14, 0) 100%)',
+            panelColor,
+            panelOpacity,
+            panelBackground,
+            panelEdgeGradient: panelEdge,
             backdropFilter: 'blur(2px)',
-            productionNote: 'Use CSS sticky for the message bar only in production. Editor preview uses a JS pin because transform: scale() breaks position: sticky.',
+            productionNote: 'Panel background is also baked as an inline style on the hero panel in CMS HTML so third-party hosts keep the dark fill even if CSS custom properties are stripped. Use CSS sticky for the message bar only in production. Editor preview uses a JS pin because transform: scale() breaks position: sticky.',
         };
 
         return {
             layout: 'split-lifestyle',
             height: '500 px',
-            width: '1479 px',
+            width: '1440 px',
             alignment: 'Centered · Classic hero',
             columns: 'Large image left · two stacked images right',
             imageFit: 'cover',
@@ -4184,7 +4279,7 @@
                 logoSizePx,
                 logoDimensions,
                 logoFilename: 'header-logo.png',
-                contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
+                contentColumnWidth: '1440 px',
                 topBar: {
                     backgroundColor: state.galleryHeaderBarBackgroundColor,
                     textColor: state.galleryHeaderBarTextColor || DEFAULT_GALLERY_HEADER_BAR_TEXT,
@@ -4205,7 +4300,7 @@
                     },
                 },
                 mainNav: {
-                    alignment: 'logo left · nav left of search · search right',
+                    alignment: 'desktop: logo left · nav · search | tablet ≤1100: logo above · nav + search centered | phone ≤700: logo · search · hamburger',
                     hasDropdowns: true,
                     items: (state.galleryMainNavItems || []).map((item) => ({
                         id: item.id || '',
@@ -5876,6 +5971,25 @@
                 setColorValueEl(fields.galleryHeroTextColorValue, state.galleryHeroTextColor);
             }
         }
+        if (fields.galleryHeroPanelColor) {
+            state.galleryHeroPanelColor = normalizeHexColor(
+                fields.galleryHeroPanelColor.value,
+                DEFAULT_GALLERY_HERO_PANEL_COLOR,
+            );
+            fields.galleryHeroPanelColor.value = state.galleryHeroPanelColor;
+            if (fields.galleryHeroPanelColorValue) {
+                setColorValueEl(fields.galleryHeroPanelColorValue, state.galleryHeroPanelColor);
+            }
+        }
+        if (fields.galleryHeroPanelOpacity) {
+            state.galleryHeroPanelOpacity = normalizeGalleryHeroPanelOpacity(
+                fields.galleryHeroPanelOpacity.value,
+            );
+            fields.galleryHeroPanelOpacity.value = String(state.galleryHeroPanelOpacity);
+            if (fields.galleryHeroPanelOpacityVal) {
+                fields.galleryHeroPanelOpacityVal.textContent = `${state.galleryHeroPanelOpacity}%`;
+            }
+        }
         if (fields.galleryHeroButtonLabel) {
             state.galleryHeroButtonLabel = readTextField(fields.galleryHeroButtonLabel);
         }
@@ -6447,6 +6561,8 @@
         'galleryHeroSecondaryBottomUrl',
         'galleryHeroCopy',
         'galleryHeroTextColor',
+        'galleryHeroPanelColor',
+        'galleryHeroPanelOpacity',
         'galleryHeroButtonLabel',
         'galleryHeroButtonUrl',
         'galleryHeroButtonBackgroundColor',
@@ -6590,7 +6706,7 @@
             assets.push({
                 filename: 'gallery-hero-primary.jpg',
                 label: 'Hero — large lifestyle image (left)',
-                dimensions: '1479 × 500 px (primary panel)',
+                dimensions: '1440 × 500 px (primary panel)',
                 dataUrl: state.galleryHeroPrimaryImage,
             });
         }
