@@ -44,8 +44,8 @@ Use `npm start` (not a static file server) — cart checkout requires the Node A
 │   │   ├── export-pdf.js      # Showroom handoff export
 │   │   ├── editor-progress-dock.js
 │   │   └── spotlight-template.js
-│   ├── gallery/               # Showroom Classic template images
-│   ├── classic/               # Showroom McQueen template images
+│   ├── gallery/               # Showroom Classic (data/{css,js,images})
+│   ├── McQueen/               # Showroom McQueen (data/{css,js,images})
 │   ├── Spotlight/             # Showroom Spotlight template images
 │   ├── assets/
 │   └── vendor/                # html2canvas, jsPDF, JSZip

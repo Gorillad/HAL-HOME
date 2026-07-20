@@ -476,7 +476,12 @@ window.SpotlightEditor = (function createSpotlightEditorModule() {
     function resolveImage(saved, fallback) {
         if (!saved || typeof saved !== 'string') return resolveAssetPath(fallback);
         if (saved.startsWith('data:')) return saved;
-        if (isBundledImage(saved) || saved.startsWith('classic/') || saved.startsWith('gallery/')) {
+        if (
+            isBundledImage(saved)
+            || saved.startsWith('classic/')
+            || saved.startsWith('McQueen/')
+            || saved.startsWith('gallery/')
+        ) {
             return resolveAssetPath(fallback);
         }
         return resolveAssetPath(saved);

@@ -30,8 +30,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     /** Classic (gallery) + McQueen share the support-agent FTP/CMS package shape. */
     const isSupportHandoff = isGallery || isMcQueen;
     /**
-     * Support package layout:
-     *   data/logicx/{css,js,images}  — FTP only
+     * Support package layout (FTP only under data/…):
+     *   Classic (gallery) + McQueen: data/logicx/{css,js?,images}
+     *   McQueen CMS: homepage body → section_1; footer → footer
      *   html/ + meta-data-*.html  — CMS paste (ZIP parent, not FTP)
      */
     const GALLERY_PACKAGE_ROOT = 'data/logicx';
@@ -686,7 +687,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Header logo size', header.logoSizePx
                 ? `${header.logoSizePx} px display height · width auto`
                 : (header.logoDimensions || 'max 220 × 68 px')],
-            ['Header logo in handoff', galleryHandoffImageLine('header-logo.png', 'template default')],
+            ['Header logo in handoff', galleryHandoffImageLine(
+                isMcQueen ? 'Alveraanlogo_v1.png' : 'header-logo.png',
+                'template default',
+            )],
             ['Footer uses header logo', header.logoSharedWithFooter !== false ? 'Yes' : 'No'],
         ]);
         const headerToolbarIcons = Array.isArray(headerToolbar.icons) ? headerToolbar.icons : [];
@@ -889,7 +893,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Header', aboutUs.header],
             ['Paragraph', aboutUs.paragraph],
             ['Employee photo size', aboutUs.employeeImageSize || '417 × 282 px'],
-            ['Employee photo in handoff', 'Yes — about-employee-image.png'],
+            ['Employee photo in handoff', 'Yes — about-us.jpg → /data/logicx/images/about-us.jpg'],
             ['Primary button', pdfLinkLine(primaryButton.label, primaryButton.url)],
             ['Secondary button', pdfLinkLine(secondaryButton.label, secondaryButton.url)],
             ['Button background', aboutUs.buttonBackgroundColor || '#2b2b2b'],
@@ -899,7 +903,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         writeSectionTitle('Feature Cards');
         writeSpecRows([
             ['Photo size', featureTiles.imageSize || '780 × 1014 px'],
-            ['Feature photos in handoff', 'Yes — feature-left-image.png and feature-right-image.png'],
+            ['Feature photos in handoff', 'Yes — explore-image-left.jpg + explore-image-right.jpg'],
             ['Left header', featureLeft.header],
             ['Left copy', featureLeft.paragraph],
             ['Left button visible', leftButton.visible !== false ? 'Yes' : 'No'],
@@ -928,7 +932,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         writeSpecRows([
             ['Title', getInspired.title || 'Get Inspired'],
             ['Lifestyle photo size', getInspired.lifestyleImageSize || '508 × 610 px'],
-            ['Lifestyle photo in handoff', 'Yes — get-inspired-lifestyle.png'],
+            ['Lifestyle photo in handoff', 'Yes — get-inspired.jpg → /data/logicx/images/get-inspired.jpg'],
             ['Grid card size', getInspired.cardImageSize || '155 × 155 px'],
             ['Grid card images in handoff', 'No — resolved from catalog on the live site'],
             ['Live site', 'Name, price, and image from You May Like dashboard attribute'],
@@ -1107,8 +1111,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ]);
         writeLines(
             isGallery
-                ? 'Support: FTP upload data/ (css + js + images under data/logicx/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions. Bump Asset version in the editor when replacing CSS/JS/images.'
-                : 'Support: FTP upload data/ (css + images under data/logicx/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions (header through section_7 + footer). Bump Asset version in the editor when replacing CSS/images.',
+                ? `Support: FTP upload data/ (css + js + images under ${GALLERY_PACKAGE_ROOT}/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions. Bump Asset version in the editor when replacing CSS/JS/images.`
+                : `Support: FTP upload data/ (css → ${GALLERY_CSS_SERVER}/, images → ${GALLERY_IMAGES_SERVER}/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/section_1.html → section_1 and html/footer.html → footer. Bump Asset version when replacing CSS/images.`,
             { size: 9, color: [90, 90, 90], gap: 10 },
         );
     }
@@ -1124,7 +1128,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     } else {
         writeLines('These files are included in the ZIP and shown on the following pages.', { size: 9, color: [90, 90, 90], gap: 6 });
         writeItemList(resolvedHandoffAssets, (asset, index) => (
-            `${index + 1}. ${isSupportHandoff ? 'data/logicx/images' : 'images'}/${asset.filename} — ${asset.label} (${asset.dimensions})`
+            `${index + 1}. ${isSupportHandoff ? GALLERY_IMAGES_ZIP_DIR : 'images'}/${asset.filename} — ${asset.label} (${asset.dimensions})`
         ));
     }
 
@@ -1210,14 +1214,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
 
     /**
      * Homepage stylesheets for FTP upload (Classic gallery + McQueen).
-     * ZIP: data/logicx/css/[file] → live: /data/logicx/css/[file]
+     * ZIP/live: data/logicx/css → /data/logicx/css (Classic + McQueen).
      */
     async function loadSupportHandoffStylesheets() {
         if (!isSupportHandoff) return [];
         const files = [
             {
                 zipPath: `${GALLERY_CSS_ZIP_DIR}/styles.css`,
-                sourceUrl: isGallery ? 'gallery/data/css/styles.css' : 'classic/data/css/styles.css',
+                sourceUrl: isGallery ? 'gallery/data/css/styles.css' : 'McQueen/data/css/styles.css',
                 serverPath: `${GALLERY_CSS_SERVER}/styles.css`,
             },
         ];
@@ -1304,7 +1308,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         `Homepage stylesheet — ${supportTemplateLabel} (FTP)`,
         '===================================',
         '',
-        'This folder is FTP-only (inside data/logicx/):',
+        `This folder is FTP-only (inside ${GALLERY_PACKAGE_ROOT}/):`,
         `  ${GALLERY_CSS_ZIP_DIR}/`,
         '',
         'Support install:',
@@ -1336,7 +1340,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         'Homepage scripts — Classic (FTP)',
         '================================',
         '',
-        'This folder is FTP-only (inside data/logicx/):',
+        `This folder is FTP-only (inside ${GALLERY_PACKAGE_ROOT}/):`,
         `  ${GALLERY_JS_ZIP_DIR}/`,
         '',
         'Files:',
@@ -1694,7 +1698,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '  html/footer.html     →  footer      (columns + copyright/ADA)',
                 '',
                 'Install order (support agent):',
-                '  1. FTP upload data/ only (css + images under data/logicx/)',
+                `  1. FTP upload data/ only (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
                 '  2. Paste meta-data-global-css-snippet.html (ZIP root)',
                 '     into dashboard → Meta Data, JavaScript & CSS (Global)',
                 `  3. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
@@ -1710,28 +1714,54 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     /**
-     * McQueen CMS paste HTML — header + sections 1–7 + footer.
-     * Dashboard regions: header → section_1…section_7 → footer.
+     * McQueen CMS paste HTML — section_1 (homepage body) + footer.html.
+     * Live image root: /data/logicx/images/ (FTP: data/logicx/images/)
      */
     const MCQUEEN_PREVIEW_ID_TO_IMAGE = {
-        previewHeaderLogo: 'header-logo.png',
-        previewProductImage: 'hero-product.jpg',
-        previewLifestyleImage: 'hero-lifestyle.jpg',
-        previewAboutPhoto: 'about-employee-image.png',
-        previewFeatureLeftImage: 'feature-left-image.png',
-        previewFeatureRightImage: 'feature-right-image.png',
-        previewGetInspiredLifestyleImage: 'get-inspired-lifestyle.png',
-        previewFooterLogo: 'footer-logo.png',
+        previewHeaderLogo: 'Alveraanlogo_v1.png',
+        previewProductImage: 'hero-product.png',
+        previewLifestyleImage: 'hero-lg-right.jpg',
+        previewAboutPhoto: 'about-us.jpg',
+        previewFeatureLeftImage: 'explore-image-left.jpg',
+        previewFeatureRightImage: 'explore-image-right.jpg',
+        previewGetInspiredLifestyleImage: 'get-inspired.jpg',
+        previewFooterLogo: 'Alveraanlogo_v1.png',
     };
 
+    const MCQUEEN_IMAGE_PREFIX = 'McQueen/data/images/';
     const MCQUEEN_DEFAULT_PATH_TO_IMAGE = {
-        'classic/header/logo-classic.png': 'header-logo.png',
-        'classic/gemma.jpg': 'hero-product.jpg',
-        'classic/Gemma_FR33738VBZ_H_Models-min.jpg': 'hero-lifestyle.jpg',
-        'classic/lady-showroom.jpg': 'about-employee-image.png',
-        'classic/kitchEnclavePhoto-min.jpg': 'feature-left-image.png',
-        'classic/exteriorLightingPhoto-min.jpg': 'feature-right-image.png',
-        'classic/get-inspired/Everett_4398BN_Models.jpg': 'get-inspired-lifestyle.png',
+        // Live-site filenames → FTP /data/logicx/images/[name]
+        [`${MCQUEEN_IMAGE_PREFIX}Alveraanlogo_v1.png`]: 'Alveraanlogo_v1.png',
+        [`${MCQUEEN_IMAGE_PREFIX}hero-product.png`]: 'hero-product.png',
+        [`${MCQUEEN_IMAGE_PREFIX}hero-lg-right.jpg`]: 'hero-lg-right.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}about-us.jpg`]: 'about-us.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}explore-image-left.jpg`]: 'explore-image-left.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}explore-image-right.jpg`]: 'explore-image-right.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}get-inspired.jpg`]: 'get-inspired.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}building.png`]: 'building.png',
+        [`${MCQUEEN_IMAGE_PREFIX}computer.png`]: 'computer.png',
+        [`${MCQUEEN_IMAGE_PREFIX}truck.png`]: 'truck.png',
+        [`${MCQUEEN_IMAGE_PREFIX}male-female.png`]: 'male-female.png',
+        [`${MCQUEEN_IMAGE_PREFIX}sketch-section/building.png`]: 'building.png',
+        [`${MCQUEEN_IMAGE_PREFIX}sketch-section/computer.png`]: 'computer.png',
+        [`${MCQUEEN_IMAGE_PREFIX}sketch-section/truck.png`]: 'truck.png',
+        [`${MCQUEEN_IMAGE_PREFIX}sketch-section/male-female.png`]: 'male-female.png',
+        // Older bundled defaults
+        [`${MCQUEEN_IMAGE_PREFIX}header/logo-classic.png`]: 'Alveraanlogo_v1.png',
+        [`${MCQUEEN_IMAGE_PREFIX}gemma.jpg`]: 'hero-product.png',
+        [`${MCQUEEN_IMAGE_PREFIX}Gemma_FR33738VBZ_H_Models-min.jpg`]: 'hero-lg-right.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}lady-showroom.jpg`]: 'about-us.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}kitchEnclavePhoto-min.jpg`]: 'explore-image-left.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}exteriorLightingPhoto-min.jpg`]: 'explore-image-right.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}get-inspired/Everett_4398BN_Models.jpg`]: 'get-inspired.jpg',
+        // Legacy editor paths (pre McQueen/data/images migration)
+        'classic/header/logo-classic.png': 'Alveraanlogo_v1.png',
+        'classic/gemma.jpg': 'hero-product.png',
+        'classic/Gemma_FR33738VBZ_H_Models-min.jpg': 'hero-lg-right.jpg',
+        'classic/lady-showroom.jpg': 'about-us.jpg',
+        'classic/kitchEnclavePhoto-min.jpg': 'explore-image-left.jpg',
+        'classic/exteriorLightingPhoto-min.jpg': 'explore-image-right.jpg',
+        'classic/get-inspired/Everett_4398BN_Models.jpg': 'get-inspired.jpg',
     };
 
     function mcQueenRelativeImageKey(src) {
@@ -1739,11 +1769,15 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         if (!value || value.startsWith('data:')) return '';
         try {
             const url = new URL(value, window.location.href);
-            const match = url.pathname.match(/(?:^|\/)(classic\/.+)$/i);
-            if (match) return match[1].replace(/^\/+/, '');
+            const mcQueenMatch = url.pathname.match(/(?:^|\/)(McQueen\/data\/images\/.+)$/i);
+            if (mcQueenMatch) return mcQueenMatch[1].replace(/^\/+/, '');
+            const legacyMatch = url.pathname.match(/(?:^|\/)(classic\/.+)$/i);
+            if (legacyMatch) return legacyMatch[1].replace(/^\/+/, '');
         } catch {
             /* ignore */
         }
+        const mcQueenLoose = value.match(/(McQueen\/data\/images\/[^?#]+)/i);
+        if (mcQueenLoose) return mcQueenLoose[1].split('?')[0];
         const loose = value.match(/(classic\/[^?#]+)/i);
         return loose ? loose[1].split('?')[0] : '';
     }
@@ -1786,7 +1820,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         }
         if (id.startsWith('previewGetInspiredCard-')) {
             const n = id.replace(/\D+/g, '');
-            if (n) return galleryCmsImagePath(`get-inspired-card-${n}.png`);
+            if (n) return galleryCmsImagePath(`get-inspired/${n}.png`);
+        }
+        // Featured-category thumbs → /data/logicx/images/featured-categories/…
+        if (rel && /featured-categories\//i.test(rel)) {
+            const featFile = rel.replace(/^.*featured-categories\//i, 'featured-categories/');
+            return galleryCmsImagePath(featFile);
         }
         return '';
     }
@@ -1881,53 +1920,102 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ].filter((line) => line !== null).join('\n');
     }
 
+    function isMcQueenCmsBlockVisible(el) {
+        if (!el) return false;
+        if (el.hidden) return false;
+        if (el.classList?.contains('is-hidden')) return false;
+        return true;
+    }
+
+    function stripMcQueenFooterFromClone(clone) {
+        if (!clone) return clone;
+        clone.querySelectorAll(
+            'footer, .showroom-footer-section, .showroom-footer-mcqueen, .showroom-copyright-classic-section',
+        ).forEach((node) => node.remove());
+        return clone;
+    }
+
+    function buildMcQueenSection1Html(srcLookup) {
+        /**
+         * Homepage body only → section_1.
+         * Footer (+ copyright/ADA) is never included here — see footer.html.
+         */
+        const blocks = [
+            heroEl,
+            categoriesEl,
+            aboutEl,
+            featureTilesEl,
+            isMcQueenCmsBlockVisible(sketchEl) ? sketchEl : null,
+            youMayLikeEl,
+            getInspiredEl,
+        ];
+        const fragments = [];
+        for (const el of blocks) {
+            if (!isMcQueenCmsBlockVisible(el)) continue;
+            // Never serialize the footer into section_1 (footer lives in footer.html).
+            if (el === footerEl || el === copyrightEl) continue;
+            if (el.id === 'showroomFooterSection' || el.classList?.contains('showroom-footer-section')) {
+                continue;
+            }
+            let clone = sanitizeMcQueenCmsClone(el, srcLookup);
+            clone = stripMcQueenFooterFromClone(clone);
+            if (clone?.outerHTML) fragments.push(clone.outerHTML);
+        }
+
+        const date = new Date().toLocaleDateString();
+        return [
+            `<!-- Showroom McQueen — Homepage body (no footer) | LogicX Showroom Editor · ${date} -->`,
+            `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
+            `<!-- Asset version: v${galleryAssetVersion} (CSS/images ?v${galleryAssetVersion}) -->`,
+            '<!-- Paste ALL of this file into CMS region: section_1 -->',
+            '<!-- Footer is NOT in this file — use html/footer.html → CMS region footer -->',
+            `<!-- Images live at ${GALLERY_IMAGES_SERVER}/ (FTP: ${GALLERY_IMAGES_ZIP_DIR}/) -->`,
+            `<!-- Stylesheet: ${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery} -->`,
+            '<!-- Do not split into section_2…section_7. -->',
+            '',
+            ...fragments,
+            '',
+        ].join('\n');
+    }
+
+    function buildMcQueenFooterHtml(srcLookup) {
+        /** Footer only — paste into CMS region footer (not section_1). */
+        if (!isMcQueenCmsBlockVisible(footerEl) && !isMcQueenCmsBlockVisible(copyrightEl)) {
+            return '';
+        }
+        const footerParts = [];
+        const footerClone = sanitizeMcQueenCmsClone(footerEl, srcLookup);
+        const copyrightClone = sanitizeMcQueenCmsClone(copyrightEl, srcLookup);
+        if (footerClone) footerParts.push(footerClone.outerHTML);
+        if (copyrightClone) footerParts.push(copyrightClone.outerHTML);
+        if (!footerParts.length) return '';
+
+        const date = new Date().toLocaleDateString();
+        return [
+            `<!-- Showroom McQueen — Footer + Copyright/ADA | LogicX Showroom Editor · ${date} -->`,
+            `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
+            `<!-- Asset version: v${galleryAssetVersion} (CSS/images ?v${galleryAssetVersion}) -->`,
+            '<!-- Paste into CMS region: footer (do not put this markup in section_1) -->',
+            `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery} and images under ${GALLERY_IMAGES_SERVER}/ -->`,
+            '',
+            footerParts.join('\n\n'),
+            '',
+        ].join('\n');
+    }
+
     function buildMcQueenCmsHtmlFiles() {
         if (!isMcQueen) return [];
         const srcLookup = buildMcQueenCmsSrcLookup(resolvedHandoffAssets);
+        const section1Html = buildMcQueenSection1Html(srcLookup);
+        const footerHtml = buildMcQueenFooterHtml(srcLookup);
         const files = [
             {
-                path: `${GALLERY_HTML_ZIP_DIR}/header.html`,
-                content: serializeMcQueenCmsRegion(
-                    headerEl,
-                    srcLookup,
-                    'Header (banner + logo + search + main nav)',
-                    'header',
-                    { injectEnhancedSearch: true },
-                ),
-            },
-            {
                 path: `${GALLERY_HTML_ZIP_DIR}/section_1.html`,
-                content: serializeMcQueenCmsRegion(heroEl, srcLookup, 'Hero', 'section_1'),
-            },
-            {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_2.html`,
-                content: serializeMcQueenCmsRegion(categoriesEl, srcLookup, 'Featured Categories', 'section_2'),
-            },
-            {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_3.html`,
-                content: serializeMcQueenCmsRegion(aboutEl, srcLookup, 'About Us', 'section_3'),
-            },
-            {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_4.html`,
-                content: serializeMcQueenCmsRegion(featureTilesEl, srcLookup, 'Feature Cards', 'section_4'),
-            },
-            {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_5.html`,
-                content: (sketchEl && !sketchEl.classList.contains('is-hidden') && !sketchEl.hidden)
-                    ? serializeMcQueenCmsRegion(sketchEl, srcLookup, 'Sketch Section', 'section_5')
-                    : '',
-            },
-            {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_6.html`,
-                content: serializeMcQueenCmsRegion(youMayLikeEl, srcLookup, 'You May Like', 'section_6'),
-            },
-            {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_7.html`,
-                content: serializeMcQueenCmsRegion(getInspiredEl, srcLookup, 'Get Inspired', 'section_7'),
+                content: section1Html,
             },
             {
                 path: `${GALLERY_HTML_ZIP_DIR}/footer.html`,
-                content: serializeMcQueenCmsRegion(footerEl, srcLookup, 'Footer (+ copyright/ADA)', 'footer'),
+                content: footerHtml,
             },
         ].filter((file) => file.content);
 
@@ -1944,27 +2032,27 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `Package ID: ${packageId}`,
                 '',
                 'These files are for CMS paste only — do NOT upload html/ via FTP.',
-                'Copy-paste each file into the matching dashboard region:',
                 '',
-                '  html/header.html     →  header',
-                '  html/section_1.html  →  section_1   (hero)',
-                '  html/section_2.html  →  section_2   (featured categories)',
-                '  html/section_3.html  →  section_3   (about us)',
-                '  html/section_4.html  →  section_4   (feature cards)',
-                '  html/section_5.html  →  section_5   (sketch — when present)',
-                '  html/section_6.html  →  section_6   (you may like)',
-                '  html/section_7.html  →  section_7   (get inspired)',
+                'McQueen third-party dashboard paste map:',
+                '  html/section_1.html  →  section_1   (full homepage body)',
                 '  html/footer.html     →  footer      (columns + copyright/ADA)',
                 '',
+                'Do NOT split hero / categories / about / etc. into section_2…section_7.',
+                '',
+                'Image paths in the HTML point at:',
+                `  ${GALLERY_IMAGES_SERVER}/[filename]`,
+                '  Example: /data/logicx/images/hero-product.png',
+                '  Example: /data/logicx/images/hero-lg-right.jpg',
+                '  Example: /data/logicx/images/about-us.jpg',
+                '',
                 'Install order (support agent):',
-                '  1. FTP upload data/ only (css + images under data/logicx/)',
+                `  1. FTP upload data/ (css + images → ${GALLERY_CSS_SERVER}/ + ${GALLERY_IMAGES_SERVER}/)`,
                 '  2. Paste meta-data-global-css-snippet.html (ZIP root)',
                 '     into dashboard → Meta Data, JavaScript & CSS (Global)',
                 `  3. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
-                `  4. Confirm images are at ${GALLERY_IMAGES_SERVER}/`,
-                '  5. Paste these html/*.html files into the CMS regions above',
-                '',
-                'meta CMS region is not used by this template.',
+                `  4. Confirm images load under ${GALLERY_IMAGES_SERVER}/`,
+                '  5. Paste html/section_1.html into CMS region section_1',
+                '  6. Paste html/footer.html into CMS region footer',
                 '',
             ].join('\n'),
         });
@@ -2133,10 +2221,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 layout: header.layout || 'classic',
                 logoSharedWithFooter: header.logoSharedWithFooter !== false,
                 logo: {
-                    filename: header.logoFilename || 'header-logo.png',
+                    filename: header.logoFilename || 'Alveraanlogo_v1.png',
                     dimensions: header.logoDimensions || 'max 220 × 68 px',
                     logoSizePx: header.logoSizePx || null,
-                    includedInHandoff: assetIncludedInHandoff('header-logo.png'),
+                    includedInHandoff: assetIncludedInHandoff('Alveraanlogo_v1.png'),
                 },
                 contentColumnWidth: header.contentColumnWidth || '1429 px',
                 banner: {
@@ -2174,6 +2262,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                     })),
                 },
             },
+            cmsPaste: {
+                regions: [
+                    { region: 'section_1', file: 'html/section_1.html' },
+                    { region: 'footer', file: 'html/footer.html' },
+                ],
+                note: 'Paste homepage body into section_1 and footer into footer (no section_2…section_7 split).',
+                imagesServerRoot: GALLERY_IMAGES_SERVER,
+            },
             featuredCategories: {
                 shopAllUrl: spec.shopAllUrl || '/catalog',
                 cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
@@ -2186,7 +2282,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 header: aboutUs.header || '',
                 paragraph: aboutUs.paragraph || '',
                 employeeImage: {
-                    filename: 'about-employee-image.png',
+                    filename: 'about-us.jpg',
+                    livePath: `${GALLERY_IMAGES_SERVER}/about-us.jpg`,
                     dimensions: aboutUs.employeeImageSize || '417 × 282 px',
                     includedInHandoff: true,
                 },
@@ -2209,7 +2306,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                     header: featureLeft.header || '',
                     paragraph: featureLeft.paragraph || '',
                     image: {
-                        filename: 'feature-left-image.png',
+                        filename: 'explore-image-left.jpg',
+                        livePath: `${GALLERY_IMAGES_SERVER}/explore-image-left.jpg`,
                         dimensions: featureTiles.imageSize || '780 × 1014 px',
                         includedInHandoff: true,
                     },
@@ -2223,7 +2321,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                     header: featureRight.header || '',
                     paragraph: featureRight.paragraph || '',
                     image: {
-                        filename: 'feature-right-image.png',
+                        filename: 'explore-image-right.jpg',
+                        livePath: `${GALLERY_IMAGES_SERVER}/explore-image-right.jpg`,
                         dimensions: featureTiles.imageSize || '780 × 1014 px',
                         includedInHandoff: true,
                     },
@@ -2249,14 +2348,15 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             getInspired: {
                 title: getInspired.title || 'Get Inspired',
                 lifestyleImage: {
-                    filename: 'get-inspired-lifestyle.png',
+                    filename: 'get-inspired.jpg',
+                    livePath: `${GALLERY_IMAGES_SERVER}/get-inspired.jpg`,
                     dimensions: getInspired.lifestyleImageSize || '508 × 610 px',
                     includedInHandoff: true,
                 },
                 cardImageSize: getInspired.cardImageSize || '155 × 155 px',
                 gridLayout: getInspired.gridLayout || '4 columns × 2 rows',
                 gridImagesIncludedInHandoff: false,
-                imageDirectory: getInspired.imageDirectory || 'editor/classic/get-inspired/',
+                imageDirectory: getInspired.imageDirectory || 'editor/McQueen/data/images/get-inspired/',
                 catalogResolvedOnLiveSite: getInspired.catalogResolvedOnLiveSite !== false,
                 items: getInspiredItems.map((item) => ({
                     itemNumber: item.itemNumber || '',
@@ -2269,7 +2369,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             footer: {
                 logoUseHeader: footer.logoUseHeader !== false,
                 logo: {
-                    filename: footer.logoFilename || 'footer-logo.png',
+                    filename: footer.logoFilename || 'Alveraanlogo_v1.png',
                     dimensions: footer.logoDimensions || 'max 280 × 94 px',
                     includedInHandoff: footer.logoUseHeader === false,
                 },
@@ -2303,13 +2403,15 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 policies: footerPolicies,
             },
             imageHandoffPolicy: {
-                headerLogo: assetIncludedInHandoff('header-logo.png'),
-                heroImages: false,
+                headerLogo: assetIncludedInHandoff('Alveraanlogo_v1.png'),
+                heroImages: assetIncludedInHandoff('hero-product.png')
+                    || assetIncludedInHandoff('hero-lg-right.jpg'),
                 featuredCategoryThumbnails: false,
-                aboutEmployeePhoto: true,
-                featureCardPhotos: true,
+                aboutEmployeePhoto: assetIncludedInHandoff('about-us.jpg'),
+                featureCardPhotos: assetIncludedInHandoff('explore-image-left.jpg')
+                    || assetIncludedInHandoff('explore-image-right.jpg'),
                 youMayLikePhotos: true,
-                getInspiredLifestylePhoto: true,
+                getInspiredLifestylePhoto: assetIncludedInHandoff('get-inspired.jpg'),
                 getInspiredGridPhotos: false,
                 footerLogoOnlyWhenDifferentFromHeader: true,
             },
@@ -2340,7 +2442,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '',
             'START HERE: Open WELCOME-GUIDE.html, then follow the support install steps.',
             '',
-            'FTP — only data/ (css + images under data/logicx/)',
+            `FTP — only data/ (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
             '  Upload data/ from this ZIP to the site root.',
             `  Live base path: ${GALLERY_SERVER_ROOT}/`,
             '  Do NOT FTP html/ or meta-data-global-css-snippet.html — those are paste-only.',
@@ -2351,7 +2453,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '1. WELCOME-GUIDE.html — Support install overview',
             '2. HANDOFF-VERSION.txt — Version stamp for debugging',
             `3. ${versionedPdfFilename} — Brief + layout previews (reference)`,
-            '4. data/logicx/ — FTP only',
+            `4. ${GALLERY_PACKAGE_ROOT}/ — FTP only`,
             `   ${GALLERY_CSS_ZIP_DIR}/styles.css → ${GALLERY_CSS_SERVER}/styles.css`,
             `   ${GALLERY_IMAGES_ZIP_DIR}/ → ${GALLERY_IMAGES_SERVER}/`,
             '5. meta-data-global-css-snippet.html (ZIP root) — paste into Meta Data / Global CSS',
@@ -2364,7 +2466,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '8. spec/footer-copyright-snippet.html — ADA reference (also in html/footer.html)',
             '',
             'SUPPORT INSTALL ORDER',
-            '  1. FTP upload data/ (css + images under data/logicx/)',
+            `  1. FTP upload data/ (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
             '  2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS',
             `  3. Verify ${GALLERY_CSS_SERVER}/styles.css loads in the browser (not 404)`,
             '  4. Paste html/*.html into CMS regions — see html/README.txt',
@@ -2383,7 +2485,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '',
                 'START HERE: Open WELCOME-GUIDE.html, then follow the support install steps.',
                 '',
-                'FTP — only data/ (css + images under data/logicx/)',
+                `FTP — only data/ (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
                 '  Upload data/ from this ZIP to the site root.',
                 `  Live base path: ${GALLERY_SERVER_ROOT}/`,
                 '  Do NOT FTP html/ or meta-data-global-css-snippet.html — those are paste-only.',
@@ -2394,28 +2496,22 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '1. WELCOME-GUIDE.html — Support install overview',
                 '2. HANDOFF-VERSION.txt — Version stamp for debugging',
                 `3. ${versionedPdfFilename} — Brief + layout previews (reference)`,
-                '4. data/logicx/ — FTP only',
+                `4. ${GALLERY_PACKAGE_ROOT}/ — FTP only`,
                 `   ${GALLERY_CSS_ZIP_DIR}/styles.css → ${GALLERY_CSS_SERVER}/styles.css`,
                 `   ${GALLERY_IMAGES_ZIP_DIR}/ → ${GALLERY_IMAGES_SERVER}/`,
                 '5. meta-data-global-css-snippet.html (ZIP root) — paste into Meta Data / Global CSS',
-                '6. html/ (ZIP root) — CMS paste markup',
-                '   html/header.html     → CMS region header',
-                '   html/section_1.html  → CMS region section_1 (hero)',
-                '   html/section_2.html  → CMS region section_2 (featured categories)',
-                '   html/section_3.html  → CMS region section_3 (about us)',
-                '   html/section_4.html  → CMS region section_4 (feature cards)',
-                '   html/section_5.html  → CMS region section_5 (sketch, when present)',
-                '   html/section_6.html  → CMS region section_6 (you may like)',
-                '   html/section_7.html  → CMS region section_7 (get inspired)',
-                '   html/footer.html     → CMS region footer (+ copyright/ADA)',
-                '7. spec/homepage-spec.json — Structured reference (optional)',
-                '8. spec/footer-copyright-snippet.html — ADA reference (also in html/footer.html)',
+                '6. html/section_1.html — paste into CMS region section_1 (full homepage body)',
+                '7. html/footer.html — paste into CMS region footer (+ copyright/ADA)',
+                '8. spec/homepage-spec.json — Structured reference (optional)',
+                '9. spec/footer-copyright-snippet.html — ADA reference (also in html/footer.html)',
                 '',
                 'SUPPORT INSTALL ORDER',
-                '  1. FTP upload data/ (css + images under data/logicx/)',
+                `  1. FTP upload data/ (css → ${GALLERY_CSS_SERVER}/, images → ${GALLERY_IMAGES_SERVER}/)`,
                 '  2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS',
                 `  3. Verify ${GALLERY_CSS_SERVER}/styles.css loads in the browser (not 404)`,
-                '  4. Paste html/*.html into CMS regions — see html/README.txt',
+                `  4. Confirm images under ${GALLERY_IMAGES_SERVER}/ (e.g. hero-product.png)`,
+                '  5. Paste html/section_1.html into CMS region section_1',
+                '  6. Paste html/footer.html into CMS region footer',
                 '',
                 `Example stylesheet link: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
                 '',

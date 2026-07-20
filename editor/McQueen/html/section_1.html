@@ -1,0 +1,232 @@
+<style>
+	nav ul  {
+		border-bottom: 0px !important;
+	}
+</style>
+<script>
+function overflowDetection(divName) {
+	$xo(document).ready(function () {
+		if (divName == 'inspire') {
+		    $xo('.inspName').each(function () {
+		      if ($xo(this).prop('clientWidth') >= $xo('.inspireCat').prop('clientWidth')) {
+		        $xo(this).addClass('overFlow-WD')
+		      }
+		    });
+		} else if (divName == 'maylike') {
+			$xo('.prodName-WD').each(function () {
+		      if ($xo(this).prop('clientWidth') >= $xo('.movie').prop('clientWidth')) {
+		        $xo(this).addClass('overFlow-WD')
+		      }
+		    });
+		} else {
+			// do nothing
+		}
+    });
+}
+function attributeFeaturedItems(attrId) {
+    $.ajax ({
+        url: '/api/v2/product?fields=ItemURL,VendorID,ImageName,SVItemID,Price,ItemName&attribute='+ attrId +'&sort=feats&limit=8',
+        type: 'GET',
+        success: function(data) {
+            var slider = $('#inspiredFeatured');
+            slider.empty();
+            for(var key in data) {
+                var itemName = data[key]['Item Name'];
+                var itemPrice = data[key]['Price'];
+                var itemPrice = formatter.format(itemPrice);
+                var vendorId = data[key]['VendorID'];
+                var imageName = data[key]['Image Name'];
+                var itemURL = data[key]['Item URL'];
+                slider.append(
+                	'<a href="'+ itemURL +'" class="inspireCat">'+
+						'<div class="inspImg"><div class="bgOverlay"></div><img src="/vendors/'+ vendorId +'/small/'+ imageName +'" alt="'+ itemName + '"></div>'+
+						'<span class="inspName">'+ itemName + '<div class="animateHover"></div></span>'+
+						'<span class="inspPrice">'+ itemPrice + '</span>'+
+					'</a>'
+                );
+            }
+		    overflowDetection('inspire');
+        }
+    });
+}
+    $xo(document).ready(function()
+    {
+        $xo('img.unique_isds7g').attr('src','/data/images/get-inspired.jpg');
+    });
+    
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
+<div class="homePageBanner-WD displayGrid-WD gap20 padREM">
+	<div class="heroImgA displayGrid-WD gap20">
+		<div class="gridOne chandBG"><img src="/data/images/hero-product.jpg" alt="Gemma Collection Chandelier"></div>
+		<div class="gridOne gemmaBG">
+			<h2>Gemma</h2>
+			<p>A contemporary chandelier collection with rectangular prisms of amber pearl and clear crystal set within a frame of Vintage Bronze or Silver Leaf.</p>
+			<a href="/metal-no2-collection-124043941?ut=A"><button class="gemmaButton">Explore Gemma</button></a>
+		</div>
+	</div>
+	<div class="homePGimg"><img src="/data/images/hero-lg-right.jpg" alt="Chandelier with table with Windows"></div>
+</div>
+<div class="featuredCat-WD centerWrap-WD padREM">
+	<h3>Featured Categories</h3><a class="shopAll-WD" href="/catalog">Shop All</a>
+	<div class="featWrap-WD centerWrap1360-WD displayGrid-WD alignCenter-WD">
+		<a href="/chandeliers" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/ceiling.png" alt="Ceiling"><span>Ceiling <div class="animateHover"></div></span></a>
+		<a href="/fans" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/fans.png" alt="Fan with 3 blades"><span>Fans <div class="animateHover"></div></span></a>
+		<a href="/lamps" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/table.png" alt="Table"><span>Tables <div class="animateHover"></div></span></a>
+		<a href="/furniture" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/furniture.png" alt="Lounge Chair"><span>Furniture <div class="animateHover"></div></span></a>
+		<a href="/exterior" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/exterior.jpg" alt="Glass outdoor sconce"><span>Exterior <div class="animateHover"></div></span></a>
+		<a href="/page-coming-soon.html" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/bathroom.png" alt=""><span>Bathroom <div class="animateHover"></div></span></a>
+		<a href="/sconces" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/wall.png" alt="Sconce"><span>Wall <div class="animateHover"></div></span></a>
+		<a href="/pendants" class="featCategory alignCenter-WD displayFlex-WD"><img src="/data/images/feat-cat/pendants.jpg" alt="Pendant"><span>Pendants <div class="animateHover"></div></span></a>
+	</div>
+</div>
+<div class="aboutUsSection padREM">
+	<div class="aboutUsimg-WD"><img src="/data/images/about-us.jpg" alt="About Us"></div>
+	<div class="grayBox-WD">
+		<h2>A Fixture In The Community Since 1980</h2>
+		<p>At Aldervaan Lighting, the bond with the community is as enduring as the glow of their finest fixtures. The team, an extended family in itself, takes immense pride in serving the community, fostering relationships that go beyond business. As a family-run venture, we infuse personal care and attention into every interaction.</p>
+		<a href="/about-us">
+			<button>More About Us</button>	
+		</a>
+		<a href="/catalog">
+			<button>Shop Our Catalog</button>	
+		</a>
+	</div>
+</div>
+<div class="exploreSection displayGrid-WD gap40 padREM">
+	<div class="exploreImg">
+		<img src="/data/images/explore-image-left.jpg" alt="Exterior Lighting">
+		<div class="textBox">
+			<h3>The Glow Of Elegance</h3>
+			<p>Enhance your home's allure with our sophisticated exterior lighting solutions, melding style with security.</p>
+			<a href="/lighting-fixtures/exterior">
+				<button class="colorOrange">Explore</button>
+			</a>
+		</div>
+	</div>
+	<div class="exploreImg">
+		<img src="/data/images/explore-image-right.jpg" alt="Furniture">
+		<div class="textBox">
+			<h3>Chic Kitchen Enclaves</h3>
+			<p>Elevate every culinary moment with our premium selection of pendants and chandeliers.</p>
+			<a href="/lighting-fixtures/sconces">
+				<button class="colorGreen">Explore Gemma</button>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="sketchSection-WD displayFlex-WD flexWRAP-WD gap20 centerWrap-WD padREM">
+	<div class="sketch-WD">
+		<img src="/data/images/building.png" alt="building">
+		<h3>Visit Our Showroom</h3>
+		<div class="animateHover marginAuto"></div>
+		<p>Step into a world where your perfect lighting solution awaits.</p>
+	</div>
+	<div class="sketch-WD">
+		<img src="/data/images/computer.png" alt="Computer">
+		<h3>Schedule Your Consultation</h3>
+		<div class="animateHover marginAuto"></div>
+		<p>Personalized attention, expert advice, and unparalleled support. </p>
+	</div>
+	<div class="sketch-WD">
+		<img src="/data/images/truck.jpg?v1" alt="Shipping Truck">
+		<h3>Complimentary Shipping</h3>
+		<div class="animateHover marginAuto"></div>
+		<p>Experience our free shipping policy on premium lighting selections.</p>
+	</div>
+	 <div class="sketch-WD">
+		<img src="/data/images/male-female.png" alt="Male and Female Hand drawn">
+		<h3>Your Local Lighting Experts</h3>
+		<div class="animateHover marginAuto"></div>
+		<p>Our dedication to illuminating your spaces is second-to-none.</p>
+	</div> 
+	<div class="pagination-dots"></div>
+</div>
+<script defer>
+    $(document).ready(function () {
+        if ($(window).width() <= 768) {
+            var sketches = $('.sketch-WD');
+            var dotsContainer = $('.pagination-dots');
+            let currentSlide = 0;
+            let interval;
+
+            function showSlide(index) {
+                sketches.removeClass('show');
+                sketches.eq(index).addClass('show');
+                updateDots(index);
+            }
+
+            function createDots() {
+                sketches.each(function (index) {
+                    var dot = $('<div class="dot"></div>');
+                    dot.click(function () {
+                        showSlide(index);
+                        clearInterval(interval);
+                        startAutoplay();
+                    });
+                    dotsContainer.append(dot);
+                });
+            }
+
+            function updateDots(index) {
+                var dots = $('.dot');
+                dots.removeClass('active');
+                dots.eq(index).addClass('active');
+            }
+
+            function handleSwipe(direction) {
+                clearInterval(interval);
+
+                if (direction === 'right') {
+                    currentSlide = (currentSlide - 1 + sketches.length) % sketches.length;
+                } else if (direction === 'left') {
+                    currentSlide = (currentSlide + 1) % sketches.length;
+                }
+
+                showSlide(currentSlide);
+                startAutoplay();
+            }
+
+            function startAutoplay() {
+                interval = setInterval(function () {
+                    currentSlide = (currentSlide + 1) % sketches.length;
+                    showSlide(currentSlide);
+                }, 6000); // Change slide every 6 seconds
+            }
+
+            createDots();
+            showSlide(currentSlide);
+            startAutoplay();
+
+            // Enable swipe functionality using Hammer.js
+            var swipeContainer = document.querySelector('.sketchSection-WD');
+            var hammer = new Hammer(swipeContainer);
+
+            hammer.on('swiperight swipeleft', function (event) {
+                handleSwipe(event.type === 'swipeleft' ? 'left' : 'right');
+            });
+        }
+    });
+</script>
+<script defer>
+	
+	var aboutUs = document.querySelector(".aboutUsSection");
+	var sketch = document.querySelector(".sketchSection-WD");
+	var textboxes = document.querySelectorAll(".exploreImg");
+	var observer = new IntersectionObserver(
+	  entries => {
+	  	// console.log(entries);
+	    entries.forEach(entry => {
+	    	entry.target.classList.toggle("show", entry.isIntersecting);
+	    	if (entry.isIntersecting) observer.unobserve(entry.target);
+	    })
+	  },
+	  { threshold: 0.5 }
+	)
+	textboxes.forEach(textbox => {
+		observer.observe(textbox)
+	})
+	observer.observe(aboutUs);
+	observer.observe(sketch)
+</script>

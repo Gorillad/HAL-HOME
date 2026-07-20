@@ -258,12 +258,12 @@
         const hasCmsHtml = isClassicSupport || Boolean(meta.hasCmsHtml);
 
         const cmsPasteDesc = design === 'classic'
-            ? 'Open <code>' + escapeHtml(htmlDir) + '/README.txt</code>, then paste <code>header.html</code> → <strong>header</strong>, <code>section_1.html</code>–<code>section_7.html</code> → matching <strong>section_*</strong> regions, and <code>footer.html</code> → <strong>footer</strong>. Use the live preview markup — do not rebuild by hand.'
+            ? 'Paste <code>' + escapeHtml(htmlDir) + '/section_1.html</code> → <strong>section_1</strong> (full homepage body) and <code>' + escapeHtml(htmlDir) + '/footer.html</code> → <strong>footer</strong>. Do not split body across section_2…section_7. Image paths use <code>/data/logicx/images/</code>.'
             : 'Open <code>' + escapeHtml(htmlDir) + '/README.txt</code>, then paste <code>header.html</code> → <strong>header</strong>, <code>section_1.html</code> → <strong>section_1</strong>, <code>section_2.html</code> → <strong>section_2</strong>, and <code>footer.html</code> → <strong>footer</strong>. Use the live preview markup — do not rebuild by hand.';
 
         const cssStep = isClassicSupport
             ? [
-                '    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload data/ (css + images only)</div><div class="step-desc">Upload the top-level <code>data/</code> folder from this ZIP to the site root. Live paths: <code>/data/logicx/css/</code> and <code>/data/logicx/images/</code>. Do <strong>not</strong> FTP <code>html/</code> or <code>meta-data-global-css-snippet.html</code> — those are paste-only from the ZIP root.</div></div></div>',
+                `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload data/ (css + images only)</div><div class="step-desc">Upload the top-level <code>data/</code> folder from this ZIP to the site root. Live paths: <code>${escapeHtml(cssServerPath)}/</code> and <code>${escapeHtml(imagesServerPath)}/</code>. Do <strong>not</strong> FTP <code>html/</code> or <code>meta-data-global-css-snippet.html</code> — those are paste-only from the ZIP root.</div></div></div>`,
                 '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Paste Meta Data / Global CSS</div><div class="step-desc">Open the client dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Paste the contents of <code>', escapeHtml(metaSnippetPath), '</code> from the ZIP root (keep both enhanced-search lines; wire <code>', escapeHtml(stylesheetHref), '</code>). Then open that stylesheet URL in a browser — it must not 404 or the homepage will look broken.</div></div></div>',
                 `    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Confirm images on FTP</div><div class="step-desc">${imageNote}</div></div></div>`,
                 '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Paste homepage HTML into CMS regions</div><div class="step-desc">', cmsPasteDesc, '</div></div></div>',
@@ -281,7 +281,7 @@
 
         const cssFileItems = isClassicSupport
             ? [
-                `    <div class="file-item is-primary"><div class="file-name">data/</div><div class="file-desc">FTP only — css + images under <code>data/logicx/</code>. Live base: <code>${escapeHtml(serverRoot)}/</code>.</div></div>`,
+                `    <div class="file-item is-primary"><div class="file-name">data/</div><div class="file-desc">FTP only — css + images under <code>${escapeHtml(packageRoot)}/</code>. Live base: <code>${escapeHtml(serverRoot)}/</code>.</div></div>`,
                 `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(cssDir)}/styles.css</div><div class="file-desc">Homepage stylesheet → <code>${escapeHtml(cssServerPath)}/styles.css</code> (must load; 404 = broken homepage).</div></div>`,
                 `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(metaSnippetPath)}</div><div class="file-desc">ZIP root — paste into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Not for FTP.</div></div>`,
             ].join('\n')
@@ -294,7 +294,10 @@
         const cmsHtmlFileItems = hasCmsHtml
             ? [
                 design === 'classic'
-                    ? `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/</div><div class="file-desc">CMS paste markup from the live preview. <code>header.html</code> → header, <code>section_1.html</code>–<code>section_7.html</code> → matching sections, <code>footer.html</code> → footer (includes copyright/ADA).</div></div>`
+                    ? [
+                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/section_1.html</div><div class="file-desc">Paste into CMS <strong>section_1</strong> (full homepage body). Images under <code>/data/logicx/images/</code>.</div></div>`,
+                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/footer.html</div><div class="file-desc">Paste into CMS <strong>footer</strong> (columns + copyright/ADA).</div></div>`,
+                    ].join('\n')
                     : `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/</div><div class="file-desc">CMS paste markup from the live preview. <code>header.html</code> → header, <code>section_1.html</code> → section_1, <code>section_2.html</code> → section_2, <code>footer.html</code> → footer (includes copyright/ADA).</div></div>`,
             ].join('\n')
             : '';
@@ -336,7 +339,7 @@
             `  <h2>Welcome, ${companyName}</h2>`,
             `  <p>This package is for the onboarding / tech support agent implementing the <strong>${templateLabel}</strong> homepage with the client — FTP assets, paste Meta Data CSS, then paste CMS HTML. No web developer required for a standard install.</p>`,
             hasCmsHtml
-                ? `  <p>FTP <code>data/</code> (css + images under <code>data/logicx/</code>), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste <code>${escapeHtml(htmlDir)}/</code> into each CMS region. Copyright/ADA is already at the bottom of <code>footer.html</code>.</p>`
+                ? `  <p>FTP <code>data/</code> (css + images under <code>${escapeHtml(packageRoot)}/</code>), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste <code>${escapeHtml(htmlDir)}/</code> into each CMS region. Copyright/ADA is already at the bottom of <code>footer.html</code>.</p>`
                 : '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec, CSS, and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
             '</div>',
             '<div class="section">',
@@ -426,10 +429,12 @@
                 '----------',
                 '  1. WELCOME-GUIDE.html         — Open in browser (support install steps)',
                 `  2. ${pdfFilename}   — Brief + layout previews`,
-                `  3. data/logicx/               — FTP only (css${isMcQueenReadme ? '' : ' + js'} + images)`,
+                `  3. ${packageRoot}/               — FTP only (css${isMcQueenReadme ? '' : ' + js'} + images)`,
                 `       Live base: ${serverRoot}/`,
                 `  4. ${metaSnippetPath} — paste into Meta Data / Global CSS`,
-                `  5. ${htmlDir}/                  — CMS paste files (not FTP)`,
+                isMcQueenReadme
+                    ? `  5. ${htmlDir}/section_1.html + footer.html — CMS paste (not FTP)`
+                    : `  5. ${htmlDir}/                  — CMS paste files (not FTP)`,
                 '',
                 'FTP TREE (inside data/)',
                 '-----------------------',
@@ -440,25 +445,22 @@
                 '',
                 'SUPPORT INSTALL ORDER',
                 '---------------------',
-                `  1. FTP upload data/ to the site root (css${isMcQueenReadme ? '' : ' + js'} + images under data/logicx/)`,
+                `  1. FTP upload data/ to the site root (css${isMcQueenReadme ? '' : ' + js'} + images under ${packageRoot}/)`,
                 `  2. Paste ${metaSnippetPath}`,
                 '     into Meta Data, JavaScript & CSS (Global)',
                 `  3. Verify ${stylesheetHref} loads (not 404)`,
-                `  4. Paste ${htmlDir}/*.html into CMS regions:`,
-                '       header.html     → header',
                 ...(isMcQueenReadme ? [
-                    '       section_1.html  → section_1 (hero)',
-                    '       section_2.html  → section_2 (featured categories)',
-                    '       section_3.html  → section_3 (about us)',
-                    '       section_4.html  → section_4 (feature cards)',
-                    '       section_5.html  → section_5 (sketch, when present)',
-                    '       section_6.html  → section_6 (you may like)',
-                    '       section_7.html  → section_7 (get inspired)',
+                    `  4. Confirm images under ${imagesServerPath}/ (e.g. hero-product.png, about-us.jpg)`,
+                    `  5. Paste ${htmlDir}/section_1.html into CMS region section_1`,
+                    '       (full homepage body — do not split into section_2…section_7)',
+                    `  6. Paste ${htmlDir}/footer.html into CMS region footer`,
                 ] : [
+                    `  4. Paste ${htmlDir}/*.html into CMS regions:`,
+                    '       header.html     → header',
                     '       section_1.html  → section_1',
                     '       section_2.html  → section_2',
+                    '       footer.html     → footer (includes copyright/ADA)',
                 ]),
-                '       footer.html     → footer (includes copyright/ADA)',
                 '',
                 'STYLESHEET LINK',
                 '---------------',

@@ -134,20 +134,22 @@
     ];
     const GALLERY_CATALOG_ROOT = '/lighting-fixtures';
     const GALLERY_IMAGE_DIR = 'gallery/';
-    const CLASSIC_IMAGE_DIR = 'classic/';
+    /** McQueen editor defaults — relative to showroom.html */
+    const CLASSIC_IMAGE_DIR = 'McQueen/data/images/';
     /** Per-template header logo height slider limits (px) — adjust min/max when tuning. */
     const HEADER_LOGO_SIZE_LIMITS = {
         classic: { min: 40, max: 80, default: 56 },
         gallery: { min: 40, max: 100, default: 56 },
         spotlight: { min: 40, max: 80, default: 56 },
     };
-    const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}header/logo-classic.png`;
+    /** Defaults match live McQueen site assets under McQueen/data/images/ */
+    const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}Alveraanlogo_v1.png`;
     const DEFAULT_SHOWROOM_HEADER_LOGO_DARK = `${CLASSIC_IMAGE_DIR}header/classic-white.png`;
-    const DEFAULT_CLASSIC_PRODUCT_IMAGE = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
-    const DEFAULT_CLASSIC_LIFESTYLE_IMAGE = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
-    const DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE = `${CLASSIC_IMAGE_DIR}lady-showroom.jpg`;
-    const DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE = `${CLASSIC_IMAGE_DIR}kitchEnclavePhoto-min.jpg`;
-    const DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE = `${CLASSIC_IMAGE_DIR}exteriorLightingPhoto-min.jpg`;
+    const DEFAULT_CLASSIC_PRODUCT_IMAGE = `${CLASSIC_IMAGE_DIR}hero-product.png`;
+    const DEFAULT_CLASSIC_LIFESTYLE_IMAGE = `${CLASSIC_IMAGE_DIR}hero-lg-right.jpg`;
+    const DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE = `${CLASSIC_IMAGE_DIR}about-us.jpg`;
+    const DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE = `${CLASSIC_IMAGE_DIR}explore-image-left.jpg`;
+    const DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE = `${CLASSIC_IMAGE_DIR}explore-image-right.jpg`;
     const DEFAULT_GALLERY_HEADER_LOGO = `${GALLERY_IMAGE_DIR}xologic-logo.png`;
     const DEFAULT_SPOTLIGHT_HEADER_LOGO = 'Spotlight/xologic-logo.png';
     const DEFAULT_GALLERY_HERO_PRIMARY = `${GALLERY_IMAGE_DIR}quorum1.jpg`;
@@ -457,13 +459,14 @@
             image: `${YOUMAYLIKE_IMAGE_DIR}Eurofase500750opt.jpg`,
         },
     ];
-    const DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE = `${GET_INSPIRED_IMAGE_DIR}Everett_4398BN_Models.jpg`;
+    const DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE = `${CLASSIC_IMAGE_DIR}get-inspired.jpg`;
     const YOUMAYLIKE_TEMPLATE_CATALOG = {
         '1001': { title: 'Gemma Chandelier', price: '$2,450' },
         '1002': { title: 'Arc Floor Lamp', price: '$895' },
         '1003': { title: 'Meridian Pendant', price: '$625' },
     };
-    const SKETCH_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}sketch-section/`;
+    /** Sketch icons at images/ root (live site layout); sketch-section/ kept as copies. */
+    const SKETCH_IMAGE_DIR = CLASSIC_IMAGE_DIR;
     const FEATURED_CATEGORY_IMAGE_DIR = `${CLASSIC_IMAGE_DIR}featured-categories/`;
     const SKETCH_CARDS = [
         {
@@ -2658,7 +2661,11 @@
         if (trimmed.startsWith('assets/')) {
             return `${CLASSIC_IMAGE_DIR}${trimmed.slice('assets/'.length)}`;
         }
-        if (trimmed.startsWith('classic/')) return trimmed;
+        // Legacy editor path (pre McQueen/data/images migration)
+        if (trimmed.startsWith('classic/')) {
+            return `${CLASSIC_IMAGE_DIR}${trimmed.slice('classic/'.length)}`;
+        }
+        if (trimmed.startsWith('McQueen/data/images/')) return trimmed;
         return '';
     }
 
@@ -2666,46 +2673,98 @@
         return savedClassicImageRef(saved) || fallback;
     }
 
+    /** Old bundled defaults → current live-site filenames (drafts + path rewrites). */
+    const PREVIOUS_CLASSIC_DEFAULT_IMAGES = {
+        headerLogo: new Set([
+            `${CLASSIC_IMAGE_DIR}header/logo-classic.png`,
+            `${CLASSIC_IMAGE_DIR}Alveraanlogo_v1.png`,
+        ]),
+        product: new Set([
+            `${CLASSIC_IMAGE_DIR}gemma.jpg`,
+            `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`,
+            `${CLASSIC_IMAGE_DIR}hero-product.png`,
+        ]),
+        lifestyle: new Set([
+            `${CLASSIC_IMAGE_DIR}gemma.jpg`,
+            `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`,
+            `${CLASSIC_IMAGE_DIR}hero-lg-right.jpg`,
+        ]),
+        about: new Set([
+            `${CLASSIC_IMAGE_DIR}lady-showroom.jpg`,
+            `${CLASSIC_IMAGE_DIR}about-us.jpg`,
+        ]),
+        featureLeft: new Set([
+            `${CLASSIC_IMAGE_DIR}kitchEnclavePhoto-min.jpg`,
+            `${CLASSIC_IMAGE_DIR}explore-image-left.jpg`,
+        ]),
+        featureRight: new Set([
+            `${CLASSIC_IMAGE_DIR}exteriorLightingPhoto-min.jpg`,
+            `${CLASSIC_IMAGE_DIR}explore-image-right.jpg`,
+        ]),
+        getInspired: new Set([
+            `${CLASSIC_IMAGE_DIR}get-inspired/Everett_4398BN_Models.jpg`,
+            `${CLASSIC_IMAGE_DIR}get-inspired.jpg`,
+        ]),
+    };
+
+    function resolveOrRefreshClassicDefault(saved, fallback, previousSet) {
+        const ref = savedClassicImageRef(saved);
+        if (!ref) return fallback;
+        if (previousSet.has(ref) && ref !== fallback) return fallback;
+        return ref;
+    }
+
     function migrateClassicHeroImages(productImage, lifestyleImage) {
-        const product = savedClassicImageRef(productImage);
-        const lifestyle = savedClassicImageRef(lifestyleImage);
-        const swappedProductDefault = `${CLASSIC_IMAGE_DIR}Gemma_FR33738VBZ_H_Models-min.jpg`;
-        const swappedLifestyleDefault = `${CLASSIC_IMAGE_DIR}gemma.jpg`;
-
-        if (product === swappedProductDefault && lifestyle === swappedLifestyleDefault) {
-            return {
-                productImage: swappedLifestyleDefault,
-                lifestyleImage: swappedProductDefault,
-            };
-        }
-
-        return { productImage, lifestyleImage };
+        const product = resolveOrRefreshClassicDefault(
+            productImage,
+            DEFAULT_CLASSIC_PRODUCT_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.product,
+        );
+        const lifestyle = resolveOrRefreshClassicDefault(
+            lifestyleImage,
+            DEFAULT_CLASSIC_LIFESTYLE_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.lifestyle,
+        );
+        return { productImage: product, lifestyleImage: lifestyle };
     }
 
     function ensureClassicImageDefaults() {
         if (templateDesign === 'gallery' || templateDesign === 'spotlight') return;
 
-        if (!savedClassicImageRef(state.headerLogoImage)) {
-            state.headerLogoImage = DEFAULT_CLASSIC_HEADER_LOGO;
-        }
-
-        state.productImage = resolveClassicImage(state.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE);
-        state.lifestyleImage = resolveClassicImage(state.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE);
-        state.aboutEmployeeImage = resolveClassicImage(
+        state.headerLogoImage = resolveOrRefreshClassicDefault(
+            state.headerLogoImage,
+            DEFAULT_CLASSIC_HEADER_LOGO,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.headerLogo,
+        );
+        state.productImage = resolveOrRefreshClassicDefault(
+            state.productImage,
+            DEFAULT_CLASSIC_PRODUCT_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.product,
+        );
+        state.lifestyleImage = resolveOrRefreshClassicDefault(
+            state.lifestyleImage,
+            DEFAULT_CLASSIC_LIFESTYLE_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.lifestyle,
+        );
+        state.aboutEmployeeImage = resolveOrRefreshClassicDefault(
             state.aboutEmployeeImage,
             DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.about,
         );
-        state.featureLeftImage = resolveClassicImage(
+        state.featureLeftImage = resolveOrRefreshClassicDefault(
             state.featureLeftImage,
             DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.featureLeft,
         );
-        state.featureRightImage = resolveClassicImage(
+        state.featureRightImage = resolveOrRefreshClassicDefault(
             state.featureRightImage,
             DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.featureRight,
         );
-        state.getInspiredLifestyleImage = resolveClassicImage(
+        state.getInspiredLifestyleImage = resolveOrRefreshClassicDefault(
             state.getInspiredLifestyleImage,
             DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
+            PREVIOUS_CLASSIC_DEFAULT_IMAGES.getInspired,
         );
         state.youMayLikeItems = applyYouMayLikeImageDefaults(
             normalizeYouMayLikeItems(state.youMayLikeItems),
@@ -2721,24 +2780,32 @@
 
         return {
             ...saved,
-            headerLogoImage: savedClassicImageRef(saved.headerLogoImage) || DEFAULT_CLASSIC_HEADER_LOGO,
-            productImage: resolveClassicImage(heroImages.productImage, DEFAULT_CLASSIC_PRODUCT_IMAGE),
-            lifestyleImage: resolveClassicImage(heroImages.lifestyleImage, DEFAULT_CLASSIC_LIFESTYLE_IMAGE),
-            aboutEmployeeImage: resolveClassicImage(
+            headerLogoImage: resolveOrRefreshClassicDefault(
+                saved.headerLogoImage,
+                DEFAULT_CLASSIC_HEADER_LOGO,
+                PREVIOUS_CLASSIC_DEFAULT_IMAGES.headerLogo,
+            ),
+            productImage: heroImages.productImage,
+            lifestyleImage: heroImages.lifestyleImage,
+            aboutEmployeeImage: resolveOrRefreshClassicDefault(
                 saved.aboutEmployeeImage,
                 DEFAULT_CLASSIC_ABOUT_EMPLOYEE_IMAGE,
+                PREVIOUS_CLASSIC_DEFAULT_IMAGES.about,
             ),
-            featureLeftImage: resolveClassicImage(
+            featureLeftImage: resolveOrRefreshClassicDefault(
                 saved.featureLeftImage,
                 DEFAULT_CLASSIC_FEATURE_LEFT_IMAGE,
+                PREVIOUS_CLASSIC_DEFAULT_IMAGES.featureLeft,
             ),
-            featureRightImage: resolveClassicImage(
+            featureRightImage: resolveOrRefreshClassicDefault(
                 saved.featureRightImage,
                 DEFAULT_CLASSIC_FEATURE_RIGHT_IMAGE,
+                PREVIOUS_CLASSIC_DEFAULT_IMAGES.featureRight,
             ),
-            getInspiredLifestyleImage: resolveClassicImage(
+            getInspiredLifestyleImage: resolveOrRefreshClassicDefault(
                 saved.getInspiredLifestyleImage,
                 DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
+                PREVIOUS_CLASSIC_DEFAULT_IMAGES.getInspired,
             ),
             youMayLikeItems: normalizeYouMayLikeItems(saved.youMayLikeItems),
             previewTheme: saved.previewTheme === 'dark' ? 'dark' : 'light',
@@ -4397,7 +4464,7 @@
             logoSharedWithFooter: state.footerLogoUseHeader !== false,
             logoSizePx,
             logoDimensions,
-            logoFilename: 'header-logo.png',
+            logoFilename: 'Alveraanlogo_v1.png',
             contentColumnWidth: SHOWROOM_CONTENT_COLUMN_WIDTH,
             banner: {
                 height: '50 px',
@@ -6879,7 +6946,10 @@
     }
 
     async function resolveHandoffLogoDataUrl(handoffAssets) {
-        const headerAsset = handoffAssets.find((asset) => asset.filename === 'header-logo.png');
+        const headerAsset = (handoffAssets || []).find((asset) => (
+            asset.filename === 'header-logo.png'
+            || asset.filename === 'Alveraanlogo_v1.png'
+        ));
         if (headerAsset?.dataUrl && String(headerAsset.dataUrl).startsWith('data:')) {
             return headerAsset.dataUrl;
         }
@@ -6894,46 +6964,47 @@
             return buildSpotlightHandoffAssetsForExport();
         }
 
+        /** Filenames match /data/logicx/images/ paths used in McQueen section_1 handoff. */
         const assets = [
             {
-                filename: 'header-logo.png',
+                filename: 'Alveraanlogo_v1.png',
                 label: 'Company logo (header)',
                 dimensions: `${getResolvedHeaderLogoSize()} px display height`,
                 dataUrl: state.headerLogoImage || DEFAULT_CLASSIC_HEADER_LOGO,
             },
             {
-                filename: 'hero-product.jpg',
+                filename: 'hero-product.png',
                 label: 'Hero — product image (left)',
                 dimensions: '563 × 342 px',
                 dataUrl: state.productImage || DEFAULT_CLASSIC_PRODUCT_IMAGE,
             },
             {
-                filename: 'hero-lifestyle.jpg',
+                filename: 'hero-lg-right.jpg',
                 label: 'Hero — lifestyle image (right)',
                 dimensions: '854 × 670 px min',
                 dataUrl: state.lifestyleImage || DEFAULT_CLASSIC_LIFESTYLE_IMAGE,
             },
             {
-                filename: 'about-employee-image.png',
+                filename: 'about-us.jpg',
                 label: 'About Us employee photo (centered, overlaps panel)',
                 dimensions: '417 × 282 px',
                 dataUrl: state.aboutEmployeeImage || '',
             },
             {
-                filename: 'feature-left-image.png',
+                filename: 'explore-image-left.jpg',
                 label: 'Feature card photo (left)',
                 dimensions: '780 × 1014 px',
                 dataUrl: state.featureLeftImage || '',
             },
             {
-                filename: 'feature-right-image.png',
+                filename: 'explore-image-right.jpg',
                 label: 'Feature card photo (right)',
                 dimensions: '780 × 1014 px',
                 dataUrl: state.featureRightImage || '',
             },
             ...(await loadYouMayLikeAssetsForExport()),
             {
-                filename: 'get-inspired-lifestyle.png',
+                filename: 'get-inspired.jpg',
                 label: 'Get Inspired lifestyle photo (left)',
                 dimensions: '508 × 610 px',
                 dataUrl: state.getInspiredLifestyleImage || '',
@@ -7056,7 +7127,7 @@
                         lifestyleImageSize: '508 × 610 px',
                         cardImageSize: '155 × 155 px',
                         gridLayout: '4 columns × 2 rows',
-                        imageDirectory: 'editor/classic/get-inspired/',
+                        imageDirectory: 'editor/McQueen/data/images/get-inspired/',
                         catalogResolvedOnLiveSite: true,
                         items: state.getInspiredItems.map((item, index) => {
                             const resolved = resolveGetInspiredPreviewItem(item, index);
