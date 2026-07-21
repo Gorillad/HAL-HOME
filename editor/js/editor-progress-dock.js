@@ -149,7 +149,7 @@
                 if (design === 'spotlight') return pick(state, SPOTLIGHT_HERO_KEYS);
                 return pick(state, CLASSIC_HERO_KEYS);
             case 'editor-section-featured-categories':
-                return pick(state, ['featuredCategories']);
+                return pick(state, ['featuredCategories', 'featuredCategoryImages', 'shopAllUrl']);
             case 'editor-section-about-us':
                 return pick(state, [
                     'aboutHeader',
@@ -180,7 +180,7 @@
                     'featureButtonTextColor',
                 ]);
             case 'editor-section-sketch-section':
-                return pick(state, ['sketchSectionVisible']);
+                return pick(state, ['sketchSectionVisible', 'sketchCards']);
             case 'editor-section-you-may-like':
                 return pick(state, ['youMayLikeItems']);
             case 'editor-section-get-inspired':
@@ -189,6 +189,7 @@
                 return pick(state, [
                     'footerLogoImage',
                     'footerLogoUseHeader',
+                    'footerLogoSize',
                     'footerEmail',
                     'footerFacebookUrl',
                     'footerFacebookVisible',

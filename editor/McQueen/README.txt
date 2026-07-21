@@ -6,7 +6,6 @@ Editor source (relative to editor/showroom.html):
   McQueen/data/images/   Default images (live-site filenames)
   McQueen/data/css/      Homepage stylesheet (handoff source)
   McQueen/data/js/       Optional scripts (placeholder)
-  McQueen/html/          Live CMS reference (section_1 shape)
 
 Images (live-site names at images/ root)
 ---------------------------------------
@@ -44,13 +43,15 @@ Support handoff
   FTP images:  data/logicx/images/         →  /data/logicx/images/
   CMS paste:   section_1.html (ZIP root)   →  section_1 (full homepage body)
                footer.html (ZIP root)      →  footer (columns + copyright/ADA)
-  Local QA:    index.html (serve ZIP root as HTTP document root)
+  Local proof: index.html (ZIP root)       →  serve ZIP root, open before CMS paste
+               (no html/ folder — paste + proof files are at ZIP root)
 
   Support install:
-  1. FTP upload data/ (css + images under data/logicx/) to the site root
-  2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS
-  3. Verify /data/logicx/css/styles.css and /data/logicx/images/* load (not 404)
-  4. Paste section_1.html into CMS region section_1
-  5. Paste footer.html into CMS region footer
+  1. Optional: serve ZIP root and open index.html to proof the layout
+  2. FTP upload data/ (css + images under data/logicx/) to the site root
+  3. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS
+  4. Verify /data/logicx/css/styles.css and /data/logicx/images/* load (not 404)
+  5. Paste section_1.html into CMS region section_1
+  6. Paste footer.html into CMS region footer
 
 Uploaded images are stored as data URLs in localStorage and replace these defaults.

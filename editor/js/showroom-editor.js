@@ -142,6 +142,12 @@
         gallery: { min: 40, max: 100, default: 56 },
         spotlight: { min: 40, max: 80, default: 56 },
     };
+    /** McQueen footer logo height (px). Default below the old 94px box so handoff logos aren’t oversized. */
+    const FOOTER_LOGO_SIZE_LIMITS = {
+        min: 36,
+        max: 94,
+        default: 56,
+    };
     /** Defaults match live McQueen site assets under McQueen/data/images/ */
     const DEFAULT_CLASSIC_HEADER_LOGO = `${CLASSIC_IMAGE_DIR}Alveraanlogo_v1.png`;
     const DEFAULT_SHOWROOM_HEADER_LOGO_DARK = `${CLASSIC_IMAGE_DIR}header/classic-white.png`;
@@ -478,26 +484,70 @@
             imageFile: 'building.png',
             defaultHeader: 'Visit Our Showroom',
             defaultParagraph: 'Step into a world where your perfect lighting solution awaits.',
+            defaultUrl: '',
+            fieldPrefix: 'SketchVisit',
         },
         {
             id: 'consultation',
             imageFile: 'computer.png',
             defaultHeader: 'Schedule Your Consultation',
             defaultParagraph: 'Personalized attention, expert advice, and unparalleled support.',
+            defaultUrl: '',
+            fieldPrefix: 'SketchConsultation',
         },
         {
             id: 'shipping',
             imageFile: 'truck.png',
             defaultHeader: 'Complimentary Shipping',
             defaultParagraph: 'Experience our free shipping policy on premium lighting selections.',
+            defaultUrl: '',
+            fieldPrefix: 'SketchShipping',
         },
         {
             id: 'experts',
             imageFile: 'male-female.png',
             defaultHeader: 'Your Local Lighting Experts',
             defaultParagraph: 'Our dedication to illuminating your spaces is second-to-none.',
+            defaultUrl: '',
+            fieldPrefix: 'SketchExperts',
         },
     ];
+
+    function defaultSketchCards() {
+        return SKETCH_CARDS.map((card) => ({
+            id: card.id,
+            image: `${SKETCH_IMAGE_DIR}${card.imageFile}`,
+            header: card.defaultHeader,
+            paragraph: card.defaultParagraph,
+            url: card.defaultUrl,
+        }));
+    }
+
+    function normalizeSketchCards(raw) {
+        const byId = new Map();
+        if (Array.isArray(raw)) {
+            raw.forEach((entry) => {
+                if (entry && entry.id) byId.set(entry.id, entry);
+            });
+        }
+        return SKETCH_CARDS.map((meta) => {
+            const saved = byId.get(meta.id) || {};
+            const image = typeof saved.image === 'string' && saved.image.trim()
+                ? saved.image.trim()
+                : `${SKETCH_IMAGE_DIR}${meta.imageFile}`;
+            return {
+                id: meta.id,
+                image,
+                header: typeof saved.header === 'string' && saved.header.trim()
+                    ? saved.header.trim()
+                    : meta.defaultHeader,
+                paragraph: typeof saved.paragraph === 'string' && saved.paragraph.trim()
+                    ? saved.paragraph.trim()
+                    : meta.defaultParagraph,
+                url: typeof saved.url === 'string' ? saved.url.trim() : meta.defaultUrl,
+            };
+        });
+    }
 
     const FEATURED_CATEGORIES = [
         { id: 'chandeliers', label: 'Chandeliers', imageFile: 'chandeliers.jpg' },
@@ -509,6 +559,36 @@
         { id: 'sconce', label: 'Sconce', imageFile: 'sconces.jpg' },
         { id: 'pendants', label: 'Pendants', imageFile: 'pendants.jpg' },
     ];
+
+    function defaultFeaturedCategoryImage(category) {
+        return `${FEATURED_CATEGORY_IMAGE_DIR}${category.imageFile}`;
+    }
+
+    function defaultFeaturedCategoryImages() {
+        return Object.fromEntries(
+            FEATURED_CATEGORIES.map((category) => [category.id, defaultFeaturedCategoryImage(category)]),
+        );
+    }
+
+    function normalizeFeaturedCategoryImages(raw) {
+        const defaults = defaultFeaturedCategoryImages();
+        if (!raw || typeof raw !== 'object') return defaults;
+        const normalized = { ...defaults };
+        FEATURED_CATEGORIES.forEach((category) => {
+            const saved = raw[category.id];
+            if (typeof saved === 'string' && saved.trim()) {
+                normalized[category.id] = saved.trim();
+            }
+        });
+        return normalized;
+    }
+
+    function getFeaturedCategoryImage(categoryId) {
+        const meta = FEATURED_CATEGORIES.find((entry) => entry.id === categoryId);
+        const images = normalizeFeaturedCategoryImages(state.featuredCategoryImages);
+        if (images[categoryId]) return images[categoryId];
+        return meta ? defaultFeaturedCategoryImage(meta) : '';
+    }
 
     const fields = {
         title: document.getElementById('fieldTitle'),
@@ -554,6 +634,22 @@
         featureButtonTextColor: document.getElementById('fieldFeatureButtonText'),
         featureButtonTextColorValue: document.getElementById('fieldFeatureButtonTextValue'),
         sketchSectionVisible: document.getElementById('fieldSketchSectionVisible'),
+        sketchVisitImage: document.getElementById('fieldSketchVisitImage'),
+        sketchVisitHeader: document.getElementById('fieldSketchVisitHeader'),
+        sketchVisitParagraph: document.getElementById('fieldSketchVisitParagraph'),
+        sketchVisitUrl: document.getElementById('fieldSketchVisitUrl'),
+        sketchConsultationImage: document.getElementById('fieldSketchConsultationImage'),
+        sketchConsultationHeader: document.getElementById('fieldSketchConsultationHeader'),
+        sketchConsultationParagraph: document.getElementById('fieldSketchConsultationParagraph'),
+        sketchConsultationUrl: document.getElementById('fieldSketchConsultationUrl'),
+        sketchShippingImage: document.getElementById('fieldSketchShippingImage'),
+        sketchShippingHeader: document.getElementById('fieldSketchShippingHeader'),
+        sketchShippingParagraph: document.getElementById('fieldSketchShippingParagraph'),
+        sketchShippingUrl: document.getElementById('fieldSketchShippingUrl'),
+        sketchExpertsImage: document.getElementById('fieldSketchExpertsImage'),
+        sketchExpertsHeader: document.getElementById('fieldSketchExpertsHeader'),
+        sketchExpertsParagraph: document.getElementById('fieldSketchExpertsParagraph'),
+        sketchExpertsUrl: document.getElementById('fieldSketchExpertsUrl'),
         headerLogo: document.getElementById('fieldHeaderLogo'),
         galleryHeaderLogo: document.getElementById('fieldGalleryHeaderLogo'),
         galleryHeaderBarBackgroundColor: document.getElementById('fieldGalleryHeaderBarBg'),
@@ -677,6 +773,10 @@
         about: document.getElementById('uploadPreviewAbout'),
         featureLeft: document.getElementById('uploadPreviewFeatureLeft'),
         featureRight: document.getElementById('uploadPreviewFeatureRight'),
+        sketchVisit: document.getElementById('uploadPreviewSketchVisit'),
+        sketchConsultation: document.getElementById('uploadPreviewSketchConsultation'),
+        sketchShipping: document.getElementById('uploadPreviewSketchShipping'),
+        sketchExperts: document.getElementById('uploadPreviewSketchExperts'),
     };
 
     const exportBtn = document.getElementById('exportPdfBtn');
@@ -835,6 +935,7 @@
         lifestyleImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_LIFESTYLE_IMAGE,
         shopAllUrl: DEFAULT_SHOP_ALL_URL,
         featuredCategories: defaultFeaturedCategories(),
+        featuredCategoryImages: defaultFeaturedCategoryImages(),
         aboutHeader: DEFAULT_ABOUT_HEADER,
         aboutParagraph: DEFAULT_ABOUT_PARAGRAPH,
         aboutPrimaryLabel: DEFAULT_ABOUT_PRIMARY_LABEL,
@@ -859,6 +960,7 @@
         featureButtonBackgroundColor: DEFAULT_FEATURE_BTN_BG,
         featureButtonTextColor: DEFAULT_FEATURE_BTN_TEXT,
         sketchSectionVisible: true,
+        sketchCards: defaultSketchCards(),
         youMayLikeItems: defaultYouMayLikeItems(),
         getInspiredLifestyleImage: templateDesign === 'gallery' ? '' : DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
         getInspiredItems: defaultGetInspiredItems(),
@@ -931,6 +1033,7 @@
         classicFooterCopyrightBackgroundColor: DEFAULT_CLASSIC_FOOTER_COPYRIGHT_BG,
         footerLogoImage: '',
         footerLogoUseHeader: true,
+        footerLogoSize: FOOTER_LOGO_SIZE_LIMITS.default,
         footerEmail: DEFAULT_FOOTER_EMAIL,
         footerFacebookUrl: '',
         footerFacebookVisible: true,
@@ -1230,6 +1333,7 @@
 
         function maybeCascade(stateKey) {
             const current = String(state[stateKey] || '').trim();
+            // Still linked if empty, still the previous company name, or still the template default.
             if (current && current !== prev && current !== DEFAULT_FOOTER_COMPANY) return;
             state[stateKey] = next;
             if (fields[stateKey]) fields[stateKey].value = next;
@@ -1238,34 +1342,75 @@
         if (templateDesign === 'gallery') {
             maybeCascade('classicFooterCompanyName');
             maybeCascade('classicFooterCopyrightName');
+        } else if (templateDesign === 'classic') {
+            // McQueen: Company Info → Copyright company name (footer uses Company Info directly).
+            maybeCascade('footerCopyrightName');
+        }
+    }
+
+    /**
+     * Classic Footer company name → Copyright company name (until Copyright is customized).
+     */
+    function softCascadeClassicFooterToCopyright(previousFooterName, nextFooterName) {
+        if (templateDesign !== 'gallery') return;
+        const prev = String(previousFooterName || '').trim();
+        const next = String(nextFooterName || '').trim();
+        if (!next || prev === next) return;
+
+        const current = String(state.classicFooterCopyrightName || '').trim();
+        if (current && current !== prev && current !== DEFAULT_FOOTER_COMPANY) return;
+        state.classicFooterCopyrightName = next;
+        if (fields.classicFooterCopyrightName) {
+            fields.classicFooterCopyrightName.value = next;
         }
     }
 
     function syncLinkedCompanyNameFields() {
         const companyName = resolveCompanyInfoName();
-        if (templateDesign !== 'gallery') return;
 
-        const classicName = String(state.classicFooterCompanyName || '').trim();
-        if (!classicName || classicName === DEFAULT_FOOTER_COMPANY || classicName === companyName) {
-            state.classicFooterCompanyName = companyName;
+        if (templateDesign === 'gallery') {
+            const classicName = String(state.classicFooterCompanyName || '').trim();
+            if (!classicName || classicName === DEFAULT_FOOTER_COMPANY || classicName === companyName) {
+                state.classicFooterCompanyName = companyName;
+                if (fields.classicFooterCompanyName) {
+                    fields.classicFooterCompanyName.value = companyName;
+                }
+            }
+
+            const copyrightSource = String(state.classicFooterCompanyName || '').trim() || companyName;
+            const copyrightName = String(state.classicFooterCopyrightName || '').trim();
+            if (
+                !copyrightName
+                || copyrightName === DEFAULT_FOOTER_COMPANY
+                || copyrightName === companyName
+                || copyrightName === classicName
+            ) {
+                state.classicFooterCopyrightName = copyrightSource;
+                if (fields.classicFooterCopyrightName) {
+                    fields.classicFooterCopyrightName.value = copyrightSource;
+                }
+            }
+
             if (fields.classicFooterCompanyName) {
-                fields.classicFooterCompanyName.value = companyName;
+                fields.classicFooterCompanyName.placeholder = companyName;
             }
-        }
-
-        const copyrightName = String(state.classicFooterCopyrightName || '').trim();
-        if (!copyrightName || copyrightName === DEFAULT_FOOTER_COMPANY || copyrightName === companyName) {
-            state.classicFooterCopyrightName = companyName;
             if (fields.classicFooterCopyrightName) {
-                fields.classicFooterCopyrightName.value = companyName;
+                fields.classicFooterCopyrightName.placeholder = copyrightSource;
             }
+            return;
         }
 
-        if (fields.classicFooterCompanyName) {
-            fields.classicFooterCompanyName.placeholder = companyName;
-        }
-        if (fields.classicFooterCopyrightName) {
-            fields.classicFooterCopyrightName.placeholder = companyName;
+        if (templateDesign === 'classic') {
+            const copyrightName = String(state.footerCopyrightName || '').trim();
+            if (!copyrightName || copyrightName === DEFAULT_FOOTER_COMPANY || copyrightName === companyName) {
+                state.footerCopyrightName = companyName;
+                if (fields.footerCopyrightName) {
+                    fields.footerCopyrightName.value = companyName;
+                }
+            }
+            if (fields.footerCopyrightName) {
+                fields.footerCopyrightName.placeholder = companyName;
+            }
         }
     }
 
@@ -2875,6 +3020,22 @@
         state.youMayLikeItems = applyYouMayLikeImageDefaults(
             normalizeYouMayLikeItems(state.youMayLikeItems),
         );
+        state.sketchCards = normalizeSketchCards(state.sketchCards).map((card) => {
+            const meta = SKETCH_CARDS.find((entry) => entry.id === card.id);
+            const defaultImage = meta ? `${SKETCH_IMAGE_DIR}${meta.imageFile}` : card.image;
+            return {
+                ...card,
+                image: resolveClassicImage(card.image, defaultImage),
+            };
+        });
+        state.featuredCategoryImages = normalizeFeaturedCategoryImages(state.featuredCategoryImages);
+        FEATURED_CATEGORIES.forEach((category) => {
+            const current = state.featuredCategoryImages[category.id];
+            state.featuredCategoryImages[category.id] = resolveClassicImage(
+                current,
+                defaultFeaturedCategoryImage(category),
+            );
+        });
     }
 
     function migrateLoadedClassicState(saved) {
@@ -2913,6 +3074,8 @@
                 DEFAULT_CLASSIC_GET_INSPIRED_LIFESTYLE,
                 PREVIOUS_CLASSIC_DEFAULT_IMAGES.getInspired,
             ),
+            sketchCards: normalizeSketchCards(saved.sketchCards),
+            featuredCategoryImages: normalizeFeaturedCategoryImages(saved.featuredCategoryImages),
             youMayLikeItems: normalizeYouMayLikeItems(saved.youMayLikeItems),
             previewTheme: saved.previewTheme === 'dark' ? 'dark' : 'light',
         };
@@ -4280,6 +4443,85 @@
         });
     }
 
+    function clampFooterLogoSize(size) {
+        const { min, max, default: fallback } = FOOTER_LOGO_SIZE_LIMITS;
+        const n = Number(size);
+        if (Number.isNaN(n)) return fallback;
+        return Math.min(max, Math.max(min, Math.round(n)));
+    }
+
+    function getResolvedFooterLogoSize() {
+        return clampFooterLogoSize(state.footerLogoSize);
+    }
+
+    function syncFooterLogoSizeControls(size) {
+        const fitted = clampFooterLogoSize(size);
+        document.querySelectorAll('.editor-footer-logo-size').forEach((input) => {
+            input.min = String(FOOTER_LOGO_SIZE_LIMITS.min);
+            input.max = String(FOOTER_LOGO_SIZE_LIMITS.max);
+            if (input.value !== String(fitted)) {
+                input.value = String(fitted);
+            }
+        });
+        document.querySelectorAll('.editor-footer-logo-size-val').forEach((el) => {
+            el.textContent = `${fitted}px`;
+        });
+        document.querySelectorAll('.editor-footer-logo-size-min').forEach((el) => {
+            el.textContent = `${FOOTER_LOGO_SIZE_LIMITS.min}px`;
+        });
+        document.querySelectorAll('.editor-footer-logo-size-max').forEach((el) => {
+            el.textContent = `${FOOTER_LOGO_SIZE_LIMITS.max}px`;
+        });
+    }
+
+    function applyFooterLogoSize() {
+        if (templateDesign !== 'classic') return;
+        const size = getResolvedFooterLogoSize();
+        state.footerLogoSize = size;
+        const px = `${size}px`;
+        if (previewRoot) {
+            previewRoot.style.setProperty('--showroom-footer-logo-h', px);
+            previewRoot.style.setProperty('--footer-logo-h', px);
+        }
+        const wrap = document.getElementById('previewFooterLogoWrap');
+        if (wrap) {
+            wrap.style.setProperty('height', px);
+            wrap.style.setProperty('max-height', px);
+            wrap.style.setProperty('width', 'auto');
+            wrap.style.setProperty('max-width', '280px');
+        }
+        const img = wrap?.querySelector('img');
+        if (img && !img.hidden) {
+            img.style.setProperty('height', '100%', 'important');
+            img.style.setProperty('max-height', '100%', 'important');
+            img.style.setProperty('width', 'auto', 'important');
+            img.style.setProperty('max-width', '100%', 'important');
+        }
+        const uploadPreview = document.getElementById('uploadPreviewFooterLogo');
+        if (uploadPreview) {
+            uploadPreview.style.setProperty('--footer-logo-h', px);
+            const uploadImg = uploadPreview.querySelector('img');
+            if (uploadImg) {
+                uploadImg.style.setProperty('height', px, 'important');
+                uploadImg.style.setProperty('max-height', px, 'important');
+                uploadImg.style.setProperty('width', 'auto', 'important');
+            }
+        }
+        syncFooterLogoSizeControls(size);
+    }
+
+    function bindFooterLogoSizeControls() {
+        document.querySelectorAll('.editor-footer-logo-size').forEach((input) => {
+            if (input.dataset.bound === 'true') return;
+            input.dataset.bound = 'true';
+            input.addEventListener('input', () => {
+                state.footerLogoSize = clampFooterLogoSize(input.value);
+                applyFooterLogoSize();
+                saveState({ silent: true });
+            });
+        });
+    }
+
     function isBundledDefaultHeaderLogo(src, defaultLight) {
         const trimmed = String(src || '').trim();
         return !trimmed || trimmed === defaultLight;
@@ -5330,6 +5572,7 @@
     function syncFooterPreview() {
         applyImage(previewFooterLogo, previewFooterLogoWrap, getEffectiveFooterLogo());
         syncFooterLogoEditor();
+        applyFooterLogoSize();
 
         const email = state.footerEmail || DEFAULT_FOOTER_EMAIL;
         if (previewFooterEmail) {
@@ -5459,20 +5702,27 @@
         const grid = document.getElementById('previewSketchGrid');
         if (!grid) return;
 
-        grid.innerHTML = SKETCH_CARDS.map((card) => {
-            const header = escapeHtml(card.defaultHeader);
-            const paragraph = escapeHtml(card.defaultParagraph);
-            const src = `${SKETCH_IMAGE_DIR}${card.imageFile}`;
+        const cards = normalizeSketchCards(state.sketchCards);
+        state.sketchCards = cards;
 
-            return (
-                `<article class="showroom-sketch-card">
-                    <div class="showroom-sketch-card-image is-empty">
-                        <img src="${src}" alt="" loading="lazy" hidden>
-                    </div>
-                    <h3 class="showroom-sketch-card-title">${header}</h3>
-                    <p class="showroom-sketch-card-text">${paragraph}</p>
-                </article>`
+        grid.innerHTML = cards.map((card) => {
+            const header = escapeHtml(card.header);
+            const paragraph = escapeHtml(card.paragraph);
+            const src = escapeHtml(card.image || '');
+            const url = String(card.url || '').trim();
+            const imgId = `previewSketchImage-${card.id}`;
+            const body = (
+                `<div class="showroom-sketch-card-image is-empty">
+                    <img id="${imgId}" src="${src}" alt="" loading="lazy" hidden>
+                </div>
+                <h3 class="showroom-sketch-card-title">${header}</h3>
+                <p class="showroom-sketch-card-text">${paragraph}</p>`
             );
+
+            if (url) {
+                return `<a href="${escapeHtml(url)}" class="showroom-sketch-card showroom-sketch-card--link">${body}</a>`;
+            }
+            return `<article class="showroom-sketch-card">${body}</article>`;
         }).join('');
 
         grid.querySelectorAll('.showroom-sketch-card-image img').forEach((img) => {
@@ -5495,6 +5745,80 @@
                 hideImage();
             }
         });
+
+        SKETCH_CARDS.forEach((meta) => {
+            const card = cards.find((entry) => entry.id === meta.id);
+            const uploadEl = document.getElementById(`uploadPreview${meta.fieldPrefix}`);
+            if (!uploadEl || !card) return;
+            uploadEl.innerHTML = card.image ? `<img src="${card.image}" alt="">` : '';
+            uploadEl.classList.toggle('is-empty', !card.image);
+        });
+    }
+
+    function readSketchCardsFromEditor() {
+        state.sketchCards = SKETCH_CARDS.map((meta) => {
+            const existing = (state.sketchCards || []).find((entry) => entry.id === meta.id) || {};
+            const headerField = document.getElementById(`field${meta.fieldPrefix}Header`);
+            const paragraphField = document.getElementById(`field${meta.fieldPrefix}Paragraph`);
+            const urlField = document.getElementById(`field${meta.fieldPrefix}Url`);
+            return {
+                id: meta.id,
+                image: existing.image || `${SKETCH_IMAGE_DIR}${meta.imageFile}`,
+                header: headerField && headerField.value.trim()
+                    ? headerField.value.trim()
+                    : meta.defaultHeader,
+                paragraph: paragraphField && paragraphField.value.trim()
+                    ? paragraphField.value.trim()
+                    : meta.defaultParagraph,
+                url: urlField ? urlField.value.trim() : '',
+            };
+        });
+    }
+
+    function populateSketchFields(data) {
+        state.sketchCards = normalizeSketchCards(data.sketchCards);
+        state.sketchCards.forEach((card) => {
+            const meta = SKETCH_CARDS.find((entry) => entry.id === card.id);
+            if (!meta) return;
+            const headerField = document.getElementById(`field${meta.fieldPrefix}Header`);
+            const paragraphField = document.getElementById(`field${meta.fieldPrefix}Paragraph`);
+            const urlField = document.getElementById(`field${meta.fieldPrefix}Url`);
+            if (headerField) headerField.value = card.header;
+            if (paragraphField) paragraphField.value = card.paragraph;
+            if (urlField) urlField.value = card.url || '';
+            const uploadEl = document.getElementById(`uploadPreview${meta.fieldPrefix}`);
+            if (uploadEl) {
+                uploadEl.innerHTML = card.image ? `<img src="${card.image}" alt="">` : '';
+                uploadEl.classList.toggle('is-empty', !card.image);
+            }
+        });
+    }
+
+    async function onSketchImageUpload(input, cardId) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            setStatus('Please choose an image file.');
+            input.value = '';
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            setStatus('Image must be under 2 MB.');
+            input.value = '';
+            return;
+        }
+        try {
+            const dataUrl = await readFileAsDataUrl(file);
+            state.sketchCards = normalizeSketchCards(state.sketchCards).map((card) => (
+                card.id === cardId ? { ...card, image: dataUrl } : card
+            ));
+            syncPreview();
+            saveState();
+            setStatus('Sketch image updated');
+        } catch {
+            setStatus('Could not read image.');
+        }
+        input.value = '';
     }
 
     function syncYouMayLikePreview() {
@@ -5623,6 +5947,73 @@
                 label: `You May Like — item ${number || index + 1}`,
                 dimensions: '500 × 750 px',
                 dataUrl: await resolveImageDataUrlForExport(item.image),
+            });
+        }
+
+        return assets;
+    }
+
+    /**
+     * Always package Sketch card images (defaults or custom uploads).
+     * Tries card.image, then images/ root, then sketch-section/ copies.
+     */
+    async function loadSketchAssetsForExport() {
+        const assets = [];
+
+        for (const card of normalizeSketchCards(state.sketchCards)) {
+            const meta = SKETCH_CARDS.find((entry) => entry.id === card.id);
+            const filename = meta ? meta.imageFile : `${card.id}.png`;
+            const fallbacks = [
+                card.image,
+                meta ? `${SKETCH_IMAGE_DIR}${meta.imageFile}` : '',
+                meta ? `${SKETCH_IMAGE_DIR}sketch-section/${meta.imageFile}` : '',
+            ].filter(Boolean);
+
+            let dataUrl = '';
+            for (const src of fallbacks) {
+                dataUrl = await resolveImageDataUrlForExport(src);
+                if (dataUrl) break;
+            }
+
+            assets.push({
+                filename,
+                label: `Sketch — ${card.header || card.id}`,
+                dimensions: '~180 × 78 px',
+                dataUrl,
+            });
+        }
+
+        return assets;
+    }
+
+    /**
+     * Featured category thumbs — defaults always resolved; custom uploads replace them.
+     * ZIP path: featured-categories/{file} → /data/logicx/images/featured-categories/
+     */
+    async function loadFeaturedCategoryAssetsForExport() {
+        const assets = [];
+        state.featuredCategoryImages = normalizeFeaturedCategoryImages(state.featuredCategoryImages);
+
+        for (const category of FEATURED_CATEGORIES) {
+            if (!state.featuredCategories[category.id]) continue;
+
+            const zipFilename = `featured-categories/${category.imageFile}`;
+            const fallbacks = [
+                getFeaturedCategoryImage(category.id),
+                defaultFeaturedCategoryImage(category),
+            ].filter(Boolean);
+
+            let dataUrl = '';
+            for (const src of fallbacks) {
+                dataUrl = await resolveImageDataUrlForExport(src);
+                if (dataUrl) break;
+            }
+
+            assets.push({
+                filename: zipFilename,
+                label: `Featured Categories — ${category.label}`,
+                dimensions: '70 × 70 px',
+                dataUrl,
             });
         }
 
@@ -5900,15 +6291,20 @@
 
         if (!preview.categoriesGrid) return;
 
+        state.featuredCategoryImages = normalizeFeaturedCategoryImages(state.featuredCategoryImages);
         const visible = FEATURED_CATEGORIES.filter((category) => state.featuredCategories[category.id]);
-        preview.categoriesGrid.innerHTML = visible.map((category) => (
-            `<article class="showroom-category-card">
-                <div class="showroom-category-card-thumb" aria-hidden="true">
-                    <img src="${FEATURED_CATEGORY_IMAGE_DIR}${category.imageFile}" alt="">
-                </div>
-                <span class="showroom-category-card-label">${escapeHtml(category.label)}</span>
-            </article>`
-        )).join('');
+        preview.categoriesGrid.innerHTML = visible.map((category) => {
+            const src = escapeHtml(getFeaturedCategoryImage(category.id));
+            const imgId = `previewFeaturedCategoryImage-${category.id}`;
+            return (
+                `<article class="showroom-category-card">
+                    <div class="showroom-category-card-thumb" aria-hidden="true">
+                        <img id="${imgId}" src="${src}" alt="" loading="lazy">
+                    </div>
+                    <span class="showroom-category-card-label">${escapeHtml(category.label)}</span>
+                </article>`
+            );
+        }).join('');
     }
 
     function escapeHtml(text) {
@@ -5917,6 +6313,47 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    function syncFeaturedCategoryUploadPreviews() {
+        if (!categoryCheckboxList) return;
+        state.featuredCategoryImages = normalizeFeaturedCategoryImages(state.featuredCategoryImages);
+        FEATURED_CATEGORIES.forEach((category) => {
+            const previewEl = document.getElementById(`uploadPreviewFeaturedCategory-${category.id}`);
+            if (!previewEl) return;
+            const src = getFeaturedCategoryImage(category.id);
+            previewEl.innerHTML = src ? `<img src="${src}" alt="">` : '';
+            previewEl.classList.toggle('is-empty', !src);
+        });
+    }
+
+    async function onFeaturedCategoryImageUpload(input, categoryId) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            setStatus('Please choose an image file.');
+            input.value = '';
+            return;
+        }
+        if (file.size > FEATURE_IMAGE_MAX_BYTES) {
+            setStatus(`Image must be under ${Math.round(FEATURE_IMAGE_MAX_BYTES / (1024 * 1024))} MB.`);
+            input.value = '';
+            return;
+        }
+        try {
+            const dataUrl = await readFileAsDataUrl(file);
+            state.featuredCategoryImages = {
+                ...normalizeFeaturedCategoryImages(state.featuredCategoryImages),
+                [categoryId]: dataUrl,
+            };
+            syncCategoriesPreview();
+            syncFeaturedCategoryUploadPreviews();
+            saveState();
+            setStatus('Category image updated');
+        } catch {
+            setStatus('Could not read image.');
+        }
+        input.value = '';
     }
 
     function buildCategoryCheckboxes() {
@@ -5928,16 +6365,28 @@
                     <input type="checkbox" name="featuredCategory" value="${category.id}" checked>
                     ${escapeHtml(category.label)}
                 </label>
+                <div class="editor-category-thumb-upload">
+                    <div class="editor-upload-preview editor-upload-preview--category is-empty" id="uploadPreviewFeaturedCategory-${category.id}"></div>
+                    <input type="file" id="fieldFeaturedCategoryImage-${category.id}" name="featuredCategoryImage-${category.id}" accept="image/*" aria-label="${escapeHtml(category.label)} thumbnail">
+                </div>
             </li>`
         )).join('');
 
         categoryCheckboxList.addEventListener('change', (event) => {
             const input = event.target;
-            if (input.type !== 'checkbox') return;
-            state.featuredCategories[input.value] = input.checked;
-            syncCategoriesPreview();
-            saveState();
+            if (input.type === 'checkbox' && input.name === 'featuredCategory') {
+                state.featuredCategories[input.value] = input.checked;
+                syncCategoriesPreview();
+                saveState();
+                return;
+            }
+            if (input.type === 'file' && input.id.startsWith('fieldFeaturedCategoryImage-')) {
+                const categoryId = input.id.replace('fieldFeaturedCategoryImage-', '');
+                onFeaturedCategoryImageUpload(input, categoryId);
+            }
         });
+
+        syncFeaturedCategoryUploadPreviews();
     }
 
     function readForm() {
@@ -6049,6 +6498,7 @@
         if (fields.sketchSectionVisible) {
             state.sketchSectionVisible = fields.sketchSectionVisible.checked;
         }
+        readSketchCardsFromEditor();
         if (fields.footerEmail) state.footerEmail = fields.footerEmail.value.trim() || DEFAULT_FOOTER_EMAIL;
         if (fields.footerFacebookUrl) state.footerFacebookUrl = fields.footerFacebookUrl.value.trim();
         if (fields.footerFacebookVisible) state.footerFacebookVisible = fields.footerFacebookVisible.checked;
@@ -6067,11 +6517,15 @@
         const previousCompanyName = state.footerCompanyName;
         if (fields.footerCompanyName) state.footerCompanyName = fields.footerCompanyName.value.trim() || DEFAULT_FOOTER_COMPANY;
         softCascadeCompanyName(previousCompanyName, state.footerCompanyName);
+        syncLinkedCompanyNameFields();
         if (fields.classicFooterCompanyName) {
             fields.classicFooterCompanyName.placeholder = resolveCompanyInfoName();
         }
         if (fields.classicFooterCopyrightName) {
-            fields.classicFooterCopyrightName.placeholder = resolveCompanyInfoName();
+            fields.classicFooterCopyrightName.placeholder = resolveClassicFooterCompanyName();
+        }
+        if (fields.footerCopyrightName) {
+            fields.footerCopyrightName.placeholder = resolveCompanyInfoName();
         }
         if (fields.footerAddress) state.footerAddress = fields.footerAddress.value.trim() || DEFAULT_FOOTER_ADDRESS;
         if (fields.footerPhone) state.footerPhone = fields.footerPhone.value.trim() || DEFAULT_FOOTER_PHONE;
@@ -6081,9 +6535,11 @@
         readGalleryMainNavFromEditor();
         readGalleryCatalogTilesFromEditor();
         readClassicFooterLinksFromEditor();
+        const previousClassicFooterCompany = state.classicFooterCompanyName;
         if (fields.classicFooterCompanyName) {
             state.classicFooterCompanyName = readTextField(fields.classicFooterCompanyName);
         }
+        softCascadeClassicFooterToCopyright(previousClassicFooterCompany, state.classicFooterCompanyName);
         if (fields.classicFooterAboutCopy) {
             state.classicFooterAboutCopy = readTextField(fields.classicFooterAboutCopy);
         }
@@ -6407,6 +6863,9 @@
     function populateFooterFields(data) {
         state.footerLogoImage = data.footerLogoImage || '';
         state.footerLogoUseHeader = data.footerLogoUseHeader !== false;
+        state.footerLogoSize = clampFooterLogoSize(
+            data.footerLogoSize ?? FOOTER_LOGO_SIZE_LIMITS.default,
+        );
         if (fields.footerLogoUseHeader) {
             fields.footerLogoUseHeader.checked = state.footerLogoUseHeader;
         }
@@ -6448,6 +6907,7 @@
         if (fields.footerPhone) fields.footerPhone.value = state.footerPhone;
         if (fields.footerCopyrightName) fields.footerCopyrightName.value = state.footerCopyrightName;
         syncLinkedCompanyNameFields();
+        applyFooterLogoSize();
     }
 
     function populateFeatureFields(data) {
@@ -6595,6 +7055,9 @@
         }
         state.shopAllUrl = fields.shopAllUrl ? fields.shopAllUrl.value.trim() || DEFAULT_SHOP_ALL_URL : DEFAULT_SHOP_ALL_URL;
         state.featuredCategories = mergeFeaturedCategories(data.featuredCategories);
+        state.featuredCategoryImages = normalizeFeaturedCategoryImages(data.featuredCategoryImages);
+        syncCategoryCheckboxes();
+        syncFeaturedCategoryUploadPreviews();
         state.title = fields.title.value;
         state.description = fields.description.value;
         state.cta = fields.cta.value;
@@ -6604,6 +7067,7 @@
         if (fields.sketchSectionVisible) {
             fields.sketchSectionVisible.checked = state.sketchSectionVisible;
         }
+        populateSketchFields(data);
         populateYouMayLikeFields(data);
         populateGetInspiredFields(data);
         populateHeaderFields(data);
@@ -6776,6 +7240,18 @@
         'featureRightParagraph',
         'featureRightButtonLabel',
         'featureRightButtonUrl',
+        'sketchVisitHeader',
+        'sketchVisitParagraph',
+        'sketchVisitUrl',
+        'sketchConsultationHeader',
+        'sketchConsultationParagraph',
+        'sketchConsultationUrl',
+        'sketchShippingHeader',
+        'sketchShippingParagraph',
+        'sketchShippingUrl',
+        'sketchExpertsHeader',
+        'sketchExpertsParagraph',
+        'sketchExpertsUrl',
         'footerEmail',
         'footerFacebookUrl',
         'footerInstagramUrl',
@@ -6914,6 +7390,15 @@
         });
     }
 
+    SKETCH_CARDS.forEach((meta) => {
+        const imageInput = document.getElementById(`field${meta.fieldPrefix}Image`);
+        if (imageInput) {
+            imageInput.addEventListener('change', () => {
+                onSketchImageUpload(imageInput, meta.id);
+            });
+        }
+    });
+
     function assetPathCandidates(path) {
         const trimmed = String(path || '').trim();
         if (!trimmed || trimmed.startsWith('data:')) return [trimmed];
@@ -6924,6 +7409,21 @@
         } else if (trimmed.startsWith('Spotlight/')) {
             candidates.push(`spotlight/${trimmed.slice('Spotlight/'.length)}`);
         }
+
+        // Sketch defaults exist at images/ root and as sketch-section/ copies.
+        const sketchRoot = trimmed.match(
+            /^(McQueen\/data\/images\/)(building|computer|truck|male-female)\.png$/i,
+        );
+        if (sketchRoot) {
+            candidates.push(`${sketchRoot[1]}sketch-section/${sketchRoot[2]}.png`);
+        }
+        const sketchSub = trimmed.match(
+            /^(McQueen\/data\/images\/)sketch-section\/(building|computer|truck|male-female)\.png$/i,
+        );
+        if (sketchSub) {
+            candidates.push(`${sketchSub[1]}${sketchSub[2]}.png`);
+        }
+
         return [...new Set(candidates)];
     }
 
@@ -7112,6 +7612,8 @@
                 dimensions: '417 × 282 px',
                 dataUrl: state.aboutEmployeeImage || '',
             },
+            // Visible Featured Category thumbs (defaults always; customs replace).
+            ...(await loadFeaturedCategoryAssetsForExport()),
             {
                 filename: 'explore-image-left.jpg',
                 label: 'Feature card photo (left)',
@@ -7131,6 +7633,8 @@
                 dimensions: '508 × 610 px',
                 dataUrl: state.getInspiredLifestyleImage || '',
             },
+            // Defaults + custom Sketch icons — always resolve into the ZIP when possible.
+            ...(await loadSketchAssetsForExport()),
         ];
 
         if (state.footerLogoUseHeader === false && state.footerLogoImage) {
@@ -7150,6 +7654,8 @@
             id: category.id,
             label: category.label,
             visible: Boolean(state.featuredCategories[category.id]),
+            imageFilename: `featured-categories/${category.imageFile}`,
+            customImage: String(getFeaturedCategoryImage(category.id) || '').startsWith('data:'),
         }));
     }
 
@@ -7186,7 +7692,8 @@
                     featuredCategoryImageDirectory: `editor/${FEATURED_CATEGORY_IMAGE_DIR}`,
                     featuredCategoryThumbnailSize: '70 × 70 px',
                     featuredCategoryCardSize: '300 × 70 px',
-                    featuredCategoryImagesHardcoded: true,
+                    featuredCategoryImagesHardcoded: false,
+                    featuredCategoryImagesInHandoff: true,
                     featuredCategories: buildFeaturedCategoriesExportList(),
                     header: buildHeaderExportSpec(),
                     heroLayout: 'classic',
@@ -7228,6 +7735,19 @@
                             },
                         },
                     },
+                    sketchSection: {
+                        visible: state.sketchSectionVisible !== false,
+                        cards: normalizeSketchCards(state.sketchCards).map((card) => {
+                            const meta = SKETCH_CARDS.find((entry) => entry.id === card.id);
+                            return {
+                                id: card.id,
+                                header: card.header,
+                                paragraph: card.paragraph,
+                                url: card.url || '',
+                                imageFilename: meta ? meta.imageFile : `${card.id}.png`,
+                            };
+                        }),
+                    },
                     youMayLike: {
                         title: 'You May Like',
                         imageSize: '500 × 750 px',
@@ -7266,7 +7786,8 @@
                     footer: {
                         logoUseHeader: state.footerLogoUseHeader !== false,
                         logoFilename: 'footer-logo.png',
-                        logoDimensions: 'max 280 × 94 px',
+                        logoSizePx: getResolvedFooterLogoSize(),
+                        logoDimensions: `${getResolvedFooterLogoSize()} px display height · width auto (max 280 px wide)`,
                         email: state.footerEmail,
                         companyName: state.footerCompanyName,
                         address: state.footerAddress,
@@ -7693,6 +8214,7 @@
         bindClassicFooterEditorEvents();
         bindClassicCopyrightEditorEvents();
         bindHeaderLogoSizeControls();
+        bindFooterLogoSizeControls();
         bindPreviewResizeObserver();
         window.addEventListener('load', scheduleFitPreviewScale);
 

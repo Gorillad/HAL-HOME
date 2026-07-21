@@ -5,7 +5,7 @@
     --sidebar-logo-max-w: 300px;
     --sidebar-logo-max-h: 100px;
     --footer-logo-w: 280px;
-    --footer-logo-h: 94px;
+    --footer-logo-h: 56px;
     --editor-ui-bg: #e4e4e4;
     --editor-ui-bg-soft: #ececec;
     --editor-ui-surface: #f5f5f5;
@@ -1116,12 +1116,30 @@
     color: var(--xo-charcoal);
 }
 
+.editor-category-image-hint {
+    margin: 0 0 8px;
+}
+
 .editor-category-list {
     list-style: none;
     margin: 8px 0 0;
     padding: 0;
     display: grid;
-    gap: 8px;
+    gap: 10px;
+}
+
+.editor-category-list > li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 12px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--xo-border);
+}
+
+.editor-category-list > li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
 }
 
 .editor-category-list label {
@@ -1132,6 +1150,7 @@
     font-weight: 400;
     cursor: pointer;
     color: var(--xo-charcoal);
+    grid-column: 1 / -1;
 }
 
 .editor-category-list input[type="checkbox"] {
@@ -1139,6 +1158,25 @@
     height: 16px;
     accent-color: var(--hero-gold-dark);
     flex-shrink: 0;
+}
+
+.editor-category-thumb-upload {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    grid-column: 1 / -1;
+    padding-left: 26px;
+}
+
+.editor-upload-preview--category {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+}
+
+.editor-category-thumb-upload input[type="file"] {
+    font-size: 0.78rem;
+    max-width: 100%;
 }
 
 .editor-field {
@@ -3345,6 +3383,16 @@
     text-align: center;
 }
 
+a.showroom-sketch-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.showroom-sketch-card:hover .showroom-sketch-card-title {
+    color: var(--hero-gold-dark, #9a7d4a);
+}
+
 .showroom-sketch-card-image {
     width: 180px;
     height: 78px;
@@ -3834,6 +3882,12 @@
     font-weight: 400;
     color: var(--xo-grey);
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.editor-upload-preview--sketch {
+    width: 180px;
+    height: 78px;
+    flex-shrink: 0;
 }
 
 .editor-status {

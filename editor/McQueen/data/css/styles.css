@@ -3,7 +3,8 @@
  * FTP ZIP path:     data/logicx/css/styles.css
  * Live path:        /data/logicx/css/styles.css
  * Images live path: /data/logicx/images/
- * CMS paste:        html/section_1.html → section_1; html/footer.html → footer
+ * CMS paste:        section_1.html → section_1; footer.html → footer (ZIP root)
+ * Local proof:      index.html (serve ZIP root; not for CMS paste)
  * Content max-width: 1440px where applicable.
  */
 :root {
@@ -22,6 +23,11 @@
   --showroom-hero-w: calc(var(--product-w) + var(--showroom-gap) + var(--lifestyle-w));
   --showroom-content-max: 1440px;
   --showroom-page-inset: clamp(16px, 3vw, 40px);
+  --header-logo-w: 220px;
+  --header-logo-h: 56px;
+  --footer-logo-w: 280px;
+  --footer-logo-h: 56px;
+  --showroom-footer-logo-h: var(--footer-logo-h);
   --xo-border: #e2e8ee;
   --xo-charcoal: #1a1a1a;
   --xo-grey: #667788;
@@ -1446,9 +1452,10 @@ a { color: inherit; }
 .showroom-footer-logo {
     margin-bottom: 20px;
     display: block;
-    width: var(--footer-logo-w);
-    max-width: 100%;
-    height: var(--footer-logo-h);
+    width: auto;
+    max-width: min(var(--footer-logo-w), 100%);
+    height: var(--showroom-footer-logo-h, var(--footer-logo-h));
+    max-height: var(--showroom-footer-logo-h, var(--footer-logo-h));
     line-height: 0;
 }
 
@@ -1456,6 +1463,8 @@ a { color: inherit; }
     display: flex;
     align-items: center;
     line-height: normal;
+    width: var(--footer-logo-w);
+    max-width: 100%;
 }
 
 .showroom-footer-logo.is-empty::after {
@@ -1468,8 +1477,10 @@ a { color: inherit; }
 
 .showroom-footer-logo img {
     display: block;
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     height: 100%;
+    max-height: 100%;
     object-fit: contain;
     object-position: left center;
 }

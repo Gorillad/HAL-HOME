@@ -49,7 +49,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const GALLERY_IMAGES_SERVER = `${GALLERY_SERVER_ROOT}/images`;
     const GALLERY_NAV_JS_ZIP = `${GALLERY_JS_ZIP_DIR}/gallery-nav.js`;
     const GALLERY_NAV_JS_SERVER = `${GALLERY_JS_SERVER}/gallery-nav.js`;
-    const resolvedHandoffAssets = assets.filter(
+    let resolvedHandoffAssets = assets.filter(
         (asset) => asset.dataUrl && String(asset.dataUrl).startsWith('data:'),
     );
 
@@ -77,6 +77,164 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     );
     const versionedPdfFilename = withVersion(pdfFilename);
     const versionedZipFilename = withVersion(zipFilename);
+
+    /**
+     * McQueen Sketch defaults must ship in the ZIP even with no client edits.
+     * Fills any missing building/computer/truck/male-female.png from editor assets.
+     */
+    async function ensureMcQueenDefaultSketchImages() {
+        if (!isMcQueen) return;
+        if (spec?.sketchSection?.visible === false) return;
+
+        const defaults = [
+            {
+                filename: 'building.png',
+                label: 'Sketch — Visit Our Showroom',
+                paths: [
+                    'McQueen/data/images/building.png',
+                    'McQueen/data/images/sketch-section/building.png',
+                ],
+            },
+            {
+                filename: 'computer.png',
+                label: 'Sketch — Schedule Your Consultation',
+                paths: [
+                    'McQueen/data/images/computer.png',
+                    'McQueen/data/images/sketch-section/computer.png',
+                ],
+            },
+            {
+                filename: 'truck.png',
+                label: 'Sketch — Complimentary Shipping',
+                paths: [
+                    'McQueen/data/images/truck.png',
+                    'McQueen/data/images/sketch-section/truck.png',
+                ],
+            },
+            {
+                filename: 'male-female.png',
+                label: 'Sketch — Your Local Lighting Experts',
+                paths: [
+                    'McQueen/data/images/male-female.png',
+                    'McQueen/data/images/sketch-section/male-female.png',
+                ],
+            },
+        ];
+
+        const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result || '');
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+
+        for (const entry of defaults) {
+            const existing = resolvedHandoffAssets.find((asset) => asset.filename === entry.filename);
+            if (existing?.dataUrl && String(existing.dataUrl).startsWith('data:')) continue;
+
+            let dataUrl = '';
+            for (const path of entry.paths) {
+                try {
+                    const response = await fetch(path, { credentials: 'same-origin' });
+                    if (!response.ok) continue;
+                    dataUrl = await blobToDataUrl(await response.blob());
+                    if (dataUrl) break;
+                } catch {
+                    // Try next path.
+                }
+            }
+
+            if (!dataUrl) {
+                console.warn(`McQueen handoff: could not include default sketch image ${entry.filename}`);
+                continue;
+            }
+
+            if (existing) {
+                existing.dataUrl = dataUrl;
+            } else {
+                resolvedHandoffAssets.push({
+                    filename: entry.filename,
+                    label: entry.label,
+                    dimensions: '~180 × 78 px',
+                    dataUrl,
+                });
+            }
+        }
+    }
+
+    /**
+     * McQueen Featured Category defaults must ship when categories are visible.
+     * ZIP: data/logicx/images/featured-categories/{file}
+     */
+    async function ensureMcQueenDefaultFeaturedCategoryImages() {
+        if (!isMcQueen) return;
+
+        const categories = Array.isArray(spec?.featuredCategories) ? spec.featuredCategories : [];
+        const visible = categories.length
+            ? categories.filter((category) => category.visible !== false)
+            : [
+                { id: 'chandeliers', imageFilename: 'featured-categories/chandeliers.jpg', label: 'Chandeliers' },
+                { id: 'fans', imageFilename: 'featured-categories/fans.jpg', label: 'Fans' },
+                { id: 'flush-mounts', imageFilename: 'featured-categories/flush-mounts.jpg', label: 'Flush mounts' },
+                { id: 'furniture', imageFilename: 'featured-categories/furniture.jpg', label: 'Furniture' },
+                { id: 'exterior', imageFilename: 'featured-categories/exterior.jpg', label: 'Exterior' },
+                { id: 'directional-lights', imageFilename: 'featured-categories/directional-lights.jpg', label: 'Directional lights' },
+                { id: 'sconce', imageFilename: 'featured-categories/sconces.jpg', label: 'Sconce' },
+                { id: 'pendants', imageFilename: 'featured-categories/pendants.jpg', label: 'Pendants' },
+            ];
+
+        const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result || '');
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+
+        for (const category of visible) {
+            const filename = category.imageFilename
+                || `featured-categories/${String(category.id || 'category').replace(/^featured-categories\//, '')}.jpg`;
+            const basename = filename.replace(/^featured-categories\//, '');
+            const existing = resolvedHandoffAssets.find((asset) => asset.filename === filename);
+            if (existing?.dataUrl && String(existing.dataUrl).startsWith('data:')) continue;
+
+            const paths = [
+                `McQueen/data/images/featured-categories/${basename}`,
+                `classic/featured-categories/${basename}`,
+            ];
+
+            let dataUrl = '';
+            for (const path of paths) {
+                try {
+                    const response = await fetch(path, { credentials: 'same-origin' });
+                    if (!response.ok) continue;
+                    dataUrl = await blobToDataUrl(await response.blob());
+                    if (dataUrl) break;
+                } catch {
+                    // Try next path.
+                }
+            }
+
+            if (!dataUrl) {
+                console.warn(`McQueen handoff: could not include featured category image ${filename}`);
+                continue;
+            }
+
+            if (existing) {
+                existing.dataUrl = dataUrl;
+            } else {
+                resolvedHandoffAssets.push({
+                    filename,
+                    label: `Featured Categories — ${category.label || category.id || basename}`,
+                    dimensions: '70 × 70 px',
+                    dataUrl,
+                });
+            }
+        }
+    }
+
+    await ensureMcQueenDefaultSketchImages();
+    await ensureMcQueenDefaultFeaturedCategoryImages();
+
     const coverMeta = {
         companyName: guideMeta.companyName || spec?.footer?.companyName || spec?.copyright?.companyName || 'Your Showroom',
         templateLabel: guideMeta.templateLabel || spec?.template || 'Showroom',
@@ -547,7 +705,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 ? (resolvedHandoffAssets.length
                     ? 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). All handoff images are included in the ZIP and on dedicated PDF pages after the layout previews.'
                     : 'This Spotlight template handoff covers Header, Hero, On Sale, Shop by Room, About Us, Categories, Brands, Newsletter, and Footer (with copyright + ADA bar). Image files could not be resolved for export — check that spotlight/ assets are available.')
-                : 'Handoff images include the header logo plus About Us, feature cards, You May Like, and Get Inspired photos (when configured). A separate footer logo is included only when it differs from the header. Hero images and featured category thumbnails are not bundled — source those on the live site.',
+                : 'Handoff images include the header logo, hero photos, Featured Category thumbnails (defaults always included for visible categories), About Us, feature cards, Sketch section icons (defaults always included), You May Like, and Get Inspired photos (when configured). A separate footer logo is included only when it differs from the header.',
         { size: 9, color: [90, 90, 90], gap: 16 },
     );
 
@@ -880,13 +1038,15 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ['Shop All link', spec.shopAllUrl || '/catalog'],
             ['Card size', spec.featuredCategoryCardSize || '300 × 70 px'],
             ['Thumbnail size', spec.featuredCategoryThumbnailSize || '70 × 70 px'],
-            ['Category images in handoff', 'No — thumbnails are hardcoded in the template'],
+            ['Category images in handoff', 'Yes — defaults always; custom uploads replace (featured-categories/ → /data/logicx/images/featured-categories/)'],
             ['Visible on site', `${visibleCategoryCount} of ${featuredCategoryList.length}`],
         ]);
         if (featuredCategoryList.length) {
             writeLines('Category visibility', { bold: true, size: 10, gap: 4 });
             writeItemList(featuredCategoryList, (category) => (
-                `${category.label || category.id || '—'} · ${category.visible !== false ? 'Visible' : 'Hidden'}`
+                `${category.label || category.id || '—'} · ${category.visible !== false ? 'Visible' : 'Hidden'}${
+                    category.imageFilename ? ` · ${category.imageFilename}` : ''
+                }${category.customImage ? ' · custom image' : ''}`
             ));
         }
 
@@ -961,7 +1121,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     const isSpotlightFooter = footer.layout === 'five-column';
     const footerSpecRows = isClassicFooter || isSpotlightFooter ? [] : [
         ['Footer logo', footer.logoUseHeader !== false ? 'Same as header logo' : (footer.logoFilename || 'footer-logo.png')],
-        ['Footer logo size', footer.logoDimensions || 'max 280 × 94 px'],
+        ['Footer logo size', footer.logoSizePx
+            ? `${footer.logoSizePx} px display height · width auto`
+            : (footer.logoDimensions || '56 px display height · width auto')],
         ['Footer logo in handoff', footer.logoUseHeader !== false
             ? 'No — uses header logo'
             : 'Yes — footer-logo.png'],
@@ -1396,8 +1558,41 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             `/* Bump Asset version in the Showroom editor when replacing this file on FTP. */`,
             '',
         ].join('\n');
-        if (body.includes(`handoff asset version: v${galleryAssetVersion}`)) return body;
-        return banner + body;
+        let next = body.includes(`handoff asset version: v${galleryAssetVersion}`) ? body : banner + body;
+
+        // Bake McQueen footer (and header) logo heights chosen in the editor into the FTP CSS.
+        if (isMcQueen && kind === 'css') {
+            const footerLogoPx = Math.max(
+                36,
+                Math.min(94, parseInt(spec?.footer?.logoSizePx, 10) || 56),
+            );
+            const headerLogoPx = Math.max(
+                40,
+                Math.min(80, parseInt(spec?.header?.logoSizePx, 10) || 56),
+            );
+            const logoSizeBlock = [
+                '',
+                '/* Logo sizes from Showroom editor (override template defaults) */',
+                ':root {',
+                `  --showroom-header-logo-h: ${headerLogoPx}px;`,
+                `  --header-logo-h: ${headerLogoPx}px;`,
+                `  --showroom-footer-logo-h: ${footerLogoPx}px;`,
+                `  --footer-logo-h: ${footerLogoPx}px;`,
+                '}',
+                '',
+            ].join('\n');
+            if (!next.includes('--showroom-footer-logo-h:')) {
+                next += logoSizeBlock;
+            } else {
+                next = next
+                    .replace(/--showroom-footer-logo-h:\s*[^;]+;/g, `--showroom-footer-logo-h: ${footerLogoPx}px;`)
+                    .replace(/--footer-logo-h:\s*[^;]+;/g, `--footer-logo-h: ${footerLogoPx}px;`)
+                    .replace(/--showroom-header-logo-h:\s*[^;]+;/g, `--showroom-header-logo-h: ${headerLogoPx}px;`)
+                    .replace(/--header-logo-h:\s*[^;]+;/g, `--header-logo-h: ${headerLogoPx}px;`);
+            }
+        }
+
+        return next;
     }
 
     function galleryRelativeImageKey(src) {
@@ -1751,6 +1946,18 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         previewFeatureRightImage: 'explore-image-right.jpg',
         previewGetInspiredLifestyleImage: 'get-inspired.jpg',
         previewFooterLogo: 'Alveraanlogo_v1.png',
+        'previewSketchImage-visit': 'building.png',
+        'previewSketchImage-consultation': 'computer.png',
+        'previewSketchImage-shipping': 'truck.png',
+        'previewSketchImage-experts': 'male-female.png',
+        'previewFeaturedCategoryImage-chandeliers': 'featured-categories/chandeliers.jpg',
+        'previewFeaturedCategoryImage-fans': 'featured-categories/fans.jpg',
+        'previewFeaturedCategoryImage-flush-mounts': 'featured-categories/flush-mounts.jpg',
+        'previewFeaturedCategoryImage-furniture': 'featured-categories/furniture.jpg',
+        'previewFeaturedCategoryImage-exterior': 'featured-categories/exterior.jpg',
+        'previewFeaturedCategoryImage-directional-lights': 'featured-categories/directional-lights.jpg',
+        'previewFeaturedCategoryImage-sconce': 'featured-categories/sconces.jpg',
+        'previewFeaturedCategoryImage-pendants': 'featured-categories/pendants.jpg',
     };
 
     const MCQUEEN_IMAGE_PREFIX = 'McQueen/data/images/';
@@ -1771,6 +1978,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         [`${MCQUEEN_IMAGE_PREFIX}sketch-section/computer.png`]: 'computer.png',
         [`${MCQUEEN_IMAGE_PREFIX}sketch-section/truck.png`]: 'truck.png',
         [`${MCQUEEN_IMAGE_PREFIX}sketch-section/male-female.png`]: 'male-female.png',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/chandeliers.jpg`]: 'featured-categories/chandeliers.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/fans.jpg`]: 'featured-categories/fans.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/flush-mounts.jpg`]: 'featured-categories/flush-mounts.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/furniture.jpg`]: 'featured-categories/furniture.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/exterior.jpg`]: 'featured-categories/exterior.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/directional-lights.jpg`]: 'featured-categories/directional-lights.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/sconces.jpg`]: 'featured-categories/sconces.jpg',
+        [`${MCQUEEN_IMAGE_PREFIX}featured-categories/pendants.jpg`]: 'featured-categories/pendants.jpg',
         // Older bundled defaults
         [`${MCQUEEN_IMAGE_PREFIX}header/logo-classic.png`]: 'Alveraanlogo_v1.png',
         [`${MCQUEEN_IMAGE_PREFIX}gemma.jpg`]: 'hero-product.png',
@@ -1895,6 +2110,17 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         clone.classList.remove('is-preview-stuck', 'editor-preview-image-jump-target', 'is-hidden');
         clone.style.removeProperty('transform');
 
+        const footerLogoPx = Math.max(
+            36,
+            Math.min(94, parseInt(spec?.footer?.logoSizePx, 10) || 56),
+        );
+        clone.querySelectorAll('.showroom-footer-logo').forEach((wrap) => {
+            wrap.style.setProperty('height', `${footerLogoPx}px`);
+            wrap.style.setProperty('max-height', `${footerLogoPx}px`);
+            wrap.style.setProperty('width', 'auto');
+            wrap.style.setProperty('max-width', '280px');
+        });
+
         clone.querySelectorAll('img').forEach((img) => {
             const nextSrc = resolveMcQueenCmsImageSrc(img, srcLookup);
             if (nextSrc) {
@@ -1902,6 +2128,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 img.removeAttribute('srcset');
             }
             img.removeAttribute('hidden');
+            if (img.closest('.showroom-footer-logo')) {
+                img.style.setProperty('height', '100%');
+                img.style.setProperty('max-height', '100%');
+                img.style.setProperty('width', 'auto');
+                img.style.setProperty('max-width', '100%');
+            }
         });
 
         clone.querySelectorAll('*').forEach((el) => {
@@ -2028,8 +2260,24 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ].join('\n');
     }
 
+    /**
+     * Header markup for local index.html proof only (not a McQueen CMS paste region).
+     * Site chrome lives outside section_1/footer on the live dashboard.
+     */
+    function buildMcQueenPreviewHeaderHtml(srcLookup) {
+        if (!isMcQueenCmsBlockVisible(headerEl)) return '';
+        let clone = sanitizeMcQueenCmsClone(headerEl, srcLookup);
+        if (!clone) return '';
+        clone = injectMcQueenEnhancedSearchModule(clone, headerEl);
+        return [
+            '<!-- Local preview only — McQueen header is site chrome (not pasted into section_1). -->',
+            clone.outerHTML,
+            '',
+        ].join('\n');
+    }
+
     function buildMcQueenCmsHtmlFiles() {
-        if (!isMcQueen) return [];
+        if (!isMcQueen) return { files: [], previewBodyPrefix: '' };
         const srcLookup = buildMcQueenCmsSrcLookup(resolvedHandoffAssets);
         const section1Html = buildMcQueenSection1Html(srcLookup);
         const footerHtml = buildMcQueenFooterHtml(srcLookup);
@@ -2057,6 +2305,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `Package ID: ${packageId}`,
                 '',
                 'These ZIP-root .html files are for CMS paste only — do NOT FTP them.',
+                'There is no html/ folder in this package — paste files live at the ZIP root.',
                 '',
                 'McQueen third-party dashboard paste map:',
                 '  section_1.html  →  section_1   (full homepage body)',
@@ -2064,9 +2313,12 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '',
                 'Do NOT split hero / categories / about / etc. into section_2…section_7.',
                 '',
-                'Local preview (before CMS paste):',
-                '  Serve this ZIP root as the HTTP document root, then open index.html.',
-                '  Absolute /data/logicx/ paths resolve when the package root is the server root.',
+                'Local proof view (before CMS paste):',
+                '  1. Unzip this package',
+                '  2. Serve the ZIP root as the HTTP document root (Live Server / npx serve .)',
+                '  3. Open index.html — full-page preview with header + section_1 + footer',
+                '  Absolute /data/logicx/ CSS and image paths resolve when the package root is the server root.',
+                '  Do not paste index.html into the CMS.',
                 '',
                 'Image paths in the HTML point at:',
                 `  ${GALLERY_IMAGES_SERVER}/[filename]`,
@@ -2075,14 +2327,15 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '  Example: /data/logicx/images/about-us.jpg',
                 '',
                 'Install order (support agent):',
-                `  1. FTP upload data/ (css + images → ${GALLERY_CSS_SERVER}/ + ${GALLERY_IMAGES_SERVER}/)`,
-                '  2. Paste meta-data-global-css-snippet.html (ZIP root)',
+                '  1. Optional: open index.html locally to proof the layout',
+                `  2. FTP upload data/ (css + images → ${GALLERY_CSS_SERVER}/ + ${GALLERY_IMAGES_SERVER}/)`,
+                '  3. Paste meta-data-global-css-snippet.html (ZIP root)',
                 '     into dashboard → Meta Data, JavaScript & CSS (Global)',
                 '     (includes Font Awesome 6 for footer social + search icons)',
-                `  3. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
-                `  4. Confirm images load under ${GALLERY_IMAGES_SERVER}/`,
-                '  5. Paste section_1.html into CMS region section_1',
-                '  6. Paste footer.html into CMS region footer',
+                `  4. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
+                `  5. Confirm images load under ${GALLERY_IMAGES_SERVER}/`,
+                '  6. Paste section_1.html into CMS region section_1',
+                '  7. Paste footer.html into CMS region footer',
                 '',
                 'Local index.html loads the same Meta Data tags (including Font Awesome)',
                 'so social icons match the live site before you paste into the CMS.',
@@ -2090,7 +2343,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ].join('\n'),
         });
 
-        return files;
+        return {
+            files,
+            previewBodyPrefix: buildMcQueenPreviewHeaderHtml(srcLookup),
+        };
     }
 
     /**
@@ -2098,7 +2354,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
      * HTTP document root so /data/logicx/ CSS/JS/image paths resolve.
      * Not for CMS paste — use the region .html fragments instead.
      */
-    function buildSupportLocalPreviewHtml(cmsFiles) {
+    function buildSupportLocalPreviewHtml(cmsFiles, options = {}) {
         if (!isSupportHandoff || !Array.isArray(cmsFiles) || !cmsFiles.length) return '';
 
         const byPath = {};
@@ -2111,21 +2367,23 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         const bodyOrder = isGallery
             ? ['header.html', 'section_1.html', 'section_2.html', 'footer.html']
             : ['section_1.html', 'footer.html'];
-        const bodyHtml = bodyOrder
+        const regionHtml = bodyOrder
             .map((name) => byPath[name])
             .filter(Boolean)
             .join('\n\n');
 
+        const bodyPrefix = typeof options.bodyPrefix === 'string' ? options.bodyPrefix.trim() : '';
+        const bodyHtml = [bodyPrefix, regionHtml].filter(Boolean).join('\n\n');
+
         if (!bodyHtml) return '';
 
-        const wrappedBody = isGallery
-            ? [
-                '<!-- Local preview shell: simulates host main-content / .centerWrap-WD (live often 1720px; Classic CSS caps at 1440px). -->',
-                '<main-content class="centerWrap-WD">',
-                bodyHtml,
-                '</main-content>',
-            ].join('\n')
-            : bodyHtml;
+        // Classic + McQueen: wrap in host main-content shell for proof view.
+        const wrappedBody = [
+            '<!-- Local preview shell: simulates host main-content / .centerWrap-WD -->',
+            '<main-content class="centerWrap-WD">',
+            bodyHtml,
+            '</main-content>',
+        ].join('\n');
 
         return [
             '<!DOCTYPE html>',
@@ -2133,7 +2391,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '<head>',
             '<meta charset="UTF-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',
-            '<!-- Local preview only — not for CMS paste. -->',
+            '<!-- Local proof view only — not for CMS paste. -->',
             '<!-- Serve this ZIP root as the HTTP document root (Live Server / npx serve .) so /data/logicx/ paths resolve. -->',
             `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} | Asset version: v${galleryAssetVersion} -->`,
             `<title>${coverMeta.companyName} — ${supportTemplateLabel} local preview</title>`,
@@ -2148,13 +2406,17 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
     }
 
     const galleryCmsHtmlFiles = (() => {
-        const files = isGallery
-            ? buildGalleryCmsHtmlFiles()
-            : isMcQueen
-                ? buildMcQueenCmsHtmlFiles()
-                : [];
+        let previewBodyPrefix = '';
+        let files = [];
+        if (isGallery) {
+            files = buildGalleryCmsHtmlFiles();
+        } else if (isMcQueen) {
+            const mcQueenCms = buildMcQueenCmsHtmlFiles();
+            files = mcQueenCms.files || [];
+            previewBodyPrefix = mcQueenCms.previewBodyPrefix || '';
+        }
         if (!isSupportHandoff || !files.length) return files;
-        const previewHtml = buildSupportLocalPreviewHtml(files);
+        const previewHtml = buildSupportLocalPreviewHtml(files, { bodyPrefix: previewBodyPrefix });
         if (previewHtml) {
             files.push({ path: GALLERY_LOCAL_PREVIEW, content: previewHtml });
         }
@@ -2372,8 +2634,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 shopAllUrl: spec.shopAllUrl || '/catalog',
                 cardDimensions: spec.featuredCategoryCardSize || '300 × 70 px',
                 thumbnailSize: spec.featuredCategoryThumbnailSize || '70 × 70 px',
-                imagesHardcoded: spec.featuredCategoryImagesHardcoded !== false,
-                imagesIncludedInHandoff: false,
+                imagesHardcoded: false,
+                imagesIncludedInHandoff: true,
                 categories: Array.isArray(spec.featuredCategories) ? spec.featuredCategories : [],
             },
             aboutUs: {
@@ -2468,7 +2730,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 logoUseHeader: footer.logoUseHeader !== false,
                 logo: {
                     filename: footer.logoFilename || 'Alveraanlogo_v1.png',
-                    dimensions: footer.logoDimensions || 'max 280 × 94 px',
+                    dimensions: footer.logoDimensions
+                        || (footer.logoSizePx
+                            ? `${footer.logoSizePx} px display height · width auto`
+                            : '56 px display height · width auto'),
+                    logoSizePx: footer.logoSizePx || 56,
                     includedInHandoff: footer.logoUseHeader === false,
                 },
                 email: footer.email || '',
@@ -2504,7 +2770,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 headerLogo: assetIncludedInHandoff('Alveraanlogo_v1.png'),
                 heroImages: assetIncludedInHandoff('hero-product.png')
                     || assetIncludedInHandoff('hero-lg-right.jpg'),
-                featuredCategoryThumbnails: false,
+                featuredCategoryThumbnails: resolvedHandoffAssets.some((asset) => (
+                    String(asset.filename || '').startsWith('featured-categories/')
+                )),
                 aboutEmployeePhoto: assetIncludedInHandoff('about-us.jpg'),
                 featureCardPhotos: assetIncludedInHandoff('explore-image-left.jpg')
                     || assetIncludedInHandoff('explore-image-right.jpg'),
@@ -2616,8 +2884,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 '  5. Paste section_1.html into CMS region section_1',
                 '  6. Paste footer.html into CMS region footer',
                 '',
-                'LOCAL PREVIEW',
+                'LOCAL PREVIEW (proof before CMS)',
                 '  Serve this ZIP root as the HTTP document root, then open index.html.',
+                '  index.html assembles header + section_1 + footer for visual QA only.',
+                '  Do not paste index.html into the CMS.',
                 '',
                 `Example stylesheet link: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
                 '',
@@ -2670,9 +2940,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '5. spec/homepage-spec.json — Machine-readable spec',
             '6. spec/footer-copyright-snippet.html — Copy-paste copyright + ADA compliance markup',
             '',
-            'Handoff image files (when present): Header logo, About Us employee photo, feature card photos,',
-            'You May Like product images, Get Inspired lifestyle photo, and footer logo only when',
-            'it differs from the header. Hero images and featured category thumbnails are not bundled.',
+            'Handoff image files (when present): Header logo, hero photos, Featured Category thumbnails (defaults always for visible categories),',
+            'About Us employee photo, feature card photos, Sketch section icons (defaults always included), You May Like product images,',
+            'Get Inspired lifestyle photo, and footer logo only when it differs from the header.',
         ].join('\n');
 
     const zip = new JSZip();

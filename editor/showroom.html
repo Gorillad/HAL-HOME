@@ -1067,7 +1067,7 @@
                 <summary class="editor-accordion-head">Featured Categories</summary>
                 <div class="editor-accordion-body">
             <div class="editor-featured-categories-classic" id="editorClassicSections">
-            <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows).</p>
+            <p class="editor-panel-lead editor-panel-lead--compact">Choose which catalog categories appear on the homepage (up to 8 in two rows). Defaults use the template thumbnails — replace any image if you want a custom photo.</p>
 
             <div class="editor-field">
                 <label for="fieldShopAllUrl">Shop All link</label>
@@ -1075,7 +1075,8 @@
             </div>
 
             <fieldset class="editor-category-picker">
-                <legend>Visible categories</legend>
+                <legend>Visible categories + thumbnails</legend>
+                <p class="editor-field-hint editor-category-image-hint">70 × 70 px · JPG. Leave the default unless the client supplies a replacement.</p>
                 <ul class="editor-category-list" id="categoryCheckboxList"></ul>
             </fieldset>
             </div>
@@ -1262,6 +1263,99 @@
                     Show sketch section on homepage
                 </label>
             </div>
+            <p class="editor-panel-lead editor-panel-lead--compact">Four icon cards. Edit image, title, and copy for each. Add an optional URL to make the whole card a link.</p>
+
+            <div class="editor-feature-card-group">
+                <p class="editor-feature-card-name">Card 1 — Visit</p>
+                <div class="editor-field">
+                    <label for="fieldSketchVisitImage">Icon image<span class="editor-field-hint">~180 × 78 px · PNG</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--sketch is-empty" id="uploadPreviewSketchVisit"></div>
+                        <input type="file" id="fieldSketchVisitImage" name="sketchVisitImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchVisitHeader">Title</label>
+                    <input type="text" id="fieldSketchVisitHeader" name="sketchVisitHeader" autocomplete="off" placeholder="Visit Our Showroom">
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchVisitParagraph">Copy</label>
+                    <textarea id="fieldSketchVisitParagraph" name="sketchVisitParagraph" rows="2" placeholder="Step into a world where your perfect lighting solution awaits."></textarea>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSketchVisitUrl">Link URL <span class="editor-field-hint">(optional)</span></label>
+                    <input type="text" id="fieldSketchVisitUrl" name="sketchVisitUrl" placeholder="/showroom" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="editor-feature-card-group">
+                <p class="editor-feature-card-name">Card 2 — Consultation</p>
+                <div class="editor-field">
+                    <label for="fieldSketchConsultationImage">Icon image<span class="editor-field-hint">~180 × 78 px · PNG</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--sketch is-empty" id="uploadPreviewSketchConsultation"></div>
+                        <input type="file" id="fieldSketchConsultationImage" name="sketchConsultationImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchConsultationHeader">Title</label>
+                    <input type="text" id="fieldSketchConsultationHeader" name="sketchConsultationHeader" autocomplete="off" placeholder="Schedule Your Consultation">
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchConsultationParagraph">Copy</label>
+                    <textarea id="fieldSketchConsultationParagraph" name="sketchConsultationParagraph" rows="2" placeholder="Personalized attention, expert advice, and unparalleled support."></textarea>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSketchConsultationUrl">Link URL <span class="editor-field-hint">(optional)</span></label>
+                    <input type="text" id="fieldSketchConsultationUrl" name="sketchConsultationUrl" placeholder="/contact" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="editor-feature-card-group">
+                <p class="editor-feature-card-name">Card 3 — Shipping</p>
+                <div class="editor-field">
+                    <label for="fieldSketchShippingImage">Icon image<span class="editor-field-hint">~180 × 78 px · PNG</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--sketch is-empty" id="uploadPreviewSketchShipping"></div>
+                        <input type="file" id="fieldSketchShippingImage" name="sketchShippingImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchShippingHeader">Title</label>
+                    <input type="text" id="fieldSketchShippingHeader" name="sketchShippingHeader" autocomplete="off" placeholder="Complimentary Shipping">
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchShippingParagraph">Copy</label>
+                    <textarea id="fieldSketchShippingParagraph" name="sketchShippingParagraph" rows="2" placeholder="Experience our free shipping policy on premium lighting selections."></textarea>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSketchShippingUrl">Link URL <span class="editor-field-hint">(optional)</span></label>
+                    <input type="text" id="fieldSketchShippingUrl" name="sketchShippingUrl" placeholder="/shipping" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="editor-feature-card-group">
+                <p class="editor-feature-card-name">Card 4 — Experts</p>
+                <div class="editor-field">
+                    <label for="fieldSketchExpertsImage">Icon image<span class="editor-field-hint">~180 × 78 px · PNG</span></label>
+                    <div class="editor-upload">
+                        <div class="editor-upload-preview editor-upload-preview--sketch is-empty" id="uploadPreviewSketchExperts"></div>
+                        <input type="file" id="fieldSketchExpertsImage" name="sketchExpertsImage" accept="image/*">
+                    </div>
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchExpertsHeader">Title</label>
+                    <input type="text" id="fieldSketchExpertsHeader" name="sketchExpertsHeader" autocomplete="off" placeholder="Your Local Lighting Experts">
+                </div>
+                <div class="editor-field">
+                    <label for="fieldSketchExpertsParagraph">Copy</label>
+                    <textarea id="fieldSketchExpertsParagraph" name="sketchExpertsParagraph" rows="2" placeholder="Our dedication to illuminating your spaces is second-to-none."></textarea>
+                </div>
+                <div class="editor-field editor-field--compact">
+                    <label for="fieldSketchExpertsUrl">Link URL <span class="editor-field-hint">(optional)</span></label>
+                    <input type="text" id="fieldSketchExpertsUrl" name="sketchExpertsUrl" placeholder="/about" autocomplete="off">
+                </div>
+            </div>
                 </div>
             </details><!-- /#editor-section-sketch-section -->
 
@@ -1309,6 +1403,19 @@
                     <div class="editor-upload-preview editor-upload-preview--footer-logo is-empty" id="uploadPreviewFooterLogo"></div>
                     <input type="file" id="fieldFooterLogo" name="footerLogoImage" accept="image/*">
                 </div>
+            </div>
+
+            <div class="editor-field" id="footerLogoSizeField">
+                <label for="fieldFooterLogoSize">Footer logo size</label>
+                <div class="editor-range-row">
+                    <input type="range" class="editor-footer-logo-size" id="fieldFooterLogoSize" min="36" max="94" step="1" value="56">
+                    <span class="editor-range-value editor-footer-logo-size-val">56px</span>
+                </div>
+                <div class="editor-range-scale">
+                    <span class="editor-footer-logo-size-min">36px</span>
+                    <span class="editor-footer-logo-size-max">94px</span>
+                </div>
+                <p class="editor-field-hint">Display height in the footer (width scales automatically). Default 56px — raise only if the mark needs more presence.</p>
             </div>
 
             <p class="editor-field-hint" style="margin:0 0 12px">Contact email, company name, and phone number are set in the <strong>Company Info</strong> section at the top of this panel.</p>
@@ -1375,7 +1482,7 @@
             <div class="editor-field editor-field--compact">
                 <label for="fieldFooterCopyrightName">Copyright company name</label>
                 <input type="text" id="fieldFooterCopyrightName" name="footerCopyrightName" autocomplete="off">
-                <span class="editor-field-hint">Used in the required footer copyright + ADA compliance line (see PDF handoff for copy-paste markup). Year updates automatically. Leave blank to use company name above.</span>
+                <span class="editor-field-hint">Auto-filled from Company Info for the copyright + ADA line. Edit only if it should differ. Year updates automatically.</span>
             </div>
                 </div>
             </details><!-- /#editor-section-footer -->
