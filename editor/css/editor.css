@@ -1501,20 +1501,30 @@
 
 .editor-preview-wrap {
     padding: 24px 24px 0;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: auto;
     min-height: 0;
     height: 100%;
     background: var(--editor-ui-bg);
     overscroll-behavior-y: contain;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* legacy Edge */
+}
+
+.editor-preview-wrap::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .editor-preview-scaler {
     width: 100%;
+    max-width: 100%;
     display: flex;
     justify-content: center;
     padding-bottom: 24px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .editor-preview-frame {

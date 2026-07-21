@@ -1805,7 +1805,12 @@
         previewRoot.style.transform = 'none';
         previewRoot.classList.add('is-pdf-export-capture');
         clearGalleryStickyPreviewPin();
-        if (previewScaler) previewScaler.style.height = '';
+        if (previewScaler) {
+            previewScaler.style.height = '';
+            previewScaler.style.width = '';
+            previewScaler.style.marginLeft = '';
+            previewScaler.style.marginRight = '';
+        }
         if (previewWrap) {
             previewWrap.scrollTop = 0;
             previewWrap.scrollLeft = 0;
@@ -1816,6 +1821,7 @@
             previewRoot.classList.remove('is-pdf-export-capture');
             clearGalleryStickyPreviewPin();
             previewRoot.style.transform = prevTransform;
+            previewRoot.style.marginLeft = '';
             if (previewWrap) {
                 previewWrap.scrollTop = prevScrollTop;
                 previewWrap.scrollLeft = prevScrollLeft;
@@ -1888,6 +1894,7 @@
 
     function clampPreviewScroll() {
         if (!previewWrap) return;
+        previewWrap.scrollLeft = 0;
         const maxScroll = Math.max(0, previewWrap.scrollHeight - previewWrap.clientHeight);
         if (previewWrap.scrollTop > maxScroll) {
             previewWrap.scrollTop = maxScroll;
@@ -1924,12 +1931,28 @@
         if (available <= 0) return;
 
         const scale = Math.min(1, available / TEMPLATE_FRAME_WIDTH);
+        previewRoot.style.transformOrigin = 'top center';
         previewRoot.style.transform = scale < 1 ? `scale(${scale})` : '';
         previewRoot.style.maxHeight = '';
         previewRoot.style.overflowY = '';
         previewRoot.classList.remove('is-sticky-scroll-host');
         previewWrap.classList.remove('is-gallery-sticky-scroll');
-        previewScaler.style.height = `${previewRoot.offsetHeight * scale}px`;
+
+        // transform: scale() does not shrink layout size — size the scaler to the
+        // visual footprint and offset the frame so it stays centered (no x-scroll).
+        const fullHeight = previewRoot.offsetHeight;
+        const scaledWidth = TEMPLATE_FRAME_WIDTH * scale;
+        const scaledHeight = fullHeight * scale;
+        previewScaler.style.width = `${scaledWidth}px`;
+        previewScaler.style.height = `${scaledHeight}px`;
+        previewScaler.style.marginLeft = 'auto';
+        previewScaler.style.marginRight = 'auto';
+        previewScaler.style.overflow = 'hidden';
+        previewRoot.style.marginLeft = `${(scaledWidth - TEMPLATE_FRAME_WIDTH) / 2}px`;
+
+        // Never allow sideways scrolling in the live preview pane.
+        previewWrap.scrollLeft = 0;
+
         requestAnimationFrame(() => {
             clampPreviewScroll();
             syncGalleryStickyPreviewPin();
