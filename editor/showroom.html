@@ -441,7 +441,7 @@
 
                 <fieldset class="editor-fieldset">
                     <legend>Large lifestyle image copy</legend>
-                    <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned overlay on the large image: headline, body copy, and Shop Now button sit on a translucent text panel so copy stays readable on light product photos. Headline lines 2 and 3 are optional — leave blank to hide them.</p>
+                    <p class="editor-field-hint editor-field-hint--fieldset">Left-aligned overlay on the large image: headline, optional body copy, and Shop Now button sit on a translucent text panel (panel only — the photo itself is not faded). Defaults are STEP UP / YOUR / LIGHTING with Shop Now. Headline lines 2 and 3 and body copy are optional — leave blank to hide them.</p>
                     <div class="editor-field">
                         <label for="fieldGalleryHeroTextValue">Text color</label>
                         <div class="editor-color">
@@ -462,7 +462,7 @@
                             </div>
                             <input type="color" id="fieldGalleryHeroPanelColor" name="galleryHeroPanelColor" value="#12100e" title="Open color picker">
                         </div>
-                        <p class="editor-field-hint">Dark translucent panel behind the large-image copy (also used on the right image headings).</p>
+                        <p class="editor-field-hint">Dark translucent panel behind the large-image copy only (also used on the right image headings). Does not fade the photo.</p>
                     </div>
                     <div class="editor-field">
                         <label for="fieldGalleryHeroPanelOpacity">Text panel transparency</label>
@@ -485,9 +485,9 @@
                         <input type="text" id="fieldGalleryHeroHeadline3" name="galleryHeroHeadlineLine3" autocomplete="off">
                     </div>
                     <div class="editor-field">
-                        <label for="fieldGalleryHeroCopy">Body copy</label>
+                        <label for="fieldGalleryHeroCopy">Body copy <span class="editor-field-hint">(optional)</span></label>
                         <textarea id="fieldGalleryHeroCopy" name="galleryHeroCopy" rows="3" autocomplete="off"></textarea>
-                        <p class="editor-field-hint">Three lines of supporting copy below the headline.</p>
+                        <p class="editor-field-hint">Optional supporting copy below the headline. Leave blank to hide.</p>
                     </div>
                     <div class="editor-field">
                         <label for="fieldGalleryHeroButtonLabel">Button label</label>

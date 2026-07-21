@@ -4,10 +4,11 @@ McQueen live CMS reference
 section_1.html in this folder is a copy of a live third-party dashboard
 homepage (all content in CMS region section_1).
 
-Handoff export paste map:
+Handoff export paste map (ZIP root):
 
-  html/section_1.html  →  section_1  (full homepage body)
-  html/footer.html     →  footer     (columns + copyright/ADA)
+  section_1.html  →  section_1  (full homepage body)
+  footer.html     →  footer     (columns + copyright/ADA)
+  index.html      →  local preview only (serve ZIP root; not CMS paste)
 
 LogicX FTP paths:
 

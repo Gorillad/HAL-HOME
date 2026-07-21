@@ -158,7 +158,9 @@
     const DEFAULT_GALLERY_HERO_HEADLINE_1 = 'STEP UP';
     const DEFAULT_GALLERY_HERO_HEADLINE_2 = 'YOUR';
     const DEFAULT_GALLERY_HERO_HEADLINE_3 = 'LIGHTING';
-    const DEFAULT_GALLERY_HERO_COPY = 'Refresh your home with bold silhouettes,\nwarm finishes, and lighting that makes\nevery room feel complete.';
+    /** Body copy is optional; Classic default hero is headlines + Shop Now only. */
+    const DEFAULT_GALLERY_HERO_COPY = '';
+    const LEGACY_GALLERY_HERO_COPY = 'Refresh your home with bold silhouettes,\nwarm finishes, and lighting that makes\nevery room feel complete.';
     const DEFAULT_GALLERY_HERO_BUTTON_LABEL = 'Shop Now';
     const DEFAULT_GALLERY_HERO_BUTTON_URL = '/lighting-fixtures';
     const DEFAULT_GALLERY_HERO_BUTTON_BG = '#2b2b2b';
@@ -166,6 +168,8 @@
     const DEFAULT_GALLERY_HERO_TEXT = '#ffffff';
     const DEFAULT_GALLERY_HERO_PANEL_COLOR = '#12100e';
     const DEFAULT_GALLERY_HERO_PANEL_OPACITY = 52;
+    /** Bump when Classic hero factory copy changes so stale drafts/baselines remigrate once. */
+    const GALLERY_HERO_COPY_DEFAULTS_VERSION = 2;
     const ClassicAssetVersion = window.ShowroomClassicAssetVersion || {
         CODE_FLOOR: 0,
         DEFAULT: 0,
@@ -889,6 +893,7 @@
         galleryHeroHeadlineLine2: DEFAULT_GALLERY_HERO_HEADLINE_2,
         galleryHeroHeadlineLine3: DEFAULT_GALLERY_HERO_HEADLINE_3,
         galleryHeroCopy: DEFAULT_GALLERY_HERO_COPY,
+        galleryHeroCopyDefaultsVersion: GALLERY_HERO_COPY_DEFAULTS_VERSION,
         galleryHeroTextColor: DEFAULT_GALLERY_HERO_TEXT,
         galleryHeroPanelColor: DEFAULT_GALLERY_HERO_PANEL_COLOR,
         galleryHeroPanelOpacity: DEFAULT_GALLERY_HERO_PANEL_OPACITY,
@@ -1171,13 +1176,9 @@
         );
     }
 
-    function galleryHeroPanelEdgeGradient(color, opacityPercent) {
-        const base = normalizeGalleryHeroPanelOpacity(opacityPercent) / 100;
-        // Keep the left scrim proportional to the Classic defaults (0.42 / 0.52 and 0.18 / 0.52).
-        const edgeStart = Math.min(1, base * (0.42 / 0.52));
-        const edgeMid = Math.min(1, base * (0.18 / 0.52));
-        const hex = normalizeHexColor(color, DEFAULT_GALLERY_HERO_PANEL_COLOR);
-        return `linear-gradient(90deg, ${hexWithAlpha(hex, edgeStart)} 0%, ${hexWithAlpha(hex, edgeMid)} 55%, ${hexWithAlpha(hex, 0)} 100%)`;
+    /** @deprecated Image-wide edge fade removed — transparency is panel-only. */
+    function galleryHeroPanelEdgeGradient() {
+        return 'none';
     }
 
     function softCascadeFromHeaderText(previousHeaderText, nextHeaderText) {
@@ -2228,6 +2229,10 @@
             return;
         }
 
+        if (templateDesign === 'gallery') {
+            ensureGalleryHeroCopyDefaults();
+        }
+
         populateForm(state);
         resetExportButton();
         resetClientReviewButton();
@@ -2337,8 +2342,105 @@
         return data;
     }
 
+    function normalizeGalleryHeroHeadlineCase(value, factoryDefault) {
+        if (typeof value !== 'string') return factoryDefault;
+        const trimmed = value.trim();
+        if (!trimmed) return factoryDefault;
+        if (trimmed.toUpperCase() === factoryDefault) return factoryDefault;
+        return trimmed;
+    }
+
+    function isLegacyGalleryHeroCopy(value) {
+        if (typeof value !== 'string') return false;
+        return value.replace(/\r\n/g, '\n').trim() === LEGACY_GALLERY_HERO_COPY.replace(/\r\n/g, '\n').trim();
+    }
+
+    /**
+     * One-time restore of Classic hero factory copy (STEP UP / YOUR / LIGHTING +
+     * Shop Now, empty body). After galleryHeroCopyDefaultsVersion is current,
+     * empty optional lines stay empty so users can clear them on purpose.
+     */
+    function migrateGalleryHeroCopyDefaults(data) {
+        if (!data || typeof data !== 'object') return data;
+
+        const version = Number(data.galleryHeroCopyDefaultsVersion) || 0;
+        if (version >= GALLERY_HERO_COPY_DEFAULTS_VERSION) {
+            if (typeof data.galleryHeroHeadlineLine1 !== 'string') {
+                data.galleryHeroHeadlineLine1 = DEFAULT_GALLERY_HERO_HEADLINE_1;
+            }
+            if (typeof data.galleryHeroHeadlineLine2 !== 'string') {
+                data.galleryHeroHeadlineLine2 = DEFAULT_GALLERY_HERO_HEADLINE_2;
+            }
+            if (typeof data.galleryHeroHeadlineLine3 !== 'string') {
+                data.galleryHeroHeadlineLine3 = DEFAULT_GALLERY_HERO_HEADLINE_3;
+            }
+            if (typeof data.galleryHeroCopy !== 'string') {
+                data.galleryHeroCopy = DEFAULT_GALLERY_HERO_COPY;
+            }
+            if (typeof data.galleryHeroButtonLabel !== 'string') {
+                data.galleryHeroButtonLabel = DEFAULT_GALLERY_HERO_BUTTON_LABEL;
+            }
+            if (typeof data.galleryHeroButtonUrl !== 'string' || !data.galleryHeroButtonUrl.trim()) {
+                data.galleryHeroButtonUrl = DEFAULT_GALLERY_HERO_BUTTON_URL;
+            }
+            return data;
+        }
+
+        data.galleryHeroHeadlineLine1 = normalizeGalleryHeroHeadlineCase(
+            data.galleryHeroHeadlineLine1,
+            DEFAULT_GALLERY_HERO_HEADLINE_1,
+        );
+        data.galleryHeroHeadlineLine2 = normalizeGalleryHeroHeadlineCase(
+            data.galleryHeroHeadlineLine2,
+            DEFAULT_GALLERY_HERO_HEADLINE_2,
+        );
+        data.galleryHeroHeadlineLine3 = normalizeGalleryHeroHeadlineCase(
+            data.galleryHeroHeadlineLine3,
+            DEFAULT_GALLERY_HERO_HEADLINE_3,
+        );
+
+        if (typeof data.galleryHeroCopy !== 'string' || isLegacyGalleryHeroCopy(data.galleryHeroCopy)) {
+            data.galleryHeroCopy = DEFAULT_GALLERY_HERO_COPY;
+        }
+
+        if (typeof data.galleryHeroButtonLabel !== 'string' || !data.galleryHeroButtonLabel.trim()) {
+            data.galleryHeroButtonLabel = DEFAULT_GALLERY_HERO_BUTTON_LABEL;
+        }
+        if (typeof data.galleryHeroButtonUrl !== 'string' || !data.galleryHeroButtonUrl.trim()) {
+            data.galleryHeroButtonUrl = DEFAULT_GALLERY_HERO_BUTTON_URL;
+        }
+
+        data.galleryHeroCopyDefaultsVersion = GALLERY_HERO_COPY_DEFAULTS_VERSION;
+        return data;
+    }
+
+    function ensureGalleryHeroCopyDefaults() {
+        if (templateDesign !== 'gallery') return;
+
+        migrateGalleryHeroCopyDefaults(state);
+
+        if (fields.galleryHeroHeadlineLine1) {
+            fields.galleryHeroHeadlineLine1.value = state.galleryHeroHeadlineLine1;
+        }
+        if (fields.galleryHeroHeadlineLine2) {
+            fields.galleryHeroHeadlineLine2.value = state.galleryHeroHeadlineLine2;
+        }
+        if (fields.galleryHeroHeadlineLine3) {
+            fields.galleryHeroHeadlineLine3.value = state.galleryHeroHeadlineLine3;
+        }
+        if (fields.galleryHeroCopy) fields.galleryHeroCopy.value = state.galleryHeroCopy;
+        if (fields.galleryHeroButtonLabel) {
+            fields.galleryHeroButtonLabel.value = state.galleryHeroButtonLabel;
+        }
+        if (fields.galleryHeroButtonUrl) {
+            fields.galleryHeroButtonUrl.value = state.galleryHeroButtonUrl;
+        }
+    }
+
     function ensureGalleryImageDefaults() {
         if (templateDesign !== 'gallery') return;
+
+        ensureGalleryHeroCopyDefaults();
 
         if (!savedGalleryImageRef(state.headerLogoImage)) {
             state.headerLogoImage = DEFAULT_GALLERY_HEADER_LOGO;
@@ -2380,22 +2482,24 @@
             return saved;
         }
 
+        const migrated = migrateGalleryHeroCopyDefaults({ ...saved });
+
         return {
-            ...saved,
-            headerLogoImage: savedGalleryImageRef(saved.headerLogoImage) || DEFAULT_GALLERY_HEADER_LOGO,
+            ...migrated,
+            headerLogoImage: savedGalleryImageRef(migrated.headerLogoImage) || DEFAULT_GALLERY_HEADER_LOGO,
             galleryHeroPrimaryImage: resolveGalleryHeroImage(
-                saved.galleryHeroPrimaryImage,
+                migrated.galleryHeroPrimaryImage,
                 DEFAULT_GALLERY_HERO_PRIMARY,
             ),
             galleryHeroSecondaryTopImage: resolveGalleryHeroImage(
-                saved.galleryHeroSecondaryTopImage,
+                migrated.galleryHeroSecondaryTopImage,
                 DEFAULT_GALLERY_HERO_SECONDARY_TOP,
             ),
             galleryHeroSecondaryBottomImage: resolveGalleryHeroImage(
-                saved.galleryHeroSecondaryBottomImage,
+                migrated.galleryHeroSecondaryBottomImage,
                 DEFAULT_GALLERY_HERO_SECONDARY_BOTTOM,
             ),
-            galleryCatalogTiles: migrateGalleryCatalogTiles(saved),
+            galleryCatalogTiles: migrateGalleryCatalogTiles(migrated),
         };
     }
 
@@ -2460,8 +2564,14 @@
                 state.galleryHeroHeadlineLine1,
                 DEFAULT_GALLERY_HERO_HEADLINE_1,
             )],
-            [previewGalleryHeroHeadlineLine2, resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine2, '')],
-            [previewGalleryHeroHeadlineLine3, resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine3, '')],
+            [previewGalleryHeroHeadlineLine2, resolveGalleryHeroHeadlineLine(
+                state.galleryHeroHeadlineLine2,
+                DEFAULT_GALLERY_HERO_HEADLINE_2,
+            )],
+            [previewGalleryHeroHeadlineLine3, resolveGalleryHeroHeadlineLine(
+                state.galleryHeroHeadlineLine3,
+                DEFAULT_GALLERY_HERO_HEADLINE_3,
+            )],
         ];
 
         headlineLines.forEach(([element, text]) => {
@@ -2490,7 +2600,6 @@
         );
         const panelOpacity = normalizeGalleryHeroPanelOpacity(state.galleryHeroPanelOpacity);
         const panelBackground = galleryHeroPanelBackground(panelColor, panelOpacity);
-        const panelEdge = galleryHeroPanelEdgeGradient(panelColor, panelOpacity);
         const buttonLabel = typeof state.galleryHeroButtonLabel === 'string'
             ? state.galleryHeroButtonLabel
             : DEFAULT_GALLERY_HERO_BUTTON_LABEL;
@@ -2512,14 +2621,11 @@
         state.galleryHeroButtonBackgroundColor = buttonBg;
         state.galleryHeroButtonTextColor = buttonText;
 
-        // Inline + CSS vars so handoff HTML keeps the panel even if host CSS drops custom properties.
+        // Panel fill only — no image-wide scrim/edge fade.
         if (showroomHeroGallery) {
             showroomHeroGallery.style.setProperty('--gallery-hero-panel', panelBackground);
-            showroomHeroGallery.style.setProperty('--gallery-hero-panel-edge', panelEdge);
-            showroomHeroGallery.style.setProperty(
-                '--gallery-hero-scrim',
-                hexWithAlpha(panelColor, Math.min(1, (panelOpacity / 100) * (0.48 / 0.52))),
-            );
+            showroomHeroGallery.style.removeProperty('--gallery-hero-panel-edge');
+            showroomHeroGallery.style.removeProperty('--gallery-hero-scrim');
         }
         if (previewGalleryHeroPrimaryPanel) {
             previewGalleryHeroPrimaryPanel.style.background = panelBackground;
@@ -2859,6 +2965,8 @@
     }
 
     function populateGalleryHeroFields(data) {
+        migrateGalleryHeroCopyDefaults(data);
+
         state.galleryHeroPrimaryImage = resolveGalleryHeroImage(
             data.galleryHeroPrimaryImage,
             DEFAULT_GALLERY_HERO_PRIMARY,
@@ -2891,9 +2999,17 @@
             data.galleryHeroHeadlineLine1,
             DEFAULT_GALLERY_HERO_HEADLINE_1,
         );
-        state.galleryHeroHeadlineLine2 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine2, '');
-        state.galleryHeroHeadlineLine3 = resolveGalleryHeroHeadlineLine(data.galleryHeroHeadlineLine3, '');
+        state.galleryHeroHeadlineLine2 = resolveGalleryHeroHeadlineLine(
+            data.galleryHeroHeadlineLine2,
+            DEFAULT_GALLERY_HERO_HEADLINE_2,
+        );
+        state.galleryHeroHeadlineLine3 = resolveGalleryHeroHeadlineLine(
+            data.galleryHeroHeadlineLine3,
+            DEFAULT_GALLERY_HERO_HEADLINE_3,
+        );
         state.galleryHeroCopy = storedText(data.galleryHeroCopy, DEFAULT_GALLERY_HERO_COPY);
+        state.galleryHeroCopyDefaultsVersion = Number(data.galleryHeroCopyDefaultsVersion)
+            || GALLERY_HERO_COPY_DEFAULTS_VERSION;
         state.galleryHeroTextColor = normalizeHexColor(
             data.galleryHeroTextColor,
             DEFAULT_GALLERY_HERO_TEXT,
@@ -2969,15 +3085,13 @@
         );
         const panelOpacity = normalizeGalleryHeroPanelOpacity(state.galleryHeroPanelOpacity);
         const panelBackground = galleryHeroPanelBackground(panelColor, panelOpacity);
-        const panelEdge = galleryHeroPanelEdgeGradient(panelColor, panelOpacity);
         const backdropTokens = {
-            description: 'translucent charcoal text panel + left scrim',
+            description: 'translucent charcoal text panel behind copy only (no image fade)',
             panelColor,
             panelOpacity,
             panelBackground,
-            panelEdgeGradient: panelEdge,
             backdropFilter: 'blur(2px)',
-            productionNote: 'Panel background is also baked as an inline style on the hero panel in CMS HTML so third-party hosts keep the dark fill even if CSS custom properties are stripped. Use CSS sticky for the message bar only in production. Editor preview uses a JS pin because transform: scale() breaks position: sticky.',
+            productionNote: 'Panel background is also baked as an inline style on the hero panel in CMS HTML so third-party hosts keep the dark fill even if CSS custom properties are stripped. Do not apply a scrim/gradient over the hero photo — transparency is panel-only. Use CSS sticky for the message bar only in production.',
         };
 
         return {
@@ -3003,13 +3117,21 @@
                             state.galleryHeroHeadlineLine1,
                             DEFAULT_GALLERY_HERO_HEADLINE_1,
                         ),
-                        resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine2, ''),
-                        resolveGalleryHeroHeadlineLine(state.galleryHeroHeadlineLine3, ''),
+                        resolveGalleryHeroHeadlineLine(
+                            state.galleryHeroHeadlineLine2,
+                            DEFAULT_GALLERY_HERO_HEADLINE_2,
+                        ),
+                        resolveGalleryHeroHeadlineLine(
+                            state.galleryHeroHeadlineLine3,
+                            DEFAULT_GALLERY_HERO_HEADLINE_3,
+                        ),
                     ],
-                    copy: state.galleryHeroCopy || '',
+                    copy: typeof state.galleryHeroCopy === 'string'
+                        ? state.galleryHeroCopy
+                        : DEFAULT_GALLERY_HERO_COPY,
                     textColor: state.galleryHeroTextColor || DEFAULT_GALLERY_HERO_TEXT,
                     button: {
-                        label: state.galleryHeroButtonLabel || '',
+                        label: state.galleryHeroButtonLabel || DEFAULT_GALLERY_HERO_BUTTON_LABEL,
                         url: normalizeGalleryCatalogUrl(
                             state.galleryHeroButtonUrl || DEFAULT_GALLERY_HERO_BUTTON_URL,
                             DEFAULT_GALLERY_HERO_BUTTON_URL,
@@ -7188,8 +7310,11 @@
 
             await window.exportShowroomHandoff({
                 headerEl: getReviewHeaderElement(),
+                // Classic: export the outer .showroom-gallery-hero wrapper (same
+                // width/gutters as section_2 catalog). Catalog is stripped from
+                // section_1 inside export-pdf.js so it only lives in section_2.
                 heroEl: templateDesign === 'gallery'
-                    ? galleryHeroLayoutRoot
+                    ? showroomHeroGallery
                     : templateDesign === 'spotlight'
                         ? showroomHeroSpotlight
                         : heroRoot,
@@ -7580,6 +7705,22 @@
 
         if (!baselineState) {
             await captureBaselineFromFactoryDefaults();
+        } else if (templateDesign === 'gallery') {
+            // Older baselines omitted Classic hero copy (STEP UP / YOUR / LIGHTING + Shop Now).
+            const baselineHeroVersion = Number(baselineState.galleryHeroCopyDefaultsVersion) || 0;
+            const baselineHeadlinesBlank = !String(baselineState.galleryHeroHeadlineLine1 || '').trim()
+                && !String(baselineState.galleryHeroHeadlineLine2 || '').trim()
+                && !String(baselineState.galleryHeroHeadlineLine3 || '').trim();
+            const baselineOptionalHeadlinesBlank = !String(baselineState.galleryHeroHeadlineLine2 || '').trim()
+                || !String(baselineState.galleryHeroHeadlineLine3 || '').trim();
+            if (
+                baselineHeroVersion < GALLERY_HERO_COPY_DEFAULTS_VERSION
+                || baselineHeadlinesBlank
+                || baselineOptionalHeadlinesBlank
+                || !String(baselineState.galleryHeroButtonLabel || '').trim()
+            ) {
+                await captureBaselineFromFactoryDefaults();
+            }
         }
 
         if (saved) {

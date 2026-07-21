@@ -28,7 +28,9 @@ Homepage stylesheet (support handoff)
   2. Paste meta-data-global-css-snippet.html (ZIP root) into
      “Meta Data, JavaScript & CSS (Global)”
   3. Verify /data/logicx/css/styles.css loads (not 404)
-  4. Paste html/* (ZIP root) into CMS regions — do not FTP html/
+  4. Paste ZIP-root header.html / section_1.html / section_2.html / footer.html
+     into CMS regions — do not FTP those paste files
+  5. Optional local QA: serve ZIP root and open index.html
 
 Uploaded images are stored as data URLs in localStorage and replace these defaults.
 The editor applies bundled defaults automatically on load (including empty saved drafts).

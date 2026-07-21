@@ -42,14 +42,15 @@ Support handoff
 ---------------
   FTP CSS:     data/logicx/css/styles.css  →  /data/logicx/css/styles.css
   FTP images:  data/logicx/images/         →  /data/logicx/images/
-  CMS paste:   html/section_1.html         →  section_1 (full homepage body)
-               html/footer.html            →  footer (columns + copyright/ADA)
+  CMS paste:   section_1.html (ZIP root)   →  section_1 (full homepage body)
+               footer.html (ZIP root)      →  footer (columns + copyright/ADA)
+  Local QA:    index.html (serve ZIP root as HTTP document root)
 
   Support install:
   1. FTP upload data/ (css + images under data/logicx/) to the site root
   2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS
   3. Verify /data/logicx/css/styles.css and /data/logicx/images/* load (not 404)
-  4. Paste html/section_1.html into CMS region section_1
-  5. Paste html/footer.html into CMS region footer
+  4. Paste section_1.html into CMS region section_1
+  5. Paste footer.html into CMS region footer
 
 Uploaded images are stored as data URLs in localStorage and replace these defaults.

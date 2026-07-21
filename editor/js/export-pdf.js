@@ -33,14 +33,16 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
      * Support package layout (FTP only under data/…):
      *   Classic (gallery) + McQueen: data/logicx/{css,js?,images}
      *   McQueen CMS: homepage body → section_1; footer → footer
-     *   html/ + meta-data-*.html  — CMS paste (ZIP parent, not FTP)
+     *   ZIP root: CMS paste HTML + meta-data-*.html + index.html local preview (not FTP)
      */
     const GALLERY_PACKAGE_ROOT = 'data/logicx';
     const GALLERY_SERVER_ROOT = '/data/logicx';
     const GALLERY_CSS_ZIP_DIR = `${GALLERY_PACKAGE_ROOT}/css`;
     const GALLERY_JS_ZIP_DIR = `${GALLERY_PACKAGE_ROOT}/js`;
     const GALLERY_IMAGES_ZIP_DIR = `${GALLERY_PACKAGE_ROOT}/images`;
-    const GALLERY_HTML_ZIP_DIR = 'html';
+    /** CMS paste HTML lives at ZIP root (not under html/). */
+    const GALLERY_CMS_PASTE_README = 'CMS-PASTE-README.txt';
+    const GALLERY_LOCAL_PREVIEW = 'index.html';
     const GALLERY_META_SNIPPET_ZIP = 'meta-data-global-css-snippet.html';
     const GALLERY_CSS_SERVER = `${GALLERY_SERVER_ROOT}/css`;
     const GALLERY_JS_SERVER = `${GALLERY_SERVER_ROOT}/js`;
@@ -1111,8 +1113,8 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         ]);
         writeLines(
             isGallery
-                ? `Support: FTP upload data/ (css + js + images under ${GALLERY_PACKAGE_ROOT}/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/* into CMS regions. Bump Asset version in the editor when replacing CSS/JS/images.`
-                : `Support: FTP upload data/ (css → ${GALLERY_CSS_SERVER}/, images → ${GALLERY_IMAGES_SERVER}/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste html/section_1.html → section_1 and html/footer.html → footer. Bump Asset version when replacing CSS/images.`,
+                ? `Support: FTP upload data/ (css + js + images under ${GALLERY_PACKAGE_ROOT}/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste ZIP-root header/section_1/section_2/footer.html into CMS regions. Local QA: serve ZIP root and open index.html. Bump Asset version when replacing CSS/JS/images.`
+                : `Support: FTP upload data/ (css → ${GALLERY_CSS_SERVER}/, images → ${GALLERY_IMAGES_SERVER}/). Paste meta-data-global-css-snippet.html into Meta Data / Global CSS, then paste ZIP-root section_1.html → section_1 and footer.html → footer. Local QA: serve ZIP root and open index.html. Bump Asset version when replacing CSS/images.`,
             { size: 9, color: [90, 90, 90], gap: 10 },
         );
     }
@@ -1284,19 +1286,23 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         `  2. Stylesheet file: ${GALLERY_CSS_ZIP_DIR}/${primaryStylesheet ? primaryStylesheet.zipPath.split('/').pop() : 'styles.css'}`,
         `  3. Live URL: ${primaryStylesheetServerPath}`,
         '  4. Paste (or merge) the tags below into Meta Data / Global CSS.',
-        '  5. REQUIRED: keep both enhanced-search lines — new databases need them',
+        '  5. REQUIRED: Font Awesome 6 — footer social icons + search icon glyphs.',
+        '  6. REQUIRED: keep both enhanced-search lines — new databases need them',
         '     so #searchEngine / enhanced-search.js can bind on the live site.',
         ...(isGallery ? [
-            '  6. REQUIRED: keep gallery-nav.js — phone hamburger + accordion nav.',
-            `  7. Keep ?v${galleryAssetVersion} on CSS/JS (and image URLs in pasted HTML).`,
+            '  7. REQUIRED: keep gallery-nav.js — phone hamburger + accordion nav.',
+            `  8. Keep ?v${galleryAssetVersion} on CSS/JS (and image URLs in pasted HTML).`,
+            '     Bump Asset version in the Showroom editor when replacing those files.',
+            '  9. Confirm styles.css is on FTP at the Live URL below (homepage looks unstyled if missing).',
+        ] : [
+            `  7. Keep ?v${galleryAssetVersion} on CSS (and image URLs in pasted HTML).`,
             '     Bump Asset version in the Showroom editor when replacing those files.',
             '  8. Confirm styles.css is on FTP at the Live URL below (homepage looks unstyled if missing).',
-        ] : [
-            `  6. Keep ?v${galleryAssetVersion} on CSS (and image URLs in pasted HTML).`,
-            '     Bump Asset version in the Showroom editor when replacing those files.',
-            '  7. Confirm styles.css is on FTP at the Live URL below (homepage looks unstyled if missing).',
         ]),
         '-->',
+        // Same FA build as the Showroom editor — required for footer social (fa-brands) and search icons.
+        // Also loaded in index.html local preview so icons match live CMS before FTP/paste.
+        '<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer">',
         '<link href="/JavaScript/templateScripts/enhanced-search/enhanced-search.css" rel="stylesheet">',
         '<script src="/JavaScript/templateScripts/enhanced-search/enhanced-search.js"></script>',
         `<link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
@@ -1464,7 +1470,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '    <button id="searchSubmitBtn" class="showroom-gallery-main-nav-search-icon"',
             '            type="submit" aria-label="Submit Search"',
             '            style="background:none;border:0;padding:0;cursor:pointer">',
-            '      <i class="fa fa-search" aria-hidden="true"></i>',
+            '      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>',
             '    </button>',
             '  </div>',
             '</div>',
@@ -1573,6 +1579,13 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         if (options.injectEnhancedSearch) {
             clone = injectGalleryEnhancedSearchModule(clone, el);
         }
+        // Catalog lives under the hero in the editor DOM for preview, but CMS
+        // section_1 must be hero-only; section_2 owns the catalog band.
+        if (pasteRegion === 'section_1') {
+            clone.querySelectorAll('.showroom-gallery-catalog-band').forEach((node) => {
+                node.remove();
+            });
+        }
         const date = new Date().toLocaleDateString();
         return [
             `<!-- Showroom Classic — ${label} | LogicX Showroom Editor · ${date} -->`,
@@ -1582,6 +1595,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             `<!-- Requires ${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery} and images under ${GALLERY_IMAGES_SERVER}/ -->`,
             options.injectEnhancedSearch
                 ? '<!-- Search module is fixed for enhanced-search.js (#searchEngine / #searchInputBox / #searchSubmitBtn) -->'
+                : null,
+            pasteRegion === 'section_1'
+                ? '<!-- Hero only — catalog highlights are in section_2.html -->'
                 : null,
             '',
             clone.outerHTML,
@@ -1671,17 +1687,17 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             : '';
 
         const files = [
-            { path: `${GALLERY_HTML_ZIP_DIR}/header.html`, content: headerHtml },
-            { path: `${GALLERY_HTML_ZIP_DIR}/section_1.html`, content: section1Html },
-            { path: `${GALLERY_HTML_ZIP_DIR}/section_2.html`, content: section2Html },
-            { path: `${GALLERY_HTML_ZIP_DIR}/footer.html`, content: footerHtml },
+            { path: 'header.html', content: headerHtml },
+            { path: 'section_1.html', content: section1Html },
+            { path: 'section_2.html', content: section2Html },
+            { path: 'footer.html', content: footerHtml },
         ].filter((file) => file.content);
 
         const cssText = galleryStylesheets[0]?.content || '';
         warnGalleryHtmlCssDrift(files, cssText);
 
         files.push({
-            path: `${GALLERY_HTML_ZIP_DIR}/README.txt`,
+            path: GALLERY_CMS_PASTE_README,
             content: [
                 'Showroom Classic — CMS paste HTML (support)',
                 '==========================================',
@@ -1689,21 +1705,30 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `Handoff version: ${handoffVersion}`,
                 `Package ID: ${packageId}`,
                 '',
-                'These files are for CMS paste only — do NOT upload html/ via FTP.',
+                'These ZIP-root .html files are for CMS paste only — do NOT FTP them.',
                 'Copy-paste each file into the matching dashboard region:',
                 '',
-                '  html/header.html     →  header',
-                '  html/section_1.html  →  section_1   (hero)',
-                '  html/section_2.html  →  section_2   (catalog highlights)',
-                '  html/footer.html     →  footer      (columns + copyright/ADA)',
+                '  header.html     →  header',
+                '  section_1.html  →  section_1   (hero only — no catalog)',
+                '  section_2.html  →  section_2   (catalog highlights)',
+                '  footer.html     →  footer      (columns + copyright/ADA)',
+                '',
+                'Local preview (before CMS paste):',
+                '  Serve this ZIP root as the HTTP document root, then open index.html.',
+                '  index.html wraps regions in main-content.centerWrap-WD (host shell sim).',
+                '  Absolute /data/logicx/ paths resolve when the package root is the server root.',
                 '',
                 'Install order (support agent):',
                 `  1. FTP upload data/ only (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
                 '  2. Paste meta-data-global-css-snippet.html (ZIP root)',
                 '     into dashboard → Meta Data, JavaScript & CSS (Global)',
+                '     (includes Font Awesome 6 for footer social + search icons)',
                 `  3. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
                 `  4. Confirm images are at ${GALLERY_IMAGES_SERVER}/`,
-                '  5. Paste these html/*.html files into the CMS regions above',
+                '  5. Paste these ZIP-root .html files into the CMS regions above',
+                '',
+                'Local index.html loads the same Meta Data tags (including Font Awesome)',
+                'so social icons match the live site before you paste into the CMS.',
                 '',
                 'meta and section_3 CMS regions are not used by this template.',
                 '',
@@ -1841,7 +1866,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             '    <button id="searchSubmitBtn" class="showroom-header-search-icon"',
             '            type="submit" aria-label="Submit Search"',
             '            style="background:none;border:0;padding:0;cursor:pointer">',
-            '      <i class="fa fa-search" aria-hidden="true"></i>',
+            '      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>',
             '    </button>',
             '  </div>',
             '</div>',
@@ -1968,7 +1993,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} -->`,
             `<!-- Asset version: v${galleryAssetVersion} (CSS/images ?v${galleryAssetVersion}) -->`,
             '<!-- Paste ALL of this file into CMS region: section_1 -->',
-            '<!-- Footer is NOT in this file — use html/footer.html → CMS region footer -->',
+            '<!-- Footer is NOT in this file — use footer.html (ZIP root) → CMS region footer -->',
             `<!-- Images live at ${GALLERY_IMAGES_SERVER}/ (FTP: ${GALLERY_IMAGES_ZIP_DIR}/) -->`,
             `<!-- Stylesheet: ${GALLERY_CSS_SERVER}/styles.css${galleryAssetQuery} -->`,
             '<!-- Do not split into section_2…section_7. -->',
@@ -2010,11 +2035,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         const footerHtml = buildMcQueenFooterHtml(srcLookup);
         const files = [
             {
-                path: `${GALLERY_HTML_ZIP_DIR}/section_1.html`,
+                path: 'section_1.html',
                 content: section1Html,
             },
             {
-                path: `${GALLERY_HTML_ZIP_DIR}/footer.html`,
+                path: 'footer.html',
                 content: footerHtml,
             },
         ].filter((file) => file.content);
@@ -2023,7 +2048,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         warnGalleryHtmlCssDrift(files, cssText);
 
         files.push({
-            path: `${GALLERY_HTML_ZIP_DIR}/README.txt`,
+            path: GALLERY_CMS_PASTE_README,
             content: [
                 'Showroom McQueen — CMS paste HTML (support)',
                 '==========================================',
@@ -2031,13 +2056,17 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `Handoff version: ${handoffVersion}`,
                 `Package ID: ${packageId}`,
                 '',
-                'These files are for CMS paste only — do NOT upload html/ via FTP.',
+                'These ZIP-root .html files are for CMS paste only — do NOT FTP them.',
                 '',
                 'McQueen third-party dashboard paste map:',
-                '  html/section_1.html  →  section_1   (full homepage body)',
-                '  html/footer.html     →  footer      (columns + copyright/ADA)',
+                '  section_1.html  →  section_1   (full homepage body)',
+                '  footer.html     →  footer      (columns + copyright/ADA)',
                 '',
                 'Do NOT split hero / categories / about / etc. into section_2…section_7.',
+                '',
+                'Local preview (before CMS paste):',
+                '  Serve this ZIP root as the HTTP document root, then open index.html.',
+                '  Absolute /data/logicx/ paths resolve when the package root is the server root.',
                 '',
                 'Image paths in the HTML point at:',
                 `  ${GALLERY_IMAGES_SERVER}/[filename]`,
@@ -2049,10 +2078,14 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `  1. FTP upload data/ (css + images → ${GALLERY_CSS_SERVER}/ + ${GALLERY_IMAGES_SERVER}/)`,
                 '  2. Paste meta-data-global-css-snippet.html (ZIP root)',
                 '     into dashboard → Meta Data, JavaScript & CSS (Global)',
+                '     (includes Font Awesome 6 for footer social + search icons)',
                 `  3. Confirm styles.css loads at ${GALLERY_CSS_SERVER}/styles.css`,
                 `  4. Confirm images load under ${GALLERY_IMAGES_SERVER}/`,
-                '  5. Paste html/section_1.html into CMS region section_1',
-                '  6. Paste html/footer.html into CMS region footer',
+                '  5. Paste section_1.html into CMS region section_1',
+                '  6. Paste footer.html into CMS region footer',
+                '',
+                'Local index.html loads the same Meta Data tags (including Font Awesome)',
+                'so social icons match the live site before you paste into the CMS.',
                 '',
             ].join('\n'),
         });
@@ -2060,11 +2093,73 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         return files;
     }
 
-    const galleryCmsHtmlFiles = isGallery
-        ? buildGalleryCmsHtmlFiles()
-        : isMcQueen
-            ? buildMcQueenCmsHtmlFiles()
-            : [];
+    /**
+     * Full-page local preview at ZIP root. Serve the unzipped package as the
+     * HTTP document root so /data/logicx/ CSS/JS/image paths resolve.
+     * Not for CMS paste — use the region .html fragments instead.
+     */
+    function buildSupportLocalPreviewHtml(cmsFiles) {
+        if (!isSupportHandoff || !Array.isArray(cmsFiles) || !cmsFiles.length) return '';
+
+        const byPath = {};
+        cmsFiles.forEach((file) => {
+            if (file?.path && typeof file.content === 'string') {
+                byPath[file.path] = file.content;
+            }
+        });
+
+        const bodyOrder = isGallery
+            ? ['header.html', 'section_1.html', 'section_2.html', 'footer.html']
+            : ['section_1.html', 'footer.html'];
+        const bodyHtml = bodyOrder
+            .map((name) => byPath[name])
+            .filter(Boolean)
+            .join('\n\n');
+
+        if (!bodyHtml) return '';
+
+        const wrappedBody = isGallery
+            ? [
+                '<!-- Local preview shell: simulates host main-content / .centerWrap-WD (live often 1720px; Classic CSS caps at 1440px). -->',
+                '<main-content class="centerWrap-WD">',
+                bodyHtml,
+                '</main-content>',
+            ].join('\n')
+            : bodyHtml;
+
+        return [
+            '<!DOCTYPE html>',
+            '<html lang="en">',
+            '<head>',
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1">',
+            '<!-- Local preview only — not for CMS paste. -->',
+            '<!-- Serve this ZIP root as the HTTP document root (Live Server / npx serve .) so /data/logicx/ paths resolve. -->',
+            `<!-- Handoff version: ${handoffVersion} | Package ID: ${packageId} | Asset version: v${galleryAssetVersion} -->`,
+            `<title>${coverMeta.companyName} — ${supportTemplateLabel} local preview</title>`,
+            metaDataGlobalSnippet.trim(),
+            '</head>',
+            '<body>',
+            wrappedBody,
+            '</body>',
+            '</html>',
+            '',
+        ].join('\n');
+    }
+
+    const galleryCmsHtmlFiles = (() => {
+        const files = isGallery
+            ? buildGalleryCmsHtmlFiles()
+            : isMcQueen
+                ? buildMcQueenCmsHtmlFiles()
+                : [];
+        if (!isSupportHandoff || !files.length) return files;
+        const previewHtml = buildSupportLocalPreviewHtml(files);
+        if (previewHtml) {
+            files.push({ path: GALLERY_LOCAL_PREVIEW, content: previewHtml });
+        }
+        return files;
+    })();
 
     const specJsonShared = {
         template: spec.template || 'Showroom',
@@ -2116,7 +2211,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 cssServerPath: `${GALLERY_CSS_SERVER}/`,
                 imagesZipPath: `${GALLERY_IMAGES_ZIP_DIR}/`,
                 imagesServerPath: `${GALLERY_IMAGES_SERVER}/`,
-                htmlZipPath: `${GALLERY_HTML_ZIP_DIR}/`,
+                htmlZipPath: './',
+                cmsPasteReadme: GALLERY_CMS_PASTE_README,
+                localPreviewFile: GALLERY_LOCAL_PREVIEW,
                 htmlPasteOnly: true,
                 metaPasteOnly: true,
                 assetVersion: galleryAssetVersion,
@@ -2264,10 +2361,11 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             },
             cmsPaste: {
                 regions: [
-                    { region: 'section_1', file: 'html/section_1.html' },
-                    { region: 'footer', file: 'html/footer.html' },
+                    { region: 'section_1', file: 'section_1.html' },
+                    { region: 'footer', file: 'footer.html' },
                 ],
-                note: 'Paste homepage body into section_1 and footer into footer (no section_2…section_7 split).',
+                localPreview: GALLERY_LOCAL_PREVIEW,
+                note: 'Paste homepage body into section_1 and footer into footer (no section_2…section_7 split). ZIP-root files; local QA via index.html.',
                 imagesServerRoot: GALLERY_IMAGES_SERVER,
             },
             featuredCategories: {
@@ -2445,7 +2543,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             `FTP — only data/ (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
             '  Upload data/ from this ZIP to the site root.',
             `  Live base path: ${GALLERY_SERVER_ROOT}/`,
-            '  Do NOT FTP html/ or meta-data-global-css-snippet.html — those are paste-only.',
+            '  Do NOT FTP ZIP-root .html paste files or meta-data-global-css-snippet.html.',
             '',
             `Handoff version: ${handoffVersion}`,
             `Package ID: ${packageId}`,
@@ -2457,19 +2555,23 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             `   ${GALLERY_CSS_ZIP_DIR}/styles.css → ${GALLERY_CSS_SERVER}/styles.css`,
             `   ${GALLERY_IMAGES_ZIP_DIR}/ → ${GALLERY_IMAGES_SERVER}/`,
             '5. meta-data-global-css-snippet.html (ZIP root) — paste into Meta Data / Global CSS',
-            '6. html/ (ZIP root) — CMS paste markup',
-            '   html/header.html     → CMS region header',
-            '   html/section_1.html  → CMS region section_1 (hero)',
-            '   html/section_2.html  → CMS region section_2 (catalog)',
-            '   html/footer.html     → CMS region footer (+ copyright/ADA)',
-            '7. spec/homepage-spec.json — Structured reference (optional)',
-            '8. spec/footer-copyright-snippet.html — ADA reference (also in html/footer.html)',
+            '6. ZIP-root CMS paste markup (see CMS-PASTE-README.txt)',
+            '   header.html     → CMS region header',
+            '   section_1.html  → CMS region section_1 (hero)',
+            '   section_2.html  → CMS region section_2 (catalog)',
+            '   footer.html     → CMS region footer (+ copyright/ADA)',
+            '7. index.html — local preview (serve ZIP root; not for CMS paste)',
+            '8. spec/homepage-spec.json — Structured reference (optional)',
+            '9. spec/footer-copyright-snippet.html — ADA reference (also in footer.html)',
             '',
             'SUPPORT INSTALL ORDER',
             `  1. FTP upload data/ (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
             '  2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS',
             `  3. Verify ${GALLERY_CSS_SERVER}/styles.css loads in the browser (not 404)`,
-            '  4. Paste html/*.html into CMS regions — see html/README.txt',
+            '  4. Paste ZIP-root .html into CMS regions — see CMS-PASTE-README.txt',
+            '',
+            'LOCAL PREVIEW',
+            '  Serve this ZIP root as the HTTP document root, then open index.html.',
             '',
             `Example stylesheet link: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
             '',
@@ -2488,7 +2590,7 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `FTP — only data/ (css + images under ${GALLERY_PACKAGE_ROOT}/)`,
                 '  Upload data/ from this ZIP to the site root.',
                 `  Live base path: ${GALLERY_SERVER_ROOT}/`,
-                '  Do NOT FTP html/ or meta-data-global-css-snippet.html — those are paste-only.',
+                '  Do NOT FTP ZIP-root .html paste files or meta-data-global-css-snippet.html.',
                 '',
                 `Handoff version: ${handoffVersion}`,
                 `Package ID: ${packageId}`,
@@ -2500,18 +2602,22 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
                 `   ${GALLERY_CSS_ZIP_DIR}/styles.css → ${GALLERY_CSS_SERVER}/styles.css`,
                 `   ${GALLERY_IMAGES_ZIP_DIR}/ → ${GALLERY_IMAGES_SERVER}/`,
                 '5. meta-data-global-css-snippet.html (ZIP root) — paste into Meta Data / Global CSS',
-                '6. html/section_1.html — paste into CMS region section_1 (full homepage body)',
-                '7. html/footer.html — paste into CMS region footer (+ copyright/ADA)',
-                '8. spec/homepage-spec.json — Structured reference (optional)',
-                '9. spec/footer-copyright-snippet.html — ADA reference (also in html/footer.html)',
+                '6. section_1.html — paste into CMS region section_1 (full homepage body)',
+                '7. footer.html — paste into CMS region footer (+ copyright/ADA)',
+                '8. index.html — local preview (serve ZIP root; not for CMS paste)',
+                '9. spec/homepage-spec.json — Structured reference (optional)',
+                '10. spec/footer-copyright-snippet.html — ADA reference (also in footer.html)',
                 '',
                 'SUPPORT INSTALL ORDER',
                 `  1. FTP upload data/ (css → ${GALLERY_CSS_SERVER}/, images → ${GALLERY_IMAGES_SERVER}/)`,
                 '  2. Paste meta-data-global-css-snippet.html into Meta Data / Global CSS',
                 `  3. Verify ${GALLERY_CSS_SERVER}/styles.css loads in the browser (not 404)`,
                 `  4. Confirm images under ${GALLERY_IMAGES_SERVER}/ (e.g. hero-product.png)`,
-                '  5. Paste html/section_1.html into CMS region section_1',
-                '  6. Paste html/footer.html into CMS region footer',
+                '  5. Paste section_1.html into CMS region section_1',
+                '  6. Paste footer.html into CMS region footer',
+                '',
+                'LOCAL PREVIEW',
+                '  Serve this ZIP root as the HTTP document root, then open index.html.',
                 '',
                 `Example stylesheet link: <link rel="stylesheet" href="${primaryStylesheetCacheBust}">`,
                 '',
@@ -2594,9 +2700,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
         '',
     ].join('\n'));
 
+    const cmsPasteHtmlNames = new Set(['header.html', 'section_1.html', 'section_2.html', 'footer.html']);
     const hasGalleryCmsHtml = galleryCmsHtmlFiles.some(
-        (file) => (file.path.startsWith('html/') || file.path.includes('/html/'))
-            && file.path.endsWith('.html'),
+        (file) => cmsPasteHtmlNames.has(file.path),
     );
 
     if (handoffGuide.buildShowroomHandoffGuide) {
@@ -2609,7 +2715,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             packageRoot: isSupportHandoff ? GALLERY_PACKAGE_ROOT : '',
             serverRoot: isSupportHandoff ? GALLERY_SERVER_ROOT : '',
             metaSnippetPath: isSupportHandoff ? GALLERY_META_SNIPPET_ZIP : '',
-            htmlDir: isSupportHandoff ? GALLERY_HTML_ZIP_DIR : '',
+            htmlDir: '',
+            cmsPasteReadme: isSupportHandoff ? GALLERY_CMS_PASTE_README : '',
+            localPreviewFile: isSupportHandoff ? GALLERY_LOCAL_PREVIEW : '',
             cssDir: isSupportHandoff ? GALLERY_CSS_ZIP_DIR : '',
             imagesDir: isSupportHandoff ? GALLERY_IMAGES_ZIP_DIR : '',
             cssServerPath: isSupportHandoff ? GALLERY_CSS_SERVER : '',
@@ -2626,7 +2734,9 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             packageRoot: isSupportHandoff ? GALLERY_PACKAGE_ROOT : '',
             serverRoot: isSupportHandoff ? GALLERY_SERVER_ROOT : '',
             metaSnippetPath: isSupportHandoff ? GALLERY_META_SNIPPET_ZIP : '',
-            htmlDir: isSupportHandoff ? GALLERY_HTML_ZIP_DIR : '',
+            htmlDir: '',
+            cmsPasteReadme: isSupportHandoff ? GALLERY_CMS_PASTE_README : '',
+            localPreviewFile: isSupportHandoff ? GALLERY_LOCAL_PREVIEW : '',
             cssDir: isSupportHandoff ? GALLERY_CSS_ZIP_DIR : '',
             imagesDir: isSupportHandoff ? GALLERY_IMAGES_ZIP_DIR : '',
             cssServerPath: isSupportHandoff ? GALLERY_CSS_SERVER : '',
@@ -2673,9 +2783,10 @@ window.exportShowroomHandoff = async function exportShowroomHandoff(options) {
             ...(isGallery ? [`  js/      → ${GALLERY_JS_SERVER}/`] : []),
             `  images/  → ${GALLERY_IMAGES_SERVER}/`,
             '',
-            'NOT in this folder (paste from ZIP root instead):',
-            '  html/                             → CMS regions',
-            '  meta-data-global-css-snippet.html → Meta Data, JavaScript & CSS (Global)',
+            'NOT in this folder (paste / preview from ZIP root instead):',
+            '  header.html / section_*.html / footer.html → CMS regions',
+            '  meta-data-global-css-snippet.html         → Meta Data, JavaScript & CSS (Global)',
+            '  index.html                               → local preview only (not CMS paste)',
             '',
             'Homepage looks unstyled if styles.css is missing at:',
             `  ${primaryStylesheetCacheBust}`,

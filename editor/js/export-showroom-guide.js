@@ -241,7 +241,12 @@
         const packageRoot = meta.packageRoot || 'data/logicx';
         const serverRoot = meta.serverRoot || '/data/logicx';
         const metaSnippetPath = meta.metaSnippetPath || 'meta-data-global-css-snippet.html';
-        const htmlDir = meta.htmlDir || 'html';
+        const htmlDir = meta.htmlDir != null ? String(meta.htmlDir) : '';
+        const cmsPasteReadme = meta.cmsPasteReadme || 'CMS-PASTE-README.txt';
+        const localPreviewFile = meta.localPreviewFile || 'index.html';
+        const cmsPastePath = (filename) => (
+            htmlDir ? `${htmlDir}/${filename}` : filename
+        );
         const cssDir = meta.cssDir || `${packageRoot}/css`;
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
@@ -258,15 +263,16 @@
         const hasCmsHtml = isClassicSupport || Boolean(meta.hasCmsHtml);
 
         const cmsPasteDesc = design === 'classic'
-            ? 'Paste <code>' + escapeHtml(htmlDir) + '/section_1.html</code> → <strong>section_1</strong> (full homepage body) and <code>' + escapeHtml(htmlDir) + '/footer.html</code> → <strong>footer</strong>. Do not split body across section_2…section_7. Image paths use <code>/data/logicx/images/</code>.'
-            : 'Open <code>' + escapeHtml(htmlDir) + '/README.txt</code>, then paste <code>header.html</code> → <strong>header</strong>, <code>section_1.html</code> → <strong>section_1</strong>, <code>section_2.html</code> → <strong>section_2</strong>, and <code>footer.html</code> → <strong>footer</strong>. Use the live preview markup — do not rebuild by hand.';
+            ? 'Paste <code>' + escapeHtml(cmsPastePath('section_1.html')) + '</code> → <strong>section_1</strong> (full homepage body) and <code>' + escapeHtml(cmsPastePath('footer.html')) + '</code> → <strong>footer</strong>. Do not split body across section_2…section_7. Image paths use <code>/data/logicx/images/</code>.'
+            : 'Open <code>' + escapeHtml(cmsPasteReadme) + '</code>, then paste <code>header.html</code> → <strong>header</strong>, <code>section_1.html</code> → <strong>section_1</strong>, <code>section_2.html</code> → <strong>section_2</strong>, and <code>footer.html</code> → <strong>footer</strong>. Use the live preview markup — do not rebuild by hand.';
 
         const cssStep = isClassicSupport
             ? [
-                `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload data/ (css + images only)</div><div class="step-desc">Upload the top-level <code>data/</code> folder from this ZIP to the site root. Live paths: <code>${escapeHtml(cssServerPath)}/</code> and <code>${escapeHtml(imagesServerPath)}/</code>. Do <strong>not</strong> FTP <code>html/</code> or <code>meta-data-global-css-snippet.html</code> — those are paste-only from the ZIP root.</div></div></div>`,
-                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Paste Meta Data / Global CSS</div><div class="step-desc">Open the client dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Paste the contents of <code>', escapeHtml(metaSnippetPath), '</code> from the ZIP root (keep both enhanced-search lines; wire <code>', escapeHtml(stylesheetHref), '</code>). Then open that stylesheet URL in a browser — it must not 404 or the homepage will look broken.</div></div></div>',
+                `    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">FTP upload data/ (css + images only)</div><div class="step-desc">Upload the top-level <code>data/</code> folder from this ZIP to the site root. Live paths: <code>${escapeHtml(cssServerPath)}/</code> and <code>${escapeHtml(imagesServerPath)}/</code>. Do <strong>not</strong> FTP ZIP-root CMS <code>.html</code> files or <code>meta-data-global-css-snippet.html</code> — those are paste-only.</div></div></div>`,
+                '    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Paste Meta Data / Global CSS</div><div class="step-desc">Open the client dashboard → <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>. Paste the contents of <code>', escapeHtml(metaSnippetPath), '</code> from the ZIP root (keep the Font Awesome link for footer social + search icons, both enhanced-search lines, and <code>', escapeHtml(stylesheetHref), '</code>). Then open that stylesheet URL in a browser — it must not 404 or the homepage will look broken.</div></div></div>',
                 `    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Confirm images on FTP</div><div class="step-desc">${imageNote}</div></div></div>`,
                 '    <div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Paste homepage HTML into CMS regions</div><div class="step-desc">', cmsPasteDesc, '</div></div></div>',
+                `    <div class="step"><div class="step-num">8</div><div class="step-body"><div class="step-title">Optional: local visual QA</div><div class="step-desc">Serve this ZIP root as the HTTP document root (Live Server / <code>npx serve .</code>) and open <code>${escapeHtml(localPreviewFile)}</code>. Absolute <code>/data/logicx/</code> paths resolve when the package root is the server root. Do not paste <code>index.html</code> into the CMS.</div></div></div>`,
             ].join('\n')
             : hasStylesheets
                 ? [
@@ -295,10 +301,14 @@
             ? [
                 design === 'classic'
                     ? [
-                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/section_1.html</div><div class="file-desc">Paste into CMS <strong>section_1</strong> (full homepage body). Images under <code>/data/logicx/images/</code>.</div></div>`,
-                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/footer.html</div><div class="file-desc">Paste into CMS <strong>footer</strong> (columns + copyright/ADA).</div></div>`,
+                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(cmsPastePath('section_1.html'))}</div><div class="file-desc">ZIP root — paste into CMS <strong>section_1</strong> (full homepage body). Images under <code>/data/logicx/images/</code>.</div></div>`,
+                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(cmsPastePath('footer.html'))}</div><div class="file-desc">ZIP root — paste into CMS <strong>footer</strong> (columns + copyright/ADA).</div></div>`,
+                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(localPreviewFile)}</div><div class="file-desc">Local preview only — serve ZIP root, then open in a browser. Not for CMS paste.</div></div>`,
                     ].join('\n')
-                    : `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(htmlDir)}/</div><div class="file-desc">CMS paste markup from the live preview. <code>header.html</code> → header, <code>section_1.html</code> → section_1, <code>section_2.html</code> → section_2, <code>footer.html</code> → footer (includes copyright/ADA).</div></div>`,
+                    : [
+                        `    <div class="file-item is-primary"><div class="file-name">header.html · section_1.html · section_2.html · footer.html</div><div class="file-desc">ZIP-root CMS paste markup. See <code>${escapeHtml(cmsPasteReadme)}</code>. Regions: header, section_1, section_2, footer (includes copyright/ADA).</div></div>`,
+                        `    <div class="file-item is-primary"><div class="file-name">${escapeHtml(localPreviewFile)}</div><div class="file-desc">Local preview only — serve ZIP root, then open in a browser. Not for CMS paste.</div></div>`,
+                    ].join('\n'),
             ].join('\n')
             : '';
 
@@ -339,7 +349,7 @@
             `  <h2>Welcome, ${companyName}</h2>`,
             `  <p>This package is for the onboarding / tech support agent implementing the <strong>${templateLabel}</strong> homepage with the client — FTP assets, paste Meta Data CSS, then paste CMS HTML. No web developer required for a standard install.</p>`,
             hasCmsHtml
-                ? `  <p>FTP <code>data/</code> (css + images under <code>${escapeHtml(packageRoot)}/</code>), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste <code>${escapeHtml(htmlDir)}/</code> into each CMS region. Copyright/ADA is already at the bottom of <code>footer.html</code>.</p>`
+                ? `  <p>FTP <code>data/</code> (css + images under <code>${escapeHtml(packageRoot)}/</code>), paste <code>${escapeHtml(metaSnippetPath)}</code> into <strong>Meta Data, JavaScript &amp; CSS (Global)</strong>, verify the stylesheet URL loads, then paste ZIP-root CMS <code>.html</code> files into each region. Copyright/ADA is already at the bottom of <code>footer.html</code>. Optional: open <code>${escapeHtml(localPreviewFile)}</code> after serving the ZIP root for a quick local visual check.</p>`
                 : '  <p>Start with the PDF brief for the full technical spec and section screenshots, then use the JSON spec, CSS, and HTML snippets for implementation. The ADA compliance footer markup is required on every page of the live site.</p>',
             '</div>',
             '<div class="section">',
@@ -354,8 +364,8 @@
             hasCmsHtml
                 ? [
                     '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Skim the brief</div><div class="step-desc">Open <code>', pdfFilename, '</code> for layout previews and the image inventory. You will paste HTML — do not rebuild sections from the PDF.</div></div></div>',
-                    '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Read the CMS paste map</div><div class="step-desc">Open <code>', escapeHtml(htmlDir), '/README.txt</code> for which file goes into which dashboard region.</div></div></div>',
-                    '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Copyright / ADA is in the footer file</div><div class="step-desc"><code>', escapeHtml(htmlDir), '/footer.html</code> already includes the copyright + ADA block at the bottom.</div></div></div>',
+                    '    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Read the CMS paste map</div><div class="step-desc">Open <code>', escapeHtml(cmsPasteReadme), '</code> for which ZIP-root file goes into which dashboard region.</div></div></div>',
+                    '    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Copyright / ADA is in the footer file</div><div class="step-desc"><code>', escapeHtml(cmsPastePath('footer.html')), '</code> already includes the copyright + ADA block at the bottom.</div></div></div>',
                 ].join('\n')
                 : [
                     '    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Open the developer brief</div><div class="step-desc">Read <code>', pdfFilename, '</code> first — it includes copy, URLs, colors, layout preview captures, and the handoff image inventory.</div></div></div>',
@@ -402,7 +412,12 @@
         const packageRoot = meta.packageRoot || 'data/logicx';
         const serverRoot = meta.serverRoot || '/data/logicx';
         const metaSnippetPath = meta.metaSnippetPath || 'meta-data-global-css-snippet.html';
-        const htmlDir = meta.htmlDir || 'html';
+        const htmlDir = meta.htmlDir != null ? String(meta.htmlDir) : '';
+        const cmsPasteReadme = meta.cmsPasteReadme || 'CMS-PASTE-README.txt';
+        const localPreviewFile = meta.localPreviewFile || 'index.html';
+        const cmsPastePath = (filename) => (
+            htmlDir ? `${htmlDir}/${filename}` : filename
+        );
         const cssDir = meta.cssDir || `${packageRoot}/css`;
         const imagesDir = meta.imagesDir || `${packageRoot}/images`;
         const cssServerPath = meta.cssServerPath || `${serverRoot}/css`;
@@ -433,8 +448,9 @@
                 `       Live base: ${serverRoot}/`,
                 `  4. ${metaSnippetPath} — paste into Meta Data / Global CSS`,
                 isMcQueenReadme
-                    ? `  5. ${htmlDir}/section_1.html + footer.html — CMS paste (not FTP)`
-                    : `  5. ${htmlDir}/                  — CMS paste files (not FTP)`,
+                    ? `  5. ${cmsPastePath('section_1.html')} + ${cmsPastePath('footer.html')} — CMS paste (ZIP root; not FTP)`
+                    : `  5. ZIP-root CMS paste files — see ${cmsPasteReadme}`,
+                `  6. ${localPreviewFile} — local preview (serve ZIP root; not CMS paste)`,
                 '',
                 'FTP TREE (inside data/)',
                 '-----------------------',
@@ -451,16 +467,22 @@
                 `  3. Verify ${stylesheetHref} loads (not 404)`,
                 ...(isMcQueenReadme ? [
                     `  4. Confirm images under ${imagesServerPath}/ (e.g. hero-product.png, about-us.jpg)`,
-                    `  5. Paste ${htmlDir}/section_1.html into CMS region section_1`,
+                    `  5. Paste ${cmsPastePath('section_1.html')} into CMS region section_1`,
                     '       (full homepage body — do not split into section_2…section_7)',
-                    `  6. Paste ${htmlDir}/footer.html into CMS region footer`,
+                    `  6. Paste ${cmsPastePath('footer.html')} into CMS region footer`,
                 ] : [
-                    `  4. Paste ${htmlDir}/*.html into CMS regions:`,
+                    '  4. Paste ZIP-root .html into CMS regions:',
                     '       header.html     → header',
                     '       section_1.html  → section_1',
                     '       section_2.html  → section_2',
                     '       footer.html     → footer (includes copyright/ADA)',
+                    `       (see ${cmsPasteReadme})`,
                 ]),
+                '',
+                'LOCAL PREVIEW',
+                '-------------',
+                `  Serve this ZIP root as the HTTP document root, then open ${localPreviewFile}.`,
+                '  Absolute /data/logicx/ paths resolve when the package root is the server root.',
                 '',
                 'STYLESHEET LINK',
                 '---------------',
