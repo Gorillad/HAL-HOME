@@ -1803,6 +1803,7 @@
         const prevScrollTop = previewWrap ? previewWrap.scrollTop : 0;
         const prevScrollLeft = previewWrap ? previewWrap.scrollLeft : 0;
         previewRoot.style.transform = 'none';
+        previewRoot.style.marginBottom = '';
         previewRoot.classList.add('is-pdf-export-capture');
         clearGalleryStickyPreviewPin();
         if (previewScaler) {
@@ -1810,7 +1811,9 @@
             previewScaler.style.width = '';
             previewScaler.style.marginLeft = '';
             previewScaler.style.marginRight = '';
+            previewScaler.style.overflow = '';
         }
+        lastPreviewFitKey = '';
         if (previewWrap) {
             previewWrap.scrollTop = 0;
             previewWrap.scrollLeft = 0;
@@ -1905,6 +1908,7 @@
     let previewFitRaf = null;
     let previewResizeObserver = null;
     let galleryStickyPinRaf = null;
+    let lastPreviewFitKey = '';
 
     function scheduleGalleryStickyPreviewPin() {
         if (isPreviewCaptureLocked()) return;
@@ -1931,43 +1935,76 @@
         if (available <= 0) return;
 
         const scale = Math.min(1, available / TEMPLATE_FRAME_WIDTH);
-        previewRoot.style.transformOrigin = 'top center';
-        previewRoot.style.transform = scale < 1 ? `scale(${scale})` : '';
-        previewRoot.style.maxHeight = '';
-        previewRoot.style.overflowY = '';
-        previewRoot.classList.remove('is-sticky-scroll-host');
-        previewWrap.classList.remove('is-gallery-sticky-scroll');
 
-        // transform: scale() does not shrink layout size — size the scaler to the
-        // visual footprint and offset the frame so it stays centered (no x-scroll).
-        const fullHeight = previewRoot.offsetHeight;
-        const scaledWidth = TEMPLATE_FRAME_WIDTH * scale;
-        const scaledHeight = fullHeight * scale;
-        previewScaler.style.width = `${scaledWidth}px`;
-        previewScaler.style.height = `${scaledHeight}px`;
-        previewScaler.style.marginLeft = 'auto';
-        previewScaler.style.marginRight = 'auto';
-        previewScaler.style.overflow = 'hidden';
-        previewRoot.style.marginLeft = `${(scaledWidth - TEMPLATE_FRAME_WIDTH) / 2}px`;
+        // Transform does not affect layout metrics — measure first and bail if unchanged
+        // so ResizeObserver on the wrap cannot retrigger endless clear/apply cycles.
+        const measuredHeight = Math.max(
+            previewRoot.scrollHeight || 0,
+            previewRoot.offsetHeight || 0,
+        );
+        const preKey = `${Math.round(available)}:${Math.round(measuredHeight)}:${scale.toFixed(5)}`;
+        if (preKey === lastPreviewFitKey && previewRoot.style.transform) {
+            return;
+        }
 
-        // Never allow sideways scrolling in the live preview pane.
-        previewWrap.scrollLeft = 0;
+        // Pause RO while measuring/applying to avoid feedback from our own style writes.
+        if (previewResizeObserver) previewResizeObserver.disconnect();
 
-        requestAnimationFrame(() => {
-            clampPreviewScroll();
-            syncGalleryStickyPreviewPin();
-        });
+        try {
+            // Clear scale/margin only when we actually need a fresh natural measure.
+            // Do NOT set a clipped scaler height — that previously collapsed the preview.
+            // Use margin-bottom to shrink layout footprint to the scaled visual size.
+            previewRoot.style.transform = 'none';
+            previewRoot.style.transformOrigin = 'top left';
+            previewRoot.style.marginBottom = '';
+            previewRoot.style.marginLeft = '';
+            previewRoot.style.maxHeight = '';
+            previewRoot.style.overflowY = '';
+            previewRoot.classList.remove('is-sticky-scroll-host');
+            previewWrap.classList.remove('is-gallery-sticky-scroll');
+            previewScaler.style.height = '';
+            previewScaler.style.width = '';
+            previewScaler.style.overflow = 'visible';
+            previewScaler.style.alignItems = 'flex-start';
+            previewScaler.style.justifyContent = 'flex-start';
+
+            const fullHeight = Math.max(
+                previewRoot.scrollHeight || 0,
+                previewRoot.offsetHeight || 0,
+            );
+            const scaledWidth = TEMPLATE_FRAME_WIDTH * scale;
+            lastPreviewFitKey = `${Math.round(available)}:${Math.round(fullHeight)}:${scale.toFixed(5)}`;
+
+            previewRoot.style.transform = scale < 1 ? `scale(${scale})` : '';
+            previewRoot.style.marginBottom = scale < 1 ? `${(scale - 1) * fullHeight}px` : '';
+            previewScaler.style.width = `${scaledWidth}px`;
+            previewScaler.style.height = '';
+            previewScaler.style.marginLeft = 'auto';
+            previewScaler.style.marginRight = 'auto';
+            previewScaler.style.overflow = 'visible';
+
+            previewWrap.scrollLeft = 0;
+
+            requestAnimationFrame(() => {
+                clampPreviewScroll();
+                syncGalleryStickyPreviewPin();
+            });
+        } finally {
+            if (previewResizeObserver && previewWrap) {
+                previewResizeObserver.observe(previewWrap);
+            }
+        }
     }
 
     function bindPreviewResizeObserver() {
-        if (!previewRoot || typeof ResizeObserver === 'undefined') return;
+        if (!previewWrap || typeof ResizeObserver === 'undefined') return;
 
         if (previewResizeObserver) previewResizeObserver.disconnect();
 
         previewResizeObserver = new ResizeObserver(() => {
             scheduleFitPreviewScale();
         });
-        previewResizeObserver.observe(previewRoot);
+        previewResizeObserver.observe(previewWrap);
     }
 
     function scrollEditorPanelTo(selector) {

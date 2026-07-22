@@ -1521,10 +1521,12 @@
     width: 100%;
     max-width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     padding-bottom: 24px;
     box-sizing: border-box;
-    overflow: hidden;
+    /* visible: scale uses margin-bottom compensation; clipping caused height collapse */
+    overflow: visible;
 }
 
 .editor-preview-frame {
@@ -1547,7 +1549,7 @@
     --showroom-page-inset: clamp(16px, 3vw, 40px);
     width: 1572px;
     flex-shrink: 0;
-    transform-origin: top center;
+    transform-origin: top left;
     padding: 0;
     box-sizing: border-box;
     margin: 0 auto;
