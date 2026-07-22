@@ -1,0 +1,145 @@
+/* McQueen Plus — mega menu (replaces simple dropdown nav) */
+
+.mq-plus-mega-nav {
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    position: relative;
+    z-index: 40;
+}
+
+.mq-plus-mega-nav__inner {
+    width: 100%;
+    max-width: var(--showroom-hero-w, 1429px);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.mq-plus-mega-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mq-plus-mega-nav__item {
+    position: static;
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.mq-plus-mega-nav__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 10px;
+    box-sizing: border-box;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #1a1a1a;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.mq-plus-mega-nav__trigger::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    opacity: 0.55;
+}
+
+.mq-plus-mega-nav__item:not([data-has-mega]) .mq-plus-mega-nav__trigger::after {
+    display: none;
+}
+
+.mq-plus-mega-nav__item:hover .mq-plus-mega-nav__trigger,
+.mq-plus-mega-nav__item:focus-within .mq-plus-mega-nav__trigger,
+.mq-plus-mega-nav__item.is-open .mq-plus-mega-nav__trigger {
+    color: #000;
+    background: #f7f7f7;
+}
+
+.mq-plus-mega-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    text-align: left;
+    z-index: 50;
+}
+
+.mq-plus-mega-panel[hidden] {
+    display: none !important;
+}
+
+.mq-plus-mega-panel__inner {
+    display: grid;
+    gap: 28px 32px;
+    width: 100%;
+    max-width: var(--showroom-hero-w, 1429px);
+    margin: 0 auto;
+    padding: 28px 24px 32px;
+    box-sizing: border-box;
+}
+
+.mq-plus-mega-panel__inner--cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mq-plus-mega-panel__inner--cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mq-plus-mega-panel__inner--cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.mq-plus-mega-panel__inner--cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+.mq-plus-mega-col__head {
+    margin: 0 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #111;
+}
+
+.mq-plus-mega-col a {
+    display: block;
+    padding: 5px 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: #333;
+    text-decoration: none;
+}
+
+.mq-plus-mega-col a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+    .mq-plus-mega-nav__list {
+        justify-content: flex-start;
+    }
+
+    .mq-plus-mega-nav__item {
+        flex: 0 0 auto;
+    }
+
+    .mq-plus-mega-panel__inner--cols-2,
+    .mq-plus-mega-panel__inner--cols-3,
+    .mq-plus-mega-panel__inner--cols-4,
+    .mq-plus-mega-panel__inner--cols-5 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

@@ -452,7 +452,8 @@
         /* Full Site preview iframe — height is fitted dynamically to content */
         #woolFullSiteFrame,
         #avalonFullSiteFrame,
-        #cardiffFullSiteFrame {
+        #cardiffFullSiteFrame,
+        #mcqueenPlusFullSiteFrame {
             display: block;
             width: 100%;
             height: 3200px; /* fallback; overridden once content height is measured */
@@ -545,7 +546,7 @@
 <body class="editor-page">
     <script>
         (function () {
-            const allowed = { avalon: true, geneva: true, sundance: true, cardiff: true, woolf: true };
+            const allowed = { avalon: true, geneva: true, sundance: true, cardiff: true, woolf: true, 'mcqueen-plus': true };
             let param = new URLSearchParams(window.location.search).get('design');
             if (param === 'gallery') param = 'avalon'; /* legacy Designer slug */
             if (param === 'scera') param = 'avalon'; /* legacy rename */
@@ -3005,6 +3006,103 @@
                 </details>
             </div>
 
+            <div class="designer-field-panel" id="mcqueenPlusFieldPanel" hidden>
+                <p class="editor-panel-lead editor-panel-lead--compact" style="padding:12px 16px 8px;margin:0;">McQueen Plus starts from the McQueen showroom layout with a premium mega menu. More upgrades will land here next.</p>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Company &amp; logo</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-company-name">Company name</label>
+                            <input type="text" id="mqp-company-name" data-mqp-field="companyName" class="editor-field-input" placeholder="McQueen Plus">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-logo-file">Logo image</label>
+                            <input type="file" id="mqp-logo-file" accept="image/*">
+                            <button type="button" class="editor-btn-secondary" id="mqp-logo-reset" style="margin-top:8px">Reset logo</button>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-logo-url">Logo URL</label>
+                            <input type="text" id="mqp-logo-url" data-mqp-field="logoUrl" class="editor-field-input" placeholder="/">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-logo-size">Logo size <span id="mqp-logo-size-val">56px</span></label>
+                            <input type="range" id="mqp-logo-size" data-mqp-field="logoSize" min="36" max="94" step="1" value="56">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Header banner</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-banner-bg">Banner background</label>
+                            <input type="color" id="mqp-banner-bg" data-mqp-field="bannerBg" value="#000000">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-banner-text">Banner text color</label>
+                            <input type="color" id="mqp-banner-text" data-mqp-field="bannerText" value="#ffffff">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-search-placeholder">Search placeholder</label>
+                            <input type="text" id="mqp-search-placeholder" data-mqp-field="searchPlaceholder" class="editor-field-input">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group" open>
+                    <summary class="designer-group-head">Mega menu</summary>
+                    <div class="designer-group-body">
+                        <p class="editor-field-hint" style="margin:0 0 12px">Premium upgrade: multi-column mega panels replace McQueen’s simple dropdowns. Edit top-level labels and URLs below.</p>
+                        <div id="mqpNavEditorMount"></div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">Hero</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-hero-title">Title</label>
+                            <input type="text" id="mqp-hero-title" data-mqp-field="heroTitle" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-hero-text">Copy</label>
+                            <textarea id="mqp-hero-text" data-mqp-field="heroText" class="editor-field-input" rows="3"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-hero-cta-label">CTA label</label>
+                            <input type="text" id="mqp-hero-cta-label" data-mqp-field="heroCtaLabel" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-hero-cta-url">CTA URL</label>
+                            <input type="text" id="mqp-hero-cta-url" data-mqp-field="heroCtaUrl" class="editor-field-input">
+                        </div>
+                    </div>
+                </details>
+
+                <details class="designer-group">
+                    <summary class="designer-group-head">About</summary>
+                    <div class="designer-group-body">
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-about-title">Title</label>
+                            <input type="text" id="mqp-about-title" data-mqp-field="aboutTitle" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-about-text">Copy</label>
+                            <textarea id="mqp-about-text" data-mqp-field="aboutText" class="editor-field-input" rows="4"></textarea>
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-about-cta-label">CTA label</label>
+                            <input type="text" id="mqp-about-cta-label" data-mqp-field="aboutCtaLabel" class="editor-field-input">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-field-label" for="mqp-about-cta-url">CTA URL</label>
+                            <input type="text" id="mqp-about-cta-url" data-mqp-field="aboutCtaUrl" class="editor-field-input">
+                        </div>
+                    </div>
+                </details>
+            </div>
+
             <!-- Scaffold shown for non-Woolf / non-Avalon / non-Cardiff designs -->
             <div class="designer-editor-scaffold" id="designerScaffold" hidden>
                 <h3 class="editor-panel-subhead" id="scaffoldTemplateName" style="margin-top:0"></h3>
@@ -3057,6 +3155,15 @@
                     ></iframe>
                 </div>
 
+                <div class="designer-iframe-wrap" id="mcqueenPlusFullSitePreviewWrap" hidden>
+                    <iframe
+                        id="mcqueenPlusFullSiteFrame"
+                        src="../designer_editor/mcqueen-plus/index.html"
+                        title="McQueen Plus — Full site preview"
+                        scrolling="yes"
+                    ></iframe>
+                </div>
+
                 <!-- Scaffold preview for designs without a live shell -->
                 <div class="editor-preview-frame designer-preview-scaffold" id="designerScaffoldPreview" hidden>
                     <div class="designer-preview-scaffold-inner">
@@ -3084,6 +3191,7 @@
     <script src="js/avalon-nav-editor.js"></script>
     <script src="js/avalon-editor.js"></script>
     <script src="js/cardiff-editor.js"></script>
+    <script src="js/mcqueen-plus-editor.js"></script>
     <script src="js/designer-editor.js?v=3"></script>
     <!-- section-editor-base provides the shared draft persistence helpers
          (designerSaveCombined / designerLoadCombined) used by the editor. -->
@@ -3097,6 +3205,7 @@
                 document.getElementById('woolFullSiteFrame'),
                 document.getElementById('avalonFullSiteFrame'),
                 document.getElementById('cardiffFullSiteFrame'),
+                document.getElementById('mcqueenPlusFullSiteFrame'),
             ].filter(Boolean);
 
             function fitFrame(frame) {
@@ -3113,6 +3222,8 @@
                     fitFrame(document.getElementById('avalonFullSiteFrame'));
                 } else if (slug === 'cardiff') {
                     fitFrame(document.getElementById('cardiffFullSiteFrame'));
+                } else if (slug === 'mcqueen-plus') {
+                    fitFrame(document.getElementById('mcqueenPlusFullSiteFrame'));
                 } else {
                     fitFrame(document.getElementById('woolFullSiteFrame'));
                 }

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McQueen Plus | Premium Showroom Homepage</title>
+  <meta name="description" content="McQueen Plus — premium McQueen-based showroom homepage with mega-menu navigation.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="data/css/styles.css">
+  <link rel="stylesheet" href="data/css/mega-menu.css">
+  <style>
+    /* Designer iframe: page sits full-bleed (no 1572px editor chrome). */
+    body {
+      margin: 0;
+      background: #fafafa;
+    }
+    .mq-plus-page {
+      width: 100%;
+      max-width: 1572px;
+      margin: 0 auto;
+      background: #fafafa;
+      box-sizing: border-box;
+    }
+    .showroom-main-nav { display: none !important; } /* Plus uses mega nav */
+  </style>
+</head>
+<body>
+  <div class="mq-plus-page" id="mqPlusPage">
+    <header class="showroom-header-section" id="mqPlusHeader" aria-label="Site header">
+      <div class="showroom-header-classic">
+        <div class="showroom-header-banner" id="mqPlusBanner" style="background-color:#000;--header-banner-text:#fff;">
+          <nav class="showroom-header-banner-links showroom-hero-align" id="mqPlusBannerLinks" aria-label="Top banner">
+            <a href="/">Home</a><span class="showroom-header-banner-sep" aria-hidden="true">|</span>
+            <a href="/about-us">About Us</a><span class="showroom-header-banner-sep" aria-hidden="true">|</span>
+            <a href="/contact-us">Contact</a>
+          </nav>
+        </div>
+        <div class="showroom-header-content showroom-hero-align">
+          <div class="showroom-header-inner">
+            <div class="showroom-header-search">
+              <label class="showroom-header-search-field">
+                <span class="showroom-header-search-label">Search</span>
+                <i class="fa-solid fa-magnifying-glass showroom-header-search-icon" aria-hidden="true"></i>
+                <input type="search" class="showroom-header-search-input" id="mqPlusSearchInput" placeholder="Enter Keyword or Item#" disabled aria-disabled="true">
+              </label>
+            </div>
+            <div class="showroom-header-logo-wrap">
+              <a href="/" class="showroom-header-logo" id="mqPlusLogoLink">
+                <img id="mqPlusHeaderLogo" src="data/images/Alveraanlogo_v1.png" alt="McQueen Plus" style="height:56px;width:auto;">
+              </a>
+            </div>
+            <div class="showroom-header-icons" id="mqPlusHeaderIcons" aria-label="Header utilities">
+              <a href="/store-locator" class="showroom-header-icon-btn" aria-label="Store locator"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></a>
+              <a href="/wishlist" class="showroom-header-icon-btn" aria-label="Wishlist"><i class="fa-regular fa-heart" aria-hidden="true"></i></a>
+              <a href="/account" class="showroom-header-icon-btn" aria-label="Account"><i class="fa-regular fa-user" aria-hidden="true"></i></a>
+              <a href="/cart" class="showroom-header-icon-btn" aria-label="Cart"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="mq-plus-mega-nav" id="mqPlusMegaNav" aria-label="Main navigation">
+        <div class="mq-plus-mega-nav__inner">
+          <ul class="mq-plus-mega-nav__list" id="mqPlusMegaNavList">
+            <!-- Populated by editor; static fallback below for standalone preview -->
+            <li class="mq-plus-mega-nav__item" data-has-mega>
+              <a href="/lighting-fixtures/chandeliers" class="mq-plus-mega-nav__trigger" aria-expanded="false" aria-controls="mq-mega-ceiling">Ceiling Lights</a>
+              <div class="mq-plus-mega-panel" id="mq-mega-ceiling" hidden>
+                <div class="mq-plus-mega-panel__inner mq-plus-mega-panel__inner--cols-2">
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Chandeliers</h3>
+                    <a href="/lighting-fixtures/chandeliers">Chandeliers</a>
+                    <a href="/lighting-fixtures/candle-chandeliers">Candle Chandeliers</a>
+                    <a href="/lighting-fixtures/chandeliers/down-chandeliers">Down Chandeliers</a>
+                    <a href="/lighting-fixtures/chandeliers/up-chandeliers">Up Chandeliers</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">More Ceiling</h3>
+                    <a href="/lighting-fixtures/chandeliers/ring-chandeliers">Ring Chandeliers</a>
+                    <a href="/lighting-fixtures/chandeliers/other-chandeliers">Other Chandeliers</a>
+                    <a href="/lighting-fixtures/chandeliers/chandelier-accessories">Accessories</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="mq-plus-mega-nav__item" data-has-mega>
+              <a href="/lighting-fixtures/sconces" class="mq-plus-mega-nav__trigger" aria-expanded="false" aria-controls="mq-mega-wall">Wall Fixtures</a>
+              <div class="mq-plus-mega-panel" id="mq-mega-wall" hidden>
+                <div class="mq-plus-mega-panel__inner mq-plus-mega-panel__inner--cols-2">
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Sconces</h3>
+                    <a href="/lighting-fixtures/sconces">Sconces</a>
+                    <a href="/lighting-fixtures/sconces/wall-sconces">Wall Sconces</a>
+                    <a href="/lighting-fixtures/sconces/outdoor-wall-lights">Outdoor Wall Lights</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">More</h3>
+                    <a href="/lighting-fixtures/sconces/picture-display-lights">Picture Display Lights</a>
+                    <a href="/lighting-fixtures/sconces/other-wall-lights">Other Wall Lights</a>
+                    <a href="/lighting-fixtures/sconces/sconce-accessories">Accessories</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="mq-plus-mega-nav__item" data-has-mega>
+              <a href="/lighting-fixtures/fans" class="mq-plus-mega-nav__trigger" aria-expanded="false" aria-controls="mq-mega-fans">Fans</a>
+              <div class="mq-plus-mega-panel" id="mq-mega-fans" hidden>
+                <div class="mq-plus-mega-panel__inner mq-plus-mega-panel__inner--cols-3">
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Ceiling Fans</h3>
+                    <a href="/lighting-fixtures/fans/ceiling-fans">Ceiling Fans</a>
+                    <a href="/lighting-fixtures/fans/ceiling-fans-with-light">With Light</a>
+                    <a href="/lighting-fixtures/fans/huggers">Huggers</a>
+                    <a href="/lighting-fixtures/fans/fandeliers">Fandeliers</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Specialty</h3>
+                    <a href="/lighting-fixtures/fans/outdoor-fans">Outdoor Fans</a>
+                    <a href="/lighting-fixtures/fans/wall-fans">Wall Fans</a>
+                    <a href="/lighting-fixtures/fans/portable-fans">Portable Fans</a>
+                    <a href="/lighting-fixtures/fans/belt-fans">Belt Fans</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">More</h3>
+                    <a href="/lighting-fixtures/fans/dual-motor-fans">Dual Motor</a>
+                    <a href="/lighting-fixtures/fans/other-fans">Other Fans</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="mq-plus-mega-nav__item" data-has-mega>
+              <a href="/lighting-fixtures/bathroom-fixtures" class="mq-plus-mega-nav__trigger" aria-expanded="false" aria-controls="mq-mega-bath">Bathroom</a>
+              <div class="mq-plus-mega-panel" id="mq-mega-bath" hidden>
+                <div class="mq-plus-mega-panel__inner mq-plus-mega-panel__inner--cols-2">
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Bath Lighting</h3>
+                    <a href="/lighting-fixtures/bathroom-fixtures/vanity-lights">Vanity Lights</a>
+                    <a href="/lighting-fixtures/bathroom-fixtures/bathroom-sconces">Bathroom Sconces</a>
+                    <a href="/lighting-fixtures/bathroom-fixtures/bath-fans">Bath Fans</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">More</h3>
+                    <a href="/lighting-fixtures/bathroom-fixtures">Bathroom Fixtures</a>
+                    <a href="/lighting-fixtures/bathroom-fixtures/other-bathroom-fixtures">Other Bathroom</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="mq-plus-mega-nav__item" data-has-mega>
+              <a href="/lighting-fixtures/exterior" class="mq-plus-mega-nav__trigger" aria-expanded="false" aria-controls="mq-mega-outdoor">Outdoor</a>
+              <div class="mq-plus-mega-panel" id="mq-mega-outdoor" hidden>
+                <div class="mq-plus-mega-panel__inner mq-plus-mega-panel__inner--cols-3">
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Exterior Lights</h3>
+                    <a href="/lighting-fixtures/exterior/exterior-chandeliers">Exterior Chandeliers</a>
+                    <a href="/lighting-fixtures/exterior/exterior-pendants">Exterior Pendants</a>
+                    <a href="/lighting-fixtures/exterior/wall-lanterns">Wall Lanterns</a>
+                    <a href="/lighting-fixtures/exterior/hanging-lanterns">Hanging Lanterns</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">Posts &amp; Path</h3>
+                    <a href="/lighting-fixtures/exterior/posts">Posts</a>
+                    <a href="/lighting-fixtures/exterior/post-mount-lights">Post Mount Lights</a>
+                    <a href="/lighting-fixtures/exterior/bollards">Bollards</a>
+                    <a href="/lighting-fixtures/exterior/deck-lights">Deck Lights</a>
+                  </div>
+                  <div class="mq-plus-mega-col">
+                    <h3 class="mq-plus-mega-col__head">More Exterior</h3>
+                    <a href="/lighting-fixtures/exterior/exterior-fans">Exterior Fans</a>
+                    <a href="/lighting-fixtures/exterior/solar-lights">Solar Lights</a>
+                    <a href="/lighting-fixtures/exterior/other-exterior">Other Exterior</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="mq-plus-mega-nav__item">
+              <a href="/brands" class="mq-plus-mega-nav__trigger">Shop by Brand</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <section class="showroom-hero-section" id="mqPlusHero" aria-label="Hero">
+      <div class="showroom-hero showroom-hero-align">
+        <div class="showroom-hero-left">
+          <div class="showroom-hero-product">
+            <img id="mqPlusHeroProduct" src="data/images/hero-product.png" alt="Featured product">
+          </div>
+          <div class="showroom-hero-copy">
+            <h2 id="mqPlusHeroTitle">Gemma</h2>
+            <p id="mqPlusHeroText">A sculptural crystal collection that brings gallery light into the dining room and foyer.</p>
+            <a href="/collections/gemma" class="showroom-hero-cta" id="mqPlusHeroCta">Explore Gemma</a>
+          </div>
+        </div>
+        <div class="showroom-hero-feature">
+          <img id="mqPlusHeroLifestyle" src="data/images/hero-lg-right.jpg" alt="Lifestyle">
+        </div>
+      </div>
+    </section>
+
+    <section class="showroom-categories-section showroom-hero-align" id="mqPlusCategories" aria-label="Featured categories">
+      <div class="showroom-categories-header">
+        <h2 class="showroom-categories-title" id="mqPlusCategoriesTitle">Featured Categories</h2>
+        <a href="/lighting-fixtures" class="showroom-categories-shop-all" id="mqPlusCategoriesShopAll">Shop All</a>
+      </div>
+      <div class="showroom-categories-grid" id="mqPlusCategoriesGrid">
+        <a class="showroom-category-card" href="/lighting-fixtures/chandeliers">
+          <span class="showroom-category-card-thumb"><img src="data/images/featured-categories/chandeliers.jpg" alt=""></span>
+          <span class="showroom-category-card-label">Chandeliers</span>
+        </a>
+        <a class="showroom-category-card" href="/lighting-fixtures/pendants">
+          <span class="showroom-category-card-thumb"><img src="data/images/featured-categories/pendants.jpg" alt=""></span>
+          <span class="showroom-category-card-label">Pendants</span>
+        </a>
+        <a class="showroom-category-card" href="/lighting-fixtures/fans">
+          <span class="showroom-category-card-thumb"><img src="data/images/featured-categories/fans.jpg" alt=""></span>
+          <span class="showroom-category-card-label">Fans</span>
+        </a>
+        <a class="showroom-category-card" href="/lighting-fixtures/exterior">
+          <span class="showroom-category-card-thumb"><img src="data/images/featured-categories/exterior.jpg" alt=""></span>
+          <span class="showroom-category-card-label">Exterior</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="showroom-about-section showroom-hero-align" id="mqPlusAbout" aria-label="About">
+      <div class="showroom-about-photo">
+        <img id="mqPlusAboutImage" src="data/images/about-us.jpg" alt="">
+      </div>
+      <div class="showroom-about-panel">
+        <h2 class="showroom-about-title" id="mqPlusAboutTitle">About Us</h2>
+        <div class="showroom-about-text" id="mqPlusAboutText">
+          <p>McQueen Plus builds on the trusted McQueen showroom layout with premium navigation and room to grow into richer merchandising experiences.</p>
+        </div>
+        <a href="/about-us" class="showroom-about-btn" id="mqPlusAboutCta">Learn More</a>
+      </div>
+    </section>
+
+    <footer class="showroom-footer-section showroom-hero-align" id="mqPlusFooter" aria-label="Footer" style="padding:48px 0 64px;">
+      <p style="margin:0;font-size:13px;color:#666;" id="mqPlusCopyright">© <span id="mqPlusCopyrightYear"></span> <span id="mqPlusCompanyName">McQueen Plus</span>. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('mqPlusCopyrightYear').textContent = String(new Date().getFullYear());
+  </script>
+  <script src="data/js/header.js"></script>
+</body>
+</html>

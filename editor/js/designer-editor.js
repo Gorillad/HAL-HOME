@@ -189,6 +189,8 @@
     var avalonPreviewWrap  = document.getElementById('avalonFullSitePreviewWrap');
     var cardiffPreviewFrame = document.getElementById('cardiffFullSiteFrame');
     var cardiffPreviewWrap  = document.getElementById('cardiffFullSitePreviewWrap');
+    var mcqueenPlusPreviewFrame = document.getElementById('mcqueenPlusFullSiteFrame');
+    var mcqueenPlusPreviewWrap  = document.getElementById('mcqueenPlusFullSitePreviewWrap');
     var previewScaler      = document.getElementById('previewScaler');
     var editorStatus       = document.getElementById('editorStatus');
     var exportBtn          = document.getElementById('exportHandoffBtn');
@@ -197,6 +199,7 @@
     var woolFieldPanel     = document.getElementById('woolFieldPanel');
     var avalonFieldPanel    = document.getElementById('avalonFieldPanel');
     var cardiffFieldPanel   = document.getElementById('cardiffFieldPanel');
+    var mcqueenPlusFieldPanel = document.getElementById('mcqueenPlusFieldPanel');
     var designerScaffold   = document.getElementById('designerScaffold');
     var scaffoldPreview    = document.getElementById('designerScaffoldPreview');
     var previewLabel       = document.getElementById('designerPreviewLabel');
@@ -559,7 +562,7 @@
         });
 
         // Template name badge
-        var names = { woolf: 'The Woolf', avalon: 'Avalon', geneva: 'Geneva', sundance: 'Sundance', cardiff: 'Cardiff' };
+        var names = { woolf: 'The Woolf', avalon: 'Avalon', geneva: 'Geneva', sundance: 'Sundance', cardiff: 'Cardiff', 'mcqueen-plus': 'McQueen Plus' };
         var name = names[slug] || slug;
         if (templateNameEl) templateNameEl.textContent = name;
         if (previewLabel) previewLabel.textContent = name;
@@ -568,39 +571,59 @@
             if (woolFieldPanel) woolFieldPanel.hidden = false;
             if (avalonFieldPanel) avalonFieldPanel.hidden = true;
             if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
+            if (mcqueenPlusFieldPanel) mcqueenPlusFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = true;
             if (previewWrap) previewWrap.hidden = false;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
             if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
+            if (mcqueenPlusPreviewWrap) mcqueenPlusPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = true;
         } else if (slug === 'avalon') {
             if (woolFieldPanel) woolFieldPanel.hidden = true;
             if (avalonFieldPanel) avalonFieldPanel.hidden = false;
             if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
+            if (mcqueenPlusFieldPanel) mcqueenPlusFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = true;
             if (previewWrap) previewWrap.hidden = true;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = false;
             if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
+            if (mcqueenPlusPreviewWrap) mcqueenPlusPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = true;
             if (exportBtn) exportBtn.disabled = true;
         } else if (slug === 'cardiff') {
             if (woolFieldPanel) woolFieldPanel.hidden = true;
             if (avalonFieldPanel) avalonFieldPanel.hidden = true;
             if (cardiffFieldPanel) cardiffFieldPanel.hidden = false;
+            if (mcqueenPlusFieldPanel) mcqueenPlusFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = true;
             if (previewWrap) previewWrap.hidden = true;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
             if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = false;
+            if (mcqueenPlusPreviewWrap) mcqueenPlusPreviewWrap.hidden = true;
+            if (scaffoldPreview) scaffoldPreview.hidden = true;
+            if (exportBtn) exportBtn.disabled = true;
+        } else if (slug === 'mcqueen-plus') {
+            if (woolFieldPanel) woolFieldPanel.hidden = true;
+            if (avalonFieldPanel) avalonFieldPanel.hidden = true;
+            if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
+            if (mcqueenPlusFieldPanel) mcqueenPlusFieldPanel.hidden = false;
+            if (designerScaffold) designerScaffold.hidden = true;
+            if (previewWrap) previewWrap.hidden = true;
+            if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
+            if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
+            if (mcqueenPlusPreviewWrap) mcqueenPlusPreviewWrap.hidden = false;
             if (scaffoldPreview) scaffoldPreview.hidden = true;
             if (exportBtn) exportBtn.disabled = true;
         } else {
             if (woolFieldPanel) woolFieldPanel.hidden = true;
             if (avalonFieldPanel) avalonFieldPanel.hidden = true;
             if (cardiffFieldPanel) cardiffFieldPanel.hidden = true;
+            if (mcqueenPlusFieldPanel) mcqueenPlusFieldPanel.hidden = true;
             if (designerScaffold) designerScaffold.hidden = false;
             if (previewWrap) previewWrap.hidden = true;
             if (avalonPreviewWrap) avalonPreviewWrap.hidden = true;
             if (cardiffPreviewWrap) cardiffPreviewWrap.hidden = true;
+            if (mcqueenPlusPreviewWrap) mcqueenPlusPreviewWrap.hidden = true;
             if (scaffoldPreview) scaffoldPreview.hidden = false;
             var scaffoldTitle = document.getElementById('scaffoldTemplateName');
             if (scaffoldTitle) scaffoldTitle.textContent = name + ' — coming soon';
@@ -2189,6 +2212,16 @@
         }
     }
 
+    function initMcQueenPlusPreview() {
+        if (!mcqueenPlusPreviewFrame || slug !== 'mcqueen-plus') return;
+        mcqueenPlusPreviewFrame.addEventListener('load', function () {
+            if (typeof window.__fitFullSite === 'function') window.__fitFullSite();
+        });
+        if (typeof window.__fitFullSite === 'function') {
+            window.requestAnimationFrame(window.__fitFullSite);
+        }
+    }
+
     function init() {
         initRouting();
         scaleIframe();
@@ -2202,6 +2235,12 @@
         if (slug === 'cardiff') {
             initCardiffPreview();
             if (window.CardiffEditor) window.CardiffEditor.init();
+            return;
+        }
+
+        if (slug === 'mcqueen-plus') {
+            initMcQueenPlusPreview();
+            if (window.McQueenPlusEditor) window.McQueenPlusEditor.init();
             return;
         }
 
