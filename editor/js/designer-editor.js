@@ -633,7 +633,10 @@
     }
 
     function scaleIframe() {
-        // No scaling — iframe fills the panel at 100% width
+        if (typeof window.__fitFullSite === 'function') {
+            window.__fitFullSite();
+            return;
+        }
         if (scaleHint) scaleHint.textContent = '100%';
     }
 

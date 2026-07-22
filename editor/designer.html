@@ -157,10 +157,12 @@
             font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
         }
 
-        /* Iframe preview */
+        /* Iframe preview — scaled to pane width on laptops (see __fitFullSite) */
         .designer-iframe-wrap {
             width: 100%;
             background: #fff;
+            transform-origin: top left;
+            will-change: transform;
         }
         /* Loading state */
         .designer-iframe-loading {
@@ -3192,46 +3194,153 @@
     <script src="js/avalon-editor.js"></script>
     <script src="js/cardiff-editor.js"></script>
     <script src="js/mcqueen-plus-editor.js"></script>
-    <script src="js/designer-editor.js?v=3"></script>
+    <script src="js/designer-editor.js?v=4"></script>
     <!-- section-editor-base provides the shared draft persistence helpers
          (designerSaveCombined / designerLoadCombined) used by the editor. -->
     <script src="js/section-editor-base.js"></script>
     <script src="js/designer-section-nav.js"></script>
 
-    <!-- Full Site preview: fit the iframe to its content height (same-origin). -->
+    <!-- Full Site preview: design-width layout + scale-to-fit pane (laptops/desktops). -->
     <script>
         (function () {
-            var frames = [
-                document.getElementById('woolFullSiteFrame'),
-                document.getElementById('avalonFullSiteFrame'),
-                document.getElementById('cardiffFullSiteFrame'),
-                document.getElementById('mcqueenPlusFullSiteFrame'),
-            ].filter(Boolean);
+            var DESIGN_WIDTH = {
+                woolf: 1400,
+                avalon: 1479,
+                cardiff: 1280,
+                'mcqueen-plus': 1572,
+            };
 
-            function fitFrame(frame) {
-                if (!frame) return;
+            var framesBySlug = {
+                woolf: document.getElementById('woolFullSiteFrame'),
+                avalon: document.getElementById('avalonFullSiteFrame'),
+                cardiff: document.getElementById('cardiffFullSiteFrame'),
+                'mcqueen-plus': document.getElementById('mcqueenPlusFullSiteFrame'),
+            };
+
+            var previewWrap = document.querySelector('.editor-preview-wrap');
+            var previewScaler = document.getElementById('previewScaler');
+            var scaleHint = document.getElementById('previewScaleHint');
+            var lastFitKey = '';
+            var resizeObserver = null;
+
+            function activeFrame() {
+                var slug = window.__designerSlug || 'woolf';
+                return framesBySlug[slug] || framesBySlug.woolf;
+            }
+
+            function designWidthFor(slug) {
+                return DESIGN_WIDTH[slug] || 1440;
+            }
+
+            function clearScale(wrap) {
+                if (!wrap) return;
+                wrap.style.transform = '';
+                wrap.style.marginBottom = '';
+                wrap.style.width = '';
+            }
+
+            function fitFrame(frame, slug) {
+                if (!frame || !previewWrap) return;
+                var wrap = frame.parentElement;
+                if (!wrap || wrap.hidden) return;
+
+                var designW = designWidthFor(slug || window.__designerSlug || 'woolf');
+                var available = Math.max(0, previewWrap.clientWidth - 48);
+                if (available <= 0) return;
+
+                var scale = Math.min(1, available / designW);
+
                 try {
-                    var h = frame.contentDocument.documentElement.scrollHeight;
-                    if (h > 400) frame.style.height = h + 'px';
-                } catch (e) { /* cross-origin or not ready; keep CSS fallback height */ }
+                    // Lay out at design width so fixed McQueen/Avalon columns don't clip.
+                    frame.style.width = designW + 'px';
+                    frame.style.maxWidth = 'none';
+                    frame.style.display = 'block';
+                    frame.style.border = 'none';
+
+                    var doc = frame.contentDocument;
+                    if (!doc || !doc.documentElement) return;
+
+                    // Force a layout pass at design width before measuring height.
+                    frame.style.height = 'auto';
+                    void doc.documentElement.offsetHeight;
+
+                    var contentRoot = doc.getElementById('mqPlusPage')
+                        || doc.querySelector('.mq-plus-page')
+                        || doc.body;
+                    var fullHeight = Math.max(
+                        contentRoot ? contentRoot.scrollHeight : 0,
+                        contentRoot ? contentRoot.offsetHeight : 0,
+                        doc.documentElement ? doc.documentElement.scrollHeight : 0,
+                        doc.body ? doc.body.scrollHeight : 0,
+                        400
+                    );
+                    // Prefer the page root when present — html/body can inherit the
+                    // iframe's previous fallback height and over-report.
+                    if (contentRoot && contentRoot.id === 'mqPlusPage') {
+                        fullHeight = Math.max(contentRoot.scrollHeight, contentRoot.offsetHeight, 400);
+                    }
+                    frame.style.height = fullHeight + 'px';
+
+                    var fitKey = designW + ':' + Math.round(available) + ':' + Math.round(fullHeight) + ':' + scale.toFixed(5);
+                    if (fitKey === lastFitKey && wrap.style.transform) {
+                        if (scaleHint) scaleHint.textContent = Math.round(scale * 100) + '%';
+                        return;
+                    }
+                    lastFitKey = fitKey;
+
+                    wrap.style.width = designW + 'px';
+                    wrap.style.transformOrigin = 'top left';
+                    wrap.style.transform = scale < 1 ? 'scale(' + scale + ')' : '';
+                    wrap.style.marginBottom = scale < 1 ? ((scale - 1) * fullHeight) + 'px' : '';
+
+                    if (previewScaler) {
+                        previewScaler.style.width = Math.round(designW * scale) + 'px';
+                        previewScaler.style.marginLeft = 'auto';
+                        previewScaler.style.marginRight = 'auto';
+                        previewScaler.style.alignItems = 'flex-start';
+                        previewScaler.style.justifyContent = 'flex-start';
+                        previewScaler.style.overflow = 'visible';
+                    }
+
+                    if (scaleHint) scaleHint.textContent = Math.round(scale * 100) + '%';
+                    previewWrap.scrollLeft = 0;
+                } catch (e) {
+                    clearScale(wrap);
+                    if (scaleHint) scaleHint.textContent = '100%';
+                }
             }
 
             function fitActive() {
                 var slug = window.__designerSlug || 'woolf';
-                if (slug === 'avalon') {
-                    fitFrame(document.getElementById('avalonFullSiteFrame'));
-                } else if (slug === 'cardiff') {
-                    fitFrame(document.getElementById('cardiffFullSiteFrame'));
-                } else if (slug === 'mcqueen-plus') {
-                    fitFrame(document.getElementById('mcqueenPlusFullSiteFrame'));
-                } else {
-                    fitFrame(document.getElementById('woolFullSiteFrame'));
-                }
+                // Clear scale on inactive wraps so hidden templates don't keep leftover transforms.
+                Object.keys(framesBySlug).forEach(function (key) {
+                    var frame = framesBySlug[key];
+                    if (!frame || !frame.parentElement) return;
+                    if (key !== slug) clearScale(frame.parentElement);
+                });
+                fitFrame(activeFrame(), slug);
             }
 
-            frames.forEach(function (frame) {
-                frame.addEventListener('load', function () { fitFrame(frame); });
+            Object.keys(framesBySlug).forEach(function (key) {
+                var frame = framesBySlug[key];
+                if (!frame) return;
+                frame.addEventListener('load', function () {
+                    if ((window.__designerSlug || 'woolf') === key) fitActive();
+                });
             });
+
+            var resizeTimer = null;
+            function scheduleFit() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(fitActive, 80);
+            }
+
+            window.addEventListener('resize', scheduleFit);
+
+            if (previewWrap && typeof ResizeObserver !== 'undefined') {
+                resizeObserver = new ResizeObserver(scheduleFit);
+                resizeObserver.observe(previewWrap);
+            }
 
             window.__fitFullSite = fitActive;
         }());
