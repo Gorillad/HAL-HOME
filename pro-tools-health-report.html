@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Health Report | LogicX Pro Tools</title>
+    <meta name="description" content="Detailed website health analytics — uptime, speed grade, SSL, HTTPS, and recommendations from LogicX Pro Tools.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/pro-tools.css" rel="stylesheet">
+    <link href="shared/footer/footer.css" rel="stylesheet">
+</head>
+<body class="pro-tools-page home-page">
+    <div id="siteContent">
+    <header class="site-nav site-nav--dark" aria-label="Site navigation">
+        <div class="site-nav-inner">
+            <a href="index.html" class="site-nav-logo" aria-label="LogicX home">
+                <img src="images/logos/logicxo-gold.png" alt="LogicX">
+            </a>
+            <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+            <div class="site-nav-panel" id="site-nav-panel">
+                <nav aria-label="Primary">
+                    <ul class="site-nav-links">
+                        <li><a href="templates.html">Templates</a></li>
+                        <li><a href="pro-tools.html" aria-current="page">Pro Tools</a></li>
+                        <li><a href="index.html#showcase">Our Work</a></li>
+                        <li><a href="index.html#what-we-do">What We Do</a></li>
+                        <li><a href="/editor/showroom.html">Editor</a></li>
+                        <li><a href="/trend-catalog.html">Trends Catalog</a></li>
+                        <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="site-nav-actions">
+                    <button type="button" class="site-nav-logout" id="siteNavLogout" hidden>Log out</button>
+                    <a href="request-a-quote.html" class="site-nav-cta">Request a Quote</a>
+                </div>
+            </div>
+        </div>
+        <div class="site-nav-backdrop" hidden aria-hidden="true"></div>
+    </header>
+
+    <main>
+        <section class="pt-report" id="healthReport" aria-labelledby="report-title">
+            <div class="pt-report-inner">
+                <p class="pt-report-back"><a href="pro-tools.html#health-check">← Back to Pro Tools</a></p>
+
+                <header class="pt-report-header">
+                    <p class="pt-live-eyebrow">Health analytics</p>
+                    <h1 id="report-title">Website health report</h1>
+                    <p id="ptReportHost" class="pt-report-host">—</p>
+                    <p id="ptReportChecked" class="pt-report-meta">—</p>
+                </header>
+
+                <p id="ptReportStatus" class="pt-health-status" hidden role="status"></p>
+
+                <div id="ptReportLoading" class="pt-report-loading" hidden>
+                    <p>Running a fresh health check…</p>
+                </div>
+
+                <div id="ptReportEmpty" class="pt-report-empty" hidden>
+                    <p>No site selected yet. Run a check on Pro Tools, then click <strong>Connect it</strong> — or enter a URL below.</p>
+                    <form id="ptReportForm" class="pt-health-form" novalidate>
+                        <label class="pt-field pt-health-url-field" for="ptReportUrl">
+                            <span>Website URL</span>
+                            <span class="pt-field-input pt-health-url-input">
+                                <input type="url" id="ptReportUrl" name="url" placeholder="https://www.example.com" autocomplete="url" inputmode="url" required>
+                            </span>
+                        </label>
+                        <button type="submit" class="btn btn-sheen pt-health-submit">Analyze</button>
+                    </form>
+                </div>
+
+                <div id="ptReportBody" class="pt-report-body" hidden>
+                    <div class="pt-report-score-row">
+                        <div class="pt-report-score">
+                            <p class="pt-tool-result-label">Health score</p>
+                            <p id="ptReportScore" class="pt-report-score-value">—</p>
+                            <p id="ptReportScoreLabel" class="pt-report-score-label">—</p>
+                        </div>
+                        <div class="pt-report-summary">
+                            <p class="pt-tool-result-label">Snapshot</p>
+                            <ul id="ptReportSnapshot" class="pt-report-snapshot"></ul>
+                        </div>
+                    </div>
+
+                    <div class="pt-report-panels">
+                        <article class="pt-report-panel">
+                            <h2>Availability</h2>
+                            <dl class="pt-report-dl">
+                                <div><dt>Reachable</dt><dd id="ptRAvail">—</dd></div>
+                                <div><dt>HTTP status</dt><dd id="ptRStatus">—</dd></div>
+                                <div><dt>Final URL</dt><dd id="ptRFinal" class="pt-health-url-value">—</dd></div>
+                            </dl>
+                        </article>
+                        <article class="pt-report-panel">
+                            <h2>Performance</h2>
+                            <dl class="pt-report-dl">
+                                <div><dt>Response time</dt><dd id="ptRTime">—</dd></div>
+                                <div><dt>Speed grade</dt><dd id="ptRGrade">—</dd></div>
+                                <div><dt>Page size</dt><dd id="ptRSize">—</dd></div>
+                            </dl>
+                        </article>
+                        <article class="pt-report-panel">
+                            <h2>Security</h2>
+                            <dl class="pt-report-dl">
+                                <div><dt>SSL</dt><dd id="ptRSsl">—</dd></div>
+                                <div><dt>Issuer</dt><dd id="ptRIssuer">—</dd></div>
+                                <div><dt>Days to expiry</dt><dd id="ptRExpiry">—</dd></div>
+                                <div><dt>HTTPS enforced</dt><dd id="ptRHttps">—</dd></div>
+                            </dl>
+                        </article>
+                    </div>
+
+                    <section class="pt-report-notes" aria-labelledby="notes-title">
+                        <h2 id="notes-title">Health notes</h2>
+                        <ul id="ptReportNotes" class="pt-report-notes-list"></ul>
+                    </section>
+
+                    <div class="pt-report-actions">
+                        <button type="button" id="ptReportRefresh" class="btn btn-sheen">Re-check now</button>
+                        <a href="pro-tools.html#health-check" class="pt-tool-link">Run another URL</a>
+                        <a href="request-a-quote.html?interest=live-site-monitor" class="pt-tool-link pt-tool-link--accent">Ask about 24/7 monitoring</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" aria-label="Site footer">
+        <div class="site-footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="footer-logo">LogicX</span>
+                    <p class="footer-tagline">Illuminate your presence. The knowledge hub for elegant lighting retail.</p>
+                </div>
+                <nav class="footer-col" aria-label="Quick links">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="templates.html">Templates</a></li>
+                        <li><a href="pro-tools.html">Pro Tools</a></li>
+                        <li><a href="request-a-quote.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-col" aria-label="Resources">
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="https://support.logicxo.com/">Knowledge Base</a></li>
+                        <li><a href="/editor/knowledge-base.html">Editor Guide</a></li>
+                        <li><a href="trend-catalog.html">Trends Catalog</a></li>
+                    </ul>
+                </nav>
+                <div class="footer-col footer-contact">
+                    <h3 class="footer-heading">Contact</h3>
+                    <ul class="footer-contact-list">
+                        <li><a href="mailto:hello@logicxo.com">hello@logicxo.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; LogicX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+    <script src="js/pro-tools/health-report.js" defer></script>
+    <script src="shared/footer/footer.js" defer></script>
+</body>
+</html>

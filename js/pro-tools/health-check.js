@@ -9,6 +9,20 @@
     var button = root.querySelector('#ptHealthSubmit');
     var statusEl = root.querySelector('#ptHealthStatus');
     var results = root.querySelector('#ptHealthResults');
+    var connectLink = root.querySelector('#ptHealthConnect');
+    var lastReport = null;
+    var STORAGE_KEY = 'logicxo-health-check-last';
+
+    function updateConnectLink(report) {
+        if (!connectLink) return;
+        var targetUrl = (report && (report.inputUrl || report.finalUrl)) || (input && input.value) || '';
+        targetUrl = String(targetUrl).trim();
+        if (!targetUrl) {
+            connectLink.href = 'pro-tools-health-report.html';
+            return;
+        }
+        connectLink.href = 'pro-tools-health-report.html?url=' + encodeURIComponent(targetUrl);
+    }
 
     function setBusy(busy) {
         if (button) {
@@ -113,6 +127,12 @@
         } else {
             setStatus('', '');
         }
+
+        lastReport = report;
+        updateConnectLink(report);
+        try {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(report));
+        } catch (e) { /* ignore */ }
     }
 
     form.addEventListener('submit', function (event) {
@@ -169,4 +189,11 @@
                 setBusy(false);
             });
     });
+
+    if (input) {
+        input.addEventListener('input', function () {
+            updateConnectLink(lastReport);
+        });
+    }
+    updateConnectLink(null);
 })();
