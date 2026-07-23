@@ -21,6 +21,7 @@ const {
     isEditorAuthDisabled,
 } = require('./access');
 const { loadDraft, saveDraft } = require('./designer-drafts');
+const { createHealthCheckHandler } = require('./health-check');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT || 4242;
@@ -126,6 +127,8 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
 });
 
 app.use(express.json());
+
+app.post('/api/health-check', createHealthCheckHandler());
 
 app.post('/api/editor/login', handleLogin);
 app.post('/api/editor/logout', handleLogout);

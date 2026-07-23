@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Tools for Lighting Showroom Websites | LogicX</title>
+    <meta name="description" content="Pro Tools from LogicX — embeddable widgets and site utilities for lighting showrooms: calculators, catalog helpers, booking, and more.">
+    <meta property="og:title" content="Pro Tools for Lighting Showroom Websites | LogicX">
+    <meta property="og:description" content="Tools you can use or add to your showroom website — built for lighting retail.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/favicon/android-chrome-512x512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/pro-tools.css" rel="stylesheet">
+    <link href="shared/footer/footer.css" rel="stylesheet">
+</head>
+<body class="pro-tools-page home-page">
+    <div id="siteContent">
+    <header class="site-nav site-nav--dark" aria-label="Site navigation">
+        <div class="site-nav-inner">
+            <a href="index.html" class="site-nav-logo" aria-label="LogicX home">
+                <img src="images/logos/logicxo-gold.png" alt="LogicX">
+            </a>
+            <button type="button" class="site-nav-toggle" aria-expanded="false" aria-controls="site-nav-panel" aria-label="Open menu">
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+                <span class="site-nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+            <div class="site-nav-panel" id="site-nav-panel">
+                <nav aria-label="Primary">
+                    <ul class="site-nav-links">
+                        <li><a href="templates.html">Templates</a></li>
+                        <li><a href="pro-tools.html" aria-current="page">Pro Tools</a></li>
+                        <li><a href="index.html#showcase">Our Work</a></li>
+                        <li><a href="index.html#what-we-do">What We Do</a></li>
+                        <li><a href="/editor/showroom.html">Editor</a></li>
+                        <li><a href="/trend-catalog.html">Trends Catalog</a></li>
+                        <li><a href="https://support.logicxo.com/" target="_blank" rel="noopener noreferrer">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="site-nav-actions">
+                    <button type="button" class="site-nav-logout" id="siteNavLogout" hidden>Log out</button>
+                    <a href="request-a-quote.html" class="site-nav-cta">Request a Quote</a>
+                </div>
+            </div>
+        </div>
+        <div class="site-nav-backdrop" hidden aria-hidden="true"></div>
+    </header>
+
+    <main>
+        <section class="pt-hero" aria-labelledby="pt-hero-title">
+            <div class="pt-hero-media" aria-hidden="true">
+                <img src="images/trend-catalog/dining-room-chandelier-size.png" alt="" width="1600" height="1067">
+            </div>
+            <div class="pt-hero-veil" aria-hidden="true"></div>
+            <div class="pt-hero-inner">
+                <p class="pt-hero-brand">LogicX</p>
+                <h1 id="pt-hero-title">Pro Tools</h1>
+                <p class="pt-hero-lead">Utilities built for lighting retail — calculators, catalog helpers, and site kit you can try here or embed on a showroom site.</p>
+                <div class="pt-hero-actions">
+                    <a href="#health-check" class="btn btn-hero-primary">Check a website</a>
+                    <a href="#tools" class="btn btn-hero-ghost">Browse catalog</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="health-check" class="pt-live" aria-labelledby="health-check-title">
+            <div class="pt-live-inner">
+                <header class="pt-live-header">
+                    <p class="pt-live-eyebrow">Live now · Free</p>
+                    <h2 id="health-check-title">Website Health Check</h2>
+                    <p>Paste any public URL. We’ll probe it from our server and report uptime, speed, SSL, HTTPS redirect, and page size — no account needed.</p>
+                </header>
+
+                <div id="websiteHealthCheck" class="pt-health" data-tool="website-health-check">
+                    <form id="ptHealthForm" class="pt-health-form" novalidate>
+                        <label class="pt-field pt-health-url-field" for="ptHealthUrl">
+                            <span>Enter your website URL</span>
+                            <span class="pt-field-input pt-health-url-input">
+                                <input type="url" id="ptHealthUrl" name="url" placeholder="https://www.example.com" autocomplete="url" inputmode="url" required>
+                            </span>
+                        </label>
+                        <button type="submit" id="ptHealthSubmit" class="btn btn-sheen pt-health-submit">Check</button>
+                    </form>
+                    <p id="ptHealthStatus" class="pt-health-status" hidden role="status"></p>
+
+                    <div id="ptHealthResults" class="pt-tool-results pt-health-results" hidden data-ready="false" aria-live="polite">
+                        <div class="pt-health-result-row">
+                            <div>
+                                <p class="pt-tool-result-label">Status</p>
+                                <p class="pt-health-primary">
+                                    <span id="ptHealthUp" class="pt-badge" data-tone="">—</span>
+                                    <span class="pt-health-http">HTTP <span id="ptHealthHttp">—</span></span>
+                                </p>
+                            </div>
+                            <div>
+                                <p class="pt-tool-result-label">Response time</p>
+                                <p class="pt-health-primary">
+                                    <span id="ptHealthTime">—</span>
+                                    <span id="ptHealthGrade" class="pt-badge" data-tone="">—</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <dl class="pt-tool-result-grid pt-health-grid">
+                            <div>
+                                <dt>SSL</dt>
+                                <dd><span id="ptHealthSsl" class="pt-badge" data-tone="">—</span></dd>
+                            </div>
+                            <div>
+                                <dt>Issuer</dt>
+                                <dd id="ptHealthIssuer">—</dd>
+                            </div>
+                            <div>
+                                <dt>Days to expiry</dt>
+                                <dd id="ptHealthExpiry">—</dd>
+                            </div>
+                            <div>
+                                <dt>HTTPS enforced</dt>
+                                <dd><span id="ptHealthHttps" class="pt-badge" data-tone="">—</span></dd>
+                            </div>
+                            <div class="pt-health-span">
+                                <dt>Final URL</dt>
+                                <dd id="ptHealthFinalUrl" class="pt-health-url-value">—</dd>
+                            </div>
+                            <div>
+                                <dt>Page size</dt>
+                                <dd id="ptHealthSize">—</dd>
+                            </div>
+                        </dl>
+
+                        <div class="pt-health-cta">
+                            <p>Want this watched 24/7?</p>
+                            <a href="#coming-soon-monitor" class="pt-tool-link pt-tool-link--accent">Connect it</a>
+                        </div>
+                        <p id="coming-soon-monitor" class="pt-health-cta-note">Live Site Monitor is coming next — continuous checks and owner alerts.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="live-tool" class="pt-live pt-live--secondary" aria-labelledby="live-tool-title">
+            <div class="pt-live-inner">
+                <header class="pt-live-header">
+                    <p class="pt-live-eyebrow">Live now</p>
+                    <h2 id="live-tool-title">Chandelier sizing tool</h2>
+                    <p>Enter the table or room — get diameter, hang height, and fixture height from the same formulas in our dining guide.</p>
+                </header>
+
+                <div id="chandelierSizingTool" class="pt-tool" data-tool="chandelier-sizing">
+                    <div class="pt-tool-controls">
+                        <fieldset class="pt-tool-mode">
+                            <legend class="visually-hidden">Sizing mode</legend>
+                            <label class="pt-tool-mode-option">
+                                <input type="radio" name="pt-size-mode" value="table" checked>
+                                <span>I have a table</span>
+                            </label>
+                            <label class="pt-tool-mode-option">
+                                <input type="radio" name="pt-size-mode" value="room">
+                                <span>Room only</span>
+                            </label>
+                        </fieldset>
+
+                        <div class="pt-tool-fields" data-panel="table">
+                            <label class="pt-field">
+                                <span>Table width</span>
+                                <span class="pt-field-input">
+                                    <input type="number" id="ptTableWidth" inputmode="decimal" min="24" max="96" step="1" value="48">
+                                    <span class="pt-field-unit">in</span>
+                                </span>
+                            </label>
+                            <label class="pt-field">
+                                <span>Table length</span>
+                                <span class="pt-field-input">
+                                    <input type="number" id="ptTableLength" inputmode="decimal" min="24" max="144" step="1" value="72">
+                                    <span class="pt-field-unit">in</span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="pt-tool-fields" data-panel="room" hidden>
+                            <label class="pt-field">
+                                <span>Room length</span>
+                                <span class="pt-field-input">
+                                    <input type="number" id="ptRoomLength" inputmode="decimal" min="8" max="40" step="0.5" value="12">
+                                    <span class="pt-field-unit">ft</span>
+                                </span>
+                            </label>
+                            <label class="pt-field">
+                                <span>Room width</span>
+                                <span class="pt-field-input">
+                                    <input type="number" id="ptRoomWidth" inputmode="decimal" min="8" max="40" step="0.5" value="14">
+                                    <span class="pt-field-unit">ft</span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <label class="pt-field pt-field--solo">
+                            <span>Ceiling height</span>
+                            <span class="pt-field-input">
+                                <input type="number" id="ptCeiling" inputmode="decimal" min="7" max="20" step="0.5" value="8">
+                                <span class="pt-field-unit">ft</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div id="ptSizeResults" class="pt-tool-results" data-ready="false" aria-live="polite">
+                        <div class="pt-tool-result-primary">
+                            <p class="pt-tool-result-label">Recommended diameter</p>
+                            <p id="ptResultDiameter" class="pt-tool-result-value">—</p>
+                        </div>
+                        <dl class="pt-tool-result-grid">
+                            <div>
+                                <dt>Hang height</dt>
+                                <dd id="ptResultHang">—</dd>
+                            </div>
+                            <div>
+                                <dt>Fixture height</dt>
+                                <dd id="ptResultFixture">—</dd>
+                            </div>
+                        </dl>
+                        <p id="ptResultNote" class="pt-tool-result-note"></p>
+                        <p id="ptResultShape" class="pt-tool-result-shape"></p>
+                        <div class="pt-tool-result-actions">
+                            <a href="guides/dining-room-chandelier-size.html" class="pt-tool-link">Read the full sizing guide</a>
+                            <a href="request-a-quote.html?interest=pro-tools-chandelier-sizing" class="pt-tool-link pt-tool-link--accent">Add this tool to your site</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <nav class="pt-jump" aria-label="Tool categories">
+            <a href="#cat-shopping">Shopping</a>
+            <a href="#cat-planning">Planning</a>
+            <a href="#cat-engagement">Engagement</a>
+            <a href="#cat-site">Site kit</a>
+        </nav>
+
+        <section id="tools" class="pt-section" aria-labelledby="tools-title">
+            <div class="pt-section-inner">
+                <header class="pt-section-header">
+                    <h2 id="tools-title">Tool catalog</h2>
+                    <p>Each entry is a shippable embed, editor feature, or handoff snippet. Status shows what’s live vs. next up.</p>
+                </header>
+
+                <div id="cat-shopping" class="pt-category">
+                    <h3 class="pt-category-title">Shopping</h3>
+                    <ul class="pt-grid">
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--soon">Coming soon</span>
+                                <h4 class="pt-card-title">Catalog quick search</h4>
+                            </div>
+                            <p class="pt-card-desc">A compact search field that jumps shoppers into your XOLogic / LogicX catalog with the right category or keyword.</p>
+                            <ul class="pt-card-meta">
+                                <li>Embed or header slot</li>
+                                <li>Configurable placeholder &amp; destination</li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--build">In development</span>
+                                <h4 class="pt-card-title">Finish &amp; style matcher</h4>
+                            </div>
+                            <p class="pt-card-desc">Help customers narrow brass, black, nickel, and glass looks — then deep-link into matching catalog facets.</p>
+                            <ul class="pt-card-meta">
+                                <li>Visual swatch UI</li>
+                                <li>Pairs with Designer templates</li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--soon">Coming soon</span>
+                                <h4 class="pt-card-title">Shop-by-room launcher</h4>
+                            </div>
+                            <p class="pt-card-desc">Room tiles (kitchen, bath, outdoor) that route to curated catalog collections or template hero destinations.</p>
+                            <ul class="pt-card-meta">
+                                <li>Homepage or mega-menu block</li>
+                                <li>Image + label per room</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="cat-planning" class="pt-category">
+                    <h3 class="pt-category-title">Planning</h3>
+                    <ul class="pt-grid">
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--live">Live</span>
+                                <h4 class="pt-card-title">Chandelier sizing tool</h4>
+                            </div>
+                            <p class="pt-card-desc">Interactive diameter, hang height, and fixture height from table or room measurements — live on this page.</p>
+                            <ul class="pt-card-meta">
+                                <li><a href="#live-tool">Try it above</a></li>
+                                <li><a href="guides/dining-room-chandelier-size.html">Full sizing guide</a></li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--live">Live guide</span>
+                                <h4 class="pt-card-title">Room light count helper</h4>
+                            </div>
+                            <p class="pt-card-desc">Educational flow for how many fixtures a room needs — ready to productize as an embed next.</p>
+                            <ul class="pt-card-meta">
+                                <li><a href="guides/kitchen-light-count.html">Kitchen light count guide</a></li>
+                                <li>Embeddable calculator next</li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--live">Live guide</span>
+                                <h4 class="pt-card-title">Bulb temperature advisor</h4>
+                            </div>
+                            <p class="pt-card-desc">Kelvin guidance for chandeliers and living spaces — convert the guide into a short interactive tool.</p>
+                            <ul class="pt-card-meta">
+                                <li><a href="guides/chandelier-bulb-temperature.html">Bulb temperature guide</a></li>
+                                <li>Widget + handoff snippet</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="cat-engagement" class="pt-category">
+                    <h3 class="pt-category-title">Engagement</h3>
+                    <ul class="pt-grid">
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--soon">Coming soon</span>
+                                <h4 class="pt-card-title">Design consult booking</h4>
+                            </div>
+                            <p class="pt-card-desc">Lightweight appointment or “talk to a specialist” form that posts to your showroom inbox or CRM.</p>
+                            <ul class="pt-card-meta">
+                                <li>Footer or hero CTA</li>
+                                <li>Branded to your template</li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--soon">Coming soon</span>
+                                <h4 class="pt-card-title">Showroom hours &amp; map</h4>
+                            </div>
+                            <p class="pt-card-desc">Editable hours, phone, and map block that stays in sync with Company Info from the editor.</p>
+                            <ul class="pt-card-meta">
+                                <li>Footer / contact section</li>
+                                <li>Editor-driven fields</li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--build">In development</span>
+                                <h4 class="pt-card-title">Trend spotlight strip</h4>
+                            </div>
+                            <p class="pt-card-desc">Pull a rotating Trends Catalog story onto the homepage so merchandising and education stay fresh.</p>
+                            <ul class="pt-card-meta">
+                                <li><a href="trend-catalog.html">Trends Catalog</a></li>
+                                <li>Curated link + image</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="cat-site" class="pt-category">
+                    <h3 class="pt-category-title">Site kit</h3>
+                    <ul class="pt-grid">
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--live">Live</span>
+                                <h4 class="pt-card-title">Website Health Check</h4>
+                            </div>
+                            <p class="pt-card-desc">One-time probe: up/down, response grade, SSL expiry, HTTPS redirect, and page size — free, no login.</p>
+                            <ul class="pt-card-meta">
+                                <li><a href="#health-check">Try it above</a></li>
+                                <li><a href="#coming-soon-monitor">24/7 monitoring soon</a></li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--live">In editor</span>
+                                <h4 class="pt-card-title">Mega menu patterns</h4>
+                            </div>
+                            <p class="pt-card-desc">Multi-column navigation for Designer templates (Avalon, McQueen Plus) — expandable as a reusable Pro Tool package.</p>
+                            <ul class="pt-card-meta">
+                                <li><a href="/editor/designer.html?design=mcqueen-plus">McQueen Plus editor</a></li>
+                                <li>Handoff-ready CSS/JS</li>
+                            </ul>
+                        </li>
+                        <li class="pt-card">
+                            <div class="pt-card-top">
+                                <span class="pt-card-status pt-card-status--soon">Coming soon</span>
+                                <h4 class="pt-card-title">Cookie &amp; consent bar</h4>
+                            </div>
+                            <p class="pt-card-desc">Minimal, brandable consent strip with editable copy — optional for US showroom launches.</p>
+                            <ul class="pt-card-meta">
+                                <li>One-file embed</li>
+                                <li>Matches LogicX chrome</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="pt-closer" aria-labelledby="pt-closer-title">
+            <div class="pt-closer-inner">
+                <h2 id="pt-closer-title">Have a tool in mind?</h2>
+                <p>Tell us what your showroom needs — we’ll prioritize embeds and editor features that fit how you sell.</p>
+                <div class="pt-closer-actions">
+                    <a href="request-a-quote.html?interest=pro-tools" class="btn btn-sheen">Request a quote</a>
+                    <a href="templates.html" class="pt-closer-ghost">Browse templates</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" aria-label="Site footer">
+        <div class="site-footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="footer-logo">LogicX</span>
+                    <p class="footer-tagline">Illuminate your presence. The knowledge hub for elegant lighting retail.</p>
+                </div>
+                <nav class="footer-col" aria-label="Quick links">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="templates.html">Templates</a></li>
+                        <li><a href="pro-tools.html">Pro Tools</a></li>
+                        <li><a href="request-a-quote.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-col" aria-label="Resources">
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="https://support.logicxo.com/">Knowledge Base</a></li>
+                        <li><a href="/editor/knowledge-base.html">Editor Guide</a></li>
+                        <li><a href="trend-catalog.html">Trends Catalog</a></li>
+                    </ul>
+                </nav>
+                <div class="footer-col footer-contact">
+                    <h3 class="footer-heading">Contact</h3>
+                    <ul class="footer-contact-list">
+                        <li>
+                            <a href="mailto:hello@logicxo.com">hello@logicxo.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; LogicX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    </div>
+
+    <script src="js/main.js" defer></script>
+    <script src="js/pro-tools/health-check.js" defer></script>
+    <script src="js/pro-tools/chandelier-sizing.js" defer></script>
+    <script src="shared/footer/footer.js" defer></script>
+</body>
+</html>
