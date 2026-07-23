@@ -148,7 +148,22 @@
             })
             .catch(function () {
                 results.hidden = true;
-                setStatus('Could not reach the health check service. Is the server running?', 'warn');
+                var protocol = window.location.protocol || '';
+                var port = window.location.port || '';
+                var wrongOrigin = protocol === 'file:'
+                    || port === '5500'
+                    || port === '5501';
+                if (wrongOrigin) {
+                    setStatus(
+                        'Open this page via the app server at http://localhost:4242 — the health check needs the Node backend.',
+                        'warn'
+                    );
+                } else {
+                    setStatus(
+                        'Could not reach the health check service. Run `npm start` and open http://localhost:4242/pro-tools.html',
+                        'warn'
+                    );
+                }
             })
             .finally(function () {
                 setBusy(false);

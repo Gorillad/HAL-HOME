@@ -15,7 +15,17 @@ npm start
 
 Open http://localhost:4242
 
-Use `npm start` (not a static file server) — cart checkout requires the Node API.
+Use `npm start` (not a static file server, Live Server, or opening HTML files directly) — cart checkout and Pro Tools APIs require the Node backend.
+
+### Pro Tools — Website Health Check
+
+```bash
+npm start
+```
+
+Then open **http://localhost:4242/pro-tools.html** (port `4242` only). The check calls `POST /api/health-check` on the same origin, so Live Server (`:5500`) or `file://` will fail.
+
+**Production:** host this as a **Node process** running `npm start` / `node server/index.js` (e.g. Render Web Service), not a static-only host. Static HTML can be served by Express; the health-check API cannot run without Node.
 
 ## Project structure
 
